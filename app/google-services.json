@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "421525361778",
+    "project_id": "meili-306712",
+    "storage_bucket": "meili-306712.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:421525361778:android:2b89e883e7e766506b5eeb",
+        "android_client_info": {
+          "package_name": "com.github.marceltorne.meili"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "421525361778-ts9ega3i2v6p5iasm1h14ff1f3ak53k9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBR4mePQ5wfVIgVf1I-lWohnQtl7zceeMA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "421525361778-ts9ega3i2v6p5iasm1h14ff1f3ak53k9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
