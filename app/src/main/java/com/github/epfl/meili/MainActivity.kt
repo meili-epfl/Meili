@@ -1,4 +1,4 @@
-package com.github.marceltorne.meili
+package com.github.epfl.meili
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
