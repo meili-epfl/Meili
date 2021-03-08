@@ -81,10 +81,11 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/new_post_button"
+        android:id="@+id/forum_new_post_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
+        android:onClick="goToPostCreation"
         android:text="+"
         android:textAlignment="center"
         android:textSize="30sp"
