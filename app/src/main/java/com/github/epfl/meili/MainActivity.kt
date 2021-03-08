@@ -29,6 +29,10 @@ class MainActivity : AppCompatActivity() {
                 Intent(this, MainActivity::class.java)
             }
         }
-        startActivity(intent)
+
+        fun openProfile(view: View) {
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

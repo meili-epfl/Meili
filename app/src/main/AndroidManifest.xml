@@ -48,6 +48,13 @@
             android:label="@string/title_activity_map"
             android:parentActivityName="com.github.epfl.meili.MainActivity" >
         </activity>
+        <activity android:name=".ProfileActivity">
+
+        </activity>
+        <activity android:name=".ModifyProfileActivity">
+
+        </activity>
+
     </application>
 
 </manifest>
