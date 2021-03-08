@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Meili</string>
+    <string name="activity_google_sign_in">Google Sign In</string>
 </resources>
