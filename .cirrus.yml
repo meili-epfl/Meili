@@ -4,7 +4,6 @@ check_android_task:
     API_LEVEL: 30
     TARGET: google_apis
     ARCH: x86
-    CC_TEST_REPORTER_ID: ENCRYPTED[d3473d9563a1e5520a807cd8222fb1a37b4e34b509db54d4aae152d379d649e026d3e9ea9f98d80cfb221511af80ba03]
   container:
     image: reactivecircus/android-emulator-$API_LEVEL:latest
     kvm: true
@@ -24,20 +23,5 @@ check_android_task:
     adb shell settings put global window_animation_scale 0.0
     adb shell settings put global transition_animation_scale 0.0
     adb shell settings put global animator_duration_scale 0.0
-  prepare_codeclimate_script: |
-    curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-    chmod +x ./cc-test-reporter
-    ./cc-test-reporter before-build
   check_script:
     ./gradlew check connectedCheck
-  report_codeclimate_script: |
-    export JACOCO_SOURCE_PATH=app/src/main/java/
-    ./cc-test-reporter format-coverage ./app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml --input-type jacoco
-    ./cc-test-reporter upload-coverage
-  lint_script:
-    ./gradlew lintDebug
-  always:
-    android-lint_artifacts:
-      path: ./app/build/reports/lint-results-debug.xml
-      type: text/xml
-      format: android-lint
