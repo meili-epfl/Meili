@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "278125234577",
+    "project_id": "meili-8f4d3",
+    "storage_bucket": "meili-8f4d3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278125234577:android:31fa1118c4ca20ce3eb230",
+        "android_client_info": {
+          "package_name": "com.github.epfl.meili"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "278125234577-7jtuqdim7hho4gpca7qaa658d9u6ske1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": ""
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "278125234577-7jtuqdim7hho4gpca7qaa658d9u6ske1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
