@@ -1,6 +1,7 @@
 package com.github.epfl.meili.forum
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -25,8 +26,10 @@ class ForumActivity : AppCompatActivity() {
     }
 
     /** Called when the user taps a post */
-    fun openPost(view: View) {
-        val intent = Intent(this, PostActivity::class.java)
+    fun openPost(view: View, post_id: String) {
+        val intent = Intent(this, PostActivity::class.java).apply {
+            putExtra(TAG, post_id) // pass ID to PostActivity so it knows which one to fetch
+        }
         startActivity(intent) // starts the instance of PostActivity
     }
 
@@ -48,7 +51,7 @@ class ForumActivity : AppCompatActivity() {
             .addOnSuccessListener { result -> // If success
                 for (document in result) {
                     // Show post in UI
-                    showPost(document)
+                    createPostUI(document)
 
                     Log.d(TAG, "${document.id} => ${document.data}")
                 }
@@ -58,48 +61,82 @@ class ForumActivity : AppCompatActivity() {
             }
     }
 
-    /** Shows the post in the forum UI */
-    private fun showPost(post: QueryDocumentSnapshot) {
-        // Create and get linearLayout (box for the information to go in)
-        val linearLayout = addLinearLayout()
+    /** Creates the post UI and display in the forum */
+    private fun createPostUI(post: QueryDocumentSnapshot) {
+        // Create and get box to put information into
+        val box = addPostBoxToForumUI(post.id) // pass id for when post is clicked
 
         // Add elements that go in the linearLayout
-        addAuthorToPost(post.data.get("username").toString(), linearLayout)
-        addTitleToPost(post.data.get("title").toString(), linearLayout)
+        addAuthorToPostUI(post.data.get("username").toString(), box)
+        addTitleToPostUI(post.data.get("title").toString(), box)
     }
 
-    /** Creates a linearLayout for the post's information to be stored in */
-    private fun addLinearLayout() : LinearLayout {
-        // Create layout
-        val linearLayout = LinearLayout(this)
-        linearLayout.orientation = LinearLayout.VERTICAL
+    /** Creates a box for the post's information to be stored in */
+    private fun addPostBoxToForumUI(post_id: String) : LinearLayout {
+        // Create vertical linear layout (box)
+        val box = LinearLayout(this)
+        box.orientation = LinearLayout.VERTICAL
 
-        //TODO: make pretty
+        // Set layout parameters
+        val param = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, // layout_width
+                LinearLayout.LayoutParams.WRAP_CONTENT // layout_height
+        )
+        param.setMargins(0, 10, 0, 0) // layout_margin
+        box.layoutParams = param
 
-        // Add it to the parent linearLayout
-        findViewById<LinearLayout>(R.id.forum_layout).addView(linearLayout)
+        // Set onClick behaviour
+        box.setOnClickListener(View.OnClickListener {
+            // function to call when clicked
+            view -> openPost(view, post_id)  // pass id to know what post to fetch
+        })
 
-        return linearLayout
+        // Set other aesthetic parameters
+        // TODO: make pretty
+        box.setBackgroundColor(Color.parseColor("#90e0ef")) // background color
+
+        // Add the box to the parent linearLayout
+        findViewById<LinearLayout>(R.id.forum_layout).addView(box)
+
+        return box
     }
 
     /** Adds the author to the post UI */
-    private fun addAuthorToPost(author: String, linearLayout: LinearLayout) {
+    private fun addAuthorToPostUI(author: String, linearLayout: LinearLayout) {
         // Create TextView
         val textView = TextView(this)
         textView.text = author
 
+        // Set layout parameters
+        val param = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, // layout_width
+                LinearLayout.LayoutParams.WRAP_CONTENT // layout_height
+        )
+        param.setMargins(20, 20, 0, 10) // layout_margin
+        textView.layoutParams = param
+
         //TODO: make pretty
+        textView.textSize = 14.0f
 
         linearLayout.addView(textView)
     }
 
     /** Adds the title to the post UI */
-    private fun addTitleToPost(title: String, linearLayout: LinearLayout) {
+    private fun addTitleToPostUI(title: String, linearLayout: LinearLayout) {
         // Create TextView
         val textView = TextView(this)
         textView.text = title
 
+        // Set layout parameters
+        val param = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, // layout_width
+                LinearLayout.LayoutParams.WRAP_CONTENT // layout_height
+        )
+        param.setMargins(20, 0, 20, 20) // layout_margin
+        textView.layoutParams = param
+
         //TODO: make pretty
+        textView.textSize = 18.0f
 
         linearLayout.addView(textView)
     }
