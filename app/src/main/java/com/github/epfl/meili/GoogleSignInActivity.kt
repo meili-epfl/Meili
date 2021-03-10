@@ -7,7 +7,11 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.github.epfl.meili.R
+import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -18,6 +22,70 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
+class GoogleSignInActivity : AppCompatActivity() {
+    private lateinit var auth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var authenticationService: AuthenticationService
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_google_sign_in)
+
+        AuthenticationService.user.observe(this, { user ->
+            updateUI(user)
+        })
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = AuthenticationService.getCurrentUser()
+        updateUI(currentUser)
+    }
+
+    fun onGoogleButtonClick(view: View) {
+        if (AuthenticationService.getCurrentUser() != null) {
+            signOut()
+        } else {
+            signIn()
+        }
+    }
+
+    private fun signIn() {
+        AuthenticationService.signIn(this)
+    }
+
+    private fun signOut() {
+        AuthenticationService.signOut()
+    }
+
+    private fun updateUI(user: FirebaseUser?) {
+        var message: String = "Sign in"
+        var buttonMessage = "Sign In"
+        if (user != null) {
+            message = user.displayName
+            buttonMessage = "Sign Out"
+        }
+
+        val textView = findViewById<TextView>(R.id.textFieldSignIn).apply {
+            text = message
+        }
+
+        val buttonView = findViewById<Button>(R.id.signInButton).apply {
+            text = buttonMessage
+        }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        AuthenticationService.onActivityResult(this, requestCode, resultCode, data)
+    }
+
+}
+/*
 class GoogleSignInActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -127,4 +195,4 @@ class GoogleSignInActivity : AppCompatActivity() {
         private const val TAG = "GoogleActivity"
         private const val RC_SIGN_IN = 9001
     }
-}
+}*/
