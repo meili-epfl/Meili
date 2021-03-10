@@ -28,7 +28,7 @@ class ForumActivity : AppCompatActivity() {
     /** Called when the user taps a post */
     fun openPost(view: View, post_id: String) {
         val intent = Intent(this, PostActivity::class.java).apply {
-            putExtra(TAG, post_id) // pass ID to PostActivity so it knows which one to fetch
+            putExtra(EXTRA_POST_ID, post_id) // pass ID to PostActivity so it knows which one to fetch
         }
         startActivity(intent) // starts the instance of PostActivity
     }
@@ -47,11 +47,11 @@ class ForumActivity : AppCompatActivity() {
         // Get the relevant posts
         // TODO: restrict number of posts retrieved
         db.collection("posts")
-            .get()
+            .get() // Get all posts
             .addOnSuccessListener { result -> // If success
                 for (document in result) {
                     // Show post in UI
-                    createPostUI(document)
+                    createForumUI(document)
 
                     Log.d(TAG, "${document.id} => ${document.data}")
                 }
@@ -62,7 +62,7 @@ class ForumActivity : AppCompatActivity() {
     }
 
     /** Creates the post UI and display in the forum */
-    private fun createPostUI(post: QueryDocumentSnapshot) {
+    private fun createForumUI(post: QueryDocumentSnapshot) {
         // Create and get box to put information into
         val box = addPostBoxToForumUI(post.id) // pass id for when post is clicked
 
