@@ -70,20 +70,7 @@ class LatestMessageActivityAndroidTest {
 
         Intents.init()
 
-        val actionMenuItemView = onView(
-            allOf(
-                withId(R.id.menu_new_message), withText("New Message"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.action_bar),
-                        1
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
-        actionMenuItemView.perform(click())
+        onView(withId(R.id.menu_new_message)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(NewMessageActivity::class.java.name))
         Intents.release()
     }
