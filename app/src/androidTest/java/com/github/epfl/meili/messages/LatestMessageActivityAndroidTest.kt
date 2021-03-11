@@ -55,25 +55,25 @@ class LatestMessageActivityAndroidTest {
     }
 
 
-    @Test
-    fun signOutButtonGoesBackToRegister() {
-
-        Intents.init()
-
-        onView(withId(R.id.menu_sign_out)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(RegisterActivity::class.java.name))
-        Intents.release()
-    }
-
-    @Test
-    fun newMessageButtonShowsNewMessageActivity() {
-
-        Intents.init()
-
-        onView(withId(R.id.menu_new_message)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(NewMessageActivity::class.java.name))
-        Intents.release()
-    }
+//    @Test
+//    fun signOutButtonGoesBackToRegister() {
+//
+//        Intents.init()
+//
+//        onView(withId(R.id.menu_sign_out)).perform(click())
+//        Intents.intended(IntentMatchers.hasComponent(RegisterActivity::class.java.name))
+//        Intents.release()
+//    }
+//
+//    @Test
+//    fun newMessageButtonShowsNewMessageActivity() {
+//
+//        Intents.init()
+//
+//        onView(withId(R.id.menu_new_message)).perform(click())
+//        Intents.intended(IntentMatchers.hasComponent(NewMessageActivity::class.java.name))
+//        Intents.release()
+//    }
 
     @After
     fun signOut() {
