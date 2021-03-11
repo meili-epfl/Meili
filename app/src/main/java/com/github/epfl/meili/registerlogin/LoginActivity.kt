@@ -1,4 +1,4 @@
-package com.github.epfl.meili
+package com.github.epfl.meili.registerlogin
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +8,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.github.epfl.meili.LatestMessagesActivity
+import com.github.epfl.meili.R
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
@@ -22,7 +24,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         findViewById<TextView>(R.id.back_to_registration_text_view).setOnClickListener {
-            //Launch the login activity
+            //Launch the register activity
             finish()
         }
     }
@@ -41,12 +43,13 @@ class LoginActivity : AppCompatActivity() {
                 if(!it.isSuccessful) return@addOnCompleteListener
 
                 //User logged in
-                Log.d("LoginActivity", "createUserWithEmail:success")
+                Log.d("LoginActivity", "SignInWithEmailAndPassword:success")
                 val intent = Intent(this, LatestMessagesActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
             .addOnFailureListener{
+                Log.d("LoginActivity", "SignInWithEmailAndPassword:failure ${it.message}")
                 Toast.makeText(this, "Failure: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
