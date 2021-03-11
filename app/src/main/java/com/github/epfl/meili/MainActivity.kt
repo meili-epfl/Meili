@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 
 import com.github.epfl.meili.home.GoogleSignInActivity
-
 import com.github.epfl.meili.forum.ForumActivity
 
 
@@ -15,6 +14,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
+
 
     fun onClickLaunchSignInView(view: View) {
         val intent = Intent(this, GoogleSignInActivity::class.java)

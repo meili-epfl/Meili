@@ -2,12 +2,11 @@ package com.github.epfl.meili.forum
 
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.test.espresso.idling.CountingIdlingResource
 import com.github.epfl.meili.R
 import com.google.firebase.firestore.QueryDocumentSnapshot
@@ -32,7 +31,10 @@ class ForumActivity : AppCompatActivity() {
     /** Called when the user taps a post */
     fun openPost(view: View, post_id: String) {
         val intent = Intent(this, PostActivity::class.java).apply {
-            putExtra(EXTRA_POST_ID, post_id) // pass ID to PostActivity so it knows which one to fetch
+            putExtra(
+                EXTRA_POST_ID,
+                post_id
+            ) // pass ID to PostActivity so it knows which one to fetch
         }
         startActivity(intent) // starts the instance of PostActivity
     }
@@ -61,10 +63,12 @@ class ForumActivity : AppCompatActivity() {
                     createForumUI(document)
                 }
             } // If fails --> do nothing
+            .addOnCompleteListener {
+                // Task is finished, UI test can now proceed
+                ForumCountingIdlingResource.decrement()
+            }
 
 
-        // Task is finished, UI test can now proceed
-        ForumCountingIdlingResource.decrement()
     }
 
     /** Creates the post UI and display in the forum */
@@ -78,7 +82,7 @@ class ForumActivity : AppCompatActivity() {
     }
 
     /** Creates a box for the post's information to be stored in */
-    private fun addPostBoxToForumUI(post_id: String) : LinearLayout {
+    private fun addPostBoxToForumUI(post_id: String): LinearLayout {
         // Create vertical linear layout (box)
         val box = LinearLayout(this)
         box.orientation = LinearLayout.VERTICAL
@@ -86,8 +90,8 @@ class ForumActivity : AppCompatActivity() {
 
         // Set layout parameters
         val param = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, // layout_width
-                LinearLayout.LayoutParams.WRAP_CONTENT // layout_height
+            LinearLayout.LayoutParams.MATCH_PARENT, // layout_width
+            LinearLayout.LayoutParams.WRAP_CONTENT // layout_height
         )
         param.setMargins(0, 10, 0, 0) // layout_margin
         box.layoutParams = param
@@ -95,7 +99,8 @@ class ForumActivity : AppCompatActivity() {
         // Set onClick behaviour
         box.setOnClickListener(View.OnClickListener {
             // function to call when clicked
-            view -> openPost(view, post_id)  // pass id to know what post to fetch
+                view ->
+            openPost(view, post_id)  // pass id to know what post to fetch
         })
 
         // Set other aesthetic parameters
@@ -117,8 +122,8 @@ class ForumActivity : AppCompatActivity() {
 
         // Set layout parameters
         val param = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, // layout_width
-                LinearLayout.LayoutParams.WRAP_CONTENT // layout_height
+            LinearLayout.LayoutParams.WRAP_CONTENT, // layout_width
+            LinearLayout.LayoutParams.WRAP_CONTENT // layout_height
         )
         param.setMargins(20, 20, 0, 10) // layout_margin
         textView.layoutParams = param
@@ -138,8 +143,8 @@ class ForumActivity : AppCompatActivity() {
 
         // Set layout parameters
         val param = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, // layout_width
-                LinearLayout.LayoutParams.WRAP_CONTENT // layout_height
+            LinearLayout.LayoutParams.MATCH_PARENT, // layout_width
+            LinearLayout.LayoutParams.WRAP_CONTENT // layout_height
         )
         param.setMargins(20, 0, 20, 20) // layout_margin
         textView.layoutParams = param
