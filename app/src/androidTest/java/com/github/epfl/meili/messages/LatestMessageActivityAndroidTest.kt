@@ -60,20 +60,7 @@ class LatestMessageActivityAndroidTest {
 
         Intents.init()
 
-        val actionMenuItemView = onView(
-            allOf(
-                withId(R.id.menu_sign_out), withText("Sign out"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.action_bar),
-                        1
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
-        actionMenuItemView.perform(click())
+        onView(withId(R.id.menu_sign_out)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(RegisterActivity::class.java.name))
         Intents.release()
     }
