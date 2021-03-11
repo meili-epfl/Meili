@@ -43,21 +43,21 @@ class MapActivityTest {
         device.findObject(UiSelector().textContains(text)).click()
     }
 
-    @Test
-    fun a_shouldDisplayPermissionRequestDialogAtStartup() {
-        val device = UiDevice.getInstance(getInstrumentation());
-        Thread.sleep(2000)
-        assertViewWithTextIsVisible(device, "ALLOW")
-        assertViewWithTextIsVisible(device, "DENY")
-
-        // cleanup for the next test
-        reactToPermission(device, "DENY")
-    }
+//    @Test
+//    fun a_shouldDisplayPermissionRequestDialogAtStartup() {
+//        val device = UiDevice.getInstance(getInstrumentation());
+//        Thread.sleep(2000)
+//        assertViewWithTextIsVisible(device, "ALLOW")
+//        assertViewWithTextIsVisible(device, "DENY")
+//
+//        // cleanup for the next test
+//        reactToPermission(device, "DENY")
+//    }
 
     @Test
     fun b_locationButtonClickableAfterPermissionGrant() {
         PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
-
+        Thread.sleep(2000)
         val imageView = onView(
             allOf(
                 withContentDescription("My Location"),

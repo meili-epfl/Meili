@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -141,13 +140,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClic
                         )
                     }
                 } else {
-                    Log.d(TAG, "Current location is null. Using defaults.")
-                    Log.e(TAG, "Exception: %s", task.exception)
-                    this.map.moveCamera(
-                        CameraUpdateFactory
-                            .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat())
+                    map.moveCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            defaultLocation,
+                            DEFAULT_ZOOM.toFloat()
+                        )
                     )
-                    this.map.uiSettings?.isMyLocationButtonEnabled = false
+                    map.uiSettings?.isMyLocationButtonEnabled = false
                 }
             }
         }
