@@ -51,7 +51,7 @@ class LatestMessageActivityAndroidTest {
         )
         onView(withId(R.id.login_button)).perform(click())
 
-        Thread.sleep(5000)
+        Thread.sleep(10000)
     }
 
 
