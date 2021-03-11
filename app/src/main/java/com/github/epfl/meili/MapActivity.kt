@@ -25,11 +25,11 @@ import com.google.android.libraries.places.api.net.PlacesClient
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickListener {
     companion object {
-        private const val CAMERA_POSITION_KEY = "camera_position"
-        private const val LOCATION_KEY = "location"
+        private val CAMERA_POSITION_KEY = "camera_position"
+        private val LOCATION_KEY = "location"
         private val TAG = MapActivity::class.java.simpleName
-        private const val DEFAULT_ZOOM = 15
-        private const val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: Int = 1
+        private val DEFAULT_ZOOM = 15
+        private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: Int = 1
     }
 
     // API entry points
@@ -51,8 +51,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClic
         // Initialize API entry points
         Places.initialize(
             applicationContext,
-            "AIzaSyCPSWNqpE5t5brgj7VjB3oeqtcte8_mAfI"
+            getString(R.string.google_api_key)
         ) // change API key here
+
         this.placesClient = Places.createClient(this)
         this.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -65,6 +66,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClic
         if (savedInstanceState != null) {
             this.cameraPosition = savedInstanceState.getParcelable(CAMERA_POSITION_KEY)
             this.location = savedInstanceState.getParcelable(LOCATION_KEY)
+        }
+
+        if (ContextCompat.checkSelfPermission(
+                        this.applicationContext,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            locationPermission = true
         }
     }
 
@@ -114,13 +123,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClic
     }
 
     private fun getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                this.applicationContext,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            this.locationPermission = true
-        } else {
+        if (!locationPermission) {
             ActivityCompat.requestPermissions(
                 this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION
