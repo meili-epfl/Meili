@@ -1,7 +1,5 @@
-package com.github.epfl.meili
+package com.github.epfl.meili.models
 
-import android.os.Parcel
-import android.util.Log
 import com.github.epfl.meili.models.User
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Test
@@ -16,7 +14,7 @@ import org.junit.Assert.*
 class UserUnitTest {
 
     private val TEST_UID: String = "firuh2oirhg29g8h2fr2g"
-    private val TEST_USERNAME : String = "moderator"
+    private val TEST_USERNAME: String = "moderator"
 
 
     @Test
@@ -28,7 +26,7 @@ class UserUnitTest {
     }
 
     @Test
-    fun userConstructor(){
+    fun userConstructor() {
 
         var user = User(TEST_UID, TEST_USERNAME)
         assertThat(user.uid, `is`(TEST_UID))

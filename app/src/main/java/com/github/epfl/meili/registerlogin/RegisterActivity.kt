@@ -43,20 +43,20 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun registerUser(email: String, password: String) {
 
-        if(email.isEmpty() || password.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please enter Email and Password", Toast.LENGTH_SHORT).show()
             return
         }
 
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
-                if(!it.isSuccessful) return@addOnCompleteListener
+                if (!it.isSuccessful) return@addOnCompleteListener
 
                 //if it is successful
                 Log.d("register_test", "createUserWithEmail:success")
                 saveUserToFirebaseDatabase()
             }
-            .addOnFailureListener{
+            .addOnFailureListener {
                 Log.d("register_test", "createUserWithEmail:failure")
                 Toast.makeText(this, "Failure: ${it.message}", Toast.LENGTH_SHORT).show()
             }
@@ -68,12 +68,13 @@ class RegisterActivity : AppCompatActivity() {
         val uid = FirebaseAuth.getInstance().uid ?: ""
         val database = Firebase.database
         val myRef = database.getReference("/users/$uid")
-        val user = User(uid, findViewById<EditText>(R.id.username_edittext_register).text.toString())
-        if(user.username.isEmpty()) {
+        val user =
+            User(uid, findViewById<EditText>(R.id.username_edittext_register).text.toString())
+        if (user.username.isEmpty()) {
             Toast.makeText(this, "Please enter a username", Toast.LENGTH_SHORT).show()
             FirebaseAuth.getInstance().currentUser?.delete()
 
-        }else{
+        } else {
             myRef.setValue(user)
                 .addOnSuccessListener {
                     Log.d(TAG, "user saved to firebase datatbase!")

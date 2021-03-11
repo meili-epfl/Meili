@@ -26,19 +26,19 @@ class NewMessageActivity : AppCompatActivity() {
         fetchUsers()
     }
 
-    companion object{
+    companion object {
         val USER_KEY = "USERK_KEY"
     }
 
     private fun fetchUsers() {
         val ref = Firebase.database.getReference("/users")
-        ref.addListenerForSingleValueEvent(object: ValueEventListener{
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 val adapter = GroupAdapter<GroupieViewHolder>()
-                snapshot.children.forEach{
+                snapshot.children.forEach {
                     val user = it.getValue(User::class.java)
-                    if(user != null){
+                    if (user != null) {
                         adapter.add(UserItem(user))
                     }
                 }
@@ -52,6 +52,7 @@ class NewMessageActivity : AppCompatActivity() {
                 }
                 findViewById<RecyclerView>(R.id.recyclerview_newmessage).adapter = adapter
             }
+
             override fun onCancelled(error: DatabaseError) {
 
             }
@@ -59,14 +60,15 @@ class NewMessageActivity : AppCompatActivity() {
     }
 }
 
-class UserItem(val user: User): Item<GroupieViewHolder>() {
+class UserItem(val user: User) : Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
         return R.layout.user_row_new_message
     }
 
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.itemView.findViewById<TextView>(R.id.username_text_view_newmessage).text = user.username
+        viewHolder.itemView.findViewById<TextView>(R.id.username_text_view_newmessage).text =
+            user.username
     }
 
 }

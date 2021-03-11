@@ -76,6 +76,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     // Also declare the dependency for the Google Play services library and specify its version
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0-alpha04'
 }
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true

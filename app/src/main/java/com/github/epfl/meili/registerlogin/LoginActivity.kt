@@ -33,14 +33,14 @@ class LoginActivity : AppCompatActivity() {
         val email = findViewById<EditText>(R.id.email_edittext_login).text.toString()
         val password = findViewById<EditText>(R.id.password_edittext_login).text.toString()
 
-        if(email.isEmpty() || password.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please enter Email and Password", Toast.LENGTH_SHORT).show()
             return
         }
 
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
-                if(!it.isSuccessful) return@addOnCompleteListener
+                if (!it.isSuccessful) return@addOnCompleteListener
 
                 //User logged in
                 Log.d("LoginActivity", "SignInWithEmailAndPassword:success")
@@ -48,7 +48,7 @@ class LoginActivity : AppCompatActivity() {
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
-            .addOnFailureListener{
+            .addOnFailureListener {
                 Log.d("LoginActivity", "SignInWithEmailAndPassword:failure ${it.message}")
                 Toast.makeText(this, "Failure: ${it.message}", Toast.LENGTH_SHORT).show()
             }

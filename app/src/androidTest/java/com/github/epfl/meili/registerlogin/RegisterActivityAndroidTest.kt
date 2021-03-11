@@ -18,6 +18,7 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 
@@ -33,6 +34,11 @@ class RegisterActivityAndroidTest {
     @get: Rule
     var testRule: ActivityScenarioRule<RegisterActivity> =
         ActivityScenarioRule(RegisterActivity::class.java)
+
+    @After
+    fun singOut() {
+        FirebaseAuth.getInstance().signOut()
+    }
 
     @Test
     fun textFieldsAreWritable() {
@@ -113,9 +119,21 @@ class RegisterActivityAndroidTest {
     fun registerButtonSendsIntent() {
         Intents.init()
         // Type text and then press the button.
-        onView(withId(R.id.username_edittext_register)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
-        onView(withId(R.id.email_edittext_register)).perform(clearText(), typeText(TEST_EMAIL), closeSoftKeyboard())
-        onView(withId(R.id.password_edittext_register)).perform(clearText(), typeText(TEST_PASSWORD), closeSoftKeyboard())
+        onView(withId(R.id.username_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_USERNAME),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.email_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_EMAIL),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.password_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_PASSWORD),
+            closeSoftKeyboard()
+        )
         onView(withId(R.id.register_button)).perform(click())
 
         Thread.sleep(2000)
@@ -129,8 +147,16 @@ class RegisterActivityAndroidTest {
     fun cantRegisterWithoutEmail() {
 
         // Type text and then press the button.
-        onView(withId(R.id.username_edittext_register)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
-        onView(withId(R.id.password_edittext_register)).perform(clearText(), typeText(TEST_PASSWORD), closeSoftKeyboard())
+        onView(withId(R.id.username_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_USERNAME),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.password_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_PASSWORD),
+            closeSoftKeyboard()
+        )
         onView(withId(R.id.register_button)).perform(click())
 
 
@@ -139,9 +165,21 @@ class RegisterActivityAndroidTest {
     @Test
     fun cantRegisterWithBadEmail() {
 
-        onView(withId(R.id.username_edittext_register)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
-        onView(withId(R.id.email_edittext_register)).perform(clearText(), typeText(TEST_BAD_EMAIL), closeSoftKeyboard())
-        onView(withId(R.id.password_edittext_register)).perform(clearText(), typeText(TEST_PASSWORD), closeSoftKeyboard())
+        onView(withId(R.id.username_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_USERNAME),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.email_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_BAD_EMAIL),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.password_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_PASSWORD),
+            closeSoftKeyboard()
+        )
         onView(withId(R.id.register_button)).perform(click())
 
 
@@ -151,8 +189,16 @@ class RegisterActivityAndroidTest {
     fun cantRegisterWithoutPassword() {
 
 
-        onView(withId(R.id.username_edittext_register)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
-        onView(withId(R.id.email_edittext_register)).perform(clearText(), typeText(TEST_EMAIL), closeSoftKeyboard())
+        onView(withId(R.id.username_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_USERNAME),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.email_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_EMAIL),
+            closeSoftKeyboard()
+        )
         onView(withId(R.id.register_button)).perform(click())
 
 
@@ -162,9 +208,21 @@ class RegisterActivityAndroidTest {
     fun cantRegisterWithBadPassword() {
 
 
-        onView(withId(R.id.username_edittext_register)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
-        onView(withId(R.id.email_edittext_register)).perform(clearText(), typeText(TEST_EMAIL), closeSoftKeyboard())
-        onView(withId(R.id.password_edittext_register)).perform(clearText(), typeText(TEST_BAD_PASSWORD), closeSoftKeyboard())
+        onView(withId(R.id.username_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_USERNAME),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.email_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_EMAIL),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.password_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_BAD_PASSWORD),
+            closeSoftKeyboard()
+        )
         onView(withId(R.id.register_button)).perform(click())
 
 
@@ -174,8 +232,16 @@ class RegisterActivityAndroidTest {
     fun cantRegisterWithoutUsername() {
 
 
-        onView(withId(R.id.email_edittext_register)).perform(clearText(), typeText(TEST_EMAIL), closeSoftKeyboard())
-        onView(withId(R.id.password_edittext_register)).perform(clearText(), typeText(TEST_PASSWORD), closeSoftKeyboard())
+        onView(withId(R.id.email_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_EMAIL),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.password_edittext_register)).perform(
+            clearText(),
+            typeText(TEST_PASSWORD),
+            closeSoftKeyboard()
+        )
         onView(withId(R.id.register_button)).perform(click())
 
         FirebaseAuth.getInstance().currentUser?.delete()
@@ -183,7 +249,7 @@ class RegisterActivityAndroidTest {
     }
 
     @Test
-    fun alreadyHaveAnAccount(){
+    fun alreadyHaveAnAccount() {
         Intents.init()
         onView(withId(R.id.already_have_account_text_view)).perform(click())
         Intents.intended(hasComponent(LoginActivity::class.java.name))
@@ -191,7 +257,7 @@ class RegisterActivityAndroidTest {
     }
 
     @Test
-    fun backToRegistration(){
+    fun backToRegistration() {
         Intents.init()
         onView(withId(R.id.already_have_account_text_view)).perform(click())
         onView(withId(R.id.back_to_registration_text_view)).perform(click())
