@@ -1,10 +1,12 @@
-package com.github.epfl.meili
+package com.github.epfl.meili.home
 
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.github.epfl.meili.MainApplication
+import com.github.epfl.meili.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -98,7 +100,7 @@ object AuthenticationService: ViewModel() {
 
         if (user != null){
             name = user.displayName
-            email= user.email
+            email = user.email
         }else{
             name = null
             email = null

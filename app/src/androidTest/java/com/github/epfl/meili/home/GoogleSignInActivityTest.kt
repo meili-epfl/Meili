@@ -1,4 +1,4 @@
-package com.github.epfl.meili
+package com.github.epfl.meili.home
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -9,6 +9,8 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
+import com.github.epfl.meili.MainApplication
+import com.github.epfl.meili.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import org.junit.Before
@@ -39,7 +41,8 @@ class GoogleSignInActivityTest {
     private fun getGSO(): GoogleSignInOptions {
         return GoogleSignInOptions
             .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(MainApplication.applicationContext().getString(R.string.default_web_client_id))
+            .requestIdToken(
+                MainApplication.applicationContext().getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
     }
