@@ -51,7 +51,7 @@ class ChatLogActivityAndroidTest {
         )
         onView(withId(R.id.login_button)).perform(click())
 
-        Thread.sleep(2000)
+        Thread.sleep(5000)
 
         val actionMenuItemView = onView(
             allOf(
