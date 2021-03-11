@@ -59,13 +59,9 @@ class ForumActivity : AppCompatActivity() {
                 for (document in result) {
                     // Show post in UI
                     createForumUI(document)
-
-                    Log.d(TAG, "${document.id} => ${document.data}")
                 }
-            }
-            .addOnFailureListener { exception -> // If failure
-                Log.w(TAG, "Error getting documents.", exception)
-            }
+            } // If fails --> do nothing
+
 
         // Task is finished, UI test can now proceed
         ForumCountingIdlingResource.decrement()
