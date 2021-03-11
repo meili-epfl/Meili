@@ -16,14 +16,14 @@ import org.junit.runner.RunWith
 class MainActivityTest {
     @get:Rule
     var testRule: ActivityScenarioRule<MainActivity?>? = ActivityScenarioRule(
-        MainActivity::class.java
+            MainActivity::class.java
     )
 
     @Test
-    fun clickingOnSignInViewButtonShouldLaunchIntent(){
+    fun clickingOnSignInViewButtonShouldLaunchIntent() {
         Intents.init()
         Espresso.onView(ViewMatchers.withId(R.id.launchSignInView))
-            .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
+                .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
 
         Intents.intended(toPackage("com.github.epfl.meili"))
         Intents.release()

@@ -17,7 +17,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-object AuthenticationService: ViewModel() {
+object AuthenticationService : ViewModel() {
     private var auth: FirebaseAuth
     private var googleSignInClient: GoogleSignInClient
     private const val TAG = "GoogleActivity"
@@ -44,7 +44,7 @@ object AuthenticationService: ViewModel() {
     }
 
     fun getCurrentUser(): FirebaseUser? {
-       return auth.currentUser
+        return auth.currentUser
     }
 
     fun signIn(activity: Activity) {
@@ -53,7 +53,7 @@ object AuthenticationService: ViewModel() {
         activity.startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
-    fun signOut(){
+    fun signOut() {
         auth.signOut()
 
         googleSignInClient.signOut() //Add on complete listener
@@ -78,7 +78,7 @@ object AuthenticationService: ViewModel() {
                 }
     }
 
-    fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?){
+    fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?) {
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -95,13 +95,13 @@ object AuthenticationService: ViewModel() {
         }
     }
 
-    fun updateUserData(){
+    fun updateUserData() {
         val user = getCurrentUser()
 
-        if (user != null){
+        if (user != null) {
             name = user.displayName
             email = user.email
-        }else{
+        } else {
             name = null
             email = null
         }

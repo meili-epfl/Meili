@@ -1,8 +1,6 @@
 package com.github.epfl.meili.home
 
-import android.app.Activity
 import android.app.Instrumentation
-import android.app.Instrumentation.ActivityResult
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -10,7 +8,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,29 +16,26 @@ import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.FirebaseAuth
-import com.nhaarman.mockitokotlin2.isNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnit.rule
 
 
 @RunWith(AndroidJUnit4::class)
 class GoogleSignInActivityTest {
-    companion object{
+    companion object {
         private const val MOCK_NAME = "Fake Name"
     }
 
     @get:Rule
     var testRule: ActivityScenarioRule<GoogleSignInActivity?>? = ActivityScenarioRule(
-        GoogleSignInActivity::class.java
+            GoogleSignInActivity::class.java
     )
 
     @Before
     fun before() {
-        runOnUiThread{
+        runOnUiThread {
             AuthenticationService.signOut()
             AuthenticationService.isLoggedIn.value = false
             AuthenticationService.email = null
@@ -51,12 +45,12 @@ class GoogleSignInActivityTest {
 
     private fun getGSO(): GoogleSignInOptions {
         return GoogleSignInOptions
-            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(
-                MainApplication.applicationContext().getString(R.string.default_web_client_id)
-            )
-            .requestEmail()
-            .build()
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(
+                        MainApplication.applicationContext().getString(R.string.default_web_client_id)
+                )
+                .requestEmail()
+                .build()
     }
 
     @Test
@@ -65,8 +59,8 @@ class GoogleSignInActivityTest {
         onView(withId(R.id.signInButton)).check(matches(isClickable())).perform(click())
 
         val mGoogleSignInClient = GoogleSignIn.getClient(
-            MainApplication.applicationContext(),
-            getGSO()
+                MainApplication.applicationContext(),
+                getGSO()
         )
         Intents.intended(IntentMatchers.filterEquals(mGoogleSignInClient.signInIntent))
         Intents.release()
@@ -103,13 +97,13 @@ class GoogleSignInActivityTest {
     }
 
     @Test
-    fun onActivityResultTest(){
+    fun onActivityResultTest() {
         Intents.init()
         onView(withId(R.id.signInButton)).check(matches(isClickable())).perform(click())
 
         val mGoogleSignInClient = GoogleSignIn.getClient(
-            MainApplication.applicationContext(),
-            getGSO()
+                MainApplication.applicationContext(),
+                getGSO()
         )
         val resultData = Intent()
         resultData.putExtra("name", MOCK_NAME)
@@ -120,7 +114,7 @@ class GoogleSignInActivityTest {
     }
 
     @Test
-    fun firebaseAuthWithGoogleTest(){
+    fun firebaseAuthWithGoogleTest() {
         var fake_id = "1234"
         onView(withId(R.id.signInButton)).check(matches(isClickable())).perform(click())
 
