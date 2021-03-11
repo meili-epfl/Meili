@@ -52,11 +52,12 @@ class ChatLogActivity : AppCompatActivity() {
         val toId = user?.uid
 
         if (fromId == null) return
-        if(toId == null) return
+        if (toId == null) return
 
         val reference = FirebaseDatabase.getInstance().getReference("/messages").push()
 
-        val chatMessage = ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
+        val chatMessage =
+            ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
         reference.setValue(chatMessage)
             .addOnSuccessListener {
                 Log.d(TAG, "Saved our chat message: ${reference.key}")
@@ -68,14 +69,14 @@ class ChatLogActivity : AppCompatActivity() {
         val toId = user?.uid
 
         val ref = FirebaseDatabase.getInstance().getReference("/messages")
-        ref.addChildEventListener(object: ChildEventListener{
+        ref.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val chatMessage = snapshot.getValue(ChatMessage::class.java)
 
-                if(chatMessage != null){
-                    if(chatMessage.fromId == FirebaseAuth.getInstance().uid){
+                if (chatMessage != null) {
+                    if (chatMessage.fromId == FirebaseAuth.getInstance().uid) {
                         adapter.add(ChatFromItem(chatMessage.text))
-                    }else if(chatMessage.toId == toId){
+                    } else if (chatMessage.toId == toId) {
                         adapter.add(ChatToItem(chatMessage.text))
                     }
                 }
@@ -101,7 +102,7 @@ class ChatLogActivity : AppCompatActivity() {
     }
 }
 
-class ChatFromItem(val text: String): Item<GroupieViewHolder>() {
+class ChatFromItem(val text: String) : Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
         return R.layout.chat_from_row
     }
@@ -113,7 +114,7 @@ class ChatFromItem(val text: String): Item<GroupieViewHolder>() {
 
 }
 
-class ChatToItem(val text: String): Item<GroupieViewHolder>() {
+class ChatToItem(val text: String) : Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
         return R.layout.chat_to_row
     }

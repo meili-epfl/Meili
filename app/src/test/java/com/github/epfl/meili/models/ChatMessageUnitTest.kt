@@ -1,4 +1,4 @@
-package com.github.epfl.meili
+package com.github.epfl.meili.models
 
 import com.github.epfl.meili.models.ChatMessage
 import org.hamcrest.CoreMatchers.`is`
@@ -30,7 +30,7 @@ class ChatMessageUnitTest {
     }
 
     @Test
-    fun chatMessageDefaultConstructor(){
+    fun chatMessageDefaultConstructor() {
         var chatMessage = ChatMessage()
         assertThat(chatMessage.id, `is`(""))
         assertThat(chatMessage.text, `is`(""))

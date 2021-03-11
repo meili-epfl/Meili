@@ -3,20 +3,19 @@ package com.github.epfl.meili.messages
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
-import com.github.epfl.meili.NewMessageActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.registerlogin.LoginActivity
-import com.github.epfl.meili.registerlogin.RegisterActivity
 import com.google.firebase.auth.FirebaseAuth
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
@@ -25,10 +24,11 @@ import org.junit.Rule
 import org.junit.Test
 
 @LargeTest
-class LatestMessageActivityAndroidTest {
+class ChatLogActivityAndroidTest {
 
     private val TEST_EMAIL: String = "moderator1@gmail.com"
     private val TEST_PASSWORD: String = "123123"
+    private val TEST_MESSAGE: String = "Hello!"
 
 
     @get: Rule
@@ -37,7 +37,7 @@ class LatestMessageActivityAndroidTest {
 
 
     @Before
-    fun setupLatestMessageActivity() {
+    fun setupChatLogActivity() {
         // Type text and then press the button.
         onView(withId(R.id.email_edittext_login)).perform(
             clearText(),
@@ -51,37 +51,7 @@ class LatestMessageActivityAndroidTest {
         )
         onView(withId(R.id.login_button)).perform(click())
 
-        Thread.sleep(5000)
-    }
-
-
-    @Test
-    fun signOutButtonGoesBackToRegister() {
-
-        Intents.init()
-
-        val actionMenuItemView = onView(
-            allOf(
-                withId(R.id.menu_sign_out), withText("Sign out"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.action_bar),
-                        1
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
-        actionMenuItemView.perform(click())
-        Intents.intended(IntentMatchers.hasComponent(RegisterActivity::class.java.name))
-        Intents.release()
-    }
-
-    @Test
-    fun newMessageButtonShowsNewMessageActivity() {
-
-        Intents.init()
+        Thread.sleep(2000)
 
         val actionMenuItemView = onView(
             allOf(
@@ -97,8 +67,54 @@ class LatestMessageActivityAndroidTest {
             )
         )
         actionMenuItemView.perform(click())
-        Intents.intended(IntentMatchers.hasComponent(NewMessageActivity::class.java.name))
-        Intents.release()
+
+        Thread.sleep(10000)
+
+        val recyclerView = onView(
+            allOf(
+                withId(R.id.recyclerview_newmessage),
+                childAtPosition(
+                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
+                    0
+                )
+            )
+        )
+        recyclerView.perform(actionOnItemAtPosition<ViewHolder>(0, click()))
+
+    }
+
+    @Test
+    fun buttonSendsWrittenMessage() {
+
+        val appCompatEditText3 = onView(
+            allOf(
+                withId(R.id.edit_text_chat_log),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatEditText3.perform(replaceText(TEST_MESSAGE), closeSoftKeyboard())
+
+        val materialButton2 = onView(
+            allOf(
+                withId(R.id.button_chat_log), withText("Send"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    1
+                ),
+                isDisplayed()
+            )
+        )
+        materialButton2.perform(click())
     }
 
     @After

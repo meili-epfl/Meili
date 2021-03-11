@@ -1,7 +1,6 @@
 package com.github.epfl.meili.registerlogin
 
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
@@ -12,13 +11,14 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
-import androidx.test.rule.ActivityTestRule
 import com.github.epfl.meili.LatestMessagesActivity
 import com.github.epfl.meili.R
+import com.google.firebase.auth.FirebaseAuth
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 
@@ -34,6 +34,12 @@ class LoginActivityAndroidTest {
     @get: Rule
     var testRule: ActivityScenarioRule<LoginActivity> =
         ActivityScenarioRule(LoginActivity::class.java)
+
+    @After
+    fun signOut() {
+        FirebaseAuth.getInstance().signOut()
+        Thread.sleep(2000)
+    }
 
     @Test
     fun textFieldsAreWritable() {
