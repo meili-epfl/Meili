@@ -5,10 +5,11 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
+import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -18,6 +19,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+
 @RunWith(AndroidJUnit4::class)
 class GoogleSignInActivityTest {
     companion object{
@@ -25,8 +27,9 @@ class GoogleSignInActivityTest {
     }
 
     @get:Rule
-    var activityRule: IntentsTestRule<GoogleSignInActivity>
-            = IntentsTestRule(GoogleSignInActivity::class.java)
+    var testRule: ActivityScenarioRule<GoogleSignInActivity?>? = ActivityScenarioRule(
+        GoogleSignInActivity::class.java
+    )
 
     @Before
     fun before() {
@@ -42,17 +45,23 @@ class GoogleSignInActivityTest {
         return GoogleSignInOptions
             .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(
-                MainApplication.applicationContext().getString(R.string.default_web_client_id))
+                MainApplication.applicationContext().getString(R.string.default_web_client_id)
+            )
             .requestEmail()
             .build()
     }
 
     @Test
     fun clickOnSignInShouldLaunchIntent() {
+        Intents.init()
         onView(withId(R.id.signInButton)).check(matches(isClickable())).perform(click())
 
-        val mGoogleSignInClient = GoogleSignIn.getClient(MainApplication.applicationContext(), getGSO())
+        val mGoogleSignInClient = GoogleSignIn.getClient(
+            MainApplication.applicationContext(),
+            getGSO()
+        )
         Intents.intended(IntentMatchers.filterEquals(mGoogleSignInClient.signInIntent))
+        Intents.release()
     }
 
     @Test
