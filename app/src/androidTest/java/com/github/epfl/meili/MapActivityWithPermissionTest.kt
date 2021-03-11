@@ -32,18 +32,24 @@ class MapActivityWithPermissionTest {
         PermissionGranter.allowPermissionsIfNeeded("android.permission.ACCESS_FINE_LOCATION")
         Thread.sleep(5000)
         val imageView = onView(
-                allOf(withContentDescription("My Location"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(`is`("android.widget.FrameLayout")),
-                                        2),
-                                0),
-                        isDisplayed()))
+            allOf(
+                withContentDescription("My Location"),
+                childAtPosition(
+                    childAtPosition(
+                        withClassName(`is`("android.widget.FrameLayout")),
+                        2
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
         imageView.perform(click())
     }
 
     private fun childAtPosition(
-            parentMatcher: Matcher<View>, position: Int): Matcher<View> {
+        parentMatcher: Matcher<View>, position: Int
+    ): Matcher<View> {
         return object : TypeSafeMatcher<View>() {
             override fun describeTo(description: Description) {
                 description.appendText("Child at position $position in parent ")
