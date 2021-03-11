@@ -7,6 +7,7 @@
     android:background="#CAF0F8"
     tools:context=".registerlogin.RegisterActivity" >
 
+
     <EditText
         android:id="@+id/username_edittext_register"
         android:layout_width="0dp"

@@ -30,9 +30,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        fun openProfile(view: View) {
-            val intent = Intent(this, ProfileActivity::class.java)
-            startActivity(intent)
-        }
+
     }
 }

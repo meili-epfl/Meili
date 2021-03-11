@@ -55,6 +55,10 @@
 
         </activity>
 
+        <activity android:name=".GoogleSignInActivity">
+
+        </activity>
+
     </application>
 
 </manifest>
