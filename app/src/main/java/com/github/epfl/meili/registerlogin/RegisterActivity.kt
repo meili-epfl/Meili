@@ -1,4 +1,4 @@
-package com.github.epfl.meili
+package com.github.epfl.meili.registerlogin
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,8 +8,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.github.epfl.meili.LatestMessagesActivity
+import com.github.epfl.meili.R
+import com.github.epfl.meili.models.User
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
@@ -25,7 +27,9 @@ class RegisterActivity : AppCompatActivity() {
 
 
         findViewById<Button>(R.id.register_button).setOnClickListener {
-            registerUser()
+            val email = findViewById<EditText>(R.id.email_edittext_register).text.toString()
+            val password = findViewById<EditText>(R.id.password_edittext_register).text.toString()
+            registerUser(email, password)
         }
 
         findViewById<TextView>(R.id.already_have_account_text_view).setOnClickListener {
@@ -37,10 +41,7 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
-    private fun registerUser() {
-
-        val email = findViewById<EditText>(R.id.email_edittext_register).text.toString()
-        val password = findViewById<EditText>(R.id.password_edittext_register).text.toString()
+    private fun registerUser(email: String, password: String) {
 
         if(email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Please enter Email and Password", Toast.LENGTH_SHORT).show()
@@ -68,16 +69,20 @@ class RegisterActivity : AppCompatActivity() {
         val database = Firebase.database
         val myRef = database.getReference("/users/$uid")
         val user = User(uid, findViewById<EditText>(R.id.username_edittext_register).text.toString())
-        myRef.setValue(user)
-            .addOnSuccessListener {
-                Log.d(TAG, "user saved to firebase datatbase!")
-                val intent = Intent(this, LatestMessagesActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-            }
-            .addOnFailureListener{
-                Log.d(TAG, "Failed to save user to database: ${it.message}")
-            }
+        if(user.username.isEmpty()) {
+            Toast.makeText(this, "Please enter a username", Toast.LENGTH_SHORT).show()
+            FirebaseAuth.getInstance().currentUser?.delete()
+
+        }else{
+            myRef.setValue(user)
+                .addOnSuccessListener {
+                    Log.d(TAG, "user saved to firebase datatbase!")
+                    val intent = Intent(this, LatestMessagesActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                }
+        }
+
 
     }
 
