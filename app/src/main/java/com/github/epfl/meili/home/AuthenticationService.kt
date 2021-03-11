@@ -61,7 +61,7 @@ object AuthenticationService: ViewModel() {
         updateUserData()
     }
 
-    private fun firebaseAuthWithGoogle(activity: Activity, idToken: String) {
+    fun firebaseAuthWithGoogle(activity: Activity, idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(activity) { task ->

@@ -1,23 +1,31 @@
 package com.github.epfl.meili.home
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.app.Instrumentation.ActivityResult
+import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
-import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.nhaarman.mockitokotlin2.isNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.junit.MockitoJUnit.rule
 
 
 @RunWith(AndroidJUnit4::class)
@@ -94,4 +102,34 @@ class GoogleSignInActivityTest {
         onView(withId(R.id.signInButton)).check(matches(withText("Sign In")))
     }
 
+    @Test
+    fun onActivityResultTest(){
+        Intents.init()
+        onView(withId(R.id.signInButton)).check(matches(isClickable())).perform(click())
+
+        val mGoogleSignInClient = GoogleSignIn.getClient(
+            MainApplication.applicationContext(),
+            getGSO()
+        )
+        val resultData = Intent()
+        resultData.putExtra("name", MOCK_NAME)
+        val result = Instrumentation.ActivityResult(9001, resultData)
+
+        intending(IntentMatchers.filterEquals(mGoogleSignInClient.signInIntent)).respondWith(result)
+        Intents.release()
+    }
+
+    @Test
+    fun firebaseAuthWithGoogleTest(){
+        var fake_id = "1234"
+        onView(withId(R.id.signInButton)).check(matches(isClickable())).perform(click())
+
+        testRule!!.scenario.onActivity { activity ->
+            AuthenticationService.firebaseAuthWithGoogle(activity!!, fake_id)
+
+            assert(!AuthenticationService.isLoggedIn.value!!)
+            assert(AuthenticationService.name == null)
+            assert(AuthenticationService.email == null)
+        }
+    }
 }
