@@ -17,12 +17,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 
 
-class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickListener {
+class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     companion object {
         private val TAG = MapActivity::class.java.name
         private val DEFAULT_ZOOM = 15
@@ -45,7 +44,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClic
         // Initialize API entry points
         Places.initialize(
             applicationContext,
-            getString(R.string.google_api_key)
+            getString(R.string.google_maps_key)
         ) // change API key here
 
         this.placesClient = Places.createClient(this)
@@ -68,11 +67,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClic
         permissions: Array<String>,
         grantResults: IntArray
     ) {
-        // Check whether permission was granted
-        if (requestCode == REQUEST_CODE && grantResults.isNotEmpty() &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        )
-            updateMapUI()
+//        // Check whether permission was granted
+//        if (requestCode == REQUEST_CODE && grantResults.isNotEmpty() &&
+//            grantResults[0] == PackageManager.PERMISSION_GRANTED
+//        )
+        updateMapUI()
         getDeviceLocation()
     }
 
@@ -90,14 +89,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClic
 
         updateMapUI()
         getDeviceLocation()
-
-        this.map.setOnPoiClickListener(this)
-    }
-
-    override fun onPoiClick(poi: PointOfInterest) {
-        Toast.makeText(
-            this, poi.name, Toast.LENGTH_SHORT
-        ).show()
     }
 
     private fun getLocationPermission() {
@@ -113,7 +104,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClic
         if (isPermissionGranted()) {
             map.isMyLocationEnabled = true
             this.map.uiSettings?.isMyLocationButtonEnabled = true
-            // TODO: center camera on location when app is opened instead of needing user to press on location button
         } else {
             map.isMyLocationEnabled = false
             map.uiSettings?.isMyLocationButtonEnabled = false
@@ -124,9 +114,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClic
 
     @SuppressLint("MissingPermission")
     private fun getDeviceLocation() {
+        var unableToSetCameraToLocation: Boolean = true
         if (isPermissionGranted()) {
-            val locationResult = this.fusedLocationProviderClient.lastLocation
-            locationResult.addOnCompleteListener(this) { task ->
+            this.fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     location = task.result
                     if (location != null) {
@@ -138,17 +128,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClic
                                 ), DEFAULT_ZOOM.toFloat()
                             )
                         )
+                        unableToSetCameraToLocation = false
                     }
-                } else {
-                    map.moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            defaultLocation,
-                            DEFAULT_ZOOM.toFloat()
-                        )
-                    )
-                    map.uiSettings?.isMyLocationButtonEnabled = false
                 }
             }
+        }
+        if (unableToSetCameraToLocation) {
+            map.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    defaultLocation,
+                    DEFAULT_ZOOM.toFloat()
+                )
+            )
         }
     }
 }

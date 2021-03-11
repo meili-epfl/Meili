@@ -16,19 +16,26 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_api_key" />
-
-        <activity
-            android:name=".MapActivity"
-            android:label="@string/title_activity_map">
+            android:value="@string/google_maps_key" />
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".home.GoogleSignInActivity">
+            android:name=".MapActivity"
+            android:label="@string/title_activity_map"
+            android:parentActivityName="com.github.epfl.meili.MainActivity" >
+
+        </activity>
+
+        <activity
+            android:name=".home.GoogleSignInActivity"
+            android:parentActivityName="com.github.epfl.meili.MainActivity" >
+
         </activity>
     </application>
 
