@@ -52,14 +52,8 @@ class CanCreateNewPostTest {
 
         val materialButton = onView(
             allOf(
-                withId(R.id.main_forum_button), withText("Forum"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    0
-                ),
+                withId(R.id.main_forum_button),
+                withText("Forum"),
                 isDisplayed()
             )
         )
