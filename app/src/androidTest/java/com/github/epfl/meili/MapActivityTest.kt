@@ -7,30 +7,57 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiObjectNotFoundException
+import androidx.test.uiautomator.UiSelector
 import com.schibsted.spain.barista.interaction.PermissionGranter
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
+import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.runners.MethodSorters
 
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4::class)
-class MapActivityWithPermissionTest {
+class MapActivityTest {
 
     @get: Rule
     var testRule = ActivityScenarioRule(MapActivity::class.java)
 
-//    @get: Rule
-//    var permissionRule = GrantPermissionRule.grant("android.permission.ACCESS_FINE_LOCATION")
+    private fun assertViewWithTextIsVisible(device: UiDevice, text: String) {
+        val allowButton = device.findObject(UiSelector().textContains(text))
+        if (!allowButton.exists()) {
+            throw AssertionError("View with text <$text> not found!")
+        }
+    }
+
+    @Throws(UiObjectNotFoundException::class)
+    fun reactToPermission(device: UiDevice, text: String) {
+        device.findObject(UiSelector().textContains(text)).click()
+    }
 
     @Test
-    fun mapActivityWithPermissionTest() {
-        PermissionGranter.allowPermissionsIfNeeded("android.permission.ACCESS_FINE_LOCATION")
-        Thread.sleep(5000)
+    fun a_shouldDisplayPermissionRequestDialogAtStartup() {
+        val device = UiDevice.getInstance(getInstrumentation());
+        Thread.sleep(2000)
+        assertViewWithTextIsVisible(device, "ALLOW")
+        assertViewWithTextIsVisible(device, "DENY")
+
+        // cleanup for the next test
+        reactToPermission(device, "DENY")
+    }
+
+    @Test
+    fun b_locationButtonClickableAfterPermissionGrant() {
+        PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
+
         val imageView = onView(
             allOf(
                 withContentDescription("My Location"),
