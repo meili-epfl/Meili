@@ -20,7 +20,9 @@ object AuthenticationService: ViewModel() {
     private var googleSignInClient: GoogleSignInClient
     private const val TAG = "GoogleActivity"
     private const val RC_SIGN_IN = 9001
-    val user = MutableLiveData<FirebaseUser?>(null)
+    var name: String? = null
+    var email: String? = null
+    val isLoggedIn = MutableLiveData<Boolean>(false)
 
 
     init {
@@ -35,7 +37,8 @@ object AuthenticationService: ViewModel() {
         // Initialize Firebase Auth
         auth = Firebase.auth
 
-        user.value = getCurrentUser()
+        updateUserData()
+
     }
 
     fun getCurrentUser(): FirebaseUser? {
@@ -53,7 +56,7 @@ object AuthenticationService: ViewModel() {
 
         googleSignInClient.signOut() //Add on complete listener
 
-        user.value = getCurrentUser()
+        updateUserData()
     }
 
     private fun firebaseAuthWithGoogle(activity: Activity, idToken: String) {
@@ -63,12 +66,12 @@ object AuthenticationService: ViewModel() {
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success")
-                        user.value = getCurrentUser()
+                        updateUserData()
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", task.exception)
                         // ...
-                        user.value = null
+                        updateUserData()
                     }
                 }
     }
@@ -88,5 +91,19 @@ object AuthenticationService: ViewModel() {
                 // ...
             }
         }
+    }
+
+    fun updateUserData(){
+        val user = getCurrentUser()
+
+        if (user != null){
+            name = user.displayName
+            email= user.email
+        }else{
+            name = null
+            email = null
+        }
+
+        isLoggedIn.value = (user != null)
     }
 }
