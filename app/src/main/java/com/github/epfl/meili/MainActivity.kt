@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.github.epfl.meili.home.GoogleSignInActivity
+import com.github.epfl.meili.registerlogin.RegisterActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,6 +15,11 @@ class MainActivity : AppCompatActivity() {
 
     fun onClickLaunchSignInView(view: View){
         val intent = Intent(this, GoogleSignInActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun onClickLaunchChatView(view: View){
+        val intent = Intent(this, RegisterActivity::class.java)
         startActivity(intent)
     }
 }
