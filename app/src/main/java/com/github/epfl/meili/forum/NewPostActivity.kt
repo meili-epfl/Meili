@@ -49,13 +49,6 @@ class NewPostActivity : AppCompatActivity() {
         )
 
         // Add a new document with a generated ID
-        db.collection("posts")
-            .add(post)
-            .addOnSuccessListener {
-                    documentReference -> Log.d(TAG, "New post added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener {
-                    e -> Log.w(TAG, "Error adding post", e)
-            }
+        db.collection("posts").add(post)
     }
 }

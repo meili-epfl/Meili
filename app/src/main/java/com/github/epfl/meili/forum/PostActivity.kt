@@ -43,26 +43,24 @@ class PostActivity : AppCompatActivity() {
                     .addOnSuccessListener { result -> // If success
                         // Show post in UI
                         createPostUI(result)
-
-                        Log.d(TAG, "${result.id} => ${result.data}")
-                    }
-                    .addOnFailureListener { exception -> // If failure
-                        Log.w(TAG, "Error getting document.", exception)
-                    }
+                    } // If fails --> do nothing
         }
     }
 
     // Show post in post UI
     private fun createPostUI(post: DocumentSnapshot) {
-        // Get post information
-        val username = post.data?.get("username").toString()
-        val title = post.data?.get("title").toString()
-        val text = post.data?.get("text").toString()
+        if (post.data != null) {
+            // Get post information
+            val username = post.data!!.get("username").toString() // !! Means non-null is asserted
+            val title = post.data!!.get("title").toString()
+            val text = post.data!!.get("text").toString()
 
-        // Add post information to the predefined templates
-        findViewById<TextView>(R.id.post_author).text = username
-        findViewById<TextView>(R.id.post_title).text = title
-        findViewById<TextView>(R.id.post_text).text = text
+            // Add post information to the predefined templates
+            findViewById<TextView>(R.id.post_author).text = username
+            findViewById<TextView>(R.id.post_title).text = title
+            findViewById<TextView>(R.id.post_text).text = text
+        }
+
     }
 
 }
