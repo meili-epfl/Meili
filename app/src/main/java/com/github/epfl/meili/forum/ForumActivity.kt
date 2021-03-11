@@ -8,10 +8,14 @@ import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.test.espresso.idling.CountingIdlingResource
 import com.github.epfl.meili.R
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+
+// Global Idling resource for UI tests
+val ForumCountingIdlingResource = CountingIdlingResource("forum")
 
 class ForumActivity : AppCompatActivity() {
 
@@ -41,6 +45,9 @@ class ForumActivity : AppCompatActivity() {
 
     /** Gets posts from database and shows them asynchronously*/
     private fun getPostsFromDatabase() {
+        // Make UI test wait until task is finished
+        ForumCountingIdlingResource.increment()
+
         // Access Cloud Firestore
         val db = Firebase.firestore
 
@@ -59,6 +66,9 @@ class ForumActivity : AppCompatActivity() {
             .addOnFailureListener { exception -> // If failure
                 Log.w(TAG, "Error getting documents.", exception)
             }
+
+        // Task is finished, UI test can now proceed
+        ForumCountingIdlingResource.decrement()
     }
 
     /** Creates the post UI and display in the forum */
@@ -76,6 +86,7 @@ class ForumActivity : AppCompatActivity() {
         // Create vertical linear layout (box)
         val box = LinearLayout(this)
         box.orientation = LinearLayout.VERTICAL
+        box.id = View.generateViewId() // Generate id
 
         // Set layout parameters
         val param = LinearLayout.LayoutParams(
@@ -106,6 +117,7 @@ class ForumActivity : AppCompatActivity() {
         // Create TextView
         val textView = TextView(this)
         textView.text = author
+        textView.id = View.generateViewId() // Generate id
 
         // Set layout parameters
         val param = LinearLayout.LayoutParams(
@@ -126,6 +138,7 @@ class ForumActivity : AppCompatActivity() {
         // Create TextView
         val textView = TextView(this)
         textView.text = title
+        textView.id = View.generateViewId() // Generate id
 
         // Set layout parameters
         val param = LinearLayout.LayoutParams(
