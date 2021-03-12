@@ -1,17 +1,17 @@
 # Summary for sprint 1
 
-## Aman (Scrum master)
-
-I worked on the testing of the map feature. I also reconfigured the repository as we switched from a personal repository to an organizational repository.
-
-My time estimate was underestimated, mainly due to the overhead of learning about the various testing frameworks.
-
-Next time, I will try to plan my tasks with more granularity to have a better estimate and to better organize myself.
-
-
 ## Ahmed
 
 TODO (Ahmed)
+
+
+## Aman (Scrum master)
+
+I collaborated on the map feature and its testing. I also reconfigured the repository as we switched from a personal an organizational one.
+
+My time estimate was heavily underestimated as I didn't factor in the overhead of learning about the various testing frameworks and handling keys with Cirrus CI.
+
+Next time, I will try to plan my tasks with more granularity to have a better estimate and to better organize myself.
 
 
 ## Ewan
