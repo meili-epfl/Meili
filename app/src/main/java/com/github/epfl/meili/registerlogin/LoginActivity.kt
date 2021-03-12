@@ -34,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.password_edittext_login).text.toString()
 
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter Email and Password", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, RegisterActivity.TOAST_MESSAGE, Toast.LENGTH_SHORT).show()
             return
         }
 

@@ -75,9 +75,9 @@ class ChatLogActivity : AppCompatActivity() {
 
                 if (chatMessage != null) {
                     if (chatMessage.fromId == FirebaseAuth.getInstance().uid) {
-                        adapter.add(ChatFromItem(chatMessage.text))
+                        adapter.add(ChatItem(chatMessage.text, true))
                     } else if (chatMessage.toId == toId) {
-                        adapter.add(ChatToItem(chatMessage.text))
+                        adapter.add(ChatItem(chatMessage.text, false))
                     }
                 }
             }
@@ -102,23 +102,15 @@ class ChatLogActivity : AppCompatActivity() {
     }
 }
 
-class ChatFromItem(val text: String) : Item<GroupieViewHolder>() {
+class ChatItem(val text: String, val from: Boolean) : Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
-        return R.layout.chat_from_row
+        if (from) {
+            return R.layout.chat_from_row
+        } else {
+            return R.layout.chat_to_row
+        }
+
     }
-
-
-    override fun bind(viewHolder: GroupieViewHolder, position: Int) {
-        viewHolder.itemView.findViewById<TextView>(R.id.chat_textview).text = text
-    }
-
-}
-
-class ChatToItem(val text: String) : Item<GroupieViewHolder>() {
-    override fun getLayout(): Int {
-        return R.layout.chat_to_row
-    }
-
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.findViewById<TextView>(R.id.chat_textview).text = text

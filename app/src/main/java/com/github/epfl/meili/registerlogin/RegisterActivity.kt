@@ -19,6 +19,8 @@ class RegisterActivity : AppCompatActivity() {
 
     companion object {
         val TAG = "RegisterActivity"
+
+        val TOAST_MESSAGE = "Please enter Email and Password"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +46,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun registerUser(email: String, password: String) {
 
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Please enter Email and Password", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, TOAST_MESSAGE, Toast.LENGTH_SHORT).show()
             return
         }
 
