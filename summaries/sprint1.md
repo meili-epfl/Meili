@@ -2,7 +2,16 @@
 
 ## Ahmed
 
-TODO (Ahmed)
+I implemented the chat view activity where you can send and receive messages in a very protoypical way.
+
+My feature is still not complete I have to make sure the chatting logic is correct and I need to refactor
+the code to comply with the mvcc model.
+
+My time estimation was way off since I had a lot of problems with api_keys and secrets along with version control problems
+and writing tests
+
+Next time, I'll be more prepared for the surprises of github and I'll make sure to have more realistic time estimates.
+
 
 
 ## Aman (Scrum master)
