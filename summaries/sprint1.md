@@ -64,4 +64,4 @@ Next time I will try to make a better use of my time.
 
 ## Overall team
 
-TODO (Aman)
+For future sprints, we should pick more focused/smaller tasks so that we have enough time to make tests and merge (which we found is quite time consuming itself) in time for the weekly demo.
