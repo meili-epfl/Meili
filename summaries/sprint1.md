@@ -21,6 +21,8 @@ I worked on the forum and post creation feature.
 My time estimate was of 8h, and I spent 15h from start to finish. 
 Breakdown : 3h choosing a database (Cloud Firestore) and learning how it works, 5h Making the UI dynamically, 3h on making the post clickable & read/write to database, 4h on testing asynchronous operations and debugging.
 
+The tests and the conflict resolutions passed on my machine on thursday night, but when I made the Pull Request, it failed.
+
 I will need to greatly reevaluate my time estimates, as it blew them away.
 
 
