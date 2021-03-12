@@ -33,9 +33,8 @@ class LoginActivity : AppCompatActivity() {
         val email = findViewById<EditText>(R.id.email_edittext_login).text.toString()
         val password = findViewById<EditText>(R.id.password_edittext_login).text.toString()
 
-        if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, RegisterActivity.TOAST_MESSAGE, Toast.LENGTH_SHORT).show()
-            return
+        if (!RegisterActivity.isSanitizedInput(this, email, password)) {
+            return;
         }
 
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)

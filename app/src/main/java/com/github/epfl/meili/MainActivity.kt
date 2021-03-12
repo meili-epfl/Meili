@@ -13,13 +13,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    fun onClickLaunchSignInView(view: View){
-        val intent = Intent(this, GoogleSignInActivity::class.java)
-        startActivity(intent)
-    }
 
-    fun onClickLaunchChatView(view: View){
-        val intent = Intent(this, RegisterActivity::class.java)
+    fun onClick(view: View) {
+        val intent: Intent = when (view.id) {
+            R.id.launchSignInView -> {
+                Intent(this, GoogleSignInActivity::class.java)
+            }
+            R.id.launchChatView -> {
+                Intent(this, RegisterActivity::class.java)
+            }
+            else -> {
+                Intent(this, MainActivity::class.java)
+            }
+        }
         startActivity(intent)
     }
 }

@@ -21,6 +21,19 @@ class RegisterActivity : AppCompatActivity() {
         val TAG = "RegisterActivity"
 
         val TOAST_MESSAGE = "Please enter Email and Password"
+
+        fun isSanitizedInput(
+            activity: AppCompatActivity,
+            email: String,
+            password: String
+        ): Boolean {
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(activity, TOAST_MESSAGE, Toast.LENGTH_SHORT).show()
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,12 +56,13 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
+
     private fun registerUser(email: String, password: String) {
 
-        if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, TOAST_MESSAGE, Toast.LENGTH_SHORT).show()
-            return
+        if (!isSanitizedInput(this, email, password)) {
+            return;
         }
+
 
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener {
