@@ -35,7 +35,11 @@ On the upside, I have learned a lot this week, mostly in testing and how to impl
 
 ## Thomas
 
-TODO (Thomas)
+I implemented the map activity for the app, which also shows nearby points of interest.
+
+Implementing the map went faster than I thought as the google maps api already does a lot of the work.
+
+Overall, I underestimated the time it would take as testing the map took a lot more time due to having to learn UI testing. Test coverage is only up to about 50% for now so wasn't able to merge to main branch.
 
 
 ## Yingxuan
