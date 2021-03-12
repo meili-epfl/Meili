@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.github.epfl.meili">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -17,6 +20,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ChatLogActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LatestMessagesActivity" />
+        </activity>
+        <activity android:name=".NewMessageActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LatestMessagesActivity" />
+        </activity>
+        <activity android:name=".LatestMessagesActivity" />
+        <activity android:name=".registerlogin.LoginActivity" />
+        <activity android:name=".registerlogin.RegisterActivity" />
         <activity android:name=".home.GoogleSignInActivity">
 
         </activity>

@@ -28,4 +28,15 @@ class MainActivityTest {
         Intents.intended(toPackage("com.github.epfl.meili"))
         Intents.release()
     }
+
+    @Test
+    fun clickingOnChatViewButtonShouldLaunchIntent() {
+        Intents.init()
+        Espresso.onView(ViewMatchers.withId(R.id.launchChatView))
+            .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
+
+        Intents.intended(toPackage("com.github.epfl.meili"))
+        Intents.release()
+    }
+
 }
