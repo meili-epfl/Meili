@@ -7,6 +7,11 @@ plugins {
     id 'jacoco'
 }
 
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -53,9 +58,22 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-database-ktx'
+
     implementation "com.xwray:groupie:2.9.0"
 
     implementation 'com.google.firebase:firebase-auth:20.0.3'
+
+    implementation 'com.google.firebase:firebase-core:15.0.2'
+    implementation 'com.google.firebase:firebase-firestore:16.0.0'
+    implementation 'com.google.firebase:firebase-auth:15.1.0'
+    implementation 'com.firebaseui:firebase-ui-auth:3.3.1'
+    implementation 'com.google.firebase:firebase-storage:15.0.2'
+    implementation 'com.firebaseui:firebase-ui-storage:3.3.1'
+    implementation 'com.google.android.gms:play-services-auth:15.0.1'
+    implementation 'com.google.firebase:firebase-messaging:15.0.2'
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
@@ -130,5 +148,3 @@ connectedCheck {
     finalizedBy jacocoTestReport
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'

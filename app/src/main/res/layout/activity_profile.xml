@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    tools:context="com.github.epfl.meili.ProfileActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,7 +28,7 @@
                 android:layout_height="match_parent"
                 android:text="User Name" />
 
-            <TextView
+            <EditText
                 android:id="@+id/tvName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -45,7 +47,7 @@
             android:layout_height="wrap_content"
             android:text="Phone number" />
 
-        <TextView
+        <EditText
             android:id="@+id/tvPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -120,9 +122,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:onClick="modProfile"
             android:text="@string/modify_my_profile" />
 
 
     </LinearLayout>
-</ScrollView>
+</ConstraintLayout>

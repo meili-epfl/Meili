@@ -31,5 +31,14 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        fun openProfile(view: View) {
+            val intent = Intent(this, ContainerActivity::class.java)
+            startActivity(intent)
+        }
+
+        fun onClickLaunchSignInView(view: View) {
+            val intent = Intent(this, GoogleSignInActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

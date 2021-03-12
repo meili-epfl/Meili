@@ -3,70 +3,80 @@ package com.github.epfl.meili
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+
+import android.app.Activity
+import android.graphics.Bitmap
+import android.provider.MediaStore
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+//import com.github.epfl.meili.GlideApp
+import com.bumptech.glide.Glide.with
+import com.firebase.ui.auth.AuthUI
+import kotlinx.android.synthetic.main.activity_profile.*;
+
 import com.google.firebase.auth.FirebaseAuth
+import com.github.epfl.meili.tool.FirestoreUtil
+import com.github.epfl.meili.tool.StorageUtil
+import java.io.ByteArrayOutputStream
 
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
+    private val RC_SELECT_IMAGE = 2
+    private lateinit var selectedImageBytes: ByteArray
+    private var pictureJustChanged = false
 
-        //verifyUserIsLoggedIn()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.activity_profile, container, false)
 
+        view.apply {
 
-        val tvName = findViewById<TextView>(R.id.tvName)
-        val tvPhone = findViewById<TextView>(R.id.tvPhone)
-        val tvEmail = findViewById<TextView>(R.id.tvMail)
+            profilePhoto.setOnClickListener {
+                val intent = Intent().apply {
+                    type = "image/*"
+                    action = Intent.ACTION_GET_CONTENT
+                    putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
+                }
+                startActivityForResult(Intent.createChooser(intent, "Select Image"), RC_SELECT_IMAGE)
+            }
 
-
-        FirebaseAuth.getInstance().currentUser?.let { firebaseUser ->
-            // if the user is logged in, display their info on the screen
-            tvEmail.setText(firebaseUser.email)
-            tvName.setText(firebaseUser.displayName)
-            tvPhone.setText(firebaseUser.phoneNumber)
-            //Picasso.get().load(firebaseUser.photoUrl).into(ivUserImage)
+            btnModifyProfile.setOnClickListener {
+                if (::selectedImageBytes.isInitialized)
+                    StorageUtil.uploadProfilePhoto(selectedImageBytes) { imagePath ->
+                        FirestoreUtil.updateCurrentUser(tvName.text.toString(),
+                            tvDescription.text.toString(), imagePath)
+                    }
+                else
+                    FirestoreUtil.updateCurrentUser(tvName.text.toString(),
+                        tvDescription.text.toString(), null)
+            }
         }
 
-        val extras = intent.extras
-        if(extras!=null) {
-            val username_string = extras!!.getString("EXTRA_USERNAME")
-            val phone_string = extras!!.getString("EXTRA_PHONE")
-            val des_string = extras!!.getString("EXTRAS_DES")
-
-            if(username_string!=null) {
-                tvName.apply {
-                    text = username_string
-                }
-            }
-
-            if(phone_string!=null) {
-                tvPhone.apply {
-                    text = phone_string
-                }
-            }
-
-            if(des_string!=null) {
-                val tvDescription = findViewById<TextView>(R.id.tvDescription)
-                tvDescription.setText(des_string)
-            }
-        }
+        return view
     }
 
-    private fun verifyUserIsLoggedIn() {
-        val uid = FirebaseAuth.getInstance().uid
-        if(uid == null){
-            val intent = Intent(this, GoogleSignInActivity::class.java)
-            //intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-        }
-    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_SELECT_IMAGE && resultCode == Activity.RESULT_OK &&
+            data != null && data.data != null) {
+            val selectedImagePath = data.data
+            val selectedImageBmp = MediaStore.Images.Media
+                .getBitmap(activity?.contentResolver, selectedImagePath)
 
-    fun modProfile(view: View) {
-        val intent = Intent(this, ModifyProfileActivity::class.java)
-        startActivity(intent)
+            val outputStream = ByteArrayOutputStream()
+            selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+            selectedImageBytes = outputStream.toByteArray()
+
+            Glide.with(this)
+                .load(selectedImageBytes)
+                .into(profilePhoto)
+
+            pictureJustChanged = true
+        }
     }
 
 }
