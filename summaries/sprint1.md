@@ -46,7 +46,11 @@ Overall, I underestimated the time it would take as testing the map took a lot m
 
 ## Yingxuan
 
-TODO (Yingxuan)
+I worked on the user profile, I did not manage to have a functional profile which is able to store the data of user on firebase, the program exit too early, so I shouldd still write tests and find out the reason. The positive side is we can still see the UI design of the profile and modify locally the data. 
+
+The time needed was underestimated, I spent over 12h, extra time mostly spending on learning data binding, how firebase works, comparing different ways to implement the profile, I also spent a lot of time to debug, I had extra errors with the old version of Android Studio.
+
+Next time I will try to make a better use of my time.
 
 
 ## Overall team
