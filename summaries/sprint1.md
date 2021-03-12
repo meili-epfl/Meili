@@ -26,7 +26,11 @@ I will need to greatly reevaluate my time estimates, as it blew them away.
 
 ## Marcel
 
-TODO (Marcel)
+I worked on the google sign in button. I also collaborated in the switching from a personal repository to organizational.
+
+My estimate was underestimated, my estimate was of 8 hours and I went well over 13 hours. This extra time was due to some problems with the API keys, learning how to properly implement the MVVC pattern on android and learning UI testing.
+
+On the upside, I have learned a lot this week, mostly in testing and how to implement MVVC. I think this will be of great use for the upcoming weeks and will allow me to provide better code faster.
 
 
 ## Thomas
