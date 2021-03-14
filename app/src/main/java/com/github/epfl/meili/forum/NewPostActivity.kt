@@ -1,11 +1,10 @@
 package com.github.epfl.meili.forum
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
