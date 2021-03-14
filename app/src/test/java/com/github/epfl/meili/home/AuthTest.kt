@@ -5,6 +5,7 @@ import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import java.util.Objects.isNull
+import com.github.epfl.meili.home.MockAuthenticationService
 
 
 class AuthTest {
