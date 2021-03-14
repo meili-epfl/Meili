@@ -48,6 +48,14 @@
             android:label="@string/title_activity_map"
             android:parentActivityName="com.github.epfl.meili.MainActivity" >
         </activity>
+
+        <activity android:name=".forum.NewPostActivity"
+            android:parentActivityName=".forum.ForumActivity"/>
+        <activity android:name=".forum.ForumActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".forum.PostActivity"
+            android:parentActivityName=".forum.ForumActivity"/>
+
     </application>
 
 </manifest>
