@@ -1,12 +1,10 @@
 package com.github.epfl.meili.forum
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -38,12 +36,12 @@ class PostActivity : AppCompatActivity() {
 
             // Get the relevant post
             db.collection("posts")
-                    .document(post_id)  // Get post from id
-                    .get()
-                    .addOnSuccessListener { result -> // If success
-                        // Show post in UI
-                        createPostUI(result)
-                    } // If fails --> do nothing
+                .document(post_id)  // Get post from id
+                .get()
+                .addOnSuccessListener { result -> // If success
+                    // Show post in UI
+                    createPostUI(result)
+                } // If fails --> do nothing
         }
     }
 
