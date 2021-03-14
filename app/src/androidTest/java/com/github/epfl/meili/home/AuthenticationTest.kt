@@ -45,7 +45,7 @@ class AuthenticationTest {
     @Test
     fun updateUserDataTestWhenUserNotPresent() {
         mockService.MOCK_NAME = "null"
-        
+
         UiThreadStatement.runOnUiThread {
             Auth.updateUserData()
         }
