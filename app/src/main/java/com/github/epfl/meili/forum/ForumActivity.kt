@@ -85,7 +85,6 @@ class ForumActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.forum_layout).addView(box)
 
         return box
-
     }
 
     /** Adds the author to the post UI */
@@ -102,7 +101,6 @@ class ForumActivity : AppCompatActivity() {
         )
         param.setMargins(20, 20, 0, 10) // layout_margin
         textView.layoutParams = param
-
         textView.textSize = 14.0f
 
         linearLayout.addView(textView)
@@ -122,7 +120,6 @@ class ForumActivity : AppCompatActivity() {
         )
         param.setMargins(20, 0, 20, 20) // layout_margin
         textView.layoutParams = param
-
         textView.textSize = 18.0f
 
         linearLayout.addView(textView)

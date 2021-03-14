@@ -3,7 +3,10 @@ package com.github.epfl.meili
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+<<<<<<< HEAD
 import androidx.appcompat.app.AppCompatActivity
+=======
+>>>>>>> d62dd9e (Make new branch with changes made in feature/posts.)
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
@@ -24,9 +27,12 @@ class MainActivity : AppCompatActivity() {
             R.id.launchChatView -> {
                 Intent(this, RegisterActivity::class.java)
             }
+<<<<<<< HEAD
             R.id.launchMapView -> {
                 Intent(this, MapActivity::class.java)
             }
+=======
+>>>>>>> d62dd9e (Make new branch with changes made in feature/posts.)
             R.id.launchForumView -> {
                 Intent(this, ForumActivity::class.java)
             }

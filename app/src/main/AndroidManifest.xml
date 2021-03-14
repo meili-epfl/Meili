@@ -41,6 +41,7 @@
 
         </activity>
 
+<<<<<<< HEAD
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -49,13 +50,18 @@
             android:name=".map.MapActivity"
             android:parentActivityName="com.github.epfl.meili.MainActivity" />
         </activity>
+=======
+>>>>>>> d62dd9e (Make new branch with changes made in feature/posts.)
         <activity android:name=".forum.NewPostActivity"
             android:parentActivityName=".forum.ForumActivity"/>
         <activity android:name=".forum.ForumActivity"
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".forum.PostActivity"
             android:parentActivityName=".forum.ForumActivity"/>
+<<<<<<< HEAD
 
+=======
+>>>>>>> d62dd9e (Make new branch with changes made in feature/posts.)
     </application>
 
 </manifest>
