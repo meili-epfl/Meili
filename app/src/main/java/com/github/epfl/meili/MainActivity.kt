@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.registerlogin.RegisterActivity
 
@@ -21,6 +22,9 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.launchChatView -> {
                 Intent(this, RegisterActivity::class.java)
+            }
+            R.id.launchForumView -> {
+                Intent(this, ForumActivity::class.java)
             }
             else -> {
                 Intent(this, MainActivity::class.java)

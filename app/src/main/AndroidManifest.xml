@@ -36,6 +36,13 @@
         <activity android:name=".home.GoogleSignInActivity">
 
         </activity>
+
+        <activity android:name=".forum.NewPostActivity"
+            android:parentActivityName=".forum.ForumActivity"/>
+        <activity android:name=".forum.ForumActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".forum.PostActivity"
+            android:parentActivityName=".forum.ForumActivity"/>
     </application>
 
 </manifest>
