@@ -1,4 +1,4 @@
-package com.github.epfl.meili
+package com.github.epfl.meili.map
 
 import android.view.View
 import android.view.ViewGroup
@@ -42,39 +42,42 @@ class MapActivityTest {
         device.findObject(UiSelector().textContains(text)).click()
     }
 
-//    @Test
-//    fun a_shouldDisplayPermissionRequestDialogAtStartup() {
-//        val device = UiDevice.getInstance(getInstrumentation());
-//        Thread.sleep(2000)
-//        assertViewWithTextIsVisible(device, "ALLOW")
-//        assertViewWithTextIsVisible(device, "DENY")
-//
-//        // cleanup for the next test
-//        reactToPermission(device, "DENY")
-//    }
+/* This test doesn't work with gradlew since permissions are given by default and
+    the permission request dialog box doesn't appear.
+    However, the test does work on a real device (so I suppose on an emulator too, but haven't tested)
+   @Test
+   fun a_shouldDisplayPermissionRequestDialogAtStartup() {
+       val device = UiDevice.getInstance(getInstrumentation());
+       Thread.sleep(2000)
+       assertViewWithTextIsVisible(device, "ALLOW")
+       assertViewWithTextIsVisible(device, "DENY")
+
+       // cleanup for the next test
+       reactToPermission(device, "DENY")
+   }
+*/
 
     @Test
     fun b_locationButtonClickableAfterPermissionGrant() {
         PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
-//        Thread.sleep(2000)
         val imageView = onView(
-            allOf(
-                withContentDescription("My Location"),
-                childAtPosition(
-                    childAtPosition(
-                        withClassName(`is`("android.widget.FrameLayout")),
-                        2
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
+                allOf(
+                        withContentDescription("My Location"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(`is`("android.widget.FrameLayout")),
+                                        2
+                                ),
+                                0
+                        ),
+                        isDisplayed()
+                )
         )
         imageView.perform(click())
     }
 
     private fun childAtPosition(
-        parentMatcher: Matcher<View>, position: Int
+            parentMatcher: Matcher<View>, position: Int
     ): Matcher<View> {
         return object : TypeSafeMatcher<View>() {
             override fun describeTo(description: Description) {

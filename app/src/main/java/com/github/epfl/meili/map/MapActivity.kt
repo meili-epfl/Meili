@@ -1,17 +1,18 @@
-package com.github.epfl.meili
+package com.github.epfl.meili.map
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.github.epfl.meili.BuildConfig
+import com.github.epfl.meili.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -24,8 +25,8 @@ import com.google.android.libraries.places.api.net.PlacesClient
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     companion object {
         private val TAG = MapActivity::class.java.name
-        private val DEFAULT_ZOOM = 15
-        private val REQUEST_CODE: Int = 1
+        private const val DEFAULT_ZOOM = 15
+        private const val REQUEST_CODE: Int = 1
     }
 
     // API entry points
@@ -34,7 +35,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
 
-    private val defaultLocation = LatLng(48.864716, 2.349014) // Paris
     private var location: Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,12 +43,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Initialize API entry points
         Places.initialize(
-            applicationContext,
-            getString(R.string.google_maps_key)
+                applicationContext,
+                getString(R.string.google_maps_key)
         ) // change API key here
 
-        this.placesClient = Places.createClient(this)
-        this.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        placesClient = Places.createClient(this)
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         // Initialize map
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
@@ -57,45 +57,39 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun isPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
-            this.applicationContext,
-            Manifest.permission.ACCESS_FINE_LOCATION
+                this.applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<String>,
+            grantResults: IntArray
     ) {
-//        // Check whether permission was granted
-//        if (requestCode == REQUEST_CODE && grantResults.isNotEmpty() &&
-//            grantResults[0] == PackageManager.PERMISSION_GRANTED
-//        )
         updateMapUI()
-        getDeviceLocation()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        this.map = googleMap
-
-        val mapStyle = googleMap.setMapStyle(
-            MapStyleOptions.loadRawResourceStyle(
-                this, R.raw.map_style
-            )
-        )
-        if (!isPermissionGranted()) {
-            getLocationPermission()
-        }
+        map = googleMap
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
 
         updateMapUI()
-        getDeviceLocation()
+
+        if (isPermissionGranted()) {
+            getDeviceLocationAndSetCameraPosition()
+        } else {
+            getLocationPermission()
+        }
     }
 
     private fun getLocationPermission() {
-        assert(!isPermissionGranted())
+        if (BuildConfig.DEBUG && isPermissionGranted()) {
+            error("Assertion failed")
+        }
         ActivityCompat.requestPermissions(
-            this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            REQUEST_CODE
+                this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_CODE
         )
     }
 
@@ -108,38 +102,22 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             map.isMyLocationEnabled = false
             map.uiSettings?.isMyLocationButtonEnabled = false
             location = null
-            Toast.makeText(this, "Cannot show location without permission", Toast.LENGTH_LONG)
         }
     }
 
     @SuppressLint("MissingPermission")
-    private fun getDeviceLocation() {
-        var unableToSetCameraToLocation: Boolean = true
-        if (isPermissionGranted()) {
-            this.fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    location = task.result
-                    if (location != null) {
-                        map.moveCamera(
-                            CameraUpdateFactory.newLatLngZoom(
-                                LatLng(
-                                    location!!.latitude,
-                                    location!!.longitude
-                                ), DEFAULT_ZOOM.toFloat()
-                            )
-                        )
-                        unableToSetCameraToLocation = false
-                    }
-                }
-            }
+    private fun getDeviceLocationAndSetCameraPosition() {
+        if (BuildConfig.DEBUG && !isPermissionGranted()) {
+            error("Assertion failed")
         }
-        if (unableToSetCameraToLocation) {
-            map.moveCamera(
-                CameraUpdateFactory.newLatLngZoom(
-                    defaultLocation,
-                    DEFAULT_ZOOM.toFloat()
+        this.fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
+            if (task.isSuccessful && task.result != null) {
+                location = task.result
+                map.moveCamera(
+                        newLatLngZoom(LatLng(location!!.latitude, location!!.longitude),
+                                DEFAULT_ZOOM.toFloat())
                 )
-            )
+            }
         }
     }
 }

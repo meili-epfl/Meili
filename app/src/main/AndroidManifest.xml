@@ -44,7 +44,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapActivity"
+            android:name=".map.MapActivity"
             android:label="@string/title_activity_map"
             android:parentActivityName="com.github.epfl.meili.MainActivity" >
         </activity>
