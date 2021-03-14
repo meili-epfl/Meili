@@ -2,12 +2,16 @@ package com.github.epfl.meili.home
 
 import android.app.Instrumentation
 import android.content.Intent
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -16,14 +20,18 @@ import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.nhaarman.mockitokotlin2.mock
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
 
 
 @RunWith(AndroidJUnit4::class)
 class GoogleSignInActivityTest {
+    private lateinit var mockService: MockAuthenticationService
+
     companion object {
         private const val MOCK_NAME = "Fake Name"
     }
@@ -36,42 +44,54 @@ class GoogleSignInActivityTest {
     @Before
     fun before() {
         runOnUiThread {
-            AuthenticationService.signOut()
-            AuthenticationService.isLoggedIn.value = false
-            AuthenticationService.email = null
-            AuthenticationService.name = null
+            //Injecting authentication Service
+            mockService = MockAuthenticationService()
+            Auth.setAuthenticationService(mockService)
+
+            Auth.signOut()
+            Auth.isLoggedIn.value = false
+            Auth.email = null
+            Auth.name = null
         }
     }
 
-    private fun getGSO(): GoogleSignInOptions {
-        return GoogleSignInOptions
-                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(
-                        MainApplication.applicationContext().getString(R.string.default_web_client_id)
-                )
-                .requestEmail()
-                .build()
-    }
 
     @Test
-    fun clickOnSignInShouldLaunchIntent() {
+    fun clickOnButtonShouldSignInIfUserNull() {
         Intents.init()
-        onView(withId(R.id.signInButton)).check(matches(isClickable())).perform(click())
 
-        val mGoogleSignInClient = GoogleSignIn.getClient(
-                MainApplication.applicationContext(),
-                getGSO()
-        )
+        onView(withId(R.id.signInButton))
+                .check(matches(isClickable())).perform(click())
 
-        Intents.intended(IntentMatchers.filterEquals(mGoogleSignInClient.signInIntent))
+        //setting name to null makes currentUser return null and button will sign in
+        mockService.MOCK_NAME = "null"
+
+        val mockIntent = mockService.signInIntent()
+
+        IntentMatchers.filterEquals(mockIntent)
+
         Intents.release()
     }
+
+    /*@Test
+    fun clickOnButtonShouldSignOutIfUserPresent() {
+        Intents.init()
+
+        onView(withId(R.id.signInButton))
+                .check(matches(isClickable())).perform(click())
+
+        val mockIntent = mockService.signInIntent()
+
+        Intents.intended(IntentMatchers.filterEquals(mockIntent))
+
+        Intents.release()
+    }*/
 
     @Test
     fun whenIsLoggedInValuesAreUpdatedInterfaceShouldBeUpdated() {
         runOnUiThread {
-            AuthenticationService.name = MOCK_NAME
-            AuthenticationService.isLoggedIn.value = true
+            Auth.name = MOCK_NAME
+            Auth.isLoggedIn.value = true
         }
 
         onView(withId(R.id.textFieldSignIn)).check(matches(withText(MOCK_NAME)))
@@ -81,16 +101,16 @@ class GoogleSignInActivityTest {
     @Test
     fun whenIsLoggedOutValuesAreUpdatedInterfaceShouldBeUpdated() {
         runOnUiThread {
-            AuthenticationService.name = MOCK_NAME
-            AuthenticationService.isLoggedIn.value = true
+            Auth.name = MOCK_NAME
+            Auth.isLoggedIn.value = true
         }
 
         onView(withId(R.id.textFieldSignIn)).check(matches(withText(MOCK_NAME)))
         onView(withId(R.id.signInButton)).check(matches(withText("Sign Out")))
 
         runOnUiThread {
-            AuthenticationService.name = null
-            AuthenticationService.isLoggedIn.value = false
+            Auth.name = null
+            Auth.isLoggedIn.value = false
         }
 
         onView(withId(R.id.textFieldSignIn)).check(matches(withText("Sign in")))
@@ -102,29 +122,13 @@ class GoogleSignInActivityTest {
         Intents.init()
         onView(withId(R.id.signInButton)).check(matches(isClickable())).perform(click())
 
-        val mGoogleSignInClient = GoogleSignIn.getClient(
-                MainApplication.applicationContext(),
-                getGSO()
-        )
         val resultData = Intent()
         resultData.putExtra("name", MOCK_NAME)
         val result = Instrumentation.ActivityResult(9001, resultData)
 
-        intending(IntentMatchers.filterEquals(mGoogleSignInClient.signInIntent)).respondWith(result)
+        val mockIntent = mockService.signInIntent()
+
+        intending(IntentMatchers.filterEquals(mockIntent)).respondWith(result)
         Intents.release()
-    }
-
-    @Test
-    fun firebaseAuthWithGoogleTest() {
-        var fake_id = "1234"
-        onView(withId(R.id.signInButton)).check(matches(isClickable())).perform(click())
-
-        testRule!!.scenario.onActivity { activity ->
-            AuthenticationService.firebaseAuthWithGoogle(activity!!, fake_id)
-
-            assert(!AuthenticationService.isLoggedIn.value!!)
-            assert(AuthenticationService.name == null)
-            assert(AuthenticationService.email == null)
-        }
     }
 }
