@@ -29,7 +29,7 @@ object PostService {
         }
     }
 
-    /** Get multiple posts from Database */ // TODO: able to fetch a limited amount, in order, etc...
+    /** Get multiple posts from Database */
     suspend fun getPosts(): List<Post> {
         val db = Firebase.firestore
         return try {

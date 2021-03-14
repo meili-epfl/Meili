@@ -57,6 +57,7 @@ dependencies {
     implementation "com.xwray:groupie:2.9.0"
     implementation 'com.android.support.test.espresso:espresso-idling-resource:3.0.2'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.1'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 
     implementation 'com.google.firebase:firebase-auth:20.0.3'
     testImplementation 'junit:junit:4.13.2'
