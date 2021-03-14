@@ -1,9 +1,9 @@
 package com.github.epfl.meili
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.registerlogin.RegisterActivity
 
@@ -13,7 +13,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-
     fun onClick(view: View) {
         val intent: Intent = when (view.id) {
             R.id.launchSignInView -> {
@@ -21,6 +20,9 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.launchChatView -> {
                 Intent(this, RegisterActivity::class.java)
+            }
+            R.id.launchMapView -> {
+                Intent(this, MapActivity::class.java)
             }
             else -> {
                 Intent(this, MainActivity::class.java)
