@@ -1,10 +1,13 @@
 package com.github.epfl.meili.forum
 
-import android.os.Bundle
-import android.widget.TextView
+
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.util.Log
+import android.widget.TextView
 import com.github.epfl.meili.R
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -42,6 +45,7 @@ class PostActivity : AppCompatActivity() {
                     // Show post in UI
                     createPostUI(result)
                 } // If fails --> do nothing
+
         }
     }
 
