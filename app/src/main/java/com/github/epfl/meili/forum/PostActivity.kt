@@ -1,5 +1,6 @@
 package com.github.epfl.meili.forum
 
+
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -36,7 +37,7 @@ class PostActivity : AppCompatActivity() {
 
             // Get the relevant post
             db.collection("posts")
-                .document(post_id)  // Get post from id
+            .document(post_id)  // Get post from id
                 .get()
                 .addOnSuccessListener { result -> // If success
                     // Show post in UI
