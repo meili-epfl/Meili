@@ -62,6 +62,7 @@ class GoogleSignInActivityTest {
                 MainApplication.applicationContext(),
                 getGSO()
         )
+
         Intents.intended(IntentMatchers.filterEquals(mGoogleSignInClient.signInIntent))
         Intents.release()
     }
