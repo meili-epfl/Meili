@@ -1,10 +1,11 @@
 package com.github.epfl.meili.forum
 
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -22,7 +23,8 @@ class NewPostActivity : AppCompatActivity() {
     /** Called when the user taps the Create Post button */
     fun createNewPost(view: View) {
         // Get post information to store in database
-        val user = "user1"
+        // TODO: Get POI
+        val user = "user1" // TODO: Get user data and pass to database
         val title = findViewById<EditText>(R.id.new_post_title).text.toString()
         val text = findViewById<EditText>(R.id.new_post_text).text.toString()
 

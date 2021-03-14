@@ -1,10 +1,14 @@
 package com.github.epfl.meili.forum
 
-import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import android.os.Bundle
+import android.util.Log
+import android.widget.TextView
 import com.github.epfl.meili.R
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 // key to retrieve the post IDs
 const val EXTRA_POST_ID = "com.github.epfl.meili.forum.POST_ID"
@@ -21,31 +25,40 @@ class PostActivity : AppCompatActivity() {
         // Get post id
         val post_id = intent.getStringExtra(EXTRA_POST_ID)
 
+        // Get post from database and show it
+        getPostFromDatabase(post_id)
+    }
+
+    // Get the post from the database using the ID passed on Activity creation & show it
+    private fun getPostFromDatabase(post_id: String?) {
+        // Check for null post_id
         if (post_id != null) {
-            PostViewModel.setID(post_id) // Set post id in the viewModel
+            // Access Cloud Firestore
+            val db = Firebase.firestore
 
-            // Create observer that makes a UI for the current post
-            val postObserver = Observer<Post?> { post ->
-                createPostUI(post)
-            }
-
-            // Observe the post from viewModel
-            PostViewModel.post.observe(this, postObserver)
-        } else {
-            Log.e(TAG, "Error getting the post ID from the forum")
+            // Get the relevant post
+            db.collection("posts")
+                    .document(post_id)  // Get post from id
+                    .get()
+                    .addOnSuccessListener { result -> // If success
+                        // Show post in UI
+                        createPostUI(result)
+                    } // If fails --> do nothing
         }
-
     }
 
     // Show post in post UI
-    private fun createPostUI(post: Post?) {
-        if (post != null) {
+    private fun createPostUI(post: DocumentSnapshot) {
+        if (post.data != null) {
+            // Get post information
+            val username = post.data!!.get("username").toString() // !! Means non-null is asserted
+            val title = post.data!!.get("title").toString()
+            val text = post.data!!.get("text").toString()
+
             // Add post information to the predefined templates
-            findViewById<TextView>(R.id.post_author).text = post.author
-            findViewById<TextView>(R.id.post_title).text = post.title
-            findViewById<TextView>(R.id.post_text).text = post.text
-        } else {
-            Log.e(TAG, "Error showing post")
+            findViewById<TextView>(R.id.post_author).text = username
+            findViewById<TextView>(R.id.post_title).text = title
+            findViewById<TextView>(R.id.post_text).text = text
         }
 
     }
