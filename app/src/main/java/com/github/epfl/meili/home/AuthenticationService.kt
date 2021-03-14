@@ -13,7 +13,13 @@ interface AuthenticationService {
 
     fun signOut()
 
-    fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?, onComplete: ()->Unit)
+    fun onActivityResult(
+        activity: Activity,
+        requestCode: Int,
+        result: Int,
+        data: Intent?,
+        onComplete: () -> Unit
+    )
 }
 
 class AuthUser(val name: String, val email: String)

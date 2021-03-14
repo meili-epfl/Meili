@@ -2,7 +2,6 @@ package com.github.epfl.meili.home
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
@@ -16,7 +15,7 @@ object Auth : ViewModel() {
     lateinit var authService: AuthenticationService
 
 
-    fun setAuthenticationService(authService: AuthenticationService){
+    fun setAuthenticationService(authService: AuthenticationService) {
         this.authService = authService
 
         Auth.authService.init()
@@ -42,7 +41,7 @@ object Auth : ViewModel() {
 
 
     fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?) {
-        authService.onActivityResult(activity, requestCode, result, data) {updateUserData()}
+        authService.onActivityResult(activity, requestCode, result, data) { updateUserData() }
     }
 
     fun updateUserData() {

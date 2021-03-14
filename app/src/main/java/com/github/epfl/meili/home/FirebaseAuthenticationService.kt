@@ -10,12 +10,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class FirebaseAuthenticationService: AuthenticationService {
+class FirebaseAuthenticationService : AuthenticationService {
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     private val TAG = "GoogleActivity"
@@ -25,9 +24,9 @@ class FirebaseAuthenticationService: AuthenticationService {
         val context = MainApplication.applicationContext()
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(context.getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
+            .requestIdToken(context.getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
         googleSignInClient = GoogleSignIn.getClient(context, gso)
 
         // Initialize Firebase Auth
@@ -37,7 +36,7 @@ class FirebaseAuthenticationService: AuthenticationService {
 
     override fun getCurrentuser(): AuthUser? {
         var user = auth.currentUser
-        if(user == null){
+        if (user == null) {
             return user
         }
 
@@ -54,24 +53,30 @@ class FirebaseAuthenticationService: AuthenticationService {
         googleSignInClient.signOut()
     }
 
-    fun firebaseAuthWithGoogle(activity: Activity, idToken: String, onComplete: ()-> Unit) {
+    fun firebaseAuthWithGoogle(activity: Activity, idToken: String, onComplete: () -> Unit) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
-                .addOnCompleteListener(activity) { task ->
-                    if (task.isSuccessful) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithCredential:success")
-                        onComplete()
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithCredential:failure", task.exception)
-                        // ...
-                        onComplete()
-                    }
+            .addOnCompleteListener(activity) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithCredential:success")
+                    onComplete()
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+                    // ...
+                    onComplete()
                 }
+            }
     }
 
-    override fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?, onComplete:()-> Unit) {
+    override fun onActivityResult(
+        activity: Activity,
+        requestCode: Int,
+        result: Int,
+        data: Intent?,
+        onComplete: () -> Unit
+    ) {
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)

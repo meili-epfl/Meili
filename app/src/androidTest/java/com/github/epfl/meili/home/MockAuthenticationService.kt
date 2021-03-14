@@ -3,7 +3,7 @@ package com.github.epfl.meili.home
 import android.app.Activity
 import android.content.Intent
 
-class MockAuthenticationService: AuthenticationService {
+class MockAuthenticationService : AuthenticationService {
     var MOCK_NAME = "Meili User"
     var MOCK_EMAIL = "meili.user@epfl.ch"
 
@@ -12,9 +12,9 @@ class MockAuthenticationService: AuthenticationService {
     }
 
     override fun getCurrentuser(): AuthUser? {
-        if(MOCK_NAME == "null"){
+        if (MOCK_NAME == "null") {
             return null
-        }else{
+        } else {
             return AuthUser(MOCK_NAME, MOCK_EMAIL)
         }
     }
