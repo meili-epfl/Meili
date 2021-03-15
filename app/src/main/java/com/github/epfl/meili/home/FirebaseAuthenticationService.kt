@@ -36,6 +36,7 @@ class FirebaseAuthenticationService : AuthenticationService {
 
     override fun getCurrentuser(): AuthUser? {
         var user = auth.currentUser
+
         if (user == null) {
             return user
         }
