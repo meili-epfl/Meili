@@ -7,25 +7,29 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.test.espresso.idling.CountingIdlingResource
+import androidx.lifecycle.Observer
 import com.github.epfl.meili.R
 import com.google.firebase.firestore.QueryDocumentSnapshot
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
-// Global Idling resource for UI tests
-val ForumCountingIdlingResource = CountingIdlingResource("forum")
 
 class ForumActivity : AppCompatActivity() {
 
-    // Unique tag to tell where a log message came from
     private val TAG = "ForumActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forum)
 
-        getPostsFromDatabase()
+        val viewModel = ForumViewModel()
+
+        // Create observer that makes a UI for each post in the observed list
+        val forumObserver = Observer<List<Post>> { posts ->
+            for (post in posts) {
+                addPostToForum(post) // Add the post to the forum UI
+            }
+        }
+        // Observe the posts from viewModel
+        viewModel.posts.observe(this, forumObserver)
     }
 
     /** Called when the user taps a post */
@@ -45,44 +49,15 @@ class ForumActivity : AppCompatActivity() {
         startActivity(intent) // starts the instance of NewPostActivity
     }
 
-    /** Gets posts from database and shows them asynchronously*/
-    private fun getPostsFromDatabase() {
-        // Make UI test wait until task is finished
-        ForumCountingIdlingResource.increment()
-
-        // Access Cloud Firestore
-        val db = Firebase.firestore
-
-        // Get the relevant posts
-        // TODO: restrict number of posts retrieved
-        db.collection("posts")
-            .get() // Get all posts
-            .addOnSuccessListener { result -> // If success
-                for (document in result) {
-                    // Show post in UI
-                    createForumUI(document)
-                }
-            } // If fails --> do nothing
-            .addOnCompleteListener {
-                // Task is finished, UI test can now proceed
-                ForumCountingIdlingResource.decrement()
-            }
-
-
+    /** Add a new post to the forum UI */
+    private fun addPostToForum(post: Post) {
+        val layout = makePostBox(post.id)
+        addAuthor(post.author, layout)
+        addTitle(post.title, layout)
     }
 
-    /** Creates the post UI and display in the forum */
-    private fun createForumUI(post: QueryDocumentSnapshot) {
-        // Create and get box to put information into
-        val box = addPostBoxToForumUI(post.id) // pass id for when post is clicked
-
-        // Add elements that go in the linearLayout
-        addAuthorToPostUI(post.data.get("username").toString(), box)
-        addTitleToPostUI(post.data.get("title").toString(), box)
-    }
-
-    /** Creates a box for the post's information to be stored in */
-    private fun addPostBoxToForumUI(post_id: String): LinearLayout {
+    /** Makes the clickable box for the post information to go into */
+    private fun makePostBox(post_id: String) : LinearLayout {
         // Create vertical linear layout (box)
         val box = LinearLayout(this)
         box.orientation = LinearLayout.VERTICAL
@@ -104,17 +79,17 @@ class ForumActivity : AppCompatActivity() {
         })
 
         // Set other aesthetic parameters
-        // TODO: make pretty
         box.setBackgroundColor(Color.parseColor("#90e0ef")) // background color
 
         // Add the box to the parent linearLayout
         findViewById<LinearLayout>(R.id.forum_layout).addView(box)
 
         return box
+
     }
 
     /** Adds the author to the post UI */
-    private fun addAuthorToPostUI(author: String, linearLayout: LinearLayout) {
+    private fun addAuthor(author: String, linearLayout: LinearLayout) {
         // Create TextView
         val textView = TextView(this)
         textView.text = author
@@ -128,14 +103,13 @@ class ForumActivity : AppCompatActivity() {
         param.setMargins(20, 20, 0, 10) // layout_margin
         textView.layoutParams = param
 
-        //TODO: make pretty
         textView.textSize = 14.0f
 
         linearLayout.addView(textView)
     }
 
     /** Adds the title to the post UI */
-    private fun addTitleToPostUI(title: String, linearLayout: LinearLayout) {
+    private fun addTitle(title: String, linearLayout: LinearLayout) {
         // Create TextView
         val textView = TextView(this)
         textView.text = title
@@ -149,7 +123,6 @@ class ForumActivity : AppCompatActivity() {
         param.setMargins(20, 0, 20, 20) // layout_margin
         textView.layoutParams = param
 
-        //TODO: make pretty
         textView.textSize = 18.0f
 
         linearLayout.addView(textView)
