@@ -10,8 +10,8 @@ import java.util.*
 
 class AuthenticationTest {
     private lateinit var mockService: MockAuthenticationService
-    private var MOCK_NAME = "MOCK_NAME"
-    private var MOCK_EMAIL = "MOCK_EMAIL"
+    private val MOCK_NAME = "MOCK_NAME"
+    private val MOCK_EMAIL = "MOCK_EMAIL"
 
     @get:Rule
     var testRule: ActivityScenarioRule<GoogleSignInActivity?>? = ActivityScenarioRule(
@@ -29,8 +29,8 @@ class AuthenticationTest {
 
     @Test
     fun updateUserDataTestWhenUserPresent() {
-        mockService.MOCK_NAME = MOCK_NAME
-        mockService.MOCK_EMAIL = MOCK_EMAIL
+        mockService.mock_name = MOCK_NAME
+        mockService.mock_email = MOCK_EMAIL
 
         UiThreadStatement.runOnUiThread {
             Auth.updateUserData()
@@ -44,7 +44,7 @@ class AuthenticationTest {
 
     @Test
     fun updateUserDataTestWhenUserNotPresent() {
-        mockService.MOCK_NAME = "null"
+        mockService.mock_name = "null"
 
         UiThreadStatement.runOnUiThread {
             Auth.updateUserData()
