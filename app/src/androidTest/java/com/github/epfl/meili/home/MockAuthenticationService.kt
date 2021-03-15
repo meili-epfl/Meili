@@ -4,18 +4,18 @@ import android.app.Activity
 import android.content.Intent
 
 class MockAuthenticationService : AuthenticationService {
-    var MOCK_NAME = "Meili User"
-    var MOCK_EMAIL = "meili.user@epfl.ch"
+    var mock_name = "Meili User"
+    var mock_email = "meili.user@epfl.ch"
 
     override fun init() {
         // Do nothing
     }
 
     override fun getCurrentuser(): AuthUser? {
-        if (MOCK_NAME == "null") {
+        if (mock_name == "null") {
             return null
         } else {
-            return AuthUser(MOCK_NAME, MOCK_EMAIL)
+            return AuthUser(mock_name, mock_email)
         }
     }
 
@@ -26,6 +26,7 @@ class MockAuthenticationService : AuthenticationService {
     }
 
     override fun signOut() {
+        // Do nothing
     }
 
     override fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?, onComplete: () -> Unit) {

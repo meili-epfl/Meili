@@ -13,6 +13,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.github.epfl.meili.R
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,11 +30,11 @@ class GoogleSignInActivityTest {
 
     @get:Rule
     var testRule: ActivityScenarioRule<GoogleSignInActivity?>? = ActivityScenarioRule(
-        GoogleSignInActivity::class.java
+            GoogleSignInActivity::class.java
     )
 
     @Before
-    fun before() {
+    fun initiateAuthAndService() {
         runOnUiThread {
             //Injecting authentication Service
             mockService = MockAuthenticationService()
@@ -46,37 +47,29 @@ class GoogleSignInActivityTest {
         }
     }
 
+    @Before
+    fun initIntents() {
+        Intents.init()
+    }
+
+    @After
+    fun releaseIntents() {
+        Intents.release()
+    }
+
 
     @Test
     fun clickOnButtonShouldSignInIfUserNull() {
-        Intents.init()
-
         onView(withId(R.id.signInButton))
-            .check(matches(isClickable())).perform(click())
+                .check(matches(isClickable())).perform(click())
 
         //setting name to null makes currentUser return null and button will sign in
-        mockService.MOCK_NAME = "null"
+        mockService.mock_name = "null"
 
         val mockIntent = mockService.signInIntent()
 
         IntentMatchers.filterEquals(mockIntent)
-
-        Intents.release()
     }
-
-    /*@Test
-    fun clickOnButtonShouldSignOutIfUserPresent() {
-        Intents.init()
-
-        onView(withId(R.id.signInButton))
-                .check(matches(isClickable())).perform(click())
-
-        val mockIntent = mockService.signInIntent()
-
-        Intents.intended(IntentMatchers.filterEquals(mockIntent))
-
-        Intents.release()
-    }*/
 
     @Test
     fun whenIsLoggedInValuesAreUpdatedInterfaceShouldBeUpdated() {
@@ -110,7 +103,6 @@ class GoogleSignInActivityTest {
 
     @Test
     fun onActivityResultTest() {
-        Intents.init()
         onView(withId(R.id.signInButton)).check(matches(isClickable())).perform(click())
 
         val resultData = Intent()
@@ -120,6 +112,5 @@ class GoogleSignInActivityTest {
         val mockIntent = mockService.signInIntent()
 
         intending(IntentMatchers.filterEquals(mockIntent)).respondWith(result)
-        Intents.release()
     }
 }
