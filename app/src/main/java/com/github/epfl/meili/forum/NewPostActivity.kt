@@ -22,8 +22,7 @@ class NewPostActivity : AppCompatActivity() {
     /** Called when the user taps the Create Post button */
     fun createNewPost(view: View) {
         // Get post information to store in database
-        // TODO: Get POI
-        val user = "user1" // TODO: Get user data and pass to database
+        val user = "user1"
         val title = findViewById<EditText>(R.id.new_post_title).text.toString()
         val text = findViewById<EditText>(R.id.new_post_text).text.toString()
 
