@@ -85,6 +85,7 @@ class ForumActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.forum_layout).addView(box)
 
         return box
+
     }
 
     /** Adds the author to the post UI */
