@@ -7,30 +7,29 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import java.lang.IllegalArgumentException
-import kotlin.collections.ArrayList
 
 class FirebaseMessageDatabaseAdapter(path: String) : MessageDatabase(path), ChildEventListener {
     val messages = ArrayList<ChatMessage>()
 
-    private var databaseInstance : FirebaseDatabase = FirebaseDatabase.getInstance()
+    private var databaseInstance: FirebaseDatabase = FirebaseDatabase.getInstance()
 
     init {
         val ref = databaseInstance.getReference(path)
         ref.addChildEventListener(this)
 
     }
+
     override fun addMessageToDatabase(path: String, chatMessage: ChatMessage) {
-        if(path == ""){
+        if (path == "") {
             throw IllegalArgumentException("Error: path cannot be empty")
         }
 
         val reference = databaseInstance.getReference(path).push()
 
         reference.setValue(chatMessage)
-                .addOnSuccessListener {
-                    Log.d(ChatLogActivity.TAG, "Saved our chat message: ${reference.key}")
-                }
+            .addOnSuccessListener {
+                Log.d(ChatLogActivity.TAG, "Saved our chat message: ${reference.key}")
+            }
     }
 
     override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
