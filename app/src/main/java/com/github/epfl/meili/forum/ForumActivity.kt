@@ -9,7 +9,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.github.epfl.meili.R
-import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.github.epfl.meili.home.AuthenticationService
+import com.github.epfl.meili.home.GoogleSignInActivity
 
 
 class ForumActivity : AppCompatActivity() {
@@ -45,8 +46,17 @@ class ForumActivity : AppCompatActivity() {
 
     /** Called when the user taps the + button */
     fun goToPostCreation(view: View) {
-        val intent = Intent(this, NewPostActivity::class.java)
-        startActivity(intent) // starts the instance of NewPostActivity
+        val currentUser = AuthenticationService.getCurrentUser()
+
+        // Only create post if logged in, Otherwise ask to log in first
+        val intent: Intent =
+            if (currentUser != null) {
+                Intent(this, NewPostActivity::class.java)
+            } else {
+                Intent(this, GoogleSignInActivity::class.java)
+            }
+
+        startActivity(intent) // starts the instance
     }
 
     /** Add a new post to the forum UI */
@@ -57,7 +67,7 @@ class ForumActivity : AppCompatActivity() {
     }
 
     /** Makes the clickable box for the post information to go into */
-    private fun makePostBox(post_id: String) : LinearLayout {
+    private fun makePostBox(post_id: String): LinearLayout {
         // Create vertical linear layout (box)
         val box = LinearLayout(this)
         box.orientation = LinearLayout.VERTICAL
