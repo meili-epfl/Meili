@@ -43,4 +43,19 @@ object PostService {
         }
     }
 
+    /** Add new post to Database */
+    fun addPost(author: String, title: String, text: String) {
+        val db = Firebase.firestore
+
+        // Create post document (ID created by database)
+        val postDocument = hashMapOf(
+            "username" to author,
+            "title" to title,
+            "text" to text
+        )
+
+        // Add a new document with a generated ID
+        db.collection("posts").add(postDocument)
+    }
+
 }
