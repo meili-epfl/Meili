@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
