@@ -41,9 +41,10 @@ class PoiActivity : AppCompatActivity() {
 
         override fun createFragment(position: Int): Fragment {
             return if (position == INDEX_FORUM)
-                ForumFragment()
+                PoiFragment(R.layout.forum_activity_placeholder)
             else
-                ChatFragment()
+                PoiFragment(R.layout.chat_activity_placeholder)
+
         }
     }
 
