@@ -1,5 +1,6 @@
 package com.github.epfl.meili
 
+import com.google.android.gms.maps.model.PointOfInterest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -30,8 +31,8 @@ class ChatLogActivity : AppCompatActivity() {
 
         findViewById<RecyclerView>(R.id.recycleview_chat_log).adapter = adapter
 
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
-        supportActionBar?.title = user?.username
+        val poi = intent.getParcelableExtra<PointOfInterest>("POI_KEY")
+        supportActionBar?.title = poi?.name
 
 
 
@@ -49,23 +50,23 @@ class ChatLogActivity : AppCompatActivity() {
 
         findViewById<EditText>(R.id.edit_text_chat_log).text.clear()
 
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
+        val poi = intent.getParcelableExtra<PointOfInterest>("POI_KEY")
 
-        val otherId : String = user?.uid!!
+        val groupId : String = poi?.placeId!!
         val myId: String = FirebaseAuth.getInstance().uid!!
 
-        val viewModel = ChatMessageViewModel(myId, otherId)
+        val viewModel = ChatMessageViewModel(myId, groupId)
 
-        viewModel.addMessage(text, myId, otherId, System.currentTimeMillis() / 1000)
+        viewModel.addMessage(text, myId, groupId, System.currentTimeMillis() / 1000)
     }
 
     private fun listenForMessages() {
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
+        val poi = intent.getParcelableExtra<PointOfInterest>("POI_KEY")
 
-        val groupId : String = user?.uid!!
+        val groupId : String = poi?.placeId!!
         val myId: String = FirebaseAuth.getInstance().uid!!
 
-        val viewModel = ChatMessageViewModel(groupId, "tour-eiffel") //TODO: SET PROPER VALUE WHICH WILL PROBABLY BE FETCHED FROM ANOTHER SERVICE THAT USES LOCATION AND MORE
+        val viewModel = ChatMessageViewModel(myId, groupId)
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
             list.forEach{ message ->
