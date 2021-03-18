@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.messages.ChatMessageViewModel
+import com.github.epfl.meili.messages.FirebaseMessageDatabaseAdapter
 import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.User
 import com.google.firebase.auth.FirebaseAuth
@@ -54,7 +55,7 @@ class ChatLogActivity : AppCompatActivity() {
         val otherId : String = user?.uid!!
         val myId: String = FirebaseAuth.getInstance().uid!!
 
-        val viewModel = ChatMessageViewModel(myId, otherId)
+        val viewModel = ChatMessageViewModel(FirebaseMessageDatabaseAdapter("correct-path")) //todo PUT MESSAGE PATH + there should be only one view model!!
 
         viewModel.addMessage(text, myId, otherId, System.currentTimeMillis() / 1000)
     }
@@ -65,7 +66,7 @@ class ChatLogActivity : AppCompatActivity() {
         val groupId : String = user?.uid!!
         val myId: String = FirebaseAuth.getInstance().uid!!
 
-        val viewModel = ChatMessageViewModel(groupId)
+        val viewModel = ChatMessageViewModel( FirebaseMessageDatabaseAdapter("tour-eiffel")) //TODO: SET PROPER VALUE WHICH WILL PROBABLY BE FETCHED FROM ANOTHER SERVICE THAT USES LOCATION AND MORE
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
             list.forEach{ message ->

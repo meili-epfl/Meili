@@ -3,24 +3,31 @@ package com.github.epfl.meili.messages
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.github.epfl.meili.models.ChatMessage
-import com.github.epfl.meili.models.User
-import kotlinx.coroutines.launch
+import java.util.*
 
-class ChatMessageViewModel(fromId: String, toId: String): ViewModel() {
-    var chatMessageService: ChatMessageService = ChatMessageService
+class ChatMessageViewModel(var database: MessageDatabase) : ViewModel(),
+    Observer {
+
     private val _messages = MutableLiveData<List<ChatMessage>?>()
     val messages: LiveData<List<ChatMessage>?> = _messages
 
     init {
-        viewModelScope.launch { // Asynchronous block for viewModels
-            _messages.value = chatMessageService.getMessageWithToIdAndFromId(fromId, toId) // can be null
-        }
+        database.addObserver(this)
     }
 
-    fun addMessage(text: String, fromId: String, toId: String, timeStamp: Long){
-        chatMessageService.addMessage(text, fromId, toId, timeStamp)
+    fun addMessage(text: String, fromId: String, toId: String, timeStamp: Long) {
+        val message = ChatMessage(
+            text,
+            fromId,
+            toId,
+            timeStamp
+        )
+
+        database.addMessageToDatabase(message)
     }
 
+    override fun update(o: Observable?, arg: Any?) {
+        _messages.value = database.messages
+    }
 }

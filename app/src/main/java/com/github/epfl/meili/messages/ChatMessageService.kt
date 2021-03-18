@@ -10,6 +10,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import java.sql.Timestamp
 
+// TOREMOVE when tests for ViewModel pass
 object ChatMessageService {
     private const val TAG = "ChatMessageService"
 
