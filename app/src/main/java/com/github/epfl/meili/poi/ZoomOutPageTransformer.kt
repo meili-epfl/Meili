@@ -20,19 +20,16 @@ class ZoomOutPageTransformer : ViewPager2.PageTransformer {
                     val horzMargin = pageWidth * (1 - scaleFactor) / 2
                     translationX = if (position < 0) {
                         horzMargin - vertMargin / 2
-                    } else {
+                    } else
                         horzMargin + vertMargin / 2
-                    }
 
                     scaleX = scaleFactor
                     scaleY = scaleFactor
-
                     alpha = (MIN_ALPHA +
                             (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
                 }
-                else -> {
+                else ->
                     alpha = 0f
-                }
             }
         }
     }
