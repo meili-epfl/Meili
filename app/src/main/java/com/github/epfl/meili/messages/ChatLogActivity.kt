@@ -38,40 +38,26 @@ class ChatLogActivity : AppCompatActivity() {
 
         val groupId : String = poi?.placeId!!
         val myId: String = FirebaseAuth.getInstance().uid!!
-        val viewModel = ChatMessageViewModel(myId, groupId)
+        ChatMessageViewModel.database = FirebaseMessageDatabaseAdapter("POI/${poi.placeId}")
 
-        listenForMessages(groupId, myId, viewModel)
+        listenForMessages(groupId, myId)
 
         findViewById<Button>(R.id.button_chat_log).setOnClickListener {
-            performSendMessage(groupId, myId, viewModel)
+            performSendMessage(groupId, myId)
         }
 
 
     }
 
-    private fun performSendMessage(groupId: String, myId: String, viewModel: ChatMessageViewModel) {
+    private fun performSendMessage(groupId: String, myId: String) {
         val text = findViewById<EditText>(R.id.edit_text_chat_log).text.toString()
         findViewById<EditText>(R.id.edit_text_chat_log).text.clear()
 
-        val poi = intent.getParcelableExtra<PointOfInterest>("POI_KEY")
 
-        val groupId: String = poi?.placeId!!
-        val myId: String = FirebaseAuth.getInstance().uid!!
-
-        val viewModel =
-            ChatMessageViewModel(FirebaseMessageDatabaseAdapter("correct-path")) //todo PUT MESSAGE PATH + there should be only one view model!!
-
-        viewModel.addMessage(text, myId, groupId, System.currentTimeMillis() / 1000)
+        ChatMessageViewModel.addMessage(text, myId, groupId, System.currentTimeMillis() / 1000)
     }
 
-    private fun listenForMessages() {
-        val poi = intent.getParcelableExtra<PointOfInterest>("POI_KEY")
-
-        val groupId: String = poi?.placeId!!
-        val myId: String = FirebaseAuth.getInstance().uid!!
-
-        val viewModel =
-            ChatMessageViewModel(FirebaseMessageDatabaseAdapter("tour-eiffel")) //TODO: SET PROPER VALUE WHICH WILL PROBABLY BE FETCHED FROM ANOTHER SERVICE THAT USES LOCATION AND MORE
+    private fun listenForMessages(groupId: String, myId: String) {
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
             list.forEach { message ->
@@ -84,7 +70,7 @@ class ChatLogActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.messages.observe(this, groupMessageObserver)
+        ChatMessageViewModel.messages.observe(this, groupMessageObserver)
     }
 }
 

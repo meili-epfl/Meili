@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import com.github.epfl.meili.models.ChatMessage
 import java.util.*
 
-class ChatMessageViewModel(var database: MessageDatabase) : ViewModel(),
+object ChatMessageViewModel : ViewModel(),
     Observer {
+
+    lateinit var database: MessageDatabase
 
     private val _messages = MutableLiveData<List<ChatMessage>?>()
     val messages: LiveData<List<ChatMessage>?> = _messages
