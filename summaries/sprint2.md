@@ -16,7 +16,14 @@ In the future, I will try to define tasks which are clearly separate from my col
 
 ## Ewan
 
-##TODO
+I successfully refactored the forum to an MVVM model, and made it update the data dynamically. The Forum works.
+
+Unfortunately, I had some issues with testing, Cloud Firestore only crashes when I run tests, even the most basic one (In which I do not call any Firestore queries). I spent a lot of time on this and still haven't managed to fix it. After asking Marcel for help, we concluded that I should replace it with the Mock Firebase I would have used for testing, so I would at least have something to show.
+However, I then realized that my Mock Firebase does not work (the Observers do not get notified correctly). I spent 3 hours trying to make it work, unsuccessfully.
+
+My time estimate doesn't really apply, I think I estimated correctly (it would have been fine without all the problems), I just haven't found the correct way of fixing the tests yet. I spent 13 hours on SDP this week.
+
+I will need more help with this next week, I am getting frustrated, I want to work on other things.
 
 
 ## Marcel
