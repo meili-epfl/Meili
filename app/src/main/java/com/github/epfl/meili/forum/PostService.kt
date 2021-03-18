@@ -1,11 +1,13 @@
 package com.github.epfl.meili.forum
 
-/** Interface for adding and retrieving posts from and to the database*/
-interface PostService {
+import java.util.*
 
-    suspend fun getPostFromId(id: String?): Post?
+/** Abstract class for adding and retrieving posts from and to a database*/
+abstract class PostService : Observable() {
 
-    suspend fun getPosts(): List<Post>
+    abstract suspend fun getPostFromId(id: String?): Post?
 
-    fun addPost(author: String, title: String, text: String)
+    abstract suspend fun getPosts(): List<Post>
+
+    abstract fun addPost(author: String, title: String, text: String)
 }

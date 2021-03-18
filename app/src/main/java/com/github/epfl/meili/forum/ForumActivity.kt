@@ -9,14 +9,13 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.github.epfl.meili.R
-import com.github.epfl.meili.home.AuthenticationService
+import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.GoogleSignInActivity
 
 
 class ForumActivity : AppCompatActivity() {
 
     private val TAG = "ForumActivity"
-    val viewModel = ForumViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +28,7 @@ class ForumActivity : AppCompatActivity() {
             }
         }
         // Observe the posts from viewModel
-        viewModel.posts.observe(this, forumObserver)
+        ForumViewModel.posts.observe(this, forumObserver)
     }
 
     /** Called when the user taps a post */
@@ -45,11 +44,9 @@ class ForumActivity : AppCompatActivity() {
 
     /** Called when the user taps the + button */
     fun goToPostCreation(view: View) {
-        val currentUser = AuthenticationService.getCurrentUser()
-
         // Only create post if logged in, Otherwise ask to log in first
         val intent: Intent =
-            if (currentUser != null) {
+            if (Auth.name != null) {
                 Intent(this, NewPostActivity::class.java)
             } else {
                 Intent(this, GoogleSignInActivity::class.java)
