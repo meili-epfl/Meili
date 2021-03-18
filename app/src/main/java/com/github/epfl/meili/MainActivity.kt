@@ -26,9 +26,6 @@ class MainActivity : AppCompatActivity() {
             R.id.launchMapView -> {
                 Intent(this, MapActivity::class.java)
             }
-            R.id.launchPoiView -> {
-                Intent(this, PoiActivity::class.java)
-            }
             else -> {
                 Intent(this, MainActivity::class.java)
             }
