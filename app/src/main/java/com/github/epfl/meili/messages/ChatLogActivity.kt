@@ -12,11 +12,6 @@ import com.github.epfl.meili.messages.ChatMessageViewModel
 import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.User
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -29,7 +24,6 @@ class ChatLogActivity : AppCompatActivity() {
     }
 
     val adapter = GroupAdapter<GroupieViewHolder>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
@@ -68,24 +62,23 @@ class ChatLogActivity : AppCompatActivity() {
     private fun listenForMessages() {
         val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
 
-        val otherId : String = user?.uid!!
+        val groupId : String = user?.uid!!
         val myId: String = FirebaseAuth.getInstance().uid!!
-        val sentMessagesViewModel = ChatMessageViewModel(myId, otherId)
-        val receivedMessageViewModel = ChatMessageViewModel(otherId, myId)
-        val sentObserver = Observer<List<ChatMessage>?> { list ->
+
+        val viewModel = ChatMessageViewModel(groupId)
+
+        val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
             list.forEach{ message ->
                 Log.d(TAG, "loading message: ${message.text}")
-                adapter.add(ChatItem(message.text, true))
+                if(message.fromId == myId){
+                    adapter.add(ChatItem(message.text, true))
+                }else{
+                    adapter.add(ChatItem(message.text, false))
+                }
             }
         }
-        val receivedObserver = Observer<List<ChatMessage>?> { list ->
-            list.forEach{ message ->
-                Log.d(TAG, "loading message: ${message.text}")
-                adapter.add(ChatItem(message.text, false))
-            }
-        }
-        sentMessagesViewModel.messages.observe(this, sentObserver)
-        receivedMessageViewModel.messages.observe(this, receivedObserver)
+
+        viewModel.messages.observe(this, groupMessageObserver)
     }
 }
 
