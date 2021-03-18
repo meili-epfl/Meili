@@ -10,4 +10,5 @@ abstract class PostService : Observable() {
     abstract suspend fun getPosts(): List<Post>
 
     abstract fun addPost(author: String, title: String, text: String)
+
 }
