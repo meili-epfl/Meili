@@ -42,7 +42,11 @@ On the positive side, I believe I found a balance in with my first two PRs this 
 
 ## Thomas
 
-##TODO
+I worked on finishing the tests for the map activity. Then I implemented a new activity which appears when a point of interest is clicked. For now it has placeholders for the forum posts and for the chat, and allows to swipe left and right to switch between the two.
+
+My time estimates were a bit better than last week because now I understand better how long testing can take. For my implementation, I had to read and understand code which was written by my peers, which was interesting.
+
+This week, projects for other courses took a lot of my time, so I have to manage it better. I also had a lot of trouble with Cirrus because the tests kept failing with it, so I didn't manage to merge my branch. So I have to find a way to fix that.
 
 
 ## Yingxuan
