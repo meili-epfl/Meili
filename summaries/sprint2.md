@@ -2,7 +2,11 @@
 
 ## Ahmed (Scrum master)
 
-##TODO
+I worked on refactoring the code from last sprint to follow the MVVM model. As a result I was able to write better tests for the activities that also use mocks.
+
+I learned from last time all there is to version control so I didn't waste any time on that this week. On the other hand, my time estimates were still off, so I didn't have to implement all of the sprint tasks. I still have to make the chat log more consistent (this should be easier now since we start the activity with the POI) and work on the chat groups themselves.
+
+In the future, I will try and improve my time estimates further.
 
 
 ## Aman 
