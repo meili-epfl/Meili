@@ -31,23 +31,26 @@ class ChatLogActivity : AppCompatActivity() {
 
         findViewById<RecyclerView>(R.id.recycleview_chat_log).adapter = adapter
 
+
         val poi = intent.getParcelableExtra<PointOfInterest>("POI_KEY")
         supportActionBar?.title = poi?.name
 
 
+        val groupId : String = poi?.placeId!!
+        val myId: String = FirebaseAuth.getInstance().uid!!
+        val viewModel = ChatMessageViewModel(myId, groupId)
 
-        listenForMessages()
+        listenForMessages(groupId, myId, viewModel)
 
         findViewById<Button>(R.id.button_chat_log).setOnClickListener {
-            performSendMessage()
+            performSendMessage(groupId, myId, viewModel)
         }
 
 
     }
 
-    private fun performSendMessage() {
+    private fun performSendMessage(groupId: String, myId: String, viewModel: ChatMessageViewModel) {
         val text = findViewById<EditText>(R.id.edit_text_chat_log).text.toString()
-
         findViewById<EditText>(R.id.edit_text_chat_log).text.clear()
 
         val poi = intent.getParcelableExtra<PointOfInterest>("POI_KEY")
