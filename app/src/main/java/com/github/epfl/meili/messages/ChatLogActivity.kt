@@ -1,17 +1,17 @@
 package com.github.epfl.meili
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.messages.ChatMessageViewModel
 import com.github.epfl.meili.messages.FirebaseMessageDatabaseAdapter
 import com.github.epfl.meili.models.ChatMessage
-import com.github.epfl.meili.models.User
+import com.google.android.gms.maps.model.PointOfInterest
 import com.google.firebase.auth.FirebaseAuth
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -31,8 +31,8 @@ class ChatLogActivity : AppCompatActivity() {
 
         findViewById<RecyclerView>(R.id.recycleview_chat_log).adapter = adapter
 
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
-        supportActionBar?.title = user?.username
+        val poi = intent.getParcelableExtra<PointOfInterest>("POI_KEY")
+        supportActionBar?.title = poi?.name
 
 
 
@@ -50,30 +50,32 @@ class ChatLogActivity : AppCompatActivity() {
 
         findViewById<EditText>(R.id.edit_text_chat_log).text.clear()
 
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
+        val poi = intent.getParcelableExtra<PointOfInterest>("POI_KEY")
 
-        val otherId : String = user?.uid!!
+        val groupId: String = poi?.placeId!!
         val myId: String = FirebaseAuth.getInstance().uid!!
 
-        val viewModel = ChatMessageViewModel(FirebaseMessageDatabaseAdapter("correct-path")) //todo PUT MESSAGE PATH + there should be only one view model!!
+        val viewModel =
+            ChatMessageViewModel(FirebaseMessageDatabaseAdapter("correct-path")) //todo PUT MESSAGE PATH + there should be only one view model!!
 
-        viewModel.addMessage(text, myId, otherId, System.currentTimeMillis() / 1000)
+        viewModel.addMessage(text, myId, groupId, System.currentTimeMillis() / 1000)
     }
 
     private fun listenForMessages() {
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
+        val poi = intent.getParcelableExtra<PointOfInterest>("POI_KEY")
 
-        val groupId : String = user?.uid!!
+        val groupId: String = poi?.placeId!!
         val myId: String = FirebaseAuth.getInstance().uid!!
 
-        val viewModel = ChatMessageViewModel( FirebaseMessageDatabaseAdapter("tour-eiffel")) //TODO: SET PROPER VALUE WHICH WILL PROBABLY BE FETCHED FROM ANOTHER SERVICE THAT USES LOCATION AND MORE
+        val viewModel =
+            ChatMessageViewModel(FirebaseMessageDatabaseAdapter("tour-eiffel")) //TODO: SET PROPER VALUE WHICH WILL PROBABLY BE FETCHED FROM ANOTHER SERVICE THAT USES LOCATION AND MORE
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
-            list.forEach{ message ->
+            list.forEach { message ->
                 Log.d(TAG, "loading message: ${message.text}")
-                if(message.fromId == myId){
+                if (message.fromId == myId) {
                     adapter.add(ChatItem(message.text, true))
-                }else{
+                } else {
                     adapter.add(ChatItem(message.text, false))
                 }
             }

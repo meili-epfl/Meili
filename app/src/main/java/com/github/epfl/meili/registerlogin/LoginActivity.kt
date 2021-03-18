@@ -20,7 +20,10 @@ class LoginActivity : AppCompatActivity() {
 
 
         findViewById<Button>(R.id.login_button).setOnClickListener {
-            loginUser()
+            val email = findViewById<EditText>(R.id.email_edittext_login).text.toString()
+            val password = findViewById<EditText>(R.id.password_edittext_login).text.toString()
+            Log.d("login", "email is $email and password is $password")
+            CustomAuthentication.loginUser(this, email, password)
         }
 
         findViewById<TextView>(R.id.back_to_registration_text_view).setOnClickListener {
@@ -29,27 +32,5 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun loginUser() {
-        val email = findViewById<EditText>(R.id.email_edittext_login).text.toString()
-        val password = findViewById<EditText>(R.id.password_edittext_login).text.toString()
 
-        if (!RegisterActivity.isSanitizedInput(this, email, password)) {
-            return;
-        }
-
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                if (!it.isSuccessful) return@addOnCompleteListener
-
-                //User logged in
-                Log.d("LoginActivity", "SignInWithEmailAndPassword:success")
-                val intent = Intent(this, LatestMessagesActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-            }
-            .addOnFailureListener {
-                Log.d("LoginActivity", "SignInWithEmailAndPassword:failure ${it.message}")
-                Toast.makeText(this, "Failure: ${it.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
 }

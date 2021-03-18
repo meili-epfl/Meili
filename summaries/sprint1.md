@@ -2,6 +2,7 @@
 
 ## Ahmed
 
+Ahmed Ezzo:
 I implemented the chat view activity where you can send and receive messages in a very protoypical way.
 
 My feature is still not complete I have to make sure the chatting logic is correct and I need to refactor
