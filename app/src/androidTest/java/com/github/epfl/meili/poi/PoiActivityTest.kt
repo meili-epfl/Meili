@@ -17,7 +17,7 @@ class PoiActivityTest {
 
     @Test
     fun poiActivityTest() {
-
+    //TODO Test that poi activity opens when poi is clicked on map and that correct info/posts/chat are displayed
     }
 
 
