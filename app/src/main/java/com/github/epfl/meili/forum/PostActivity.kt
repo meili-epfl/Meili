@@ -14,6 +14,7 @@ class PostActivity : AppCompatActivity() {
 
     // Unique tag to tell where a log message came from
     private val TAG = "PostActivity"
+    var viewModel = PostViewModel("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +24,7 @@ class PostActivity : AppCompatActivity() {
         val post_id = intent.getStringExtra(EXTRA_POST_ID)
 
         if (post_id != null) {
-            val viewModel = PostViewModel(post_id)
+            viewModel = PostViewModel(post_id)
 
             // Create observer that makes a UI for each post in the observed list
             val postObserver = Observer<Post?> { post ->
