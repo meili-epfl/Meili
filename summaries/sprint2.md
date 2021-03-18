@@ -7,11 +7,17 @@
 
 ## Aman 
 
-##TODO
+I worked on finishing the map activity and its test. I also learned about Firebase in order to implement a POI database but, after talking to my teams, we realized that it is not needed. With my freed-up time, I started implementing a review system. For this, I have learned about the MVVM pattern and the RecyclerView. Since I still need to connect the review system to the Firebase database, I will not be able to merge this feature in time for this week's demo.
+
+My time estimates were better than last week as I factored in the learning time.
+
+In the future, I will try to define tasks which are clearly separate from my colleagues to reduce the chances of wasting my time on overlapping tasks.
+
 
 ## Ewan
 
 ##TODO
+
 
 ## Marcel
 
@@ -21,13 +27,16 @@ My estimate was underestimated for the sign in testing and refactoring, my estim
 
 On the positive side, I believe I found a balance in with my first two PRs this week, which were of appropriate length to be happily revised by my peers. 
 
+
 ## Thomas
 
 ##TODO
 
+
 ## Yingxuan
 
 ##TODO
+
 
 ## Overall team
 
