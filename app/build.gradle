@@ -4,7 +4,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-parcelize'
     id 'jacoco'
-    id 'com.google.gms.google-services'  // Google Services plugin
+    id 'com.google.gms.google-services'
 }
 
 android {
