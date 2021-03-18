@@ -2,6 +2,7 @@ package com.github.epfl.meili.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -10,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.poi.PoiActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
@@ -18,11 +20,12 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 
 
-class MapActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickListener {
     companion object {
         private const val DEFAULT_ZOOM = 15
         private const val REQUEST_CODE: Int = 1
@@ -83,14 +86,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             getLocationPermission()
         }
 
-        //map.setOnPoiClickListener(this)
+        map.setOnPoiClickListener(this)
     }
 
-    /*override fun onPoiClick(poi: PointOfInterest) {
+    override fun onPoiClick(poi: PointOfInterest) {
         val intent = Intent(this, PoiActivity::class.java)
         intent.putExtra(POI_KEY, poi)
         startActivity(intent)
-    }*/
+    }
 
     private fun getLocationPermission() {
         if (BuildConfig.DEBUG && isPermissionGranted()) {
