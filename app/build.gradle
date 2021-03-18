@@ -4,7 +4,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-parcelize'
     id 'jacoco'
-    id 'com.google.gms.google-services'  // Google Services plugin
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -54,6 +54,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-database-ktx'
     implementation "com.xwray:groupie:2.9.0"
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation "androidx.cardview:cardview:1.0.0"
 
     implementation 'com.google.firebase:firebase-auth:20.0.3'
     testImplementation 'junit:junit:4.13.2'
