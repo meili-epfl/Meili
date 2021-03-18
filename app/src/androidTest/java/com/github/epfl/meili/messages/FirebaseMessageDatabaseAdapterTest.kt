@@ -14,7 +14,7 @@ class FirebaseMessageDatabaseAdapterTest {
     // Path to locate chat inside database
     private val MOCK_PATH = "POI/mock-poi"
     private val fake_message =
-        ChatMessage("fake_id", "fake_text", "fake_from_id", "fake_to_id", 12345)
+        ChatMessage("fake_text", "fake_from_id", "fake_to_id", 12345)
 
     private lateinit var db: FirebaseMessageDatabaseAdapter
 

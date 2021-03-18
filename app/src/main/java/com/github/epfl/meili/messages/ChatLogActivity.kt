@@ -65,7 +65,7 @@ class ChatLogActivity : AppCompatActivity() {
         val groupId : String = user?.uid!!
         val myId: String = FirebaseAuth.getInstance().uid!!
 
-        val viewModel = ChatMessageViewModel(groupId)
+        val viewModel = ChatMessageViewModel(groupId, "tour-eiffel") //TODO: SET PROPER VALUE WHICH WILL PROBABLY BE FETCHED FROM ANOTHER SERVICE THAT USES LOCATION AND MORE
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
             list.forEach{ message ->

@@ -7,7 +7,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ChatMessage(
-    val id: String,
     val text: String,
     val fromId: String,
     val toId: String,
@@ -20,12 +19,12 @@ data class ChatMessage(
         // Create Post from Firestore data
         fun DocumentSnapshot.toChatMessage(): ChatMessage? {
             return try {
-                val id =  id
+                val id =  id // Not used
                 val text = getString("text")!!
                 val fromId = getString("fromId")!!
                 val toId = getString("toId")!!
                 val timestamp = getLong("timestamp")!!
-                ChatMessage(id, text, fromId, toId, timestamp)
+                ChatMessage(text, fromId, toId, timestamp)
             } catch (e: Exception) {
                 Log.e(TAG, "Error converting to Chat Message")
                 null // Return null if error occurs
