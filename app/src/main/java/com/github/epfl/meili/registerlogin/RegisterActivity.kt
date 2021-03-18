@@ -13,6 +13,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class RegisterActivity : AppCompatActivity() {
@@ -81,17 +82,22 @@ class RegisterActivity : AppCompatActivity() {
     private fun saveUserToFirebaseDatabase() {
 
         // Write a message to the database
-        val uid = FirebaseAuth.getInstance().uid ?: ""
-        val database = Firebase.database
-        val myRef = database.getReference("/users/$uid")
-        val user =
-            User(uid, findViewById<EditText>(R.id.username_edittext_register).text.toString())
-        if (user.username.isEmpty()) {
+        val username = findViewById<EditText>(R.id.username_edittext_register).text.toString()
+        if (username.isEmpty()) {
             Toast.makeText(this, "Please enter a username", Toast.LENGTH_SHORT).show()
             FirebaseAuth.getInstance().currentUser?.delete()
 
         } else {
-            myRef.setValue(user)
+            val db = Firebase.firestore
+
+            // Create post document (ID created by database)
+            val userDocument = hashMapOf(
+                "uid" to  FirebaseAuth.getInstance().uid,
+                "username" to username,
+            )
+
+            // Add a new document with a generated ID
+            db.collection("users").add(userDocument)
                 .addOnSuccessListener {
                     Log.d(TAG, "user saved to firebase datatbase!")
                     val intent = Intent(this, LatestMessagesActivity::class.java)
