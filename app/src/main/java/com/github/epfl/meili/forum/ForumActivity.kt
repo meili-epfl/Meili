@@ -16,12 +16,11 @@ import com.github.epfl.meili.home.GoogleSignInActivity
 class ForumActivity : AppCompatActivity() {
 
     private val TAG = "ForumActivity"
+    val viewModel = ForumViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forum)
-
-        val viewModel = ForumViewModel()
 
         // Create observer that makes a UI for each post in the observed list
         val forumObserver = Observer<List<Post>> { posts ->
