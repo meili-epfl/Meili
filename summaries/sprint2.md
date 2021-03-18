@@ -7,7 +7,7 @@
 
 ## Aman 
 
-I worked on finishing the map activity and its test. I also learned about Firebase in order to implement a POI database but, after talking to my teams, we realized that it is not needed. With my freed-up time, I started implementing a review system. For this, I have learned about the MVVM pattern and the RecyclerView. Since I still need to connect the review system to the Firebase database, I will not be able to merge this feature in time for this week's demo.
+I worked on finishing the map activity and its test. I also learned about Firebase in order to implement a POI database but, after talking to my colleagues, we realized that it is not needed. With my freed-up time, I started implementing a review system. For this, I have learned about the MVVM pattern and the RecyclerView. Since I still need to connect the review system to the Firebase database, I will not be able to merge this feature in time for this week's demo.
 
 My time estimates were better than last week as I factored in the learning time.
 
