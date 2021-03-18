@@ -27,7 +27,7 @@ class NewMessageActivity : AppCompatActivity() {
     }
 
     companion object {
-        val USER_KEY = "USERK_KEY"
+        const val USER_KEY = "USERK_KEY"
     }
 
     private fun fetchUsers() {
