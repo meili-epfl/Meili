@@ -11,10 +11,6 @@ object ForumViewModel : ViewModelWithPostService(), Observer {
     private val _posts = MutableLiveData<List<Post>>() // private list prevents exposing mutability
     val posts: LiveData<List<Post>> = _posts // public list to expose the posts to the View
 
-    init {
-        postService.addObserver(this) // Observe changes from the service
-    }
-
     /** Called when notified to update posts */
     override fun update(o: Observable?, arg: Any?) {
         syncPosts()

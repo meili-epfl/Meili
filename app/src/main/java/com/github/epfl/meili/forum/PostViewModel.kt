@@ -12,10 +12,6 @@ object PostViewModel : ViewModelWithPostService(), Observer {
     val post: LiveData<Post?> = _post // public post to expose safely to the View (not mutable)
     var post_id: String = ""
 
-    init {
-        postService.addObserver(this)
-    }
-
     /** Called when notified by observable */
     override fun update(o: Observable?, arg: Any?) {
         syncPost()

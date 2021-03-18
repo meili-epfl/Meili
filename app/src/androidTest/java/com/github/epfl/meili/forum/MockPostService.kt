@@ -3,7 +3,7 @@ package com.github.epfl.meili.forum
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class MockPostService : PostService {
+class MockPostService : PostService() {
 
     val database = ArrayList<Post>()
 
@@ -23,6 +23,8 @@ class MockPostService : PostService {
 
     /** Add new post to Database */
     override fun addPost(author: String, title: String, text: String) {
-        database.add(Post("1", "2", "3", "4"))
+        database.add(Post("test_id", "test_user", "test_title", "test_text"))
+        setChanged() // Tell Observable that its state has changed
+        notifyObservers()
     }
 }
