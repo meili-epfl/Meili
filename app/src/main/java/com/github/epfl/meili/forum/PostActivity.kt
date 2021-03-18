@@ -14,7 +14,6 @@ class PostActivity : AppCompatActivity() {
 
     // Unique tag to tell where a log message came from
     private val TAG = "PostActivity"
-    var viewModel = PostViewModel("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,15 +23,15 @@ class PostActivity : AppCompatActivity() {
         val post_id = intent.getStringExtra(EXTRA_POST_ID)
 
         if (post_id != null) {
-            viewModel = PostViewModel(post_id)
+            PostViewModel.setID(post_id) // Set post id in the viewModel
 
-            // Create observer that makes a UI for each post in the observed list
+            // Create observer that makes a UI for the current post
             val postObserver = Observer<Post?> { post ->
                 createPostUI(post)
             }
 
             // Observe the post from viewModel
-            viewModel.post.observe(this, postObserver)
+            PostViewModel.post.observe(this, postObserver)
         } else {
             Log.e(TAG, "Error getting the post ID from the forum")
         }

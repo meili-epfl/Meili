@@ -11,7 +11,6 @@ class NewPostActivity : AppCompatActivity() {
 
     // Unique tag to tell where a log message came from
     private val TAG = "NewPostActivity"
-    val viewModel = NewPostViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +24,7 @@ class NewPostActivity : AppCompatActivity() {
         val text = findViewById<EditText>(R.id.new_post_text).text.toString()
 
         // Add post to database
-        viewModel.createNewPost(title, text)
+        NewPostViewModel.createNewPost(title, text)
 
         // Go back to the forum activity
         val intent = Intent(this, ForumActivity::class.java)
