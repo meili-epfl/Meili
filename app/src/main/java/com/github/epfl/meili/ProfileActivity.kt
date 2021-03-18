@@ -20,6 +20,8 @@ import kotlinx.android.synthetic.main.activity_profile.*;
 import com.google.firebase.auth.FirebaseAuth
 import com.github.epfl.meili.tool.FirestoreUtil
 import com.github.epfl.meili.tool.StorageUtil
+import kotlinx.android.synthetic.main.activity_modify_profile.*
+import kotlinx.android.synthetic.main.activity_profile.profilePhoto
 import java.io.ByteArrayOutputStream
 
 
@@ -76,6 +78,21 @@ class ProfileActivity : Fragment() {
                 .into(profilePhoto)
 
             pictureJustChanged = true
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        FirestoreUtil.getCurrentUser { user ->
+            if (this@ProfileActivity.isVisible) {
+                etName.setText(user.name)
+                etDescription.setText(user.bio)
+                if (!pictureJustChanged && user.profilePicturePath != null)
+                    Glide.with(this)
+                        .load(StorageUtil.pathToReference(user.profilePicturePath))
+                        //.placeholder(R.drawable.ic_account_circle_black_24dp)
+                        .into(profilePhoto)
+            }
         }
     }
 

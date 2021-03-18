@@ -8,8 +8,8 @@ class ContainerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_container)
 
-       /* supportFragmentManager.beginTransaction()
+       supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_layout, ProfileActivity())
-            .commit()*/
+            .commit()
     }
 }
