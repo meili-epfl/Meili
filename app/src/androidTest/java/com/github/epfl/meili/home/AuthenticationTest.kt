@@ -1,13 +1,16 @@
 package com.github.epfl.meili.home
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import junit.framework.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import java.util.*
 
+@RunWith(AndroidJUnit4::class)
 class AuthenticationTest {
     private lateinit var mockService: MockAuthenticationService
     private val MOCK_NAME = "MOCK_NAME"
