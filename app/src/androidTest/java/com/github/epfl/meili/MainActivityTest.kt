@@ -9,7 +9,6 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -23,7 +22,8 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
     @get:Rule
-    var testRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
+    var testRule: ActivityScenarioRule<MainActivity> =
+        ActivityScenarioRule(MainActivity::class.java)
 
     @Before
     fun setup() {
@@ -58,6 +58,7 @@ class MainActivityTest {
 
         Intents.intended(toPackage("com.github.epfl.meili"))
     }
+}
 
 //    @Test
 //    fun testNavigation() {
@@ -70,4 +71,3 @@ class MainActivityTest {
 //        pressBack()
 //        onView(withId(R.id.launchSignInView)).check(matches(isClickable())).perform(click())
 //    }
-}
