@@ -51,7 +51,12 @@ This week, projects for other courses took a lot of my time, so I have to manage
 
 ## Yingxuan
 
-##TODO
+This week I learned how to use MVVM model with firebase and I continued to work on the profile, however I got stuck longtime on the problem that I cannot log in on the emulator, even with the code of main branch. This made me unable to test my code until I figured out the problem. Then I managed to fix some bugs, namely several null pointers exceptions and undefined reference using directly ids, but we can still not see the profile interface appear. The positive side is I get more familiar with different tabs of logcat and the MVVM model.
+
+I did not correctly estimate the time I need, I spent 9 hours on the project but did not achieve my goals. This is partially due to the unexpected problem of sign in, I thought some settings on firebase would be the solution at the beginning of the week, but I end up trying different things and lose my time. The emulator also takes time to run and lags on Mac, I constantly have the system UI isn't responding warning, it's a downside for efficiency.
+
+Next week I should be more efficient and estimate the time more precisely.
+
 
 
 ## Overall team
