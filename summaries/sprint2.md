@@ -61,4 +61,4 @@ Next week I should be more efficient and estimate the time more precisely.
 
 ## Overall team
 
-##TODO
+Even though our time estimates this week were a bit better, we are still learning to account for various sub-tasks such as reading the documentation, testing, merging, etc. One thing we should improve is having more meetings among team members when we are stuck. This will help us avoid wasting time on bugs/problems which we cannot solve on our own and make forward progress.
