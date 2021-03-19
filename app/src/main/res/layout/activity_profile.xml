@@ -91,7 +91,7 @@
             android:layout_margin="5dp"
             android:text="About me" />
 
-        <TextView
+        <EditText
             android:id="@+id/tvDescription"
             android:layout_width="match_parent"
             android:layout_height="77dp"

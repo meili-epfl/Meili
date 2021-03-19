@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                 Intent(this, MainActivity::class.java)
             }
         }
-
+        startActivity(intent)
 
     }
 
