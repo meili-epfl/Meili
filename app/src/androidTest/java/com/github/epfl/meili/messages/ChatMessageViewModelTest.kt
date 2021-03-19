@@ -12,14 +12,13 @@ import org.junit.runner.RunWith
 class ChatMessageViewModelTest {
     var MOCK_PATH = "POI/tour-eiffel"
     var mock_message1 = ChatMessage("Hi I am a Mock Message", "Meili", "tour-eiffel", 1234)
-    lateinit var viewModel: ChatMessageViewModel
     lateinit var db: MessageDatabase
 
     @Before
     fun init() {
         UiThreadStatement.runOnUiThread {
             db = MockMessageDatabase(MOCK_PATH)
-            viewModel = ChatMessageViewModel(db)
+            ChatMessageViewModel.database = db
         }
     }
 
@@ -28,7 +27,7 @@ class ChatMessageViewModelTest {
         UiThreadStatement.runOnUiThread {
             val mock_message2 = ChatMessage("hi", "me", "you", 1234)
 
-            viewModel.addMessage(
+            ChatMessageViewModel.addMessage(
                 mock_message2.text,
                 mock_message2.fromId,
                 mock_message2.toId,
@@ -49,7 +48,7 @@ class ChatMessageViewModelTest {
             var expectedMessageList = ArrayList<ChatMessage>()
             expectedMessageList.add(mock_message1)
 
-            assertEquals(expectedMessageList, viewModel.messages.value)
+            assertEquals(expectedMessageList, ChatMessageViewModel.messages.value)
 
             var mock_message2 = ChatMessage("hi", "me", "you", 1234)
             db.addMessageToDatabase(mock_message2)
@@ -57,7 +56,7 @@ class ChatMessageViewModelTest {
             expectedMessageList.add(mock_message2)
 
             assertEquals(expectedMessageList, db.messages)
-            assertEquals(expectedMessageList, viewModel.messages.value)
+            assertEquals(expectedMessageList, ChatMessageViewModel.messages.value)
         }
     }
 }

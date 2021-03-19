@@ -13,6 +13,8 @@ import com.github.epfl.meili.messages.FirebaseMessageDatabaseAdapter
 import com.github.epfl.meili.models.ChatMessage
 import com.google.android.gms.maps.model.PointOfInterest
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -24,7 +26,8 @@ class ChatLogActivity : AppCompatActivity() {
         val TAG = "ChatLog"
     }
 
-    val adapter = GroupAdapter<GroupieViewHolder>()
+    private val adapter = GroupAdapter<GroupieViewHolder>()
+    val auth = Firebase.auth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
@@ -37,7 +40,9 @@ class ChatLogActivity : AppCompatActivity() {
 
 
         val groupId : String = poi?.placeId!!
-        val myId: String = FirebaseAuth.getInstance().uid!!
+        val myId: String = auth.uid!!
+
+        Log.d(TAG, "the poi is ${poi.name} and has id ${poi.placeId}")
         ChatMessageViewModel.database = FirebaseMessageDatabaseAdapter("POI/${poi.placeId}")
 
         listenForMessages(groupId, myId)

@@ -17,12 +17,13 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-
+        CustomAuthentication.setAuthenticationService(CustomFirebaseAuthenticationService())
 
         findViewById<Button>(R.id.login_button).setOnClickListener {
             val email = findViewById<EditText>(R.id.email_edittext_login).text.toString()
             val password = findViewById<EditText>(R.id.password_edittext_login).text.toString()
             Log.d("login", "email is $email and password is $password")
+
             CustomAuthentication.loginUser(this, email, password)
         }
 

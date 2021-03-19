@@ -21,20 +21,19 @@ class RegisterActivity : AppCompatActivity() {
     companion object {
         val TAG = "RegisterActivity"
 
-
-
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+        CustomAuthentication.setAuthenticationService(CustomFirebaseAuthenticationService())
 
         findViewById<Button>(R.id.register_button).setOnClickListener {
             val email = findViewById<EditText>(R.id.email_edittext_register).text.toString()
             val password = findViewById<EditText>(R.id.password_edittext_register).text.toString()
             val username = findViewById<EditText>(R.id.username_edittext_register).text.toString()
+
             CustomAuthentication.registerUser(this, email, password, username)
         }
 
