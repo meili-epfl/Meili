@@ -61,4 +61,10 @@ Next week I should be more efficient and estimate the time more precisely.
 
 ## Overall team
 
+We haven't managed to finish all of the user stories we have assigned this sprint. Therefore, we will have the same user stories since we believe these are the most important ones.
+
 Even though our time estimates this week were a bit better, we are still learning to account for various sub-tasks such as reading the documentation, testing, merging, etc. One thing we should improve is having more meetings among team members when we are stuck. This will help us avoid wasting time on bugs/problems which we cannot solve on our own and make forward progress.
+
+The standup meeting really helped this time especially since every person has gained some experience in an API, we usually found ourselves saying "hey I something like that before, maybe I can show you how to do it after the meeting" and we found that to be really beneficial.
+
+
