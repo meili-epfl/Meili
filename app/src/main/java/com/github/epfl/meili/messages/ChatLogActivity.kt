@@ -39,39 +39,39 @@ class ChatLogActivity : AppCompatActivity() {
         supportActionBar?.title = poi?.name
 
 
-        val groupId : String = poi?.placeId!!
-        val myId: String = auth.uid!!
+        val groupId: String = poi?.placeId!!
+
 
         Log.d(TAG, "the poi is ${poi.name} and has id ${poi.placeId}")
-        ChatMessageViewModel.database = FirebaseMessageDatabaseAdapter("POI/${poi.placeId}")
+        ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter("POI/${poi.placeId}"))
 
-        listenForMessages(groupId, myId)
+        //val myId: String = auth.uid!!
+
+        listenForMessages(groupId)
 
         findViewById<Button>(R.id.button_chat_log).setOnClickListener {
-            performSendMessage(groupId, myId)
+            performSendMessage(groupId)
         }
 
 
     }
 
-    private fun performSendMessage(groupId: String, myId: String) {
+    private fun performSendMessage(groupId: String) {
         val text = findViewById<EditText>(R.id.edit_text_chat_log).text.toString()
         findViewById<EditText>(R.id.edit_text_chat_log).text.clear()
 
 
-        ChatMessageViewModel.addMessage(text, myId, groupId, System.currentTimeMillis() / 1000)
+        ChatMessageViewModel.addMessage(text, "", groupId, System.currentTimeMillis() / 1000)
     }
 
-    private fun listenForMessages(groupId: String, myId: String) {
+    private fun listenForMessages(groupId: String) {
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
             list.forEach { message ->
                 Log.d(TAG, "loading message: ${message.text}")
-                if (message.fromId == myId) {
-                    adapter.add(ChatItem(message.text, true))
-                } else {
-                    adapter.add(ChatItem(message.text, false))
-                }
+
+                adapter.add(ChatItem(message.text, false))
+
             }
         }
 

@@ -7,10 +7,10 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ChatMessage(
-    val text: String,
-    val fromId: String,
-    val toId: String,
-    val timestamp: Long
+    val text: String = "",
+    var fromId: String = "",
+    val toId: String = "",
+    val timestamp: Long = -1
 ) : Parcelable {
     /** Creates an instances of Post from other objects */
     companion object {

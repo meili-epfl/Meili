@@ -10,7 +10,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
-import com.github.epfl.meili.NewMessageActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.registerlogin.LoginActivity
 import com.github.epfl.meili.registerlogin.RegisterActivity

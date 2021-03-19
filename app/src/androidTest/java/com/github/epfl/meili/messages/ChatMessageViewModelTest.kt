@@ -18,7 +18,7 @@ class ChatMessageViewModelTest {
     fun init() {
         UiThreadStatement.runOnUiThread {
             db = MockMessageDatabase(MOCK_PATH)
-            ChatMessageViewModel.database = db
+            ChatMessageViewModel.setMessageDatabase(db)
         }
     }
 

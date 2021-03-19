@@ -2,10 +2,12 @@ package com.github.epfl.meili.messages
 
 import android.util.Log
 import com.github.epfl.meili.models.ChatMessage
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -40,7 +42,9 @@ class FirebaseMessageDatabaseAdapter(private val path: String) : MessageDatabase
      */
     override fun addMessageToDatabase(chatMessage: ChatMessage) {
         val reference = databaseInstance.getReference(path).push()
-
+        if(Firebase.auth.uid != null){
+            chatMessage.fromId = Firebase.auth.uid!!
+        }
         reference.setValue(chatMessage)
             .addOnSuccessListener {
                 Log.d(TAG + path, "Saved our chat message: ${reference.key}")

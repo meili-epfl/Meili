@@ -14,7 +14,10 @@ object ChatMessageViewModel : ViewModel(),
     private val _messages = MutableLiveData<List<ChatMessage>?>()
     val messages: LiveData<List<ChatMessage>?> = _messages
 
-    init {
+
+
+    fun setMessageDatabase(database: MessageDatabase){
+        this.database = database
         database.addObserver(this)
     }
 

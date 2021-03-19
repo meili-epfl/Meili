@@ -55,10 +55,8 @@ class ChatLogActivityAndroidTest {
     @Before
     fun init() {
         UiThreadStatement.runOnUiThread {
-            ChatMessageViewModel.database = MockMessageDatabase(MOCK_PATH)
+            ChatMessageViewModel.setMessageDatabase(MockMessageDatabase(MOCK_PATH))
             ChatMessageViewModel.addMessage(fake_message, fake_id, fake_id, 10)
-            Firebase.auth.signInWithEmailAndPassword(MOCK_EMAIL, MOCK_PASSWORD)
-            Thread.sleep(5000)
         }
     }
 

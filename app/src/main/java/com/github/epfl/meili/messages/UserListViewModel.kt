@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.github.epfl.meili.models.User
 import kotlinx.coroutines.launch
 
-class UserListViewModel(): ViewModel() {
+class UserListViewModel() : ViewModel() {
     var userFetchingService: UserFetchingService = UserFetchingService
-        private val _users = MutableLiveData<List<User>?>()
-        val users: LiveData<List<User>?> = _users
+    private val _users = MutableLiveData<List<User>?>()
+    val users: LiveData<List<User>?> = _users
 
     init {
         viewModelScope.launch { // Asynchronous block for viewModels
