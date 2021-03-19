@@ -5,15 +5,19 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import com.github.epfl.meili.LatestMessagesActivity
 import com.github.epfl.meili.home.AuthUser
+import com.github.epfl.meili.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class CustomFirebaseAuthenticationService: CustomAuthenticationService {
     private lateinit var auth: FirebaseAuth
+    val TAG = "CustomFirebaseService"
 
     override fun init(){
         auth = Firebase.auth
@@ -36,24 +40,24 @@ class CustomFirebaseAuthenticationService: CustomAuthenticationService {
 
     private fun saveUserToFirebaseDatabase(activity: AppCompatActivity, username: String) {
 
+
         // Write a message to the database
+        val uid = FirebaseAuth.getInstance().uid ?: ""
+        val database = Firebase.database
+        val myRef = database.getReference("/users/$uid")
+        val user =
+            User(uid, username)
 
 
-        // Create post document (ID created by database)
-        val userDocument = hashMapOf(
-            "uid" to auth.uid,
-            "username" to username,
-        )
 
-        // Add a new document with a generated ID
-        Firebase.firestore.collection("users").add(userDocument)
-            .addOnSuccessListener {
-                Log.d(RegisterActivity.TAG, "user saved to firebase datatbase!")
-                val intent = Intent(activity, LatestMessagesActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                activity.startActivity(intent)
-            }
-            .addOnFailureListener { auth.currentUser?.delete() }
+            myRef.setValue(user)
+                .addOnSuccessListener {
+                    Log.d(TAG, "user saved to firebase datatbase!")
+                    val intent = Intent(activity, LatestMessagesActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    activity.startActivity(intent)
+
+        }
     }
 
     override fun signInWithEmailAndPassword(activity: AppCompatActivity, email: String, password: String){

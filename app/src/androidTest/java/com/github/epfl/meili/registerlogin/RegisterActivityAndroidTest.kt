@@ -27,8 +27,6 @@ class RegisterActivityAndroidTest {
     private val TEST_USERNAME: String = "moderator"
     private val TEST_EMAIL: String = "moderator@gmail.com"
     private val TEST_PASSWORD: String = "123123"
-    private val TEST_BAD_EMAIL: String = "mods"
-    private val TEST_BAD_PASSWORD: String = "123"
 
     @get: Rule
     var testRule: ActivityScenarioRule<RegisterActivity> =
