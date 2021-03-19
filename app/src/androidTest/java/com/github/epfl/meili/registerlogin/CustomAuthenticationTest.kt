@@ -31,7 +31,8 @@ class CustomAuthenticationTest {
 
     @Test
     fun cantRegisterWithoutEmail() {
-
+        CustomAuthentication.authService = CustomMockAuthenticationService()
+        CustomAuthentication.setAuthenticationService(CustomMockAuthenticationService())
         testRule.getScenario().onActivity { activity ->
             CustomAuthentication.registerUser(
                 activity,

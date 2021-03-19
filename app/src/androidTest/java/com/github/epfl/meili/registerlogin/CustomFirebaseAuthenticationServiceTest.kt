@@ -29,6 +29,18 @@ class CustomFirebaseAuthenticationServiceTest {
     }
 
     @Test
+    fun registerBobToDatabase(){
+
+        testRule.getScenario().onActivity { activity ->
+            firebaseCustomService.saveUserToFirebaseDatabase(
+                activity,
+                "Bob"
+            )
+        }
+
+    }
+
+    @Test
     fun registerAddsAndRemovesUser(){
 
         testRule.getScenario().onActivity { activity ->

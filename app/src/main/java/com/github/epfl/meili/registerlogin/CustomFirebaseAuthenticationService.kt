@@ -38,7 +38,7 @@ class CustomFirebaseAuthenticationService: CustomAuthenticationService {
             }
     }
 
-    private fun saveUserToFirebaseDatabase(activity: AppCompatActivity, username: String) {
+     fun saveUserToFirebaseDatabase(activity: AppCompatActivity, username: String) {
 
 
         // Write a message to the database
