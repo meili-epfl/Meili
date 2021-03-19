@@ -53,7 +53,9 @@
         <activity android:name=".ModifyProfileActivity">
 
         </activity>
+        <activity android:name=".ContainerActivity">
 
+        </activity>
         <activity android:name=".GoogleSignInActivity">
 
         </activity>

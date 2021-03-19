@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
+import com.github.epfl.meili.tool.FirestoreUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -69,6 +70,7 @@ object AuthenticationService: ViewModel() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithCredential:success")
                     updateUserData()
+                    FirestoreUtil.initCurrentUserIfFirstTime {}
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -101,6 +103,7 @@ object AuthenticationService: ViewModel() {
         if (user != null){
             name = user.displayName
             email = user.email
+
         }else{
             name = null
             email = null

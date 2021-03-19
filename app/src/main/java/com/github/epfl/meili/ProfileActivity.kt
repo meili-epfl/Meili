@@ -3,19 +3,20 @@ package com.github.epfl.meili
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 
 import android.app.Activity
 import android.graphics.Bitmap
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 //import com.github.epfl.meili.GlideApp
 import com.bumptech.glide.Glide.with
 import com.firebase.ui.auth.AuthUI
-import kotlinx.android.synthetic.main.activity_profile.*;
+import kotlinx.android.synthetic.main.activity_profile.*
 
 import com.google.firebase.auth.FirebaseAuth
 import com.github.epfl.meili.tool.FirestoreUtil
@@ -36,8 +37,8 @@ class ProfileActivity : Fragment() {
         val view = inflater.inflate(R.layout.activity_profile, container, false)
 
         view.apply {
-
-            profilePhoto.setOnClickListener {
+            val nimaPhoto =  findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profilePhoto)
+            nimaPhoto.setOnClickListener {
                 val intent = Intent().apply {
                     type = "image/*"
                     action = Intent.ACTION_GET_CONTENT
@@ -46,7 +47,8 @@ class ProfileActivity : Fragment() {
                 startActivityForResult(Intent.createChooser(intent, "Select Image"), RC_SELECT_IMAGE)
             }
 
-            btnModifyProfile.setOnClickListener {
+            val nimaModButton = findViewById<Button>(R.id.btnModifyProfile)
+            nimaModButton.setOnClickListener {
                 if (::selectedImageBytes.isInitialized)
                     StorageUtil.uploadProfilePhoto(selectedImageBytes) { imagePath ->
                         FirestoreUtil.updateCurrentUser(tvName.text.toString(),
@@ -72,7 +74,6 @@ class ProfileActivity : Fragment() {
             val outputStream = ByteArrayOutputStream()
             selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
             selectedImageBytes = outputStream.toByteArray()
-
             Glide.with(this)
                 .load(selectedImageBytes)
                 .into(profilePhoto)
@@ -85,8 +86,10 @@ class ProfileActivity : Fragment() {
         super.onStart()
         FirestoreUtil.getCurrentUser { user ->
             if (this@ProfileActivity.isVisible) {
-                etName.setText(user.name)
-                etDescription.setText(user.bio)
+                val nimaName = view?.findViewById<EditText>(R.id.etName)
+                nimaName?.setText(user.name)
+                val nimaDes = view?.findViewById<EditText>(R.id.etDescription)
+                nimaDes?.setText(user.bio)
                 if (!pictureJustChanged && user.profilePicturePath != null)
                     Glide.with(this)
                         .load(StorageUtil.pathToReference(user.profilePicturePath))
