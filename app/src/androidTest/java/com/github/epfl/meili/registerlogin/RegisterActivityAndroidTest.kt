@@ -13,12 +13,11 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
 import com.github.epfl.meili.LatestMessagesActivity
 import com.github.epfl.meili.R
-import com.google.firebase.auth.FirebaseAuth
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
-import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -28,16 +27,14 @@ class RegisterActivityAndroidTest {
     private val TEST_USERNAME: String = "moderator"
     private val TEST_EMAIL: String = "moderator@gmail.com"
     private val TEST_PASSWORD: String = "123123"
-    private val TEST_BAD_EMAIL: String = "mods"
-    private val TEST_BAD_PASSWORD: String = "123"
 
     @get: Rule
     var testRule: ActivityScenarioRule<RegisterActivity> =
         ActivityScenarioRule(RegisterActivity::class.java)
 
-    @After
-    fun singOut() {
-        FirebaseAuth.getInstance().signOut()
+    @Before
+    fun setup(){
+        CustomAuthentication.setAuthenticationService(CustomMockAuthenticationService())
     }
 
     @Test
@@ -134,119 +131,15 @@ class RegisterActivityAndroidTest {
             typeText(TEST_PASSWORD),
             closeSoftKeyboard()
         )
+
         onView(withId(R.id.register_button)).perform(click())
 
-        Thread.sleep(2000)
         Intents.intended(hasComponent(LatestMessagesActivity::class.java.name))
-        FirebaseAuth.getInstance().currentUser?.delete()
         Intents.release()
 
     }
 
-    @Test
-    fun cantRegisterWithoutEmail() {
 
-        // Type text and then press the button.
-        onView(withId(R.id.username_edittext_register)).perform(
-            clearText(),
-            typeText(TEST_USERNAME),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.password_edittext_register)).perform(
-            clearText(),
-            typeText(TEST_PASSWORD),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.register_button)).perform(click())
-
-
-    }
-
-    @Test
-    fun cantRegisterWithBadEmail() {
-
-        onView(withId(R.id.username_edittext_register)).perform(
-            clearText(),
-            typeText(TEST_USERNAME),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.email_edittext_register)).perform(
-            clearText(),
-            typeText(TEST_BAD_EMAIL),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.password_edittext_register)).perform(
-            clearText(),
-            typeText(TEST_PASSWORD),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.register_button)).perform(click())
-
-
-    }
-
-    @Test
-    fun cantRegisterWithoutPassword() {
-
-
-        onView(withId(R.id.username_edittext_register)).perform(
-            clearText(),
-            typeText(TEST_USERNAME),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.email_edittext_register)).perform(
-            clearText(),
-            typeText(TEST_EMAIL),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.register_button)).perform(click())
-
-
-    }
-
-    @Test
-    fun cantRegisterWithBadPassword() {
-
-
-        onView(withId(R.id.username_edittext_register)).perform(
-            clearText(),
-            typeText(TEST_USERNAME),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.email_edittext_register)).perform(
-            clearText(),
-            typeText(TEST_EMAIL),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.password_edittext_register)).perform(
-            clearText(),
-            typeText(TEST_BAD_PASSWORD),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.register_button)).perform(click())
-
-
-    }
-
-    @Test
-    fun cantRegisterWithoutUsername() {
-
-
-        onView(withId(R.id.email_edittext_register)).perform(
-            clearText(),
-            typeText(TEST_EMAIL),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.password_edittext_register)).perform(
-            clearText(),
-            typeText(TEST_PASSWORD),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.register_button)).perform(click())
-
-        FirebaseAuth.getInstance().currentUser?.delete()
-
-    }
 
     @Test
     fun alreadyHaveAnAccount() {

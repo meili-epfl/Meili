@@ -67,6 +67,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             permissions: Array<String>,
             grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         updateMapUI()
     }
 

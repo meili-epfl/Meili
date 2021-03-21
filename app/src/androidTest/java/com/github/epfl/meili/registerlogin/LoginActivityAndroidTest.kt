@@ -19,6 +19,7 @@ import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -35,10 +36,9 @@ class LoginActivityAndroidTest {
     var testRule: ActivityScenarioRule<LoginActivity> =
         ActivityScenarioRule(LoginActivity::class.java)
 
-    @After
-    fun signOut() {
-        FirebaseAuth.getInstance().signOut()
-        Thread.sleep(2000)
+    @Before
+    fun setup(){
+        CustomAuthentication.setAuthenticationService(CustomMockAuthenticationService())
     }
 
     @Test
@@ -109,76 +109,13 @@ class LoginActivityAndroidTest {
         )
         onView(withId(R.id.login_button)).perform(click())
 
-        Thread.sleep(2000)
+
         Intents.intended(hasComponent(LatestMessagesActivity::class.java.name))
         Intents.release()
 
     }
 
-    @Test
-    fun cantLoginWithoutEmail() {
 
-        // Type text and then press the button.
-        onView(withId(R.id.password_edittext_login)).perform(
-            clearText(),
-            typeText(TEST_PASSWORD),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.login_button)).perform(click())
-
-
-    }
-
-    @Test
-    fun cantLoginWithBadEmail() {
-
-        onView(withId(R.id.email_edittext_login)).perform(
-            clearText(),
-            typeText(TEST_BAD_EMAIL),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.password_edittext_login)).perform(
-            clearText(),
-            typeText(TEST_PASSWORD),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.login_button)).perform(click())
-
-
-    }
-
-    @Test
-    fun cantRegisterWithoutPassword() {
-
-
-        onView(withId(R.id.email_edittext_login)).perform(
-            clearText(),
-            typeText(TEST_EMAIL),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.login_button)).perform(click())
-
-
-    }
-
-    @Test
-    fun cantLoginWithBadPassword() {
-
-
-        onView(withId(R.id.email_edittext_login)).perform(
-            clearText(),
-            typeText(TEST_EMAIL),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.password_edittext_login)).perform(
-            clearText(),
-            typeText(TEST_BAD_PASSWORD),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.login_button)).perform(click())
-
-
-    }
 
 
     private fun childAtPosition(
