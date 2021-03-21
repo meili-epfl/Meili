@@ -2,12 +2,11 @@ package com.github.epfl.meili.home
 
 import android.app.Activity
 import android.content.Intent
+import com.github.epfl.meili.models.User
 
 
 interface AuthenticationService {
-    fun init()
-
-    fun getCurrentuser(): AuthUser?
+    fun getCurrentuser(): User?
 
     fun signInIntent(): Intent
 
@@ -21,5 +20,3 @@ interface AuthenticationService {
         onComplete: () -> Unit
     )
 }
-
-class AuthUser(val name: String, val email: String)

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.github.epfl.meili.models.User
 
 
 object Auth : ViewModel() {
@@ -18,12 +19,10 @@ object Auth : ViewModel() {
     fun setAuthenticationService(authService: AuthenticationService) {
         this.authService = authService
 
-        Auth.authService.init()
-
         updateUserData()
     }
 
-    fun getCurrentUser(): AuthUser? {
+    fun getCurrentUser(): User? {
         return authService.getCurrentuser()
     }
 
@@ -48,7 +47,7 @@ object Auth : ViewModel() {
         val user = getCurrentUser()
 
         if (user != null) {
-            name = user.name
+            name = user.username
             email = user.email
         } else {
             name = null

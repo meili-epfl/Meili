@@ -10,7 +10,8 @@ data class ChatMessage(
     val text: String = "",
     var fromId: String = "",
     val toId: String = "",
-    val timestamp: Long = -1
+    val timestamp: Long = -1,
+    val fromName: String = ""
 ) : Parcelable {
     /** Creates an instances of Post from other objects */
     companion object {
@@ -24,7 +25,8 @@ data class ChatMessage(
                 val fromId = getString("fromId")!!
                 val toId = getString("toId")!!
                 val timestamp = getLong("timestamp")!!
-                ChatMessage(text, fromId, toId, timestamp)
+                val fromName = getString("fromName")!!
+                ChatMessage(text, fromId, toId, timestamp, fromName)
             } catch (e: Exception) {
                 Log.e(TAG, "Error converting to Chat Message")
                 null // Return null if error occurs
