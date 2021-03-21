@@ -77,7 +77,7 @@ class ChatLogActivityAndroidTest {
             )
         )
 
-        appCompatEditText3.perform(replaceText(fake_message), closeSoftKeyboard())
+        appCompatEditText3.perform(replaceText(fake_message))
 
         val materialButton2 = onView(
             allOf(
