@@ -45,7 +45,6 @@ class ChatLogActivity : AppCompatActivity() {
         Log.d(TAG, "the poi is ${poi.name} and has id ${poi.placeId}")
         ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter("POI/${poi.placeId}"))
 
-        //val myId: String = auth.uid!!
 
         listenForMessages(groupId)
 
