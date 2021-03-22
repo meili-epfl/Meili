@@ -35,6 +35,13 @@ class RegisterActivityAndroidTest {
     fun setup() {
         CustomAuthentication.setAuthenticationService(CustomMockAuthenticationService())
     }
+    
+    @Before
+    fun removePopUps(){
+        testRule.scenario.onActivity {
+            it.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        }
+    }
 
     @Test
     fun textFieldsAreWritable() {
