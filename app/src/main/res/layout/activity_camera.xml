@@ -12,7 +12,6 @@
         android:layout_height="100dp"
         android:layout_marginBottom="50dp"
         android:elevation="2dp"
-        android:onClick="takePhoto"
         android:scaleType="fitCenter"
         android:text="Take Photo"
         app:layout_constraintBottom_toBottomOf="parent"
