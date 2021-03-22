@@ -1,19 +1,20 @@
 package com.github.epfl.meili
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.github.epfl.meili.messages.ChatMessageViewModel
+import com.github.epfl.meili.messages.FirebaseMessageDatabaseAdapter
 import com.github.epfl.meili.models.ChatMessage
-import com.github.epfl.meili.models.User
+import com.google.android.gms.maps.model.PointOfInterest
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -25,80 +26,55 @@ class ChatLogActivity : AppCompatActivity() {
         val TAG = "ChatLog"
     }
 
-    val adapter = GroupAdapter<GroupieViewHolder>()
+    private val adapter = GroupAdapter<GroupieViewHolder>()
+    val auth = Firebase.auth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
 
         findViewById<RecyclerView>(R.id.recycleview_chat_log).adapter = adapter
 
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
-        supportActionBar?.title = user?.username
 
-        listenForMessages()
+        val poi = intent.getParcelableExtra<PointOfInterest>("POI_KEY")
+        supportActionBar?.title = poi?.name
+
+
+        val groupId: String = poi?.placeId!!
+
+
+        Log.d(TAG, "the poi is ${poi.name} and has id ${poi.placeId}")
+        ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter("POI/${poi.placeId}"))
+
+
+        listenForMessages(groupId)
 
         findViewById<Button>(R.id.button_chat_log).setOnClickListener {
-            performSendMessage()
+            performSendMessage(groupId)
         }
 
 
     }
 
-    private fun performSendMessage() {
+    private fun performSendMessage(groupId: String) {
         val text = findViewById<EditText>(R.id.edit_text_chat_log).text.toString()
+        findViewById<EditText>(R.id.edit_text_chat_log).text.clear()
 
-        val fromId = FirebaseAuth.getInstance().uid
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
-        val toId = user?.uid
 
-        if (fromId == null) return
-        if (toId == null) return
-
-        val reference = FirebaseDatabase.getInstance().getReference("/messages").push()
-
-        val chatMessage =
-            ChatMessage(reference.key!!, text, fromId, toId, System.currentTimeMillis() / 1000)
-        reference.setValue(chatMessage)
-            .addOnSuccessListener {
-                Log.d(TAG, "Saved our chat message: ${reference.key}")
-            }
+        ChatMessageViewModel.addMessage(text, "", groupId, System.currentTimeMillis() / 1000)
     }
 
-    private fun listenForMessages() {
-        val user = intent.getParcelableExtra<User>(NewMessageActivity.USER_KEY)
-        val toId = user?.uid
+    private fun listenForMessages(groupId: String) {
 
-        val ref = FirebaseDatabase.getInstance().getReference("/messages")
-        ref.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                val chatMessage = snapshot.getValue(ChatMessage::class.java)
+        val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
+            list.forEach { message ->
+                Log.d(TAG, "loading message: ${message.text}")
 
-                if (chatMessage != null) {
-                    if (chatMessage.fromId == FirebaseAuth.getInstance().uid) {
-                        adapter.add(ChatItem(chatMessage.text, true))
-                    } else if (chatMessage.toId == toId) {
-                        adapter.add(ChatItem(chatMessage.text, false))
-                    }
-                }
-            }
-
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                adapter.add(ChatItem(message.text, false))
 
             }
+        }
 
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-
-            }
-
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-        })
+        ChatMessageViewModel.messages.observe(this, groupMessageObserver)
     }
 }
 
