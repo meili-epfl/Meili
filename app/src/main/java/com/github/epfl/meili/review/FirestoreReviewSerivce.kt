@@ -36,7 +36,6 @@ class FirestoreReviewSerivce(poiKey: String) : ReviewService(poiKey), EventListe
 
         if (snapshot != null) {
             reviews = snapshot.map {doc -> doc.toObject(Review::class.java)}.toList()
-            Log.e(TAG, "$reviews")
             this.notifyObservers()
         } else {
             Log.e(TAG, "Received null snapshot from Firestore")
