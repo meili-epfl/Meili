@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -49,11 +50,15 @@ class CameraActivity : AppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
 
+        // Set up the listener for take photo button
+        findViewById<Button>(R.id.camera_capture_button).setOnClickListener { takePhoto() }
+
+
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
-    fun takePhoto(view: View) {
+    fun takePhoto() {
         // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
 
@@ -100,6 +105,10 @@ class CameraActivity : AppCompatActivity() {
                     it.setSurfaceProvider(findViewById<PreviewView>(R.id.camera_viewFinder).surfaceProvider)
                 }
 
+            // Get image capture
+            imageCapture = ImageCapture.Builder()
+                .build()
+
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
@@ -107,7 +116,8 @@ class CameraActivity : AppCompatActivity() {
                 // Make sure that nothing else is bound to the camera, and bind cameraSelector to it
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview)
+                    this, cameraSelector, preview, imageCapture)
+
 
             } catch(e: Exception) {
                 Log.e(TAG, "Camera binding failed")
