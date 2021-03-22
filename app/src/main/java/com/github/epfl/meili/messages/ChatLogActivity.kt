@@ -23,6 +23,7 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 import java.sql.Timestamp
 import java.util.*
+import kotlin.collections.HashSet
 
 class ChatLogActivity : AppCompatActivity() {
 
@@ -35,6 +36,7 @@ class ChatLogActivity : AppCompatActivity() {
     private lateinit var authService : AuthenticationService
     private lateinit var currentUser: User
     private lateinit var groupId: String
+    private var messsageSet = HashSet<ChatMessage>()
     //TODO: ensure you are signed in to be able to send message you can add screen that says not signed in
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,14 +76,15 @@ class ChatLogActivity : AppCompatActivity() {
     private fun listenForMessages() {
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
-            adapter.clear() //TODO: verify if there is a better way to do this
+            var newMessages = list.minus(messsageSet)
 
-            list.forEach { message ->
-
+            newMessages.forEach { message ->
                 Log.d(TAG, "loading message: ${message.text}")
 
                 adapter.add(ChatItem(message, message.fromId == currentUser.uid))
             }
+
+            messsageSet.addAll(newMessages)
 
             //scroll down
             val lastItemPos = adapter.itemCount -1
@@ -99,17 +102,36 @@ class ChatItem(val message: ChatMessage, val me: Boolean) : Item<GroupieViewHold
         } else {
             return R.layout.chat_from_other_row
         }
-
     }
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.findViewById<TextView>(R.id.text_gchat_message).text = message.text
-        viewHolder.itemView.findViewById<TextView>(R.id.text_chat_timestamp).text = "11:35" //todo get day from timestamp
-        viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text = "21st March"
+        var date = Date(message.timestamp*1000)
+        viewHolder.itemView.findViewById<TextView>(R.id.text_chat_timestamp).text = getTime(date)
+        viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text = getDay(date)
 
         if(!me){
             viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text = message.fromName
         }
+    }
 
+    private fun getDay(date: Date): String{
+        var res = date.toString()
+        var splitted_res = res.split(" ")
+        return splitted_res[MONTH]+ " "+ splitted_res[DAY_OF_WEEK]+ " "+ splitted_res[DAY_OF_MONTH]
+    }
+    private fun getTime(date: Date): String{
+        var res = date.toString()
+        var splitted_res = res.split(" ")
+
+        // Return only hours:minutes without seconds (originally hh:mm:ss)
+        return splitted_res[TIME_OF_DAY].substring(0, splitted_res[TIME_OF_DAY].length-3)
+    }
+
+    companion object{
+        private const val MONTH = 0
+        private const val DAY_OF_WEEK = 1
+        private const val DAY_OF_MONTH = 2
+        private const val TIME_OF_DAY = 3
     }
 }
