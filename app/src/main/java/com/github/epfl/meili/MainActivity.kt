@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.registerlogin.RegisterActivity
 
 class MainActivity : AppCompatActivity() {
@@ -24,6 +25,9 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.launchMapView -> {
                 Intent(this, MapActivity::class.java)
+            }
+            R.id.launchCameraView -> {
+                Intent(this, CameraActivity::class.java)
             }
             else -> {
                 Intent(this, MainActivity::class.java)
