@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.registerlogin.RegisterActivity
+import com.github.epfl.meili.review.ReviewsActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +25,9 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.launchMapView -> {
                 Intent(this, MapActivity::class.java)
+            }
+            R.id.launchReviewView -> {
+                Intent(this, ReviewsActivity::class.java)
             }
             else -> {
                 Intent(this, MainActivity::class.java)
