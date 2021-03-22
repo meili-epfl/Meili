@@ -51,15 +51,6 @@
                 android:layout_marginTop="10dp"
                 />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/review_author"
-                android:text="Author"
-                android:textSize="15sp"
-                android:layout_marginTop="10dp"
-                />
-
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
