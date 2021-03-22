@@ -16,6 +16,7 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,6 +35,16 @@ class RegisterActivityAndroidTest {
     @Before
     fun setup() {
         CustomAuthentication.setAuthenticationService(CustomMockAuthenticationService())
+    }
+
+    @Before
+    fun initIntents(){
+        Intents.init()
+    }
+
+    @After
+    fun releaseIntents(){
+        Intents.release()
     }
 
     @Test
@@ -142,18 +153,14 @@ class RegisterActivityAndroidTest {
 
     @Test
     fun alreadyHaveAnAccount() {
-        Intents.init()
         onView(withId(R.id.already_have_account_text_view)).perform(click())
         Intents.intended(hasComponent(LoginActivity::class.java.name))
-        Intents.release()
     }
 
     @Test
     fun backToRegistration() {
-        Intents.init()
         onView(withId(R.id.already_have_account_text_view)).perform(click())
         onView(withId(R.id.back_to_registration_text_view)).perform(click())
-        Intents.release()
     }
 
     private fun childAtPosition(
