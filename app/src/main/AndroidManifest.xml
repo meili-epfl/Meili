@@ -36,7 +36,7 @@
         <activity android:name=".LatestMessagesActivity" />
         <activity android:name=".registerlogin.LoginActivity" />
         <activity android:name=".registerlogin.RegisterActivity" />
-        <activity android:name=".home.GoogleSignInActivity"></activity>
+        <activity android:name=".home.GoogleSignInActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -45,6 +45,6 @@
         <activity
             android:name=".map.MapActivity"
             android:label="@string/title_activity_map"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
     </application>
 </manifest>
