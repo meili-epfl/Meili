@@ -43,6 +43,13 @@ class LoginActivityAndroidTest {
     fun initIntents() {
         Intents.init()
     }
+    
+    @Before
+    fun removePopUps(){
+        testRule.scenario.onActivity {
+            it.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        }
+    }
 
     @After
     fun releaseIntents() {
