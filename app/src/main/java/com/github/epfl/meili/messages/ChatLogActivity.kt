@@ -15,13 +15,9 @@ import com.github.epfl.meili.messages.FirebaseMessageDatabaseAdapter
 import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.User
 import com.google.android.gms.maps.model.PointOfInterest
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
-import java.sql.Timestamp
 import java.util.*
 import kotlin.collections.HashSet
 
@@ -33,7 +29,7 @@ class ChatLogActivity : AppCompatActivity() {
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
-    private lateinit var authService : AuthenticationService
+    private lateinit var authService: AuthenticationService
     private lateinit var currentUser: User
     private lateinit var groupId: String
     private var messsageSet = HashSet<ChatMessage>()
@@ -87,7 +83,7 @@ class ChatLogActivity : AppCompatActivity() {
             messsageSet.addAll(newMessages)
 
             //scroll down
-            val lastItemPos = adapter.itemCount -1
+            val lastItemPos = adapter.itemCount - 1
             findViewById<RecyclerView>(R.id.recycleview_chat_log).scrollToPosition(lastItemPos)
         }
 
@@ -106,29 +102,30 @@ class ChatItem(val message: ChatMessage, val me: Boolean) : Item<GroupieViewHold
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.findViewById<TextView>(R.id.text_gchat_message).text = message.text
-        var date = Date(message.timestamp*1000)
+        var date = Date(message.timestamp * 1000)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_timestamp).text = getTime(date)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text = getDay(date)
 
-        if(!me){
+        if (!me) {
             viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text = message.fromName
         }
     }
 
-    private fun getDay(date: Date): String{
+    private fun getDay(date: Date): String {
         var res = date.toString()
         var splitted_res = res.split(" ")
-        return splitted_res[MONTH]+ " "+ splitted_res[DAY_OF_WEEK]+ " "+ splitted_res[DAY_OF_MONTH]
+        return splitted_res[MONTH] + " " + splitted_res[DAY_OF_WEEK] + " " + splitted_res[DAY_OF_MONTH]
     }
-    private fun getTime(date: Date): String{
+
+    private fun getTime(date: Date): String {
         var res = date.toString()
         var splitted_res = res.split(" ")
 
         // Return only hours:minutes without seconds (originally hh:mm:ss)
-        return splitted_res[TIME_OF_DAY].substring(0, splitted_res[TIME_OF_DAY].length-3)
+        return splitted_res[TIME_OF_DAY].substring(0, splitted_res[TIME_OF_DAY].length - 3)
     }
 
-    companion object{
+    companion object {
         private const val MONTH = 0
         private const val DAY_OF_WEEK = 1
         private const val DAY_OF_MONTH = 2

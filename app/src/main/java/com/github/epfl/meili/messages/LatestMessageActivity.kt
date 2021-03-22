@@ -16,14 +16,17 @@ class LatestMessagesActivity : AppCompatActivity() {
 
        verifyUserIsLoggedIn()
     }
+    
+    private fun startRegisterActivity() {
+        val intent = Intent(this, RegisterActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+    }
 
     private fun verifyUserIsLoggedIn() {
-//        val uid = FirebaseAuth.getInstance().uid
-//        if (uid == null) {
-//            val intent = Intent(this, RegisterActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-//            startActivity(intent)
-//        }
+       if (FirebaseAuth.getInstance().uid == null) {
+           startRegisterActivity()
+       }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -34,9 +37,7 @@ class LatestMessagesActivity : AppCompatActivity() {
             }
             R.id.menu_sign_out -> {
                 FirebaseAuth.getInstance().signOut()
-                val intent = Intent(this, RegisterActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
+                startRegisterActivity()
             }
         }
 

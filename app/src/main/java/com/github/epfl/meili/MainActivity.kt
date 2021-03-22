@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.poi.PoiActivity
 import com.github.epfl.meili.registerlogin.RegisterActivity
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest

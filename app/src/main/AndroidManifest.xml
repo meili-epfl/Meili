@@ -14,7 +14,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
-        <activity android:name=".chat.MessageChannelActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +25,13 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LatestMessagesActivity" />
+        </activity>
+        <activity
+            android:name=".poi.PoiActivity"
+            android:parentActivityName=".map.MapActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".map.MapActivity" />
         </activity>
         <activity android:name=".LatestMessagesActivity" />
         <activity android:name=".registerlogin.LoginActivity" />
@@ -41,5 +47,4 @@
             android:label="@string/title_activity_map"
             android:parentActivityName=".MainActivity"></activity>
     </application>
-
 </manifest>
