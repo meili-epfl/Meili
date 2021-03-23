@@ -3,6 +3,7 @@ package com.github.epfl.meili.messages
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.models.ChatMessage
+import com.google.firebase.database.DatabaseError
 import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -34,15 +35,40 @@ class FirebaseMessageDatabaseAdapterTest {
 
     @Test
     fun adddMessageTest() {
-        val expectedList = db.messages
+        val expectedList = db.getMessages()
         expectedList.add(fake_message)
 
         val observer = Observer { _: Observable, _: Any ->
-            assertEquals(expectedList, db.messages)
+            assertEquals(expectedList, db.getMessages())
         }
 
         db.addObserver(observer)
 
         db.addMessageToDatabase(fake_message)
+    }
+
+    /*
+    @Test
+    fun onChildChangedTest(){
+        // Do nothing
+        db.onChildChanged(DataSnapshot. ("path"),null)
+    }
+
+    @Test
+    fun onChildRemovedTest(){
+        // Do nothing
+        db.onChildRemoved(null)
+    }
+
+    @Test
+    fun onChildMovedTest(){
+        // Do nothing
+        db.onChildRemoved(null)
+    }
+   */
+    @Test
+    fun onCancelledTest() {
+        // Do nothing
+        db.onCancelled(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION))
     }
 }

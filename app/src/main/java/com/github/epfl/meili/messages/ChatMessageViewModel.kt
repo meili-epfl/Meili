@@ -7,9 +7,9 @@ import com.github.epfl.meili.models.ChatMessage
 import java.util.*
 
 object ChatMessageViewModel : ViewModel(),
-        Observer {
+    Observer {
 
-    lateinit var database: MessageDatabase
+    private lateinit var database: MessageDatabase
 
     private val _messages = MutableLiveData<List<ChatMessage>?>()
     val messages: LiveData<List<ChatMessage>?> = _messages
@@ -22,17 +22,17 @@ object ChatMessageViewModel : ViewModel(),
 
     fun addMessage(text: String, fromId: String, toId: String, timeStamp: Long, fromName: String) {
         val message = ChatMessage(
-                text,
-                fromId,
-                toId,
-                timeStamp,
-                fromName
+            text,
+            fromId,
+            toId,
+            timeStamp,
+            fromName
         )
 
         database.addMessageToDatabase(message)
     }
 
     override fun update(o: Observable?, arg: Any?) {
-        _messages.value = database.messages
+        _messages.value = database.getMessages()
     }
 }
