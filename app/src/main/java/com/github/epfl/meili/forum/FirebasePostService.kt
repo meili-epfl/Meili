@@ -6,16 +6,21 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
-class FirebasePostService(db: FirebaseFirestore) : Observable() {
+class FirebasePostService() : Observable() {
+
+    companion object {
+        val DEFAULT_DB = { FirebaseFirestore.getInstance() }
+
+        // Change this for dependency injection
+        var dbProvider: () -> FirebaseFirestore = DEFAULT_DB
+    }
 
     private val TAG = "FirebasePostService"
-    private var db: FirebaseFirestore = db
+    private var db: FirebaseFirestore = dbProvider()
 
     init {
-        val ref = db.collection("posts")
-
         // Listen to changes in post collection and notify observers when it has changed
-        ref.addSnapshotListener { snapshot, e ->
+        db.collection("posts").addSnapshotListener { snapshot, e ->
             // Handle errors
             if (e != null) {
                 Log.w(TAG, "Listen failed.", e)

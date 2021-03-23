@@ -7,14 +7,9 @@ import java.util.*
 /** Abstract class for ViewModels using a Database of Posts */
 abstract class ViewModelWithPostService : ViewModel(), Observer {
 
-    lateinit var postService: FirebasePostService
+    val postService: FirebasePostService = FirebasePostService()
 
     init {
-        setService(FirebaseFirestore.getInstance()) // Default is normal Firestore
-    }
-
-    fun setService(new: FirebaseFirestore) {
-        postService = FirebasePostService(new)
         postService.addObserver(this) // Observe changes from the service
     }
 }
