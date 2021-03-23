@@ -1,5 +1,6 @@
 package com.github.epfl.meili.forum
 
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso
@@ -29,6 +30,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
@@ -39,16 +41,16 @@ class ForumTest {
     private val TEST_USERNAME = "test_username"
     private val TEST_EMAIL = "test@meili.com"
 
+    private lateinit var mockFirestore: FirebaseFirestore
+
     @get:Rule
     var testRule: ActivityScenarioRule<MainActivity> =
         ActivityScenarioRule(MainActivity::class.java)
 
     @Before
     fun initializeMockDatabase() {
-        val mockFirestore = Mockito.mock(FirebaseFirestore::class.java)
-        ForumViewModel.setService(mockFirestore)
-        NewPostViewModel.setService(mockFirestore)
-        PostViewModel.setService(mockFirestore)
+        mockFirestore = Mockito.mock(FirebaseFirestore::class.java)
+        FirebasePostService.dbProvider = { mockFirestore }
     }
 
     @Before
