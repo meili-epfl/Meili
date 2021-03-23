@@ -4,9 +4,8 @@ import com.github.epfl.meili.models.Review
 import java.util.*
 
 abstract class ReviewService(poiKey: String): Observable() {
-    abstract var reviews: List<Review>
+    abstract var reviews: Map<String, Review>
     abstract var averageRating: Float
-    abstract var currentUserHasReviewed: Boolean
 
     abstract fun addReview(review: Review)
 

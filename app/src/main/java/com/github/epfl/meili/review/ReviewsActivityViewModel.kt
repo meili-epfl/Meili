@@ -11,9 +11,8 @@ class ReviewsActivityViewModel: ViewModel(), Observer {
         private const val TAG: String = "ReviewViewModel"
     }
 
-    private val mReviews: MutableLiveData<List<Review>> = MutableLiveData()
+    private val mReviews: MutableLiveData<Map<String, Review>> = MutableLiveData()
     private val mAverageRating: MutableLiveData<Float> = MutableLiveData()
-    private val mCurrentUserHasReviewed: MutableLiveData<Boolean> = MutableLiveData()
 
     private lateinit var service: ReviewService
 
@@ -22,15 +21,13 @@ class ReviewsActivityViewModel: ViewModel(), Observer {
         service.addObserver(this)
     }
 
-    fun getReviews(): LiveData<List<Review>> = mReviews
+    fun getReviews(): LiveData<Map<String, Review>> = mReviews
     fun getAverageRating(): LiveData<Float> = mAverageRating
-    fun getCurrentUserHasReviewed(): LiveData<Boolean> = mCurrentUserHasReviewed
 
     fun addReview(review: Review) = service.addReview(review)
 
     override fun update(o: Observable?, arg: Any?) {
         mReviews.value = service.reviews
         mAverageRating.value = service.averageRating
-        mCurrentUserHasReviewed.value = service.currentUserHasReviewed
     }
 }
