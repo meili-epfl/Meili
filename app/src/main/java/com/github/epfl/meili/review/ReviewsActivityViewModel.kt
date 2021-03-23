@@ -1,30 +1,36 @@
 package com.github.epfl.meili.review
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.epfl.meili.models.Review
 import java.util.*
 
-class ReviewsActivityViewModel(private val reviewService: ReviewService): ViewModel(), Observer {
+class ReviewsActivityViewModel: ViewModel(), Observer {
     companion object {
         private const val TAG: String = "ReviewViewModel"
     }
 
     private val mReviews: MutableLiveData<List<Review>> = MutableLiveData()
+    private val mAverageRating: MutableLiveData<Float> = MutableLiveData()
+    private val mCurrentUserHasReviewed: MutableLiveData<Boolean> = MutableLiveData()
 
-    init {
-        mReviews.value = reviewService.reviews
-        reviewService.addObserver(this)
+    private lateinit var service: ReviewService
+
+    fun setReviewService(service: ReviewService) {
+        this.service = service
+        service.addObserver(this)
     }
 
     fun getReviews(): LiveData<List<Review>> = mReviews
+    fun getAverageRating(): LiveData<Float> = mAverageRating
+    fun getCurrentUserHasReviewed(): LiveData<Boolean> = mCurrentUserHasReviewed
 
-    fun addReview(review: Review) = reviewService.addReview(review)
+    fun addReview(review: Review) = service.addReview(review)
 
     override fun update(o: Observable?, arg: Any?) {
-        mReviews.value = reviewService.reviews
-        Log.e(TAG, "${mReviews.value}")
+        mReviews.value = service.reviews
+        mAverageRating.value = service.averageRating
+        mCurrentUserHasReviewed.value = service.currentUserHasReviewed
     }
 }

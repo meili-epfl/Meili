@@ -14,7 +14,7 @@ import kotlin.collections.ArrayList
 /**
  * Class Adapter for the Firebase Database for chat messages.
  *
- * Remeber that MessageDatabase class extends from observable so you can
+ * Remember that MessageDatabase class extends from observable so you can
  * add an observer to this class to listen to any changes in the Database
  * with the given path
  *

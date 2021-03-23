@@ -1,19 +1,14 @@
 package com.github.epfl.meili.models
 
-
 import android.os.Parcel
 import org.hamcrest.CoreMatchers.`is`
+import org.junit.Assert.assertThat
 import org.junit.Test
-
-import org.junit.Assert.*
-
 
 class UserUnitTest {
 
     private val TEST_UID: String = "test_uid"
     private val TEST_USERNAME: String = "moderator"
-
-
 
     @Test
     fun userConstructor() {
@@ -32,17 +27,13 @@ class UserUnitTest {
     @Test
     fun describeContentDefaultIsZero(){
         var user = User(TEST_UID, TEST_USERNAME)
-
-
         assertThat(user.describeContents(), `is`(0))
     }
 
     @Test
     fun hashCodeIsConsistent(){
         var user = User(TEST_UID, TEST_USERNAME)
-
         var otherUser = User(TEST_UID, TEST_USERNAME)
-
 
         assertThat(user.hashCode(), `is`(otherUser.hashCode()))
     }
@@ -50,8 +41,6 @@ class UserUnitTest {
     @Test
     fun toStringShowsFields(){
         var user = User(TEST_UID, TEST_USERNAME)
-
-
         assertThat(user.toString(), `is`("User(uid=test_uid, username=moderator)"))
     }
 
@@ -66,5 +55,4 @@ class UserUnitTest {
         var nullUser = null
         assertThat(user.equals(nullUser), `is`(false))
     }
-
 }

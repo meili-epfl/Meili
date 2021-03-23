@@ -5,6 +5,9 @@ import java.util.*
 
 abstract class ReviewService(poiKey: String): Observable() {
     abstract var reviews: List<Review>
+    abstract var averageRating: Float
+    abstract var currentUserHasReviewed: Boolean
+
     abstract fun addReview(review: Review)
 
     private var observers: Set<Observer> = HashSet()

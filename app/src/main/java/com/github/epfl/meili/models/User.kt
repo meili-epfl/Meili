@@ -11,7 +11,7 @@ data class User(
     val username: String,
 ) : Parcelable {
 
-    /** Creates an instances of Post from other objects */
+    /** Creates an instances of User from other objects */
     companion object {
         private const val TAG = "User"
 

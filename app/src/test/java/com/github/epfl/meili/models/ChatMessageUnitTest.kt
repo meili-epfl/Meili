@@ -1,13 +1,9 @@
 package com.github.epfl.meili.models
 
 import android.os.Parcel
-import android.util.Log
-import com.github.epfl.meili.models.ChatMessage
-import com.google.firebase.firestore.DocumentSnapshot
 import org.hamcrest.CoreMatchers.`is`
+import org.junit.Assert.assertThat
 import org.junit.Test
-
-import org.junit.Assert.*
 
 
 class ChatMessageUnitTest {
@@ -36,6 +32,4 @@ class ChatMessageUnitTest {
         chatMessage.writeToParcel(Parcel.obtain(), 0)
 
     }
-
-
 }
