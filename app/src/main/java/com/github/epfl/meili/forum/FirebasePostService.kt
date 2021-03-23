@@ -4,11 +4,12 @@ import android.util.Log
 import com.github.epfl.meili.forum.Post.Companion.toPost
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import java.util.*
 
-class FirebasePostService : PostService() {
+class FirebasePostService(db: FirebaseFirestore) : Observable() {
 
     private val TAG = "FirebasePostService"
-    private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private var db: FirebaseFirestore = db
 
     init {
         val ref = db.collection("posts")
@@ -27,7 +28,7 @@ class FirebasePostService : PostService() {
     }
 
     /** Get Post data from its id */
-    override suspend fun getPostFromId(id: String?): Post? { // suspend makes function asynchronous
+    suspend fun getPostFromId(id: String?): Post? { // suspend makes function asynchronous
         if (id == null) {
             return null
         }
@@ -45,7 +46,7 @@ class FirebasePostService : PostService() {
     }
 
     /** Get multiple posts from Database */
-    override suspend fun getPosts(): List<Post> {
+    suspend fun getPosts(): List<Post> {
         return try {
             db.collection("posts")
                 .get()
@@ -58,7 +59,7 @@ class FirebasePostService : PostService() {
     }
 
     /** Add new post to Database */
-    override fun addPost(author: String, title: String, text: String) {
+    fun addPost(author: String, title: String, text: String) {
         // Create post document (ID created by database)
         val postDocument = hashMapOf(
             "username" to author,

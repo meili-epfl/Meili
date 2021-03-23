@@ -1,19 +1,20 @@
 package com.github.epfl.meili.forum
 
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 
 /** Abstract class for ViewModels using a Database of Posts */
 abstract class ViewModelWithPostService : ViewModel(), Observer {
 
-    lateinit var postService: PostService
+    lateinit var postService: FirebasePostService
 
     init {
-        setService(FirebasePostService()) // Default is Firebase PostService (can be changed for tests)
+        setService(FirebaseFirestore.getInstance()) // Default is normal Firestore
     }
 
-    fun setService(new: PostService) {
-        postService = new
+    fun setService(new: FirebaseFirestore) {
+        postService = FirebasePostService(new)
         postService.addObserver(this) // Observe changes from the service
     }
 }
