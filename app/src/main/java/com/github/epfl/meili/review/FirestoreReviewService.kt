@@ -12,9 +12,8 @@ class FirestoreReviewService(poiKey: String) : ReviewService(poiKey), EventListe
         private const val TAG: String = "FirestoreReviewService"
     }
 
-    override var reviews: List<Review> = ArrayList()
+    override var reviews: Map<String, Review> = HashMap()
     override var averageRating: Float = 0f
-    override var currentUserHasReviewed: Boolean = false
 
     private val ref: CollectionReference = FirebaseFirestore.getInstance().collection("reviews/$poiKey/poi_reviews")
 
@@ -35,9 +34,8 @@ class FirestoreReviewService(poiKey: String) : ReviewService(poiKey), EventListe
         }
 
         if (snapshot != null) {
-            reviews = snapshot.toObjects(Review::class.java)
+            reviews = snapshot.associateBy ({ it.id }, {it.toObject(Review::class.java)!! })
             averageRating = Review.averageRating(reviews)
-            currentUserHasReviewed = snapshot.map {s -> s.id}.contains(Firebase.auth.uid!!)
 
             this.notifyObservers()
         } else {

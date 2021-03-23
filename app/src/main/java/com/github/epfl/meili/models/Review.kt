@@ -11,11 +11,11 @@ data class Review (
 ): Parcelable {
     companion object {
         private const val TAG = "Review"
-        fun averageRating(reviews: List<Review>): Float {
+        fun averageRating(reviews: Map<String, Review>): Float {
             return if (reviews.isEmpty()) {
                 0f
             } else {
-                reviews.map {r -> r.rating}.reduce {a,b -> a + b} / reviews.size
+                reviews.values.map {r -> r.rating}.reduce {a,b -> a + b} / reviews.size
             }
         }
     }

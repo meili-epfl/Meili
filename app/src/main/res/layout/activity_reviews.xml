@@ -27,7 +27,6 @@
             android:layout_below="@id/rating_bar"
             android:textSize="40sp"
             android:ems="20"
-            android:hint="Title"
             android:inputType="textShortMessage" />
 
         <EditText
@@ -37,7 +36,6 @@
             android:textSize="20sp"
             android:layout_below="@id/edit_title"
             android:ems="10"
-            android:hint="Summary"
             android:inputType="textMultiLine" />
 
         <Button
@@ -45,8 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/edit_summary"
-            android:onClick="submitButtonListener"
-            android:text="Submit" />
+            android:onClick="submitButtonListener"/>
 
         <Button
             android:id="@+id/cancel_review"
@@ -55,7 +52,7 @@
             android:layout_below="@id/edit_summary"
             android:layout_toEndOf="@id/submit_review"
             android:onClick="cancelButtonListener"
-            android:text="Cancel" />
+            />
 
     </RelativeLayout>
 
@@ -65,12 +62,18 @@
         android:id="@+id/list_reviews"
         android:layout_below="@id/edit_review">
 
-        <TextView
-            android:id="@+id/average_rating"
+        <RatingBar
+            android:id="@+id/average_rating_bar"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="Average Rating" />
+            android:id="@+id/average_rating"
+            android:layout_toEndOf="@id/average_rating_bar"
+            android:textSize="25sp"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"

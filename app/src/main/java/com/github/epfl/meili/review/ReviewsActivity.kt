@@ -8,10 +8,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.TopSpacingItemDecoration
-import kotlin.math.roundToInt
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 
 class ReviewsActivity : AppCompatActivity() {
@@ -23,6 +25,8 @@ class ReviewsActivity : AppCompatActivity() {
         private const val EDIT_BUTTON = android.R.drawable.ic_menu_edit
     }
 
+    private var currentUserReview: Review? = null
+
     private lateinit var reviewAdapter: ReviewRecyclerAdapter
     private lateinit var viewModel: ReviewsActivityViewModel
 
@@ -30,9 +34,10 @@ class ReviewsActivity : AppCompatActivity() {
     private lateinit var editReviewView: View
 
     private lateinit var floatingActionButton: ImageView
+    private lateinit var averageRatingBar: RatingBar
     private lateinit var averageRatingView: TextView
 
-    private lateinit var ratingBarView: RatingBar
+    private lateinit var ratingBar: RatingBar
     private lateinit var editTitleView: EditText
     private lateinit var editSummaryView: EditText
     private lateinit var submitButton: Button
@@ -56,7 +61,7 @@ class ReviewsActivity : AppCompatActivity() {
 
 
     private fun initReviewEditView() {
-        ratingBarView = findViewById(R.id.rating_bar)
+        ratingBar = findViewById(R.id.rating_bar)
         editTitleView = findViewById(R.id.edit_title)
         editSummaryView = findViewById(R.id.edit_summary)
         submitButton = findViewById(R.id.submit_review)
@@ -64,7 +69,7 @@ class ReviewsActivity : AppCompatActivity() {
     }
 
     fun submitButtonListener(view: View) {
-        val rating = ratingBarView.rating
+        val rating = ratingBar.rating
         val title = editTitleView.text.toString()
         val summary = editSummaryView.text.toString()
 
@@ -77,31 +82,40 @@ class ReviewsActivity : AppCompatActivity() {
     }
 
     fun editReviewButtonListener(view: View) {
+        if (BuildConfig.DEBUG && currentUserReview == null) {
+            error("Assertion failed")
+        }
+
+        val review: Review = currentUserReview!!
+        ratingBar.rating = review.rating
+        editTitleView.setText(review.title)
+        editSummaryView.setText(review.summary)
         showEditReviewView()
     }
 
     private fun initViewModel(poiKey: String) {
         floatingActionButton = findViewById(R.id.fab)
+        averageRatingBar = findViewById(R.id.average_rating_bar)
         averageRatingView = findViewById(R.id.average_rating)
 
         viewModel = ViewModelProvider(this).get(ReviewsActivityViewModel::class.java)
         viewModel.setReviewService(FirestoreReviewService(poiKey))
 
-        viewModel.getReviews().observe(this, Observer {list ->
-            reviewAdapter.submitList(list)
+        viewModel.getReviews().observe(this, Observer {map ->
+            if (map.containsKey(Firebase.auth.uid!!)) {
+                currentUserReview = map[Firebase.auth.uid!!]
+                floatingActionButton.setImageResource(EDIT_BUTTON)
+            } else {
+                currentUserReview = null
+                floatingActionButton.setImageResource(ADD_BUTTON)
+            }
+            reviewAdapter.submitList(map.toList())
             reviewAdapter.notifyDataSetChanged()
         })
 
         viewModel.getAverageRating().observe(this, {averageRating ->
+            averageRatingBar.rating = averageRating
             averageRatingView.text = averageRating.toString()
-        })
-
-        viewModel.getCurrentUserHasReviewed().observe(this, {currentUserHasReviewed ->
-            if (currentUserHasReviewed) {
-                floatingActionButton.setImageResource(EDIT_BUTTON)
-            } else {
-                floatingActionButton.setImageResource(ADD_BUTTON)
-            }
         })
     }
 
