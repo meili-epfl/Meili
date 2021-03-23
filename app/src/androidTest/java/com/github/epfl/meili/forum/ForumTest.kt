@@ -1,6 +1,5 @@
 package com.github.epfl.meili.forum
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso
@@ -16,11 +15,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.R
+import com.github.epfl.meili.forum.Post.Companion.toPost
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.home.AuthenticationService
 import com.github.epfl.meili.home.MockAuthenticationService
-import com.github.epfl.meili.registerlogin.LoginActivity
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
@@ -30,7 +31,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
@@ -40,8 +41,15 @@ class ForumTest {
     private val TEST_TITLE = "test title"
     private val TEST_USERNAME = "test_username"
     private val TEST_EMAIL = "test@meili.com"
+    private val postList = ArrayList<Post>()
+    private val mockPost = Post("test id", TEST_USERNAME, TEST_TITLE, TEST_TEXT)
+    private val mockList = ArrayList<DocumentSnapshot>()
 
     private lateinit var mockFirestore: FirebaseFirestore
+    private lateinit var mockDocumentSnapshot: DocumentSnapshot
+    private lateinit var mockCollectionReference: CollectionReference
+    private lateinit var mockDocumentReference: DocumentReference
+    private lateinit var mockQuerySnapshot: QuerySnapshot
 
     @get:Rule
     var testRule: ActivityScenarioRule<MainActivity> =
@@ -49,7 +57,25 @@ class ForumTest {
 
     @Before
     fun initializeMockDatabase() {
+        postList.add(mockPost)
+
         mockFirestore = Mockito.mock(FirebaseFirestore::class.java)
+        mockDocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
+        mockCollectionReference = Mockito.mock(CollectionReference::class.java)
+        mockDocumentReference = Mockito.mock(DocumentReference::class.java)
+        mockQuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
+        val mockTask = Mockito.mock(Task::class.java)
+
+        Mockito.`when`(mockFirestore.collection("posts")).thenReturn(mockCollectionReference)
+        Mockito.`when`(mockCollectionReference.document(any())).thenReturn(mockDocumentReference)
+        Mockito.`when`(mockDocumentReference.get()).thenAnswer { mockDocumentSnapshot }
+        Mockito.`when`(mockCollectionReference.get()).thenAnswer { mockQuerySnapshot }
+        Mockito.`when`(mockCollectionReference.add(any())).thenAnswer{
+            mockList.add(mockDocumentSnapshot)
+            mockTask  // Needs a Task, so I put a mock Task
+        }
+        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toPost() }).thenReturn(postList)
+
         FirebasePostService.dbProvider = { mockFirestore }
     }
 
@@ -102,15 +128,7 @@ class ForumTest {
         Espresso.onView(ViewMatchers.withId(R.id.new_post_create_button))
             .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
 
-        val post = Espresso.onView(
-            allOf(
-                childAtPosition(
-                    withText(TEST_TITLE),
-                    0
-                ),
-                isDisplayed()
-            ))
-        post.perform(click())
+        Thread.sleep(5000)  // wait for posts to load
     }
 
     private fun childAtPosition(
