@@ -2,21 +2,37 @@ package com.github.epfl.meili.forum
 
 import android.util.Log
 import com.github.epfl.meili.forum.Post.Companion.toPost
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import java.util.*
 
-object FirebasePostService : PostService {
+class FirebasePostService(db: FirebaseFirestore) : Observable() {
 
-    private const val TAG = "FirebasePostService"
+    private val TAG = "FirebasePostService"
+    private var db: FirebaseFirestore = db
+
+    init {
+        val ref = db.collection("posts")
+
+        // Listen to changes in post collection and notify observers when it has changed
+        ref.addSnapshotListener { snapshot, e ->
+            // Handle errors
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                return@addSnapshotListener
+            }
+
+            setChanged() // Tell Observable that its state has changed
+            notifyObservers()
+        }
+    }
 
     /** Get Post data from its id */
-    override suspend fun getPostFromId(id: String?): Post? { // suspend makes function asynchronous
+    suspend fun getPostFromId(id: String?): Post? { // suspend makes function asynchronous
         if (id == null) {
             return null
         }
 
-        val db = Firebase.firestore
         return try {
             db.collection("posts")
                 .document(id)
@@ -30,8 +46,7 @@ object FirebasePostService : PostService {
     }
 
     /** Get multiple posts from Database */
-    override suspend fun getPosts(): List<Post> {
-        val db = Firebase.firestore
+    suspend fun getPosts(): List<Post> {
         return try {
             db.collection("posts")
                 .get()
@@ -44,9 +59,7 @@ object FirebasePostService : PostService {
     }
 
     /** Add new post to Database */
-    override fun addPost(author: String, title: String, text: String) {
-        val db = Firebase.firestore
-
+    fun addPost(author: String, title: String, text: String) {
         // Create post document (ID created by database)
         val postDocument = hashMapOf(
             "username" to author,

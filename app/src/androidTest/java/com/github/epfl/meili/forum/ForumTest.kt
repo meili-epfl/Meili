@@ -19,6 +19,7 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
 import com.github.epfl.meili.home.MockAuthenticationService
 import com.github.epfl.meili.registerlogin.LoginActivity
+import com.google.firebase.firestore.FirebaseFirestore
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
@@ -28,6 +29,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
 class ForumTest {
@@ -43,13 +45,10 @@ class ForumTest {
 
     @Before
     fun initializeMockDatabase() {
-        UiThreadStatement.runOnUiThread {
-            val mockPostService = MockPostService()
-
-            ForumViewModel.setService(mockPostService)
-            PostViewModel.setService(mockPostService)
-            NewPostViewModel.setService(mockPostService)
-        }
+        val mockFirestore = Mockito.mock(FirebaseFirestore::class.java)
+        ForumViewModel.setService(mockFirestore)
+        NewPostViewModel.setService(mockFirestore)
+        PostViewModel.setService(mockFirestore)
     }
 
     @Before
