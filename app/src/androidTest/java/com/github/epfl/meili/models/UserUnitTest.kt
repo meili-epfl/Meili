@@ -2,17 +2,27 @@ package com.github.epfl.meili.models
 
 
 import android.os.Parcel
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.epfl.meili.MainActivity
+import com.github.epfl.meili.home.GoogleSignInActivity
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Test
 
 import org.junit.Assert.*
+import org.junit.Rule
+import org.junit.runner.RunWith
 
-
+@RunWith(AndroidJUnit4::class)
 class UserUnitTest {
 
     private val TEST_UID: String = "test_uid"
     private val TEST_USERNAME: String = "moderator"
 
+    @get:Rule
+    var testRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(
+        MainActivity::class.java
+    )
 
 
     @Test
