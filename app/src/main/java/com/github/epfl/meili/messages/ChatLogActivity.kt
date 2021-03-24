@@ -23,7 +23,7 @@ import com.xwray.groupie.Item
 class ChatLogActivity : AppCompatActivity() {
 
     companion object {
-        val TAG = "ChatLog"
+        val TAG = ChatLogActivity::class.java.simpleName
     }
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
@@ -111,10 +111,10 @@ class ChatLogActivity : AppCompatActivity() {
     }
 }
 
-class ChatItem(private val message: ChatMessage, private val me: Boolean) :
+class ChatItem(private val message: ChatMessage, private val isChatMessageFromCurrentUser: Boolean) :
     Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
-        if (me) {
+        if (isChatMessageFromCurrentUser) {
             return R.layout.chat_from_me_row
         } else {
             return R.layout.chat_from_other_row
@@ -129,7 +129,7 @@ class ChatItem(private val message: ChatMessage, private val me: Boolean) :
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
             DateAuxiliary.getDay(date)
 
-        if (!me) {
+        if (!isChatMessageFromCurrentUser) {
             viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text =
                 message.fromName
         }

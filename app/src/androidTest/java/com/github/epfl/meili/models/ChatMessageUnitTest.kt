@@ -7,7 +7,6 @@ import org.junit.Test
 
 
 class ChatMessageUnitTest {
-    private val TEST_ID: String = "1"
     private val TEST_TEXT: String = "Hi!"
     private val TEST_FROMID: String = "frkhjf243htiu43iut"
     private val TEST_TOID: String = "fuh43koh31pjh1t4"
