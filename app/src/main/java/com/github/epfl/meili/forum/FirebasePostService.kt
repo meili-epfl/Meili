@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import java.util.*
 
-class FirebasePostService() : Observable() {
+class FirebasePostService() : PostService() {
 
     companion object {
         val DEFAULT_DB = { FirebaseFirestore.getInstance() }
@@ -33,7 +33,7 @@ class FirebasePostService() : Observable() {
     }
 
     /** Get Post data from its id */
-    suspend fun getPostFromId(id: String?): Post? { // suspend makes function asynchronous
+    override suspend fun getPostFromId(id: String?): Post? { // suspend makes function asynchronous
         if (id == null) {
             return null
         }
@@ -51,7 +51,7 @@ class FirebasePostService() : Observable() {
     }
 
     /** Get multiple posts from Database */
-    suspend fun getPosts(): List<Post> {
+    override suspend fun getPosts(): List<Post> {
         return try {
             db.collection("posts")
                 .get()
@@ -64,7 +64,7 @@ class FirebasePostService() : Observable() {
     }
 
     /** Add new post to Database */
-    fun addPost(author: String, title: String, text: String) {
+    override fun addPost(author: String, title: String, text: String) {
         // Create post document (ID created by database)
         val postDocument = hashMapOf(
             "username" to author,
