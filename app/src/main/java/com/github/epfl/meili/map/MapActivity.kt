@@ -2,6 +2,7 @@ package com.github.epfl.meili.map
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -10,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.poi.PoiActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
@@ -18,15 +20,16 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 
 
-class MapActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClickListener {
     companion object {
-        private val TAG = MapActivity::class.java.name
         private const val DEFAULT_ZOOM = 15
         private const val REQUEST_CODE: Int = 1
+        const val POI_KEY = "POI_KEY"
     }
 
     // API entry points
@@ -43,8 +46,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Initialize API entry points
         Places.initialize(
-                applicationContext,
-                getString(R.string.google_maps_key)
+            applicationContext,
+            getString(R.string.google_maps_key)
         ) // change API key here
 
         placesClient = Places.createClient(this)
@@ -57,16 +60,17 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun isPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
-                this.applicationContext,
-                Manifest.permission.ACCESS_FINE_LOCATION
+            this.applicationContext,
+            Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         updateMapUI()
     }
 
@@ -81,6 +85,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         } else {
             getLocationPermission()
         }
+
+        map.setOnPoiClickListener(this)
+    }
+
+    override fun onPoiClick(poi: PointOfInterest) {
+        val intent = Intent(this, PoiActivity::class.java)
+        intent.putExtra(POI_KEY, poi)
+        startActivity(intent)
     }
 
     private fun getLocationPermission() {
@@ -88,8 +100,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             error("Assertion failed")
         }
         ActivityCompat.requestPermissions(
-                this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_CODE
+            this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            REQUEST_CODE
         )
     }
 
@@ -114,8 +126,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             if (task.isSuccessful && task.result != null) {
                 location = task.result
                 map.moveCamera(
-                        newLatLngZoom(LatLng(location!!.latitude, location!!.longitude),
-                                DEFAULT_ZOOM.toFloat())
+                    newLatLngZoom(
+                        LatLng(location!!.latitude, location!!.longitude),
+                        DEFAULT_ZOOM.toFloat()
+                    )
                 )
             }
         }

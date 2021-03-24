@@ -2,10 +2,14 @@ package com.github.epfl.meili.messages
 
 import android.util.Log
 import com.github.epfl.meili.models.ChatMessage
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Class Adapter for the Firebase Database for chat messages.
@@ -19,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase
  */
 class FirebaseMessageDatabaseAdapter(private val path: String) : MessageDatabase(path),
     ChildEventListener {
-    val messages = ArrayList<ChatMessage>()
+    override var messages: ArrayList<ChatMessage> = ArrayList()
 
     private var databaseInstance: FirebaseDatabase = FirebaseDatabase.getInstance()
 
@@ -36,13 +40,11 @@ class FirebaseMessageDatabaseAdapter(private val path: String) : MessageDatabase
      * @param path: Path inside the firebase database to the chat group
      * @param chatMessage: chat message to be added inside the database
      */
-    override fun addMessageToDatabase(path: String, chatMessage: ChatMessage) {
-        if (path == "") {
-            throw IllegalArgumentException("Error: path cannot be empty")
-        }
-
+    override fun addMessageToDatabase(chatMessage: ChatMessage) {
         val reference = databaseInstance.getReference(path).push()
-
+        if(Firebase.auth.uid != null){
+            chatMessage.fromId = Firebase.auth.uid!!
+        }
         reference.setValue(chatMessage)
             .addOnSuccessListener {
                 Log.d(TAG + path, "Saved our chat message: ${reference.key}")
@@ -69,6 +71,7 @@ class FirebaseMessageDatabaseAdapter(private val path: String) : MessageDatabase
 
     override fun onCancelled(error: DatabaseError) {
     }
+
 
     companion object {
         private const val TAG = "Database Message"
