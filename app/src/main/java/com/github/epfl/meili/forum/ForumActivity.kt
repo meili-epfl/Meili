@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.github.epfl.meili.R
-import com.github.epfl.meili.home.AuthenticationService
+import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.GoogleSignInActivity
 
 
@@ -21,8 +21,6 @@ class ForumActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forum)
 
-        val viewModel = ForumViewModel()
-
         // Create observer that makes a UI for each post in the observed list
         val forumObserver = Observer<List<Post>> { posts ->
             for (post in posts) {
@@ -30,7 +28,7 @@ class ForumActivity : AppCompatActivity() {
             }
         }
         // Observe the posts from viewModel
-        viewModel.posts.observe(this, forumObserver)
+        ForumViewModel.posts.observe(this, forumObserver)
     }
 
     /** Called when the user taps a post */
@@ -46,11 +44,9 @@ class ForumActivity : AppCompatActivity() {
 
     /** Called when the user taps the + button */
     fun goToPostCreation(view: View) {
-        val currentUser = AuthenticationService.getCurrentUser()
-
         // Only create post if logged in, Otherwise ask to log in first
         val intent: Intent =
-            if (currentUser != null) {
+            if (Auth.name != null) {
                 Intent(this, NewPostActivity::class.java)
             } else {
                 Intent(this, GoogleSignInActivity::class.java)
@@ -112,7 +108,6 @@ class ForumActivity : AppCompatActivity() {
         )
         param.setMargins(20, 20, 0, 10) // layout_margin
         textView.layoutParams = param
-
         textView.textSize = 14.0f
 
         linearLayout.addView(textView)
@@ -132,7 +127,6 @@ class ForumActivity : AppCompatActivity() {
         )
         param.setMargins(20, 0, 20, 20) // layout_margin
         textView.layoutParams = param
-
         textView.textSize = 18.0f
 
         linearLayout.addView(textView)

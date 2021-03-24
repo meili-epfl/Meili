@@ -24,8 +24,7 @@ class NewPostActivity : AppCompatActivity() {
         val text = findViewById<EditText>(R.id.new_post_text).text.toString()
 
         // Add post to database
-        val viewModel = NewPostViewModel()
-        viewModel.createNewPost(title, text)
+        NewPostViewModel.createNewPost(title, text)
 
         // Go back to the forum activity
         val intent = Intent(this, ForumActivity::class.java)

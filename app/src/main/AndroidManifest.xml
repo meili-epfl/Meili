@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
 
     <application
@@ -27,12 +27,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LatestMessagesActivity" />
         </activity>
-        <activity
-            android:name=".poi.PoiActivity"
-            android:parentActivityName=".map.MapActivity">
+        <activity android:name=".NewMessageActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".map.MapActivity" />
+                android:value=".LatestMessagesActivity" />
         </activity>
         <activity android:name=".LatestMessagesActivity" />
         <activity android:name=".registerlogin.LoginActivity" />
@@ -47,8 +45,10 @@
 
         <activity
             android:name=".map.MapActivity"
-            android:parentActivityName="com.github.epfl.meili.MainActivity" />
+            android:label="@string/title_activity_map"
+            android:parentActivityName="com.github.epfl.meili.MainActivity" >
         </activity>
+
         <activity android:name=".forum.NewPostActivity"
             android:parentActivityName=".forum.ForumActivity"/>
         <activity android:name=".forum.ForumActivity"
