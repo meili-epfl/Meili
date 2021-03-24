@@ -1,15 +1,13 @@
 package com.github.epfl.meili.forum
 
+
 import android.view.View
 import android.view.ViewGroup
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
@@ -20,11 +18,8 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
@@ -32,11 +27,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 
+
 @RunWith(AndroidJUnit4::class)
-class ForumTest {
+class PostActivityAndroidTest {
 
     private val TEST_TEXT = "test text"
     private val TEST_TITLE = "test title"
@@ -51,6 +47,7 @@ class ForumTest {
     private lateinit var mockCollectionReference: CollectionReference
     private lateinit var mockDocumentReference: DocumentReference
     private lateinit var mockQuerySnapshot: QuerySnapshot
+
 
     @get:Rule
     var testRule: ActivityScenarioRule<MainActivity> =
@@ -68,10 +65,10 @@ class ForumTest {
         val mockTask = Mockito.mock(Task::class.java)
 
         Mockito.`when`(mockFirestore.collection("posts")).thenReturn(mockCollectionReference)
-        Mockito.`when`(mockCollectionReference.document(any())).thenReturn(mockDocumentReference)
+        Mockito.`when`(mockCollectionReference.document(ArgumentMatchers.any())).thenReturn(mockDocumentReference)
         Mockito.`when`(mockDocumentReference.get()).thenAnswer { mockDocumentSnapshot }
         Mockito.`when`(mockCollectionReference.get()).thenAnswer { mockQuerySnapshot }
-        Mockito.`when`(mockCollectionReference.add(any())).thenAnswer{
+        Mockito.`when`(mockCollectionReference.add(ArgumentMatchers.any())).thenAnswer{
             mockList.add(mockDocumentSnapshot)
             mockTask  // Needs a Task, so I put a mock Task
         }
@@ -106,44 +103,83 @@ class ForumTest {
 
 
     @Test
-    fun addPostToForumTest() {
-        // Press Forum button
-        Espresso.onView(ViewMatchers.withId(R.id.launchForumView))
-            .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
-
-        // Press + button
-        Espresso.onView(ViewMatchers.withId(R.id.forum_new_post_button))
-            .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
-
-        // Type test title
-        Espresso.onView(ViewMatchers.withId(R.id.new_post_title)).perform(
-            ViewActions.typeText(TEST_TITLE),
-            ViewActions.closeSoftKeyboard()
+    fun postActivityAndroidTest() {
+        val materialButton = onView(
+            allOf(
+                withId(R.id.launchForumView), withText("Launch Forum View"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    2
+                ),
+                isDisplayed()
+            )
         )
+        materialButton.perform(click())
 
-        // Type test text
-        Espresso.onView(ViewMatchers.withId(R.id.new_post_text)).perform(
-            ViewActions.typeText(TEST_TEXT),
-            ViewActions.closeSoftKeyboard()
+        val materialButton2 = onView(
+            allOf(
+                withId(R.id.forum_new_post_button), withText("+"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    1
+                ),
+                isDisplayed()
+            )
         )
-
-        // Press Create Post button
-        Espresso.onView(ViewMatchers.withId(R.id.new_post_create_button))
-            .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
-
-        Thread.sleep(5000)  // wait for posts to load
-    }
-
-    @Test
-    fun viewPostTest(){
-        // Press Forum button
-        Espresso.onView(ViewMatchers.withId(R.id.launchForumView))
-            .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
-
-        //Click on the mock post
-        Espresso.onView(ViewMatchers.withId(R.id.forum_layout)).perform(click())
+        materialButton2.perform(click())
 
 
+        val appCompatEditText = onView(
+            allOf(
+                withId(R.id.new_post_title),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatEditText.perform(replaceText("TEST_TITLE"), closeSoftKeyboard())
+
+        val appCompatEditText2 = onView(
+            allOf(
+                withId(R.id.new_post_text),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    1
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatEditText2.perform(replaceText("TEST_TEXT"), closeSoftKeyboard())
+
+
+        val materialButton5 = onView(
+            allOf(
+                withId(R.id.new_post_create_button), withText("Create post"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(android.R.id.content),
+                        0
+                    ),
+                    2
+                ),
+                isDisplayed()
+            )
+        )
+        materialButton5.perform(click())
     }
 
     private fun childAtPosition(
@@ -163,5 +199,4 @@ class ForumTest {
             }
         }
     }
-
 }
