@@ -11,7 +11,11 @@ Similarly to me learning advanced vcs features, I feel like making tests and moc
 
 ## Aman 
 
-#TODO
+I worked on the Point of Interest review system (with Firebase) this week and finished it's implementation. This allows the user to add reviews (or edit their review if they already added one), see others' reviews and the average rating for a POI. However, I haven't been able to implement tests for this feature, which is why it couldn't be merged.
+
+My time estimates were very underestimated. I had estimated 8 hours to finish this feature. However, I spent 16 hours on it this week just to finish the implementation and another 2 hours or so trying to learn about mocking and related concepts like argument capturing.
+
+The reason behind my understimation was the fact that I didn't know the complexity of learning about and implementing a MVVM architecture and Firebase. I will continue improving my estimations by attributing more time to learning about new frameworks/apis/architectures and testing in the future.
 
 
 ## Ewan
