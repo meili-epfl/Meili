@@ -43,11 +43,10 @@ My time estimates were still a little bit off by underestimating but I am gettin
 
 ## Overall team
 
-The team has worked hard and collaborated to improve testing. We can say that we are using Mockito extensively and in the following weeks will keep bringing it to the rest of the codebase. 
+This week, the team has worked hard and collaborated to improve testing. We can say that we have learnt and we are starting to use Mockito extensively. In the following weeks we will keep bringing it to the rest of the codebase. 
 
-#TODO
-We haven't managed to finish all of the user stories we have assigned this sprint. Therefore, we will have the same user stories since we believe these are the most important ones.
+A positive aspect of this week has been the collaboration between the members to give a hand and ease the finishing of some tasks that were getting harder to finish. 
 
-Even though our time estimates this week were a bit better, we are still learning to account for various sub-tasks such as reading the documentation, testing, merging, etc. One thing we should improve is having more meetings among team members when we are stuck. This will help us avoid wasting time on bugs/problems which we cannot solve on our own and make forward progress.
+Time estimates are still off when we have to adventure ourselves into technologies that are new to us. However, for tasks that we are more familiar with it seems that we are starting to make more accurate time predictions. 
 
-The standup meeting really helped this time especially since every person has gained some experience in an API, we usually found ourselves saying "hey I something like that before, maybe I can show you how to do it after the meeting" and we found that to be really beneficial.
+Finally, standups meetings continue to be really usefull since it allows knowledge transfering between team members and hence easing the learning curve of our peers.
