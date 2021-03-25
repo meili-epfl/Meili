@@ -1,6 +1,7 @@
 package com.github.epfl.meili.poi
 
 
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -20,5 +21,8 @@ class PoiActivityTest {
     //TODO Test that poi activity opens when poi is clicked on map and that correct info/posts/chat are displayed
     }
 
-
+    @Test
+    fun pressBackOnPoi(){
+        pressBack()
+    }
 }
