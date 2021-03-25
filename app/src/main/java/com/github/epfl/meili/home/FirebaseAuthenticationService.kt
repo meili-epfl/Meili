@@ -19,7 +19,7 @@ class FirebaseAuthenticationService : AuthenticationService {
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
 
-    init{
+    init {
         val context = MainApplication.applicationContext()
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -33,7 +33,7 @@ class FirebaseAuthenticationService : AuthenticationService {
 
     }
 
-    fun setAuth(authService: FirebaseAuth){
+    fun setAuth(authService: FirebaseAuth) {
         auth = authService
     }
 
@@ -74,13 +74,7 @@ class FirebaseAuthenticationService : AuthenticationService {
                 }
     }
 
-    override fun onActivityResult(
-            activity: Activity,
-            requestCode: Int,
-            result: Int,
-            data: Intent?,
-            onComplete: () -> Unit
-    ) {
+    override fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?, onComplete: () -> Unit) {
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)

@@ -7,8 +7,11 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
+import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.User
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import junit.framework.Assert.assertEquals
@@ -83,4 +86,17 @@ class FirebaseAuthenticationServiceTest {
         assertEquals(fauth.getCurrentUser(), user)
     }
 
+    @Test
+    fun onActivityResultWrongRequestCode(){
+        testRule!!.scenario.onActivity {
+            fauth.onActivityResult(it!!, 0, 0, null){}
+        }
+    }
+
+    @Test
+    fun onActivityResultCorrectRequestCode(){
+        testRule!!.scenario.onActivity {
+            fauth.onActivityResult(it!!, 9001, 0, null){}
+        }
+    }
 }
