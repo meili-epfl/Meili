@@ -16,11 +16,14 @@ class DateAuxiliaryTest {
 
     @Test
     fun getDayTest() {
-        MatcherAssert.assertThat(DateAuxiliary.getDay(testDate), CoreMatchers.`is`("Tue Jan 20"))
+        val splitted = testDate.toString().split(" ")
+        val expected = splitted[0]+" "+splitted[1]+" "+ splitted[2]
+        MatcherAssert.assertThat(DateAuxiliary.getDay(testDate), CoreMatchers.`is`(expected))
     }
 
     @Test
     fun getTimeTest() {
-        MatcherAssert.assertThat(DateAuxiliary.getTime(testDate), CoreMatchers.`is`("07:57"))
+        val splitted = testDate.toString().split(" ")
+        MatcherAssert.assertThat(DateAuxiliary.getTime(testDate), CoreMatchers.`is`(splitted[3].substring(0, splitted[3].length-3)))
     }
 }
