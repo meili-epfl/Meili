@@ -2,9 +2,10 @@ package com.github.epfl.meili.messages
 
 import com.github.epfl.meili.models.ChatMessage
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MockMessageDatabase(path: String) : MessageDatabase(path) {
-    override var messages: ArrayList<ChatMessage> = ArrayList()
+    private var messages: ArrayList<ChatMessage> = ArrayList()
 
     init {
         // Add mock messages
@@ -16,5 +17,9 @@ class MockMessageDatabase(path: String) : MessageDatabase(path) {
     override fun addMessageToDatabase(chatMessage: ChatMessage) {
         messages.add(chatMessage)
         notifyObservers()
+    }
+
+    override fun getMessages(): ArrayList<ChatMessage> {
+        return messages
     }
 }

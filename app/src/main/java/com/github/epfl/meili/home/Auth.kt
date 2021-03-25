@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.github.epfl.meili.models.User
 
 
 object Auth : ViewModel() {
@@ -12,19 +13,17 @@ object Auth : ViewModel() {
     var email: String? = null
     val isLoggedIn = MutableLiveData<Boolean>(false)
 
-    lateinit var authService: AuthenticationService
+    var authService: AuthenticationService = FirebaseAuthenticationService()
 
 
     fun setAuthenticationService(authService: AuthenticationService) {
         this.authService = authService
 
-        Auth.authService.init()
-
         updateUserData()
     }
 
-    fun getCurrentUser(): AuthUser? {
-        return authService.getCurrentuser()
+    fun getCurrentUser(): User? {
+        return authService.getCurrentUser()
     }
 
     fun signIn(activity: Activity) {
@@ -41,14 +40,16 @@ object Auth : ViewModel() {
 
 
     fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?) {
-        authService.onActivityResult(activity, requestCode, result, data) { updateUserData() }
+        authService.onActivityResult(activity, requestCode, result, data) {
+            updateUserData()
+        }
     }
 
     fun updateUserData() {
         val user = getCurrentUser()
 
         if (user != null) {
-            name = user.name
+            name = user.username
             email = user.email
         } else {
             name = null

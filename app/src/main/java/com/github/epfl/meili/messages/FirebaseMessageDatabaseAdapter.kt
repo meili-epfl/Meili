@@ -23,7 +23,7 @@ import kotlin.collections.ArrayList
  */
 class FirebaseMessageDatabaseAdapter(private val path: String) : MessageDatabase(path),
     ChildEventListener {
-    override var messages: ArrayList<ChatMessage> = ArrayList()
+    private var messages: ArrayList<ChatMessage> = ArrayList()
 
     private var databaseInstance: FirebaseDatabase = FirebaseDatabase.getInstance()
 
@@ -49,6 +49,10 @@ class FirebaseMessageDatabaseAdapter(private val path: String) : MessageDatabase
             .addOnSuccessListener {
                 Log.d(TAG + path, "Saved our chat message: ${reference.key}")
             }
+    }
+
+    override fun getMessages(): ArrayList<ChatMessage> {
+        return messages
     }
 
     override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {

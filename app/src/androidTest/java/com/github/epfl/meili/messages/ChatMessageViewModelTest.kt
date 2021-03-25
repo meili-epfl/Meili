@@ -25,20 +25,21 @@ class ChatMessageViewModelTest {
     @Test
     fun addMessageTest() {
         UiThreadStatement.runOnUiThread {
-            val mock_message2 = ChatMessage("hi", "me", "you", 1234)
+            val mock_message2 = ChatMessage("hi", "me", "you", 1234, "MyName")
 
             ChatMessageViewModel.addMessage(
-                mock_message2.text,
-                mock_message2.fromId,
-                mock_message2.toId,
-                mock_message2.timestamp
+                    mock_message2.text,
+                    mock_message2.fromId,
+                    mock_message2.toId,
+                    mock_message2.timestamp,
+                    mock_message2.fromName
             )
 
             val expectedMessageList = ArrayList<ChatMessage>()
             expectedMessageList.add(mock_message1)
             expectedMessageList.add(mock_message2)
 
-            assertEquals(db.messages, expectedMessageList)
+            assertEquals(db.getMessages(), expectedMessageList)
         }
     }
 
@@ -55,7 +56,7 @@ class ChatMessageViewModelTest {
 
             expectedMessageList.add(mock_message2)
 
-            assertEquals(expectedMessageList, db.messages)
+            assertEquals(expectedMessageList, db.getMessages())
             assertEquals(expectedMessageList, ChatMessageViewModel.messages.value)
         }
     }

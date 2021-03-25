@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -37,9 +36,7 @@
         <activity android:name=".LatestMessagesActivity" />
         <activity android:name=".registerlogin.LoginActivity" />
         <activity android:name=".registerlogin.RegisterActivity" />
-        <activity android:name=".home.GoogleSignInActivity">
-
-        </activity>
+        <activity android:name=".home.GoogleSignInActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -47,7 +44,8 @@
 
         <activity
             android:name=".map.MapActivity"
-            android:parentActivityName="com.github.epfl.meili.MainActivity" />
+            android:label="@string/title_activity_map"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>
