@@ -1,16 +1,15 @@
-package com.github.epfl.meili.forum;
-
+package com.github.epfl.meili.forum
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.forum.Post.Companion.toPost
-import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.home.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
 import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertNull
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -19,14 +18,10 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
-class ForumPostViewModelTest {
+class FirebasePostServiceTest {
 
-    private val TEST_TEXT = "test text"
-    private val TEST_TITLE = "test title"
-    private val TEST_USERNAME = "test_username"
-    private val TEST_EMAIL = "test@meili.com"
     private val postList = ArrayList<Post>()
-    private val mockPost = Post("test id", TEST_USERNAME, TEST_TITLE, TEST_TEXT)
+    private val mockPost = Post("test id", "TEST_USERNAME", "TEST_TITLE", "TEST_TEXT")
     private val mockList = ArrayList<DocumentSnapshot>()
 
     private lateinit var mockFirestore: FirebaseFirestore
@@ -79,71 +74,31 @@ class ForumPostViewModelTest {
         FirebasePostService.dbProvider = { mockFirestore }
     }
 
-    @Before
-    fun initiateAuthAndService() {
-        UiThreadStatement.runOnUiThread {
-            //Injecting authentication Service
-            val mockAuthService = MockAuthenticationService()
-            Auth.setAuthenticationService(mockAuthService)
+    @Test
+    fun addPostTest() {
+        val fbPostService = FirebasePostService()
+        fbPostService.addPost("author", "title", "text")
 
-            Auth.isLoggedIn.value = true
-            Auth.email = TEST_EMAIL
-            Auth.name = TEST_USERNAME
+        assertEquals("0", PostViewModel.post_id)
+    }
+
+    @Test
+    fun getPostsTest() {
+        runBlocking {
+            val fbPostService = FirebasePostService()
+            val list = fbPostService.getPosts()
+
+            assertEquals(emptyList<Post>(), list)
         }
     }
 
     @Test
-    fun createNewPostTest() {
-        UiThreadStatement.runOnUiThread {
-            var mock_post2 = Post("0", "mockTester", "Paris", "VeryNice")
+    fun getPostFromIdTest() {
+        runBlocking {
+            val fbPostService = FirebasePostService()
+            assertNull(fbPostService.getPostFromId(null))
 
-            NewPostViewModel.createNewPost(mock_post2.title, mock_post2.text)
-
-            val expectedMessageList = ArrayList<Post>()
-            expectedMessageList.add(mock_post1)
-            expectedMessageList.add(mock_post2)
-
-            assertEquals(expectedMessageList, ps.posts)
-        }
-    }
-
-    @Test
-    fun viewModelIsObserving() {
-        UiThreadStatement.runOnUiThread {
-            var mock_post2 = Post("0", "mockTester", "Paris", "VeryNice")
-            NewPostViewModel.createNewPost(mock_post2.title, mock_post2.text)
-            var expectedMessageList = ArrayList<Post>()
-
-
-            expectedMessageList.add(mock_post1)
-            expectedMessageList.add(mock_post2)
-
-
-            assertEquals(mock_post2, PostViewModel.post.value)
-            assertEquals(expectedMessageList, ps.posts)
-            assertEquals(expectedMessageList, ForumViewModel.posts.value)
-
-        }
-    }
-
-    @Test
-    fun viewModelPostId() {
-        UiThreadStatement.runOnUiThread {
-            PostViewModel.post_id = "1234"
-            assertEquals("1234", PostViewModel.post_id)
-        }
-    }
-
-    @Test
-    fun emptySyncDoesNotChangeAnything() {
-        UiThreadStatement.runOnUiThread {
-            val post = PostViewModel.post
-            PostViewModel.update(ps, "")
-            assertEquals(post, PostViewModel.post)
-
-            val posts = ForumViewModel.posts
-            ForumViewModel.update(ps, "")
-            assertEquals(posts, ForumViewModel.posts)
+            assertNull(fbPostService.getPostFromId(""))
         }
     }
 }

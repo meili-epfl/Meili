@@ -2,7 +2,9 @@ package com.github.epfl.meili.forum
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
@@ -22,6 +24,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
@@ -33,6 +36,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.matches
 import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
@@ -130,20 +134,50 @@ class ForumTest {
         // Press Create Post button
         Espresso.onView(ViewMatchers.withId(R.id.new_post_create_button))
             .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
-
-        Thread.sleep(5000)  // wait for posts to load
     }
 
     @Test
-    fun viewPostTest(){
+    fun viewPostTest() {
+        val mockPostService = MockPostService()
+        ForumViewModel.changePostService(mockPostService)
+        PostViewModel.changePostService(mockPostService)
+        mockPostService.addPost(TEST_USERNAME, TEST_TITLE, TEST_TEXT)
+
         // Press Forum button
         Espresso.onView(ViewMatchers.withId(R.id.launchForumView))
             .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
 
         //Click on the mock post
-        Espresso.onView(ViewMatchers.withId(R.id.forum_layout)).perform(click())
+        Espresso.onView(
+                ViewMatchers.withChild(withText(TEST_TITLE))
+        ).check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
 
+        // Check username
+        Espresso.onView(
+            allOf(
+                ViewMatchers.withId(R.id.post_author),
+                withText(TEST_USERNAME)
+            )
+        ).check(ViewAssertions.matches(withText(TEST_USERNAME)))
+            .check(ViewAssertions.matches(isDisplayed()))
 
+        // Check title
+        Espresso.onView(
+            allOf(
+                ViewMatchers.withId(R.id.post_title),
+                withText(TEST_TITLE)
+            )
+        ).check(ViewAssertions.matches(withText(TEST_TITLE)))
+            .check(ViewAssertions.matches(isDisplayed()))
+
+        // Check text
+        Espresso.onView(
+            allOf(
+                ViewMatchers.withId(R.id.post_text),
+                withText(TEST_TEXT)
+            )
+        ).check(ViewAssertions.matches(withText(TEST_TEXT)))
+            .check(ViewAssertions.matches(isDisplayed()))
     }
 
     private fun childAtPosition(
