@@ -2,10 +2,13 @@ package com.github.epfl.meili.models
 
 
 import android.os.Parcel
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import com.github.epfl.meili.MainActivity
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Test
 
 import org.junit.Assert.*
+import org.junit.Rule
 
 
 class UserUnitTest {
@@ -14,6 +17,9 @@ class UserUnitTest {
     private val TEST_USERNAME: String = "moderator"
     private val TEST_EMAIL: String = "moderator@meili.com"
 
+    @get:Rule
+    var testRule: ActivityScenarioRule<MainActivity> =
+            ActivityScenarioRule(MainActivity::class.java)
 
 
     @Test

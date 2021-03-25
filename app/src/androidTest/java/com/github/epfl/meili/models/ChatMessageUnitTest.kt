@@ -1,8 +1,11 @@
 package com.github.epfl.meili.models
 
 import android.os.Parcel
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import com.github.epfl.meili.MainActivity
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
+import org.junit.Rule
 import org.junit.Test
 
 
@@ -12,6 +15,11 @@ class ChatMessageUnitTest {
     private val TEST_TOID: String = "fuh43koh31pjh1t4"
     private val TEST_TIMESTAMP: Long = 1L
     private val TEST_FROM_NAME: String = "testName"
+
+
+    @get:Rule
+    var testRule: ActivityScenarioRule<MainActivity> =
+            ActivityScenarioRule(MainActivity::class.java)
 
 
     @Test
