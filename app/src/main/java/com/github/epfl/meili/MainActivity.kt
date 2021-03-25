@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
                     Intent(this, GoogleSignInActivity::class.java)
                 } else {
 
-                    Intent(this, ContainerActivity::class.java)
+                    Intent(this, ProfileActivity::class.java)
 
                 }
             }

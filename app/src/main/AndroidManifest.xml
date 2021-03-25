@@ -50,7 +50,7 @@
         </activity>
 
 
-        <activity android:name=".ContainerActivity">
+        <activity android:name=".ProfileActivity">
 
         </activity>
         <activity android:name=".GoogleSignInActivity">

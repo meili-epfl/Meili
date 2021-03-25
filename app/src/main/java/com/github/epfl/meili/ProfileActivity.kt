@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.github.epfl.meili.tool.FirestoreUtil
@@ -24,17 +25,16 @@ import com.github.epfl.meili.tool.StorageUtil
 import java.io.ByteArrayOutputStream
 
 
-class ProfileActivity : Fragment() {
+class ProfileActivity : AppCompatActivity() {
 
     private val RC_SELECT_IMAGE = 2
     private lateinit var selectedImageBytes: ByteArray
     private var pictureJustChanged = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.activity_profile, container, false)
+    override fun onCreate(savedInstanceState: Bundle?){
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_profile)
 
-        view.apply {
             val nimaPhoto =  findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profilePhoto)
             nimaPhoto.setOnClickListener {
                 val intent = Intent().apply {
@@ -45,10 +45,9 @@ class ProfileActivity : Fragment() {
                 startActivityForResult(Intent.createChooser(intent, "Select Image"), RC_SELECT_IMAGE)
             }
 
-            val nimaModButton = findViewById<Button>(R.id.btnModifyProfile)
             val nimaName = findViewById<TextView>(R.id.tvName)
             val nimaDes = findViewById<TextView>(R.id.tvDescription)
-            nimaModButton.setOnClickListener {
+            findViewById<Button>(R.id.btnModifyProfile).setOnClickListener {
                 if (::selectedImageBytes.isInitialized)
                     StorageUtil.uploadProfilePhoto(selectedImageBytes) { imagePath ->
                         FirestoreUtil.updateCurrentUser(nimaName.text.toString(),
@@ -60,8 +59,8 @@ class ProfileActivity : Fragment() {
             }
         }
 
-        return view
-    }
+
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -69,10 +68,10 @@ class ProfileActivity : Fragment() {
             data != null && data.data != null) {
             val selectedImagePath = data.data
             val selectedImageBmp = MediaStore.Images.Media
-                .getBitmap(activity?.contentResolver, selectedImagePath)
+                .getBitmap(contentResolver, selectedImagePath)
 
             val outputStream = ByteArrayOutputStream()
-            val nimaPhoto = view?.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profilePhoto) as ImageView
+            val nimaPhoto = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profilePhoto) as ImageView
             selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
             selectedImageBytes = outputStream.toByteArray()
             Glide.with(this)
@@ -86,12 +85,9 @@ class ProfileActivity : Fragment() {
     override fun onStart() {
         super.onStart()
         FirestoreUtil.getCurrentUser { user ->
-            if (this@ProfileActivity.isVisible) {
-                val nimaName = view?.findViewById<EditText>(R.id.tvName)
-                nimaName?.setText(user.name)
-                val nimaDes = view?.findViewById<EditText>(R.id.tvDescription)
-                nimaDes?.setText(user.bio)
-                val nimaPhoto = view?.findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profilePhoto) as ImageView
+            findViewById<EditText>(R.id.tvName).setText(user.name)
+            findViewById<EditText>(R.id.tvDescription).setText(user.bio)
+            val nimaPhoto = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profilePhoto) as ImageView
                 if (!pictureJustChanged && user.profilePicturePath != null)
                     Glide.with(this)
                         .load(StorageUtil.pathToReference(user.profilePicturePath))
@@ -99,6 +95,6 @@ class ProfileActivity : Fragment() {
                         .into(nimaPhoto)
             }
         }
-    }
+
 
 }
