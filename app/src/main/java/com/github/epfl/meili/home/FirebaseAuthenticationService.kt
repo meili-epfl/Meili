@@ -33,7 +33,11 @@ class FirebaseAuthenticationService : AuthenticationService {
 
     }
 
-    override fun getCurrentuser(): User? {
+    fun setAuth(authService: FirebaseAuth){
+        auth = authService
+    }
+
+    override fun getCurrentUser(): User? {
         var user = auth.currentUser
 
         if (user == null) {

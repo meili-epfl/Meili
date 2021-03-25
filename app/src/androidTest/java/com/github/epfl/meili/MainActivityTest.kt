@@ -34,7 +34,7 @@ class MainActivityTest {
         UiThreadStatement.runOnUiThread {
             val mockAuth = mock(AuthenticationService::class.java)
 
-            `when`(mockAuth.getCurrentuser()).thenReturn(User("hi", "hi", "hi"))
+            `when`(mockAuth.getCurrentUser()).thenReturn(User("hi", "hi", "hi"))
 
             Auth.setAuthenticationService(mockAuth)
         }

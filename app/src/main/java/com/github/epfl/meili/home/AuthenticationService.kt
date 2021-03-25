@@ -6,7 +6,7 @@ import com.github.epfl.meili.models.User
 
 
 interface AuthenticationService {
-    fun getCurrentuser(): User?
+    fun getCurrentUser(): User?
 
     fun signInIntent(): Intent
 

@@ -8,10 +8,16 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.R
+import com.github.epfl.meili.models.User
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import junit.framework.Assert.assertEquals
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.*
 
 @RunWith(AndroidJUnit4::class)
 class FirebaseAuthenticationServiceTest {
@@ -51,4 +57,30 @@ class FirebaseAuthenticationServiceTest {
             assert(Auth.email == null)
         }
     }
+
+    @Test
+    fun getCurrentUserNullTest(){
+        val mockAuth = mock(FirebaseAuth::class.java)
+        `when`(mockAuth.currentUser).thenReturn(null)
+
+        fauth.setAuth(mockAuth)
+
+        assert(fauth.getCurrentUser() == null)
+    }
+
+    @Test
+    fun getCurrentUserPresentTest(){
+        val user = User("fake_id", "fake_name", "fake_email")
+        val mockAuth = mock(FirebaseAuth::class.java)
+        val mockUser = mock(FirebaseUser::class.java)
+        `when`(mockUser.uid).thenReturn(user.uid)
+        `when`(mockUser.email).thenReturn(user.email)
+        `when`(mockUser.displayName).thenReturn(user.username)
+        `when`(mockAuth.currentUser).thenReturn(mockUser)
+
+        fauth.setAuth(mockAuth)
+
+        assertEquals(fauth.getCurrentUser(), user)
+    }
+
 }

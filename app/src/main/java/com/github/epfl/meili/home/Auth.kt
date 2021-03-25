@@ -5,7 +5,6 @@ import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.epfl.meili.models.User
-import java.util.*
 
 
 object Auth : ViewModel() {
@@ -24,7 +23,7 @@ object Auth : ViewModel() {
     }
 
     fun getCurrentUser(): User? {
-        return authService.getCurrentuser()
+        return authService.getCurrentUser()
     }
 
     fun signIn(activity: Activity) {

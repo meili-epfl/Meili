@@ -11,7 +11,7 @@ class MockAuthenticationService : AuthenticationService {
     var mock_id = "1234"
 
 
-    override fun getCurrentuser(): User? {
+    override fun getCurrentUser(): User? {
         if (mock_name == "null") {
             return null
         } else {
