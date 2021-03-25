@@ -2,7 +2,11 @@
 
 ## Ahmed
 
-#TODO
+I worked solely on tests this week. I have worked on creating tests for the forum branch using mocks to have the maximum possible code coverage. I have also worked on increasing the coverage of the already found tests in the chat branch. I also introduced some bug fixes to some tests in the codebase.
+
+After two weeks, my estimates are finally accurate. I am starting to have a sense of how much a test for a certain code would take.
+
+Similarly to me learning advanced vcs features, I feel like making tests and mocking services is something that would take up most of the time in one week but would be faster to do in later weeks since I would have learned the basics on how to do these things.
 
 
 ## Aman 
