@@ -37,24 +37,23 @@ class ChatMessageUnitTest {
         assertThat(chatMessage.fromName, `is`(TEST_FROM_NAME))
         assertThat(chatMessage.component5(), `is`(TEST_FROM_NAME))
         assertThat(
-            chatMessage.toString(),
-            `is`("ChatMessage(text=Hi!, fromId=frkhjf243htiu43iut, toId=fuh43koh31pjh1t4, timestamp=1, fromName=testName)")
+                chatMessage.toString(),
+                `is`("ChatMessage(text=Hi!, fromId=frkhjf243htiu43iut, toId=fuh43koh31pjh1t4, timestamp=1, fromName=testName)")
         )
         assertThat(
-            chatMessage.hashCode(),
-            `is`(
-                ChatMessage(
-                    TEST_TEXT,
-                    TEST_FROMID,
-                    TEST_TOID,
-                    TEST_TIMESTAMP,
-                    TEST_FROM_NAME
-                ).hashCode()
-            )
+                chatMessage.hashCode(),
+                `is`(
+                        ChatMessage(
+                                TEST_TEXT,
+                                TEST_FROMID,
+                                TEST_TOID,
+                                TEST_TIMESTAMP,
+                                TEST_FROM_NAME
+                        ).hashCode()
+                )
         )
 
         chatMessage.copy(TEST_TEXT, TEST_FROMID, TEST_TOID, TEST_TIMESTAMP, TEST_FROM_NAME)
-        // chatMessage.writeToParcel(Parcel.obtain(), 0)
-
+        chatMessage.writeToParcel(Parcel.obtain(), 0)
     }
 }
