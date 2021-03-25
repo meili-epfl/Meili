@@ -45,7 +45,12 @@ My time estimates were still a little bit off by underestimating but I am gettin
 
 ## Yingxuan
 
-#TODO
+I worked on the user profile this week and it finally works when I no longer use fragment. I also updated the UI of the profile to make it coherent with the service it provides: modify and save different user data. I reorganized my code in order to be consistent with main and rebased. There were much more conflicts than expected that I had to solve manually, maybe because that I did not rebase since the creation of the branch. I should do this update more often in the future. It's good to make use of draft pull request to obtain advices of others, Thomas' comments were very useful and helped me to debug. I learned the basic of Mockito and testing with Espresso in more details, which allows me to write several tests.
+
+I had to work for other subjects due to the upcoming midterm so I worked 8 hours on the project without being able to go further with the testing, I should contribute more next week.
+
+
+
 
 
 ## Overall team
