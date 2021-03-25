@@ -46,9 +46,7 @@ class ChatMessageUnitTest {
         )
 
         chatMessage.copy(TEST_TEXT, TEST_FROMID, TEST_TOID, TEST_TIMESTAMP, TEST_FROM_NAME)
-        chatMessage.writeToParcel(Parcel.obtain(), 0)
+        // chatMessage.writeToParcel(Parcel.obtain(), 0)
 
     }
-
-
 }

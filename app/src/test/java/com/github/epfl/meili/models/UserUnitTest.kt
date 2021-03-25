@@ -29,7 +29,7 @@ class UserUnitTest {
 
 
         user.copy(TEST_UID, TEST_USERNAME, TEST_EMAIL)
-        user.writeToParcel(Parcel.obtain(), 0)
+        // user.writeToParcel(Parcel.obtain(), 0)
     }
 
     @Test
