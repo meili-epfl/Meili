@@ -20,7 +20,14 @@ The reason behind my understimation was the fact that I didn't know the complexi
 
 ## Ewan
 
-#TODO
+This week I worked on the beginning of the camera feature, and continued the tests for the forum. 
+
+I followed a tutorial to use Camera X and implemented it into the project (it's just a start). I still need to learn more about how it works to continue on this feature. Thomas and I decided to not work on the feature after this, because we had other stuff to do.
+
+After having talked with Aman, we had an idea to fix one of the problems we had where we couldn't mock Firestore correctly (it crashed the tests).
+I then spent a long time implementing it, it's a bit janky for now (only the tests are impacted), but it works. Ahmed and I also wrote tests to drive the coverage for the forum up to 79% in Jacoco (which I don't think we can improve just now). We didn't manage to merge into main this week because of technicalities, but it should be done by next sprint.
+
+My time estimations were wrong, I shouldn't have taken the camera task. although it was a nice breather after 2 weeks on the forum. 
 
 
 ## Marcel (Scrum Master)
