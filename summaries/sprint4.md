@@ -9,11 +9,11 @@
 
 ### TODO
 
-## Ewan
+## Ewan (Scrum Master)
 
 ### TODO
 
-## Marcel (Scrum Master)
+## Marcel 
 
 ### TODO
 
