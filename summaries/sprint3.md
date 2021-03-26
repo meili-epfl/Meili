@@ -41,7 +41,11 @@ My time estimates were still a little bit off by underestimating but I am gettin
 
 ## Thomas
 
-#TODO
+This week I investigated implementing a sticker/filter feature to make the photograph sharing feature more interesting. However I realized that it would take a lot of time to implement (2~3 weeks) and so that the benefit/effort ratio of it wasn't high enough. So I decided to leave it for now and to instead focus on implementing an information panel for points of interest.
+
+I am getting a bit better at estimating how much time tasks take, so I was able to rapidly switch gears and not waste my time once I saw that there were other higher priority tasks.
+
+To test the POI info panel I have been using mockito for the first time, and it has been tricky figuring out how to structure the code to make it work. Because of that and high workload in other courses, I haven't been able to merge this week's work yet.
 
 ## Yingxuan
 
