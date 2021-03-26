@@ -6,7 +6,7 @@ import org.junit.Test
 
 object ReviewUnitTest {
 
-    private const val TEST_RATING: Int = 3
+    private const val TEST_RATING: Float = 3f
     private const val TEST_TITLE : String = "Beach Too Sandy"
     private const val TEST_SUMMARY: String = "Water Too Wet"
 
@@ -16,5 +16,21 @@ object ReviewUnitTest {
         assertThat(review.rating, `is`(TEST_RATING))
         assertThat(review.title, `is`(TEST_TITLE))
         assertThat(review.summary, `is`(TEST_SUMMARY))
+    }
+
+    @Test
+    fun averageRatingCalculationTest() {
+        val reviewMap: MutableMap<String, Review> = HashMap()
+        val range: IntRange = IntRange(1, 5)
+
+        var averageRating: Float = 0f
+
+        for (i in range) {
+            reviewMap[i.toString()] = Review(i.toFloat(), TEST_TITLE, TEST_SUMMARY)
+            averageRating += i.toFloat()
+        }
+
+        averageRating /= range.last - range.first + 1
+        assertThat(Review.averageRating(reviewMap), `is`(averageRating))
     }
 }

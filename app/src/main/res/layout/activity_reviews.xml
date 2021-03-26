@@ -18,7 +18,8 @@
         <RatingBar
             android:id="@+id/rating_bar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            />
 
         <EditText
             android:id="@+id/edit_title"
@@ -65,7 +66,11 @@
         <RatingBar
             android:id="@+id/average_rating_bar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:isIndicator="true"
+            android:focusable="false"
+            />
 
         <TextView
             android:layout_width="match_parent"
