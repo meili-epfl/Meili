@@ -35,11 +35,14 @@ class PoiServiceTest {
         val latLng = LatLng(23.0, 12.0)
         val mockQueue = Mockito.mock(RequestQueue::class.java)
 
-        val onSuccess: (List<PointOfInterest>) -> Unit = {it -> assertEquals(expectedList, it);}
+        val onSuccess: (List<PointOfInterest>) -> Unit = {it -> assertEquals(expectedList, it)}
+
         Mockito.`when`(mockQueue.add(Mockito.any(JsonObjectRequest::class.java))).then {
-            assert(true)
+            poiService.customOnSuccessFrom(onSuccess)(json)
+            return@then null
         }
 
-        poiService.requestPois(latLng,onSuccess, {assert(true)})
+        poiService.setQueue(mockQueue)
+        poiService.requestPois(latLng,onSuccess, {assert(false)})
     }
 }

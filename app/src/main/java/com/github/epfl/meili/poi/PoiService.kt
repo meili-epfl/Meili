@@ -62,7 +62,7 @@ class PoiService {
 
     data class OverpassResponse(
             @SerializedName("elements")
-            var pointsOfInterest: List<OverpassPointOfInterest> = ArrayList()
+            val pointsOfInterest: List<OverpassPointOfInterest> = ArrayList()
     ){
         fun getCustomPois(): List<PointOfInterest>{
             val poiList = ArrayList<PointOfInterest>()
@@ -77,13 +77,13 @@ class PoiService {
 
     data class OverpassPointOfInterest(
             @SerializedName("lat")
-            var lat: Double? = null,
+            val lat: Double? = null,
             @SerializedName("lon")
-            var lon: Double? = null,
+            val lon: Double? = null,
             @SerializedName("tags")
-            var poiTags: PoiTag? = null,
+            val poiTags: PoiTag? = null,
             @SerializedName("id")
-            var uid: String? = null
+            val uid: String? = null
     ){
         fun toStandardPoi(): PointOfInterest{
             return PointOfInterest(LatLng(lat!!,lon!!), poiTags!!.name!!, uid!!)
@@ -92,6 +92,6 @@ class PoiService {
 
     data class PoiTag(
             @SerializedName("name")
-            var name: String? = null
+            val name: String? = null
     )
 }
