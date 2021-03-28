@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" />
+        <activity android:name=".poi.TestPoiRequest">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,5 +48,6 @@
             android:label="@string/title_activity_map"
             android:parentActivityName=".MainActivity" />
     </application>
-
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>
