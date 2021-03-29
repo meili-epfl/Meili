@@ -1,33 +1,43 @@
 package com.github.epfl.meili
 
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.schibsted.spain.barista.interaction.PermissionGranter
+import androidx.test.internal.runner.junit4.statement.UiThreadStatement
+import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.home.AuthenticationService
+import com.github.epfl.meili.models.User
+import junit.framework.Assert.assertEquals
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.Before
-import org.junit.After
 import org.junit.runner.RunWith
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
     @get:Rule
-    var testRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
+    var testRule: ActivityScenarioRule<MainActivity> =
+        ActivityScenarioRule(MainActivity::class.java)
 
     @Before
     fun setup() {
         Intents.init()
+        UiThreadStatement.runOnUiThread {
+            val mockAuth = mock(AuthenticationService::class.java)
+
+            `when`(mockAuth.getCurrentUser()).thenReturn(User("hi", "hi", "hi"))
+
+            Auth.setAuthenticationService(mockAuth)
+        }
     }
 
     @After
@@ -45,6 +55,8 @@ class MainActivityTest {
 
     @Test
     fun clickingOnChatViewButtonShouldLaunchIntent() {
+
+        assertEquals(Auth.getCurrentUser(), User("hi", "hi", "hi"))
         onView(withId(R.id.launchChatView))
             .check(matches(isClickable())).perform(click())
 

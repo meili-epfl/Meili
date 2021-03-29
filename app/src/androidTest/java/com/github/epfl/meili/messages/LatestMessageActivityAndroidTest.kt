@@ -25,7 +25,7 @@ import org.junit.Test
 
 @LargeTest
 class LatestMessageActivityAndroidTest {
-
+/*
     private val TEST_EMAIL: String = "moderator1@gmail.com"
     private val TEST_PASSWORD: String = "123123"
 
@@ -97,4 +97,5 @@ class LatestMessageActivityAndroidTest {
             }
         }
     }
+ */
 }

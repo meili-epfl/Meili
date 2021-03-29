@@ -3,18 +3,10 @@ package com.github.epfl.meili.registerlogin
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
-import com.github.epfl.meili.LatestMessagesActivity
 import com.github.epfl.meili.R
-import com.github.epfl.meili.models.User
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ktx.database
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -43,8 +35,5 @@ class RegisterActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
-
     }
-
-
 }

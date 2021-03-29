@@ -29,7 +29,7 @@ class GoogleSignInActivityTest {
     }
 
     @get:Rule
-    var testRule: ActivityScenarioRule<GoogleSignInActivity?>? = ActivityScenarioRule(
+    var testRule: ActivityScenarioRule<GoogleSignInActivity> = ActivityScenarioRule(
             GoogleSignInActivity::class.java
     )
 
@@ -50,6 +50,13 @@ class GoogleSignInActivityTest {
     @Before
     fun initIntents() {
         Intents.init()
+    }
+
+    @Before
+    fun removePopUps() {
+        testRule.scenario.onActivity {
+            it.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+        }
     }
 
     @After
