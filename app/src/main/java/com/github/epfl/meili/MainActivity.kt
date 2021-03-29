@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.poi.PoiActivity
@@ -27,6 +28,9 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.launchMapView -> {
                 Intent(this, MapActivity::class.java)
+            }
+            R.id.launchForumView -> {
+                Intent(this, ForumActivity::class.java)
             }
             else -> {
                 Intent(this, MainActivity::class.java)
