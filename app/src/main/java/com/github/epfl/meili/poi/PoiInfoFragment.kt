@@ -12,10 +12,7 @@ import com.github.epfl.meili.R
 import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FetchPhotoRequest
-import com.google.android.libraries.places.api.net.FetchPhotoResponse
-import com.google.android.libraries.places.api.net.FetchPlaceRequest
-import com.google.android.libraries.places.api.net.FetchPlaceResponse
+import com.google.android.libraries.places.api.net.*
 
 /**
  * Fragment to be displayed inside of PoiActivity and which contains basic info about POI
@@ -54,27 +51,36 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
         val request = FetchPlaceRequest.newInstance(placeId!!, placeFields)
 
         placesClient.fetchPlace(request)
-            .addOnSuccessListener { response: FetchPlaceResponse ->
-                val place = response.place
-                Log.i(TAG, placeId)
+            .addOnSuccessListener(getOnSuccessListener(placeId, view, placesClient))
 
-                val openText = when {
-                    place.isOpen == null -> ""
-                    place.isOpen!! -> "OPEN"
-                    else -> "CLOSED"
-                }
+    }
 
-                val infoTextView = view.findViewById<TextView>(R.id.infoTextView)
-                "${place.address}\n${place.phoneNumber}\n${place.websiteUri}\n${openText}".also {
-                    infoTextView.text = it
-                }
+    private fun getOnSuccessListener(
+        placeId: String,
+        view: View,
+        placesClient: PlacesClient
+    ): (FetchPlaceResponse) -> Unit =
+        { response: FetchPlaceResponse ->
+            val place = response.place
+            Log.i(TAG, placeId)
 
-                val poiImageView = view.findViewById<ImageView>(R.id.poiImageView)
+            val openText = when {
+                place.isOpen == null -> ""
+                place.isOpen!! -> "OPEN"
+                else -> "CLOSED"
+            }
 
-                val metada = place.photoMetadatas
-                if (metada == null || metada.isEmpty()) {
-                    return@addOnSuccessListener
-                }
+            val infoTextView = view.findViewById<TextView>(R.id.infoTextView)
+            "${place.address}\n${place.phoneNumber}\n${place.websiteUri}\n${openText}".also {
+                infoTextView.text = it
+            }
+
+            val poiImageView = view.findViewById<ImageView>(R.id.poiImageView)
+
+            val metada = place.photoMetadatas
+            if (!(metada == null || metada.isEmpty())) {
+
+
                 val photoMetadata = metada.first()
 
                 val photoRequest = FetchPhotoRequest.builder(photoMetadata)
@@ -87,5 +93,5 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
                         poiImageView.setImageBitmap(bitmap)
                     }
             }
-    }
+        }
 }
