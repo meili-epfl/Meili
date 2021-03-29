@@ -2,11 +2,13 @@ package com.github.epfl.meili.poi
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.github.epfl.meili.R
-import com.github.epfl.meili.map.MapActivity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.Places
@@ -16,30 +18,32 @@ import com.google.android.libraries.places.api.net.FetchPhotoResponse
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 
-class PoiInfoActivity : AppCompatActivity() {
+/**
+ * Fragment to be displayed inside of PoiActivity and which contains basic info about POI
+ */
+class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
     companion object {
-        private const val TAG = "PoiInfoActivity"
+        private const val TAG = "PoiInfoFragment"
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_poi_info)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_poi_info, container, false)
+    }
 
-        val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        // Initialize the SDK
-        Places.initialize(applicationContext, getString(R.string.google_maps_key))
+        // Initialize Places API entry point
+        Places.initialize(activity?.applicationContext!!, getString(R.string.google_maps_key))
+        val placesClient = Places.createClient(activity?.applicationContext!!)
 
-        // Create a new PlacesClient instance
-        val placesClient = Places.createClient(this)
+        val placeId = poi.placeId
 
-        // Define a Place ID.
-        val placeId = poi?.placeId
-
-        // Specify the fields to return.
+        // Places API query fields
         val placeFields = listOf(
-            Place.Field.ID,
-            Place.Field.NAME,
             Place.Field.ADDRESS,
             Place.Field.PHONE_NUMBER,
             Place.Field.WEBSITE_URI,
@@ -48,19 +52,23 @@ class PoiInfoActivity : AppCompatActivity() {
             Place.Field.PHOTO_METADATAS
         )
 
-        // Construct a request object, passing the place ID and fields array.
         val request = FetchPlaceRequest.newInstance(placeId!!, placeFields)
 
         placesClient.fetchPlace(request)
             .addOnSuccessListener { response: FetchPlaceResponse ->
                 val place = response.place
-                val infoTextView = findViewById<TextView>(R.id.infoTextView)
-                infoTextView.text =
-                    place.name + "\n" + place.address + "\n" + place.phoneNumber + "\n" + place.websiteUri + "\n" + place.isOpen
 
-                val poiImageview = findViewById<ImageView>(R.id.poiImageView)
+                val openText = when {
+                    place.isOpen == null -> ""
+                    place.isOpen!! -> "OPEN"
+                    else -> "CLOSED"
+                }
 
-                // Get the photo metadata.
+                val infoTextView = view.findViewById<TextView>(R.id.infoTextView)
+                "${place.address}\n${place.phoneNumber}\n${place.websiteUri}\n${openText}".also { infoTextView.text = it }
+
+                val poiImageView = view.findViewById<ImageView>(R.id.poiImageView)
+
                 val metada = place.photoMetadatas
                 if (metada == null || metada.isEmpty()) {
                     Log.w(TAG, "No photo metadata.")
@@ -68,24 +76,19 @@ class PoiInfoActivity : AppCompatActivity() {
                 }
                 val photoMetadata = metada.first()
 
-                // Create a FetchPhotoRequest.
                 val photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                    .setMaxWidth(500) // Optional.
-                    .setMaxHeight(300) // Optional.
+                    .setMaxWidth(1000)
+                    .setMaxHeight(600)
                     .build()
                 placesClient.fetchPhoto(photoRequest)
                     .addOnSuccessListener { fetchPhotoResponse: FetchPhotoResponse ->
                         val bitmap = fetchPhotoResponse.bitmap
-                        poiImageview.setImageBitmap(bitmap)
+                        poiImageView.setImageBitmap(bitmap)
                     }.addOnFailureListener { exception: Exception ->
                         if (exception is ApiException) {
                             Log.e(TAG, "Place not found: ${exception.message}")
-                            val statusCode = exception.statusCode
-                            TODO("Handle error with given status code")
                         }
                     }
-
-
             }
     }
 }

@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.poi.PoiActivity
-import com.github.epfl.meili.poi.PoiInfoActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
@@ -91,8 +90,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnPoiClic
     }
 
     override fun onPoiClick(poi: PointOfInterest) {
-        //val intent = Intent(this, PoiActivity::class.java)
-        val intent = Intent(this, PoiInfoActivity::class.java)
+        val intent = Intent(this, PoiActivity::class.java)
+        //val intent = Intent(this, PoiInfoActivity::class.java)
         intent.putExtra(POI_KEY, poi)
         startActivity(intent)
     }
