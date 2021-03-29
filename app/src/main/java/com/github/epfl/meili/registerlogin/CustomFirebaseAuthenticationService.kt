@@ -1,18 +1,14 @@
 package com.github.epfl.meili.registerlogin
 
-import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
 import com.github.epfl.meili.LatestMessagesActivity
-import com.github.epfl.meili.home.AuthUser
 import com.github.epfl.meili.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class CustomFirebaseAuthenticationService: CustomAuthenticationService {
@@ -46,7 +42,7 @@ class CustomFirebaseAuthenticationService: CustomAuthenticationService {
         val database = Firebase.database
         val myRef = database.getReference("/users/$uid")
         val user =
-            User(uid, username)
+            User(uid, username, "randomemail") //TODO: revise wheat this is doing
 
 
 

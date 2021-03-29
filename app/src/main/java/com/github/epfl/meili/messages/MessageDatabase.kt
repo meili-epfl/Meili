@@ -15,7 +15,6 @@ import kotlin.collections.ArrayList
  * @param path: Path to locate chat inside database
  */
 abstract class MessageDatabase(path: String) : Observable() {
-    abstract var messages: ArrayList<ChatMessage>
     private var observers: ArrayList<Observer> = ArrayList()
 
     init {
@@ -25,6 +24,8 @@ abstract class MessageDatabase(path: String) : Observable() {
     }
 
     abstract fun addMessageToDatabase(chatMessage: ChatMessage)
+
+    abstract fun getMessages(): ArrayList<ChatMessage>
 
     override fun addObserver(o: Observer?) { //TODO: write tests for observers
         super.addObserver(o)
@@ -38,7 +39,7 @@ abstract class MessageDatabase(path: String) : Observable() {
         super.notifyObservers()
 
         for(observer in observers){
-            observer.update(this, messages)
+            observer.update(this, getMessages())
         }
     }
 }
