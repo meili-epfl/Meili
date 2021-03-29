@@ -26,6 +26,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LatestMessagesActivity" />
         </activity>
+        <activity
+            android:name=".poi.PoiActivity"
+            android:parentActivityName=".map.MapActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".map.MapActivity" />
+        </activity>
         <activity android:name=".LatestMessagesActivity" />
         <activity android:name=".registerlogin.LoginActivity" />
         <activity android:name=".registerlogin.RegisterActivity" />
