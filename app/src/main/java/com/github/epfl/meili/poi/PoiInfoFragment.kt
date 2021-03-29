@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.github.epfl.meili.R
-import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -57,6 +56,7 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
         placesClient.fetchPlace(request)
             .addOnSuccessListener { response: FetchPlaceResponse ->
                 val place = response.place
+                Log.i(TAG, placeId)
 
                 val openText = when {
                     place.isOpen == null -> ""
@@ -65,13 +65,14 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
                 }
 
                 val infoTextView = view.findViewById<TextView>(R.id.infoTextView)
-                "${place.address}\n${place.phoneNumber}\n${place.websiteUri}\n${openText}".also { infoTextView.text = it }
+                "${place.address}\n${place.phoneNumber}\n${place.websiteUri}\n${openText}".also {
+                    infoTextView.text = it
+                }
 
                 val poiImageView = view.findViewById<ImageView>(R.id.poiImageView)
 
                 val metada = place.photoMetadatas
                 if (metada == null || metada.isEmpty()) {
-                    Log.w(TAG, "No photo metadata.")
                     return@addOnSuccessListener
                 }
                 val photoMetadata = metada.first()
@@ -84,10 +85,6 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
                     .addOnSuccessListener { fetchPhotoResponse: FetchPhotoResponse ->
                         val bitmap = fetchPhotoResponse.bitmap
                         poiImageView.setImageBitmap(bitmap)
-                    }.addOnFailureListener { exception: Exception ->
-                        if (exception is ApiException) {
-                            Log.e(TAG, "Place not found: ${exception.message}")
-                        }
                     }
             }
     }
