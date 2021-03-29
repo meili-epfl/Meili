@@ -32,6 +32,19 @@
         app:layout_constraintVertical_bias="0.696" />
 
     <Button
+        android:id="@+id/launchForumView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="Launch Forum View"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.411" />
+
+    <Button
         android:id="@+id/launchChatView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
