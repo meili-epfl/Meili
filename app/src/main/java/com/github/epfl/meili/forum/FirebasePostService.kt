@@ -2,8 +2,8 @@ package com.github.epfl.meili.forum
 
 import android.util.Log
 import com.github.epfl.meili.forum.Post.Companion.toPost
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.tasks.await
 import java.util.*
 
 class FirebasePostService() : PostService() {
@@ -19,48 +19,44 @@ class FirebasePostService() : PostService() {
     private var db: FirebaseFirestore = dbProvider()
 
     init {
-        // Listen to changes in post collection and notify observers when it has changed
+        // Listen to changes in post collection and make appropriate changes
         db.collection("posts").addSnapshotListener { snapshot, e ->
             // Handle errors
-            if (e != null) {
+            if (e != null || snapshot == null) {
                 Log.w(TAG, "Listen failed.", e)
                 return@addSnapshotListener
             }
 
-            setChanged() // Tell Observable that its state has changed
+            // Modify local list for each change in Firestore database
+            for (post in snapshot!!.documentChanges) {
+                when (post.type) {
+                    DocumentChange.Type.ADDED -> posts.add(post.document.toPost()!!)
+                    DocumentChange.Type.MODIFIED -> {
+                        posts.remove(post.document.toPost())
+                        posts.add(post.document.toPost()!!)
+                    }
+                    DocumentChange.Type.REMOVED -> posts.remove(post.document.toPost())
+                }
+            }
+
             notifyObservers()
         }
     }
 
     /** Get Post data from its id */
-    override suspend fun getPostFromId(id: String?): Post? { // suspend makes function asynchronous
-        if (id == null) {
-            return null
+    override fun getPostFromId(id: String?): Post? {
+        for (p in posts) {
+            if (p.id == id) {
+                return p
+            }
         }
 
-        return try {
-            db.collection("posts")
-                .document(id)
-                .get()
-                .await() // wait asynchronously for data to arrive
-                .toPost() // Convert to Post instance
-        } catch (e: Exception) {
-            Log.e(TAG, "Error getting Post from database")
-            null // Return null if error occurs
-        }
+        return null
     }
 
-    /** Get multiple posts from Database */
-    override suspend fun getPosts(): List<Post> {
-        return try {
-            db.collection("posts")
-                .get()
-                .await() // wait asynchronously for data to arrive
-                .documents.mapNotNull { it.toPost() } // Convert all conforming Posts to Post and add to list
-        } catch (e: Exception) {
-            Log.e(TAG, "Error getting multiple posts from database")
-            emptyList<Post>() // Return empty list if error occurs
-        }
+    /** Get all posts from Database */
+    override fun getPosts(): List<Post> {
+        return posts
     }
 
     /** Add new post to Database */

@@ -23,7 +23,7 @@ object ForumViewModel : ViewModelWithPostService(), Observer {
 
     /** Synchronize posts */
     private fun syncPosts() {
-        viewModelScope.launch { // Asynchronous block for viewModels
+        viewModelScope.launch { // Asynchronous block for live data
             _posts.value = postService.getPosts()
         }
     }

@@ -24,7 +24,7 @@ object PostViewModel : ViewModelWithPostService(), Observer {
 
     /** Synchronize post */
     private fun syncPost() {
-        viewModelScope.launch { // Asynchronous block for viewModels
+        viewModelScope.launch { // Asynchronous block for live data
             _post.value = postService.getPostFromId(post_id)
         }
     }
