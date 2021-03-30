@@ -14,8 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
-        <activity android:name=".MainActivity" />
-        <activity android:name=".poi.TestPoiRequest">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,7 +37,7 @@
         <activity android:name=".registerlogin.LoginActivity" />
         <activity android:name=".registerlogin.RegisterActivity" />
         <activity android:name=".home.GoogleSignInActivity" />
-
+        <activity android:name=".poi.TestPoiRequest" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
