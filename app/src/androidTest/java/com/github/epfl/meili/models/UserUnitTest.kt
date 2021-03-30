@@ -5,10 +5,8 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.epfl.meili.MainActivity
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
-import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.Rule
+import org.junit.Test
 
 
 class UserUnitTest {
