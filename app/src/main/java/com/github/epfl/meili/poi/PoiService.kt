@@ -2,12 +2,17 @@ package com.github.epfl.meili.poi
 
 import android.graphics.Point
 import android.util.Log
+import androidx.annotation.NonNull
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.github.epfl.meili.helpers.HttpRequestQueue
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import org.json.JSONObject
@@ -53,6 +58,16 @@ class PoiService {
                 onSuccess(overpassResponse.getCustomPois())
         }
     }
+
+    fun getVisitedPoiFromUserId(uid: String, onSuccess: (List<PointOfInterest>) -> Unit, onError: (Error)->Unit){
+        FirebaseFirestore.getInstance().collection("dungeon")
+                .document("room_en").get()
+                .addOnCompleteListener { task ->
+                    val document = task.getResult();
+                    document.get("hehey")
+                }
+    }
+
 
     companion object {
         const val LAT_MARGIN = 0.125
