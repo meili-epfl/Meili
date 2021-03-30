@@ -3,7 +3,7 @@ package com.github.epfl.meili.review
 import com.github.epfl.meili.models.Review
 import java.util.*
 
-abstract class ReviewService(poiKey: String): Observable() {
+abstract class ReviewService(): Observable() {
     abstract var reviews: Map<String, Review>
     abstract var averageRating: Float
 

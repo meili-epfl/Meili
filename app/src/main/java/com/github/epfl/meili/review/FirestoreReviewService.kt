@@ -7,7 +7,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.ktx.Firebase
 
-class FirestoreReviewService(private val poiKey: String) : ReviewService(poiKey), EventListener<QuerySnapshot> {
+class FirestoreReviewService(private val poiKey: String) : ReviewService(), EventListener<QuerySnapshot> {
     companion object {
         private const val TAG: String = "FirestoreReviewService"
 
