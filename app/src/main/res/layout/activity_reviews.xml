@@ -63,20 +63,10 @@
         android:id="@+id/list_reviews"
         android:layout_below="@id/edit_review">
 
-        <RatingBar
-            android:id="@+id/average_rating_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:isIndicator="true"
-            android:focusable="false"
-            />
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/average_rating"
-            android:layout_toEndOf="@id/average_rating_bar"
             android:textSize="25sp"
             />
 

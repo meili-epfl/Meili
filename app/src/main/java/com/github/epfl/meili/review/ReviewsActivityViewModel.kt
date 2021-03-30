@@ -28,7 +28,7 @@ class ReviewsActivityViewModel: ViewModel(), Observer {
     fun addReview(review: Review) = service.addReview(review)
 
     override fun update(o: Observable?, arg: Any?) {
-        mReviews.value = service.reviews
-        mAverageRating.value = service.averageRating
+        mReviews.postValue(service.reviews)
+        mAverageRating.postValue(service.averageRating)
     }
 }

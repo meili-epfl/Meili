@@ -35,7 +35,6 @@ class ReviewsActivity : AppCompatActivity() {
     private lateinit var editReviewView: View
 
     private lateinit var floatingActionButton: ImageView
-    private lateinit var averageRatingBar: RatingBar
     private lateinit var averageRatingView: TextView
 
     private lateinit var ratingBar: RatingBar
@@ -83,14 +82,12 @@ class ReviewsActivity : AppCompatActivity() {
     }
 
     private fun editReviewButtonListener() {
-        if (BuildConfig.DEBUG && currentUserReview == null) {
-            error("Assertion failed")
+        if (currentUserReview != null) {
+            val review = currentUserReview!!
+            ratingBar.rating = review.rating
+            editTitleView.setText(review.title)
+            editSummaryView.setText(review.summary)
         }
-
-        val review: Review = currentUserReview!!
-        ratingBar.rating = review.rating
-        editTitleView.setText(review.title)
-        editSummaryView.setText(review.summary)
     }
 
     private fun initReviewEditView() {
@@ -103,35 +100,35 @@ class ReviewsActivity : AppCompatActivity() {
 
     private fun initViewModel(poiKey: String) {
         floatingActionButton = findViewById(R.id.fab)
-        averageRatingBar = findViewById(R.id.average_rating_bar)
         averageRatingView = findViewById(R.id.average_rating)
 
         viewModel = ViewModelProvider(this).get(ReviewsActivityViewModel::class.java)
 
         viewModel.setReviewService(FirestoreReviewService(poiKey))
-        viewModel.getReviews().observe(this, Observer {map ->
-            if (Auth.getCurrentUser() != null) {
-                updateReviewingEnabled(true)
-                val uid = Auth.getCurrentUser()!!.uid
-                if (map.containsKey(uid)) {
-                    currentUserReview = map[uid]
-                    floatingActionButton.setImageResource(EDIT_BUTTON)
-                } else {
-                    currentUserReview = null
-                    floatingActionButton.setImageResource(ADD_BUTTON)
-                }
-            } else {
-                updateReviewingEnabled(false)
-            }
-
-            reviewAdapter.submitList(map.toList())
-            reviewAdapter.notifyDataSetChanged()
-        })
+        viewModel.getReviews().observe(this, { map -> reviewsMapListener(map) })
 
         viewModel.getAverageRating().observe(this, {averageRating ->
-            averageRatingBar.rating = averageRating
             averageRatingView.text = averageRating.toString()
         })
+    }
+
+    private fun reviewsMapListener(map: Map<String, Review>) {
+        if (Auth.getCurrentUser() != null) {
+            updateReviewingEnabled(true)
+            val uid = Auth.getCurrentUser()!!.uid
+            if (map.containsKey(uid)) {
+                currentUserReview = map[uid]
+                floatingActionButton.setImageResource(EDIT_BUTTON)
+            } else {
+                currentUserReview = null
+                floatingActionButton.setImageResource(ADD_BUTTON)
+            }
+        } else {
+            updateReviewingEnabled(false)
+        }
+
+        reviewAdapter.submitList(map.toList())
+        reviewAdapter.notifyDataSetChanged()
     }
 
     private fun initRecyclerView() {
