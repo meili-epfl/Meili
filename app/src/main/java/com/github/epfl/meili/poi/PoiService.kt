@@ -60,11 +60,11 @@ class PoiService {
     }
 
     fun getVisitedPoiFromUserId(uid: String, onSuccess: (List<PointOfInterest>) -> Unit, onError: (Error)->Unit){
-        FirebaseFirestore.getInstance().collection("dungeon")
-                .document("room_en").get()
+        FirebaseFirestore.getInstance().collection("users-poi-list")
+                .document(uid).get()
                 .addOnCompleteListener { task ->
                     val document = task.getResult();
-                    document.get("hehey")
+                    document.get("poi-list")
                 }
     }
 
