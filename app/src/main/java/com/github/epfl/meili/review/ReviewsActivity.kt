@@ -99,8 +99,8 @@ class ReviewsActivity : AppCompatActivity() {
         averageRatingView = findViewById(R.id.average_rating)
 
         viewModel = ViewModelProvider(this).get(ReviewsActivityViewModel::class.java)
-        viewModel.setReviewService(FirestoreReviewService(poiKey))
 
+        viewModel.setReviewService(FirestoreReviewService(poiKey))
         viewModel.getReviews().observe(this, Observer {map ->
             if (map.containsKey(Firebase.auth.uid!!)) {
                 currentUserReview = map[Firebase.auth.uid!!]

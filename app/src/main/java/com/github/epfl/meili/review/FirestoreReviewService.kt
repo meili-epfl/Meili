@@ -7,15 +7,19 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.ktx.Firebase
 
-class FirestoreReviewService(poiKey: String) : ReviewService(poiKey), EventListener<QuerySnapshot> {
+class FirestoreReviewService(private val poiKey: String) : ReviewService(poiKey), EventListener<QuerySnapshot> {
     companion object {
         private const val TAG: String = "FirestoreReviewService"
+
+        private val DEFAULT_DATABASE = { FirebaseFirestore.getInstance() }
+
+        var databaseProvider: () -> FirebaseFirestore = DEFAULT_DATABASE
     }
 
     override var reviews: Map<String, Review> = HashMap()
     override var averageRating: Float = 0f
 
-    private val ref: CollectionReference = FirebaseFirestore.getInstance().collection("reviews/$poiKey/poi_reviews")
+    private val ref: CollectionReference = databaseProvider().collection("reviews/$poiKey/poi_reviews")
 
     init {
         ref.addSnapshotListener(this)
@@ -34,7 +38,13 @@ class FirestoreReviewService(poiKey: String) : ReviewService(poiKey), EventListe
         }
 
         if (snapshot != null) {
-            reviews = snapshot.associateBy ({ it.id }, {it.toObject(Review::class.java)!! })
+            val rs: MutableMap<String, Review> = HashMap()
+
+            for (document in snapshot.documents) {
+                rs[document.id] = document.toObject(Review::class.java)!!
+            }
+
+            reviews = rs
             averageRating = Review.averageRating(reviews)
 
             this.notifyObservers()

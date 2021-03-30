@@ -7,6 +7,7 @@ import com.github.epfl.meili.models.Review
 import java.util.*
 
 class ReviewsActivityViewModel: ViewModel(), Observer {
+
     companion object {
         private const val TAG: String = "ReviewViewModel"
     }
