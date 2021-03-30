@@ -4,11 +4,13 @@ import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Test
 
-object ReviewUnitTest {
+class ReviewUnitTest {
 
-    private const val TEST_RATING: Float = 3f
-    private const val TEST_TITLE : String = "Beach Too Sandy"
-    private const val TEST_SUMMARY: String = "Water Too Wet"
+    companion object {
+        private const val TEST_RATING: Float = 3f
+        private const val TEST_TITLE : String = "Beach Too Sandy"
+        private const val TEST_SUMMARY: String = "Water Too Wet"
+    }
 
     @Test
     fun reviewConstructorTest() {

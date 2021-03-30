@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import com.google.firebase.auth.ktx.auth
@@ -109,13 +110,20 @@ class ReviewsActivity : AppCompatActivity() {
 
         viewModel.setReviewService(FirestoreReviewService(poiKey))
         viewModel.getReviews().observe(this, Observer {map ->
-            if (map.containsKey(Firebase.auth.uid!!)) {
-                currentUserReview = map[Firebase.auth.uid!!]
-                floatingActionButton.setImageResource(EDIT_BUTTON)
+            if (Auth.getCurrentUser() != null) {
+                updateReviewingEnabled(true)
+                val uid = Auth.getCurrentUser()!!.uid
+                if (map.containsKey(uid)) {
+                    currentUserReview = map[uid]
+                    floatingActionButton.setImageResource(EDIT_BUTTON)
+                } else {
+                    currentUserReview = null
+                    floatingActionButton.setImageResource(ADD_BUTTON)
+                }
             } else {
-                currentUserReview = null
-                floatingActionButton.setImageResource(ADD_BUTTON)
+                updateReviewingEnabled(false)
             }
+
             reviewAdapter.submitList(map.toList())
             reviewAdapter.notifyDataSetChanged()
         })
@@ -134,6 +142,14 @@ class ReviewsActivity : AppCompatActivity() {
             addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
             adapter = reviewAdapter
         }
+    }
+
+    private fun updateReviewingEnabled(enabled: Boolean) {
+        floatingActionButton.isEnabled = enabled
+        if (enabled)
+            floatingActionButton.visibility = View.VISIBLE
+        else
+            floatingActionButton.visibility = View.GONE
     }
 
     private fun showEditReviewView() {
