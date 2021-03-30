@@ -16,6 +16,7 @@ import com.github.epfl.meili.home.GoogleSignInActivity
 class ForumActivity : AppCompatActivity() {
 
     private val TAG = "ForumActivity"
+    private var shownPosts = ArrayList<Post>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,9 +24,7 @@ class ForumActivity : AppCompatActivity() {
 
         // Create observer that makes a UI for each post in the observed list
         val forumObserver = Observer<List<Post>> { posts ->
-            for (post in posts) {
-                addPostToForum(post) // Add the post to the forum UI
-            }
+                updatePosts(posts) // Update the posts in UI
         }
         // Observe the posts from viewModel
         ForumViewModel.posts.observe(this, forumObserver)
@@ -55,11 +54,20 @@ class ForumActivity : AppCompatActivity() {
         startActivity(intent) // starts the instance
     }
 
+    /** Update the forum from new database information */
+    private fun updatePosts(posts: List<Post>) {
+        val newPosts = posts.minus(shownPosts)
+        for (post in newPosts) {
+            addPostToForum(post) // add new Post to forum
+        }
+    }
+
     /** Add a new post to the forum UI */
     private fun addPostToForum(post: Post) {
         val layout = makePostBox(post.id)
         addAuthor(post.author, layout)
         addTitle(post.title, layout)
+        shownPosts.add(post)
     }
 
     /** Makes the clickable box for the post information to go into */
@@ -67,7 +75,7 @@ class ForumActivity : AppCompatActivity() {
         // Create vertical linear layout (box)
         val box = LinearLayout(this)
         box.orientation = LinearLayout.VERTICAL
-        box.id = View.generateViewId() // Generate id
+        box.id = post_id.hashCode() // Generate id
 
         // Set layout parameters
         val param = LinearLayout.LayoutParams(
