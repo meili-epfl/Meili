@@ -14,8 +14,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
-        <activity android:name=".review.EditReviewActivity"></activity>
-        <activity android:name=".review.ReviewsActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +37,7 @@
         <activity android:name=".registerlogin.LoginActivity" />
         <activity android:name=".registerlogin.RegisterActivity" />
         <activity android:name=".home.GoogleSignInActivity" />
+        <activity android:name=".review.ReviewsActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

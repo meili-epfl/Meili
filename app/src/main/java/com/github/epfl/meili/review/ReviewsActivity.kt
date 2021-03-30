@@ -59,29 +59,31 @@ class ReviewsActivity : AppCompatActivity() {
         initViewModel("asdnja") // TODO
     }
 
-
-    private fun initReviewEditView() {
-        ratingBar = findViewById(R.id.rating_bar)
-        editTitleView = findViewById(R.id.edit_title)
-        editSummaryView = findViewById(R.id.edit_summary)
-        submitButton = findViewById(R.id.submit_review)
-        cancelButton = findViewById(R.id.cancel_review)
+    fun onReviewButtonClick(view: View) {
+        when (view.id) {
+            R.id.submit_review -> {
+                submitButtonListener()
+                showListReviewsView()
+            }
+            R.id.edit_review -> {
+                editReviewButtonListener()
+                showEditReviewView()
+            }
+            R.id.cancel_review -> {
+                showListReviewsView()
+            }
+        }
     }
 
-    fun submitButtonListener(view: View) {
+    private fun submitButtonListener() {
         val rating = ratingBar.rating
         val title = editTitleView.text.toString()
         val summary = editSummaryView.text.toString()
 
         viewModel.addReview(Review(rating, title, summary))
-        showListReviewsView()
     }
 
-    fun cancelButtonListener(view: View) {
-        showListReviewsView()
-    }
-
-    fun editReviewButtonListener(view: View) {
+    private fun editReviewButtonListener() {
         if (BuildConfig.DEBUG && currentUserReview == null) {
             error("Assertion failed")
         }
@@ -90,7 +92,14 @@ class ReviewsActivity : AppCompatActivity() {
         ratingBar.rating = review.rating
         editTitleView.setText(review.title)
         editSummaryView.setText(review.summary)
-        showEditReviewView()
+    }
+
+    private fun initReviewEditView() {
+        ratingBar = findViewById(R.id.rating_bar)
+        editTitleView = findViewById(R.id.edit_title)
+        editSummaryView = findViewById(R.id.edit_summary)
+        submitButton = findViewById(R.id.submit_review)
+        cancelButton = findViewById(R.id.cancel_review)
     }
 
     private fun initViewModel(poiKey: String) {
