@@ -25,7 +25,7 @@ class ReviewsActivityViewModel: ViewModel(), Observer {
     fun getReviews(): LiveData<Map<String, Review>> = mReviews
     fun getAverageRating(): LiveData<Float> = mAverageRating
 
-    fun addReview(review: Review) = service.addReview(review)
+    fun addReview(uid: String, review: Review) = service.addReview(uid, review)
 
     override fun update(o: Observable?, arg: Any?) {
         mReviews.postValue(service.reviews)

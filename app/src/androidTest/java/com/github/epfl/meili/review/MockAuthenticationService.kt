@@ -7,9 +7,12 @@ import com.github.epfl.meili.models.User
 
 class MockAuthenticationService : AuthenticationService {
 
-    private val mockUid: String = "1234"
+    private var mockUid: String = "1234"
     private var signedIn: Boolean = false
 
+    fun setMockUid(uid: String) {
+        mockUid = uid
+    }
 
     override fun getCurrentUser(): User? {
         return if (signedIn) {

@@ -28,7 +28,7 @@
             android:id="@+id/edit_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Title"
+            android:hint="@string/title_hint"
             android:inputType="textShortMessage"
             android:textSize="30sp" />
 
@@ -38,7 +38,7 @@
             android:layout_height="0dp"
             android:layout_weight="3"
             android:gravity="top"
-            android:hint="Summary"
+            android:hint="@string/summary_hint"
             android:inputType="textMultiLine"
             android:textSize="20sp" />
 
@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onReviewButtonClick"
-                android:text="Submit"
+                android:text="@string/submit_text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -65,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onReviewButtonClick"
-                android:text="Cancel"
+                android:text="@string/cancel_text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -97,12 +97,13 @@
             />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
+            android:id="@+id/fab_add_edit_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
             android:clickable="true"
+            android:contentDescription="@string/fab_review_content_description"
             android:focusable="true"
             android:onClick="onReviewButtonClick"
             app:srcCompat="@android:drawable/ic_input_add" />

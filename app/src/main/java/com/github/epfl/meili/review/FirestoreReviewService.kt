@@ -8,6 +8,7 @@ import com.google.firebase.firestore.*
 import com.google.firebase.ktx.Firebase
 
 class FirestoreReviewService(private val poiKey: String) : ReviewService(), EventListener<QuerySnapshot> {
+
     companion object {
         private const val TAG: String = "FirestoreReviewService"
 
@@ -25,11 +26,8 @@ class FirestoreReviewService(private val poiKey: String) : ReviewService(), Even
         ref.addSnapshotListener(this)
     }
 
-    override fun addReview(review: Review) {
-        if (BuildConfig.DEBUG && Firebase.auth.uid == null) {
-            Log.e(TAG, "Only authenticated users can review")
-        }
-        ref.document(Firebase.auth.uid!!).set(review)
+    override fun addReview(uid: String, review: Review) {
+        ref.document(uid).set(review)
     }
 
     override fun onEvent(snapshot: QuerySnapshot?, error: FirebaseFirestoreException?) {

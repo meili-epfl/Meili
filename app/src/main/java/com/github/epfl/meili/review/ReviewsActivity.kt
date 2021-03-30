@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,8 +12,6 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.TopSpacingItemDecoration
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 
 class ReviewsActivity : AppCompatActivity() {
@@ -22,7 +19,7 @@ class ReviewsActivity : AppCompatActivity() {
         private const val TAG: String = "ReviewsActivity"
         private const val CARD_PADDING: Int = 30
 
-        private const val ADD_BUTTON = android.R.drawable.ic_menu_add
+        private const val ADD_BUTTON = android.R.drawable.ic_input_add
         private const val EDIT_BUTTON = android.R.drawable.ic_menu_edit
     }
 
@@ -50,11 +47,11 @@ class ReviewsActivity : AppCompatActivity() {
         listReviewsView = findViewById(R.id.list_reviews)
         editReviewView = findViewById(R.id.edit_review)
 
-//        val poiKey = intent.getStringExtra("POI_KEY")!!
+        val poiKey = intent.getStringExtra("POI_KEY")!!
         showListReviewsView()
         initReviewEditView()
         initRecyclerView()
-        initViewModel("poiKey") // TODO
+        initViewModel(poiKey)
     }
 
     fun onReviewButtonClick(view: View) {
@@ -63,7 +60,7 @@ class ReviewsActivity : AppCompatActivity() {
                 submitButtonListener()
                 showListReviewsView()
             }
-            R.id.fab -> {
+            R.id.fab_add_edit_review -> {
                 editReviewButtonListener()
                 showEditReviewView()
             }
@@ -74,11 +71,15 @@ class ReviewsActivity : AppCompatActivity() {
     }
 
     private fun submitButtonListener() {
+        if (BuildConfig.DEBUG && Auth.getCurrentUser() == null) {
+            error("Assertion failed")
+        }
+
         val rating = ratingBar.rating
         val title = editTitleView.text.toString()
         val summary = editSummaryView.text.toString()
 
-        viewModel.addReview(Review(rating, title, summary))
+        viewModel.addReview(Auth.getCurrentUser()!!.uid, Review(rating, title, summary))
     }
 
     private fun editReviewButtonListener() {
@@ -99,7 +100,7 @@ class ReviewsActivity : AppCompatActivity() {
     }
 
     private fun initViewModel(poiKey: String) {
-        floatingActionButton = findViewById(R.id.fab)
+        floatingActionButton = findViewById(R.id.fab_add_edit_review)
         averageRatingView = findViewById(R.id.average_rating)
 
         viewModel = ViewModelProvider(this).get(ReviewsActivityViewModel::class.java)
@@ -108,7 +109,7 @@ class ReviewsActivity : AppCompatActivity() {
         viewModel.getReviews().observe(this, { map -> reviewsMapListener(map) })
 
         viewModel.getAverageRating().observe(this, {averageRating ->
-            averageRatingView.text = averageRating.toString()
+            averageRatingView.text = getString(R.string.average_rating_format).format(averageRating)
         })
     }
 

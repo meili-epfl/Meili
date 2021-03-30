@@ -7,7 +7,7 @@ abstract class ReviewService(): Observable() {
     abstract var reviews: Map<String, Review>
     abstract var averageRating: Float
 
-    abstract fun addReview(review: Review)
+    abstract fun addReview(uid: String, review: Review)
 
     private var observers: Set<Observer> = HashSet()
 
