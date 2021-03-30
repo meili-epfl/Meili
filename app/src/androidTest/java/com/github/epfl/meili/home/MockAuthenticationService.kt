@@ -2,20 +2,20 @@ package com.github.epfl.meili.home
 
 import android.app.Activity
 import android.content.Intent
+import com.github.epfl.meili.models.User
 
 class MockAuthenticationService : AuthenticationService {
+    // These are vars since we modify these values during testing
     var mock_name = "Meili User"
     var mock_email = "meili.user@epfl.ch"
+    var mock_id = "1234"
 
-    override fun init() {
-        // Do nothing
-    }
 
-    override fun getCurrentuser(): AuthUser? {
+    override fun getCurrentUser(): User? {
         if (mock_name == "null") {
             return null
         } else {
-            return AuthUser(mock_name, mock_email)
+            return User(mock_id, mock_name, mock_email)
         }
     }
 
