@@ -1,11 +1,28 @@
 package com.github.epfl.meili.forum
 
-import com.github.epfl.meili.models.ChatMessage
 import java.util.*
 
 abstract class PostService : Observable() {
 
-    abstract suspend fun getPostFromId(id: String?): Post?
-    abstract suspend fun getPosts(): List<Post>
+    private var observers: ArrayList<Observer> = ArrayList()
+    public var posts: ArrayList<Post> = ArrayList()
+
+    abstract fun getPostFromId(id: String?): Post?
+    abstract fun getPosts(): List<Post>
     abstract fun addPost(author: String, title: String, text: String)
+
+    override fun addObserver(o: Observer?) {
+        super.addObserver(o)
+        if (o != null && !observers.contains(o)) {
+            observers.add(o)
+        }
+    }
+
+    override fun notifyObservers() {
+        super.notifyObservers()
+
+        for (observer in observers) {
+            observer.update(this, posts)
+        }
+    }
 }
