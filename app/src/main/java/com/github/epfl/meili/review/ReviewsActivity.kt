@@ -50,13 +50,11 @@ class ReviewsActivity : AppCompatActivity() {
         listReviewsView = findViewById(R.id.list_reviews)
         editReviewView = findViewById(R.id.edit_review)
 
-        initReviewEditView()
-        showListReviewsView()
-
 //        val poiKey = intent.getStringExtra("POI_KEY")!!
-
+        showListReviewsView()
+        initReviewEditView()
         initRecyclerView()
-        initViewModel("asdnja") // TODO
+        initViewModel("poiKey") // TODO
     }
 
     fun onReviewButtonClick(view: View) {
@@ -65,7 +63,7 @@ class ReviewsActivity : AppCompatActivity() {
                 submitButtonListener()
                 showListReviewsView()
             }
-            R.id.edit_review -> {
+            R.id.fab -> {
                 editReviewButtonListener()
                 showEditReviewView()
             }
