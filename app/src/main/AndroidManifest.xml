@@ -37,6 +37,11 @@
         <activity android:name=".registerlogin.LoginActivity" />
         <activity android:name=".registerlogin.RegisterActivity" />
         <activity android:name=".home.GoogleSignInActivity" />
+
+        <activity android:name=".review.ReviewsActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
