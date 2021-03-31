@@ -37,6 +37,7 @@
         <activity android:name=".registerlogin.LoginActivity" />
         <activity android:name=".registerlogin.RegisterActivity" />
         <activity android:name=".home.GoogleSignInActivity" />
+
         <activity android:name=".review.ReviewsActivity"
             android:parentActivityName=".MainActivity">
         </activity>
@@ -50,5 +51,4 @@
             android:label="@string/title_activity_map"
             android:parentActivityName=".MainActivity" />
     </application>
-
 </manifest>
