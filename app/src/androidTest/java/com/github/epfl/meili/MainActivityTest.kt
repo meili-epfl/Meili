@@ -13,10 +13,8 @@ import com.github.epfl.meili.home.AuthenticationService
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.review.FirestoreReviewService
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.ktx.Firebase
 import junit.framework.Assert.assertEquals
 import org.junit.After
 import org.junit.Before
@@ -27,17 +25,28 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
-import org.w3c.dom.Document
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
+
+    private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
+    private val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
+    private val mockRegistration: ListenerRegistration = Mockito.mock(ListenerRegistration::class.java)
+
     @get:Rule
-    var testRule: ActivityScenarioRule<MainActivity> =
-        ActivityScenarioRule(MainActivity::class.java)
+    var testRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
 
     @Before
     fun setup() {
         Intents.init()
+
+        Mockito.`when`(mockFirestore.collection(any())).thenReturn(mockCollection)
+        Mockito.`when`(mockCollection.addSnapshotListener(any())).thenAnswer { _ ->
+            mockRegistration
+        }
+
+        FirestoreReviewService.databaseProvider = { mockFirestore }
+
         UiThreadStatement.runOnUiThread {
             val mockAuth = mock(AuthenticationService::class.java)
 
@@ -61,7 +70,6 @@ class MainActivityTest {
 
     @Test
     fun clickingOnChatViewButtonShouldLaunchIntent() {
-
         assertEquals(Auth.getCurrentUser(), User("hi", "hi", "hi"))
         onView(withId(R.id.launchChatView)).perform(click())
 
@@ -77,15 +85,6 @@ class MainActivityTest {
 
     @Test
     fun clickingOnReviewViewButtonShouldLaunchIntent() {
-        val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
-        val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
-        val mockRegistration: ListenerRegistration = Mockito.mock(ListenerRegistration::class.java)
-        Mockito.`when`(mockFirestore.collection(any())).thenReturn(mockCollection)
-        Mockito.`when`(mockCollection.addSnapshotListener(any())).thenAnswer { _ ->
-            mockRegistration
-        }
-        FirestoreReviewService.databaseProvider = { mockFirestore }
-
         onView(withId(R.id.launchReviewView)).perform(click())
 
         Intents.intended(toPackage("com.github.epfl.meili"))
