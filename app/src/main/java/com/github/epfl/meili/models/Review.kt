@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class Review (
     var rating: Float = 0f,
     var title: String = "",
-    var summary: String = "",
+    var summary: String = ""
 ): Parcelable {
     companion object {
         private const val TAG = "Review"

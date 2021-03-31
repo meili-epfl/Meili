@@ -19,8 +19,8 @@ class ReviewsActivity : AppCompatActivity() {
         private const val TAG: String = "ReviewsActivity"
         private const val CARD_PADDING: Int = 30
 
-        private const val ADD_BUTTON = android.R.drawable.ic_input_add
-        private const val EDIT_BUTTON = android.R.drawable.ic_menu_edit
+        private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
+        private const val EDIT_BUTTON_DRAWABLE = android.R.drawable.ic_menu_edit
     }
 
     private var currentUserReview: Review? = null
@@ -124,10 +124,10 @@ class ReviewsActivity : AppCompatActivity() {
             val uid = Auth.getCurrentUser()!!.uid
             if (map.containsKey(uid)) {
                 currentUserReview = map[uid]
-                floatingActionButton.setImageResource(EDIT_BUTTON)
+                floatingActionButton.setImageResource(EDIT_BUTTON_DRAWABLE)
             } else {
                 currentUserReview = null
-                floatingActionButton.setImageResource(ADD_BUTTON)
+                floatingActionButton.setImageResource(ADD_BUTTON_DRAWABLE)
             }
         }
 
