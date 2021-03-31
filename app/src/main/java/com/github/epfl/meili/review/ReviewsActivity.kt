@@ -52,6 +52,12 @@ class ReviewsActivity : AppCompatActivity() {
         initReviewEditView()
         initRecyclerView()
         initViewModel(poiKey)
+        initLoggedInListener()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.onDestroy()
     }
 
     fun onReviewButtonClick(view: View) {
@@ -115,7 +121,6 @@ class ReviewsActivity : AppCompatActivity() {
 
     private fun reviewsMapListener(map: Map<String, Review>) {
         if (Auth.getCurrentUser() != null) {
-            updateReviewingEnabled(true)
             val uid = Auth.getCurrentUser()!!.uid
             if (map.containsKey(uid)) {
                 currentUserReview = map[uid]
@@ -124,8 +129,6 @@ class ReviewsActivity : AppCompatActivity() {
                 currentUserReview = null
                 floatingActionButton.setImageResource(ADD_BUTTON)
             }
-        } else {
-            updateReviewingEnabled(false)
         }
 
         reviewAdapter.submitList(map.toList())
@@ -142,12 +145,14 @@ class ReviewsActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateReviewingEnabled(enabled: Boolean) {
-        floatingActionButton.isEnabled = enabled
-        if (enabled)
-            floatingActionButton.visibility = View.VISIBLE
-        else
-            floatingActionButton.visibility = View.GONE
+    private fun initLoggedInListener() {
+        Auth.isLoggedIn.observe(this, { loggedIn ->
+            floatingActionButton.isEnabled = loggedIn
+            if (loggedIn)
+                floatingActionButton.visibility = View.VISIBLE
+            else
+                floatingActionButton.visibility = View.GONE
+        })
     }
 
     private fun showEditReviewView() {

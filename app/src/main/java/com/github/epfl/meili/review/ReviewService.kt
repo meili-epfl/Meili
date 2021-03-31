@@ -22,4 +22,6 @@ abstract class ReviewService(): Observable() {
         super.notifyObservers()
         observers.forEach {o: Observer -> o.update(this, reviews)}
     }
+
+    abstract fun onDestroy()
 }

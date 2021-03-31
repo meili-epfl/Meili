@@ -31,4 +31,8 @@ class ReviewsActivityViewModel: ViewModel(), Observer {
         mReviews.postValue(service.reviews)
         mAverageRating.postValue(service.averageRating)
     }
+
+    fun onDestroy() {
+        service.onDestroy()
+    }
 }

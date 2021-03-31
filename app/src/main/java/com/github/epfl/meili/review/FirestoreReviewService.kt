@@ -20,14 +20,20 @@ class FirestoreReviewService(private val poiKey: String) : ReviewService(), Even
     override var reviews: Map<String, Review> = HashMap()
     override var averageRating: Float = 0f
 
+    private val registration: ListenerRegistration
+
     private val ref: CollectionReference = databaseProvider().collection("reviews/$poiKey/poi_reviews")
 
     init {
-        ref.addSnapshotListener(this)
+        registration = ref.addSnapshotListener(this)
     }
 
     override fun addReview(uid: String, review: Review) {
         ref.document(uid).set(review)
+    }
+
+    override fun onDestroy() {
+        registration.remove()
     }
 
     override fun onEvent(snapshot: QuerySnapshot?, error: FirebaseFirestoreException?) {
