@@ -4,12 +4,14 @@ import android.content.Intent
 import android.view.View
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -29,6 +31,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import java.lang.Thread.sleep
 
 
 @Suppress("UNCHECKED_CAST")
@@ -190,7 +193,13 @@ class ReviewsActivityTest {
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
 
-        onView(textViewWithText(TEST_ADDED_TITLE)).check(matches(anything())) // check if it exists
+        onView(withId(R.id.recycler_view))
+                .check(matches(isDisplayed()))
+                .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_UID))))
+
+        onView(withText(TEST_UID)).check(matches(isDisplayed()))
+        onView(textViewWithText(TEST_ADDED_TITLE)).check(matches(isDisplayed()))
+
         onView(withId(R.id.average_rating)).check(matches(textViewWithText(AVERAGE_FORMAT.format(testAverageRatingAfterAddition))))
     }
 
