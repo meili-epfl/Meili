@@ -11,14 +11,23 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.review.FirestoreReviewService
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.ktx.Firebase
 import junit.framework.Assert.assertEquals
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.w3c.dom.Document
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
@@ -66,13 +75,21 @@ class MainActivityTest {
         Intents.intended(toPackage("com.github.epfl.meili"))
     }
 
-    // Throws an error since starting the review activity attaches
-    // a firestore event listener which stops existing when the test finishes
-//    @Test
-//    fun clickingOnReviewViewButtonShouldLaunchIntent() {
-//        onView(withId(R.id.launchReviewView)).perform(click())
-//
-//        Intents.intended(toPackage("com.github.epfl.meili"))
+    @Test
+    fun clickingOnReviewViewButtonShouldLaunchIntent() {
+        val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
+        val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
+        val mockRegistration: ListenerRegistration = Mockito.mock(ListenerRegistration::class.java)
+        Mockito.`when`(mockFirestore.collection(any())).thenReturn(mockCollection)
+        Mockito.`when`(mockCollection.addSnapshotListener(any())).thenAnswer { _ ->
+            mockRegistration
+        }
+        FirestoreReviewService.databaseProvider = { mockFirestore }
+
+        onView(withId(R.id.launchReviewView)).perform(click())
+
+        Intents.intended(toPackage("com.github.epfl.meili"))
+    }
 
 //    @Test
 //    fun testNavigation() {
