@@ -1,18 +1,13 @@
 package com.github.epfl.meili.poi
 
-import android.graphics.Point
 import android.util.Log
-import androidx.annotation.NonNull
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
+import com.github.epfl.meili.helpers.CustomMath
 import com.github.epfl.meili.helpers.HttpRequestQueue
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import org.json.JSONObject
@@ -49,25 +44,34 @@ class PoiService {
         queue.add(jsonObjectRequest)
     }
 
-    fun customOnSuccessFrom(onSuccess: (List<PointOfInterest>) -> Unit): (JSONObject)->Unit {
-        return {
-            response ->
-                val overpassResponse = Gson().fromJson<OverpassResponse>(response.toString(), OverpassResponse::class.java)
+    fun customOnSuccessFrom(onSuccess: (List<PointOfInterest>) -> Unit): (JSONObject) -> Unit {
+        return { response ->
+            val overpassResponse = Gson().fromJson<OverpassResponse>(response.toString(), OverpassResponse::class.java)
 
-                Log.d("POI Service", response.toString()+overpassResponse.getCustomPois().toString())
-                onSuccess(overpassResponse.getCustomPois())
+            Log.d("POI Service", response.toString() + overpassResponse.getCustomPois().toString())
+            onSuccess(overpassResponse.getCustomPois())
         }
     }
 
-    fun getVisitedPoiFromUserId(uid: String, onSuccess: (List<PointOfInterest>) -> Unit, onError: (Error)->Unit){
-        FirebaseFirestore.getInstance().collection("users-poi-list")
-                .document(uid).get()
-                .addOnCompleteListener { task ->
-                    val document = task.getResult();
-                    document.get("poi-list")
-                }
-    }
+    /**
+     * @param userPosition: location of the user in coordinates
+     * @param poiList: list of POIs that we know of
+     * @param radius: radius that determine reachable POIs
+     *
+     * @return list of POIs that are withing the radius distance from the user location
+     */
+    fun getReachablePoi(userPosition: LatLng, poiList: List<PointOfInterest>, radius: Double): List<PointOfInterest> {
+        val reachablePois = ArrayList<PointOfInterest>()
 
+        for (poi in poiList) {
+            val distance = CustomMath.distanceOnSphere(userPosition, poi.latLng)
+            if (distance < radius) {
+                reachablePois.add(poi)
+            }
+        }
+
+        return reachablePois
+    }
 
     companion object {
         const val LAT_MARGIN = 0.125
@@ -78,11 +82,11 @@ class PoiService {
     data class OverpassResponse(
             @SerializedName("elements")
             val pointsOfInterest: List<OverpassPointOfInterest> = ArrayList()
-    ){
-        fun getCustomPois(): List<PointOfInterest>{
+    ) {
+        fun getCustomPois(): List<PointOfInterest> {
             val poiList = ArrayList<PointOfInterest>()
-            for(poi in pointsOfInterest){
-                if(poi.poiTags != null && poi.poiTags!!.name != null && poi.uid!=null) {
+            for (poi in pointsOfInterest) {
+                if (poi.poiTags != null && poi.poiTags!!.name != null && poi.uid != null) {
                     poiList.add(poi.toStandardPoi())
                 }
             }
@@ -99,9 +103,9 @@ class PoiService {
             val poiTags: PoiTag? = null,
             @SerializedName("id")
             val uid: String? = null
-    ){
-        fun toStandardPoi(): PointOfInterest{
-            return PointOfInterest(LatLng(lat!!,lon!!), poiTags!!.name!!, uid!!)
+    ) {
+        fun toStandardPoi(): PointOfInterest {
+            return PointOfInterest(LatLng(lat!!, lon!!), poiTags!!.name!!, uid!!)
         }
     }
 
