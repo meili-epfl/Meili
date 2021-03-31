@@ -1,6 +1,5 @@
 package com.github.epfl.meili.poi
 
-import android.graphics.Point
 import android.util.Log
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -44,30 +43,29 @@ class PoiService {
         queue.add(jsonObjectRequest)
     }
 
-    fun customOnSuccessFrom(onSuccess: (List<PointOfInterest>) -> Unit): (JSONObject)->Unit {
-        return {
-            response ->
-                val overpassResponse = Gson().fromJson<OverpassResponse>(response.toString(), OverpassResponse::class.java)
+    fun customOnSuccessFrom(onSuccess: (List<PointOfInterest>) -> Unit): (JSONObject) -> Unit {
+        return { response ->
+            val overpassResponse = Gson().fromJson<OverpassResponse>(response.toString(), OverpassResponse::class.java)
 
-                Log.d("POI Service", response.toString()+overpassResponse.getCustomPois().toString())
-                onSuccess(overpassResponse.getCustomPois())
+            Log.d("POI Service", response.toString() + overpassResponse.getCustomPois().toString())
+            onSuccess(overpassResponse.getCustomPois())
         }
     }
 
     companion object {
-        const val LAT_MARGIN = 0.125
-        const val LNG_MARGIN = 0.125
-        const val OVERPASS_URL = "https://overpass-api.de/api/interpreter?data="
+        private const val LAT_MARGIN = 0.125
+        private const val LNG_MARGIN = 0.125
+        private const val OVERPASS_URL = "https://overpass-api.de/api/interpreter?data="
     }
 
     data class OverpassResponse(
             @SerializedName("elements")
             val pointsOfInterest: List<OverpassPointOfInterest> = ArrayList()
-    ){
-        fun getCustomPois(): List<PointOfInterest>{
+    ) {
+        fun getCustomPois(): List<PointOfInterest> {
             val poiList = ArrayList<PointOfInterest>()
-            for(poi in pointsOfInterest){
-                if(poi.poiTags != null && poi.poiTags!!.name != null && poi.uid!=null) {
+            for (poi in pointsOfInterest) {
+                if (poi.poiTags != null && poi.poiTags!!.name != null && poi.uid != null) {
                     poiList.add(poi.toStandardPoi())
                 }
             }
@@ -84,9 +82,9 @@ class PoiService {
             val poiTags: PoiTag? = null,
             @SerializedName("id")
             val uid: String? = null
-    ){
-        fun toStandardPoi(): PointOfInterest{
-            return PointOfInterest(LatLng(lat!!,lon!!), poiTags!!.name!!, uid!!)
+    ) {
+        fun toStandardPoi(): PointOfInterest {
+            return PointOfInterest(LatLng(lat!!, lon!!), poiTags!!.name!!, uid!!)
         }
     }
 
