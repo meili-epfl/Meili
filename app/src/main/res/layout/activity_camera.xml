@@ -19,7 +19,7 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <androidx.camera.view.PreviewView
-        android:id="@+id/camera_viewFinder"
+        android:id="@+id/camera_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

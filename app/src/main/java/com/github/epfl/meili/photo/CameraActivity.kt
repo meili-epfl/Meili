@@ -3,12 +3,11 @@ package com.github.epfl.meili.photo
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -17,6 +16,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
 import com.github.epfl.meili.R
 import java.io.File
 import java.text.SimpleDateFormat
@@ -47,12 +47,12 @@ class CameraActivity : AppCompatActivity() {
         } else {
             // Ask device for permission to use the camera
             ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+            )
         }
 
         // Set up the listener for take photo button
         findViewById<Button>(R.id.camera_capture_button).setOnClickListener { takePhoto() }
-
 
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -65,8 +65,10 @@ class CameraActivity : AppCompatActivity() {
         // Create time-stamped output file to hold the image
         val photoFile = File(
             outputDirectory,
-            SimpleDateFormat(FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis()) + ".jpg")
+            SimpleDateFormat(
+                FILENAME_FORMAT, Locale.US
+            ).format(System.currentTimeMillis()) + ".jpg"
+        )
 
         // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
@@ -74,7 +76,9 @@ class CameraActivity : AppCompatActivity() {
         // Set up image capture listener, which is triggered after photo has
         // been taken
         imageCapture.takePicture(
-            outputOptions, ContextCompat.getMainExecutor(this), object : ImageCapture.OnImageSavedCallback {
+            outputOptions,
+            ContextCompat.getMainExecutor(this),
+            object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
@@ -94,47 +98,44 @@ class CameraActivity : AppCompatActivity() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener(Runnable {
-            // Used to bind the lifecycle of cameras to the lifecycle owner
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
+            val cameraProvider = cameraProviderFuture.get() // Guaranteed to exist
 
-            // Preview of the photo the user will be taking
-            val preview = Preview.Builder()
-                .build()
-                .also {
-                    // Show preview on camera_viewFinder
-                    it.setSurfaceProvider(findViewById<PreviewView>(R.id.camera_viewFinder).surfaceProvider)
-                }
+            // Setup Preview use case --> to display the preview to the screen
+            val preview = Preview.Builder().build()
 
-            // Get image capture
+            // Setup Image Capture use case --> allows user to take photos
             imageCapture = ImageCapture.Builder()
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
                 .build()
 
-            // Select back camera as a default
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            // Setup which camera to select (default is back)
+            val cameraSelector = CameraSelector.Builder()
+                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .build()
 
-            try {
-                // Make sure that nothing else is bound to the camera, and bind cameraSelector to it
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture)
+            // Display preview in activity
+            val previewView = findViewById<PreviewView>(R.id.camera_preview)
+            preview.setSurfaceProvider(previewView.surfaceProvider)
 
-
-            } catch(e: Exception) {
-                Log.e(TAG, "Camera binding failed")
-            }
-
+            // Attach the lifecycle of the camera to the activity's lifecycle
+            cameraProvider.bindToLifecycle(
+                this as LifecycleOwner, cameraSelector, preview, imageCapture
+            )
+            
         }, ContextCompat.getMainExecutor(this))
-
     }
 
     // Checks if the app's access to the camera is granted
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
-            baseContext, it) == PackageManager.PERMISSION_GRANTED
+            baseContext, it
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
-                                            grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         // Checks if the request code is the same as the one sent to the device
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
@@ -142,9 +143,11 @@ class CameraActivity : AppCompatActivity() {
                 startCamera()
             } else {
                 // Notify user when they have not set the permission
-                Toast.makeText(this,
+                Toast.makeText(
+                    this,
                     "Meili does not have permission to use the camera",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
                 finish()
             }
         }
@@ -153,7 +156,8 @@ class CameraActivity : AppCompatActivity() {
 
     private fun getOutputDirectory(): File {
         val mediaDir = externalMediaDirs.firstOrNull()?.let {
-            File(it, resources.getString(R.string.app_name)).apply { mkdirs() } }
+            File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
+        }
         return if (mediaDir != null && mediaDir.exists())
             mediaDir else filesDir
     }
