@@ -16,7 +16,11 @@ After finishing all tasks assigned to me for this sprint, I looked into my task 
 
 ## Ewan (Scrum Master)
 
-### TODO
+This week I finished the forum and implemented changes requested from the team when reviewing my PR. I had some git problems that slowed me down, but overall didn't have that many problems. 
+
+I also refactored the camera code, so that I understand everything and only keep the useful stuff from the tutorial I did. For this I spent some time reading the API and looking for the features we need. The basic functionality of seeing the preview and taking pictures is done, as well as being able to take landscape pictures. I need to figure out how to make tests.
+
+Overall good time estimates, the git problems slowed me down so I couldn't start the camera tests.
 
 
 ## Marcel 
@@ -36,4 +40,9 @@ After finishing all tasks assigned to me for this sprint, I looked into my task 
 
 ## Overall team
 
-### TODO
+This week, the team managed to continue adding new features, even though some of us had less time available to work on the project. Pull requests are being well reviewed, which is a very good sign that the project is going well.
+
+The stand up meetings being this close apart this week made it so we had less to say in the second one, but it was useful to keep each other updated and made it able to ask for help and clarifications.
+
+The demo will be done during the holidays.
+
