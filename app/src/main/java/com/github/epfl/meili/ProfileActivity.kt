@@ -85,7 +85,7 @@ class ProfileActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         FirestoreUtil.getCurrentUser { user ->
-            findViewById<EditText>(R.id.tvName).setText(user.name)
+            findViewById<EditText>(R.id.tvName).setText(user.username)
             findViewById<EditText>(R.id.tvDescription).setText(user.bio)
             val nimaPhoto = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profilePhoto) as ImageView
                 if (!pictureJustChanged && user.profilePicturePath != null)
