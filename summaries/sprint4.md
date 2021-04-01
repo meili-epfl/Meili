@@ -2,7 +2,11 @@
 
 ## Ahmed
 
-### TODO
+Since we are starting to finish some core functionalities, my work this weak was to create the activity that will merge all of them (i.e. the activity of the main released product).
+
+My time estimates are still accurate since last week.
+
+After finishing this main ui, I will move to add secondary features to our code. Starting with adding and upvote/downvote system for the forums.
 
 
 ## Aman 
