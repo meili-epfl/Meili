@@ -2,4 +2,10 @@
     <string name="app_name">Meili</string>
     <string name="activity_google_sign_in">Google Sign In</string>
     <string name="title_activity_map">MapActivity</string>
+    <string name="average_rating_format">%.2f</string>
+    <string name="title_hint">Title</string>
+    <string name="summary_hint">Summary</string>
+    <string name="submit_text">Submit</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="fab_review_content_description">add/edit my review</string>
 </resources>
