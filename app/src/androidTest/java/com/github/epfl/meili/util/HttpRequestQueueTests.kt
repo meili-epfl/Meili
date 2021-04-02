@@ -1,4 +1,4 @@
-package com.github.epfl.meili.helpers
+package com.github.epfl.meili.util
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import junit.framework.Assert.assertEquals
@@ -14,7 +14,7 @@ class HttpRequestQueueTests {
     }
 
     @Test
-    fun getQueueReturnsSignleton() {
+    fun getQueueReturnsSingleton() {
         assertEquals(HttpRequestQueue.getQueue(), HttpRequestQueue.getQueue())
     }
 }

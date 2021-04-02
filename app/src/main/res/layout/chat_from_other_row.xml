@@ -53,7 +53,6 @@
         app:layout_constraintTop_toBottomOf="@+id/text_chat_user_other">
 
         <LinearLayout
-            android:id="@+id/layout_gchat_container_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
