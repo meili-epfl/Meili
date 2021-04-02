@@ -3,6 +3,7 @@ package com.github.epfl.meili.poi
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
+import com.google.android.apps.common.testing.accessibility.framework.replacements.Point
 import com.google.android.gms.maps.model.LatLng
 import junit.framework.Assert.assertEquals
 import org.json.JSONObject
@@ -45,5 +46,20 @@ class PoiServiceTest {
 
         poiService.setQueue(mockQueue)
         poiService.requestPois(latLng, onSuccess, { assert(false) })
+    }
+
+    @Test
+    fun getReachablePoiTest(){
+        val userPos = LatLng(41.075534,1.131070)
+        val poiList = ArrayList<PointOfInterest>()
+        val poi1 = PointOfInterest(LatLng(41.075000,1.130870), "place1", "place1")
+        val poi2 = PointOfInterest(LatLng(41.063563,1.083658), "place2", "place2")
+        poiList.add(poi1)
+        poiList.add(poi2)
+
+        expectedList.clear()
+        expectedList.add(poi1)
+
+        assertEquals(expectedList, PoiService().getReachablePoi(userPos, poiList, 75.0))
     }
 }
