@@ -4,8 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".MainApplication"
@@ -27,16 +26,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LatestMessagesActivity" />
         </activity>
-        <activity android:name=".NewMessageActivity">
+        <activity
+            android:name=".poi.PoiActivity"
+            android:parentActivityName=".map.MapActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LatestMessagesActivity" />
+                android:value=".map.MapActivity" />
         </activity>
         <activity android:name=".LatestMessagesActivity" />
         <activity android:name=".registerlogin.LoginActivity" />
         <activity android:name=".registerlogin.RegisterActivity" />
-        <activity android:name=".home.GoogleSignInActivity">
+        <activity android:name=".home.GoogleSignInActivity" />
 
+        <activity android:name=".review.ReviewsActivity"
+            android:parentActivityName=".MainActivity">
         </activity>
 
         <meta-data
@@ -50,13 +53,11 @@
         </activity>
 
 
-        <activity android:name=".ProfileActivity">
-
+        <activity android:name=".profile.ProfileActivity">
+            android:parentActivityName=".MainActivity">
         </activity>
-        <activity android:name=".GoogleSignInActivity">
 
-        </activity>
+
 
     </application>
-
 </manifest>

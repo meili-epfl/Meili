@@ -40,7 +40,7 @@ class AuthenticationTest {
         }
 
         val user = Auth.getCurrentUser()!!
-        Assert.assertEquals(user.name, MOCK_NAME)
+        Assert.assertEquals(user.username, MOCK_NAME)
         Assert.assertEquals(user.email, MOCK_EMAIL)
         Assert.assertEquals(Auth.isLoggedIn.value, true)
     }

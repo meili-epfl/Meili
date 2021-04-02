@@ -1,18 +1,25 @@
 package com.github.epfl.meili.messages
 
 
+import android.content.Intent
+import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
+import androidx.test.internal.runner.junit4.statement.UiThreadStatement
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
+import com.github.epfl.meili.ChatLogActivity
 import com.github.epfl.meili.R
-import com.github.epfl.meili.registerlogin.LoginActivity
-import com.google.firebase.auth.FirebaseAuth
+import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.home.AuthenticationService
+import com.github.epfl.meili.models.User
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PointOfInterest
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.`is`
@@ -22,65 +29,63 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mockito
+
 
 @LargeTest
 class ChatLogActivityAndroidTest {
 
-    private val TEST_EMAIL: String = "moderator1@gmail.com"
-    private val TEST_PASSWORD: String = "123123"
-    private val TEST_MESSAGE: String = "Hello!"
+    private val MOCK_PATH = "POI/mock-poi"
+    private val fake_message = "fake_text"
+    private val fake_id = "fake_id"
+    private val fake_name = "fake_name_sender"
+    private val fake_poi: PointOfInterest =
+        PointOfInterest(LatLng(10.0, 10.0), "fake_poi", "fake_poi")
+    private val MOCK_EMAIL = "moderator2@gmail.com"
+    private val MOCK_PASSWORD = "123123"
 
+    @get:Rule
+    val mActivityTestRule: ActivityTestRule<ChatLogActivity> =
+        object : ActivityTestRule<ChatLogActivity>(ChatLogActivity::class.java) {
+            override fun getActivityIntent(): Intent {
+                val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-    @get: Rule
-    var testRule: ActivityScenarioRule<LoginActivity> =
-        ActivityScenarioRule(LoginActivity::class.java)
+                val intent = Intent(targetContext, ChatLogActivity::class.java).apply {
+                    putExtra("POI_KEY", fake_poi)
+                }
+
+                UiThreadStatement.runOnUiThread {
+                    val mockAuth = Mockito.mock(AuthenticationService::class.java)
+
+                    Mockito.`when`(mockAuth.getCurrentUser())
+                        .thenReturn(User("fake_uid", "fake_name", "fake_email", " ", null))
+
+                    Mockito.`when`(mockAuth.signInIntent()).thenReturn(intent)
+                    Auth.setAuthenticationService(mockAuth)
+                }
+
+                return intent
+
+            }
+        }
 
 
     @Before
-    fun setupChatLogActivity() {
-        // Type text and then press the button.
-        onView(withId(R.id.email_edittext_login)).perform(
-            clearText(),
-            typeText(TEST_EMAIL),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.password_edittext_login)).perform(
-            clearText(),
-            typeText(TEST_PASSWORD),
-            closeSoftKeyboard()
-        )
-        onView(withId(R.id.login_button)).perform(click())
+    fun init() {
+        UiThreadStatement.runOnUiThread {
+            ChatMessageViewModel.setMessageDatabase(MockMessageDatabase(MOCK_PATH))
+            ChatMessageViewModel.addMessage(fake_message, fake_id, fake_id, 10, fake_name)
+        }
+    }
 
-        Thread.sleep(5000)
+    @Before
+    fun initIntents() {
+        Intents.init()
+    }
 
-        val actionMenuItemView = onView(
-            allOf(
-                withId(R.id.menu_new_message), withText("New Message"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.action_bar),
-                        1
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
-        actionMenuItemView.perform(click())
-
-        Thread.sleep(10000)
-
-        val recyclerView = onView(
-            allOf(
-                withId(R.id.recyclerview_newmessage),
-                childAtPosition(
-                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                    0
-                )
-            )
-        )
-        recyclerView.perform(actionOnItemAtPosition<ViewHolder>(0, click()))
-
+    @After
+    fun releaseIntents() {
+        Intents.release()
     }
 
     @Test
@@ -99,7 +104,8 @@ class ChatLogActivityAndroidTest {
                 isDisplayed()
             )
         )
-        appCompatEditText3.perform(replaceText(TEST_MESSAGE), closeSoftKeyboard())
+
+        appCompatEditText3.perform(replaceText(fake_message))
 
         val materialButton2 = onView(
             allOf(
@@ -117,11 +123,25 @@ class ChatLogActivityAndroidTest {
         materialButton2.perform(click())
     }
 
-    @After
-    fun signOut() {
-        FirebaseAuth.getInstance().signOut()
-        Thread.sleep(2000)
+    @Test
+    fun verifyAndUpdateUserIsLoggedInTrue() {
+        pressKey(KeyEvent.KEYCODE_ESCAPE)
+        UiThreadStatement.runOnUiThread {
+            mActivityTestRule.activity.verifyAndUpdateUserIsLoggedIn(true)
+            assertThat(mActivityTestRule.activity.supportActionBar?.title, `is`("fake_poi"))
+        }
     }
+
+    @Test
+    fun verifyAndUpdateUserIsLoggedInFalse() {
+        pressKey(KeyEvent.KEYCODE_ESCAPE)
+        UiThreadStatement.runOnUiThread {
+            mActivityTestRule.activity.verifyAndUpdateUserIsLoggedIn(false)
+            assertThat(mActivityTestRule.activity.supportActionBar?.title, `is`("Not Signed In"))
+        }
+
+    }
+
 
     private fun childAtPosition(
         parentMatcher: Matcher<View>, position: Int

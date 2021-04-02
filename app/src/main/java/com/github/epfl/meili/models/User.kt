@@ -25,7 +25,7 @@ data class User(
                 val username = getString("username")!!
                 val email = getString("email")!!
                 val bio= getString("bio")!!
-                val imageUrl= getString("profilePhoto")!!
+                val imageUrl= getString("profilePhoto")
                 User(uid, username, email, bio, imageUrl)
             } catch (e: Exception) {
                 Log.e(TAG, "Error converting to User")

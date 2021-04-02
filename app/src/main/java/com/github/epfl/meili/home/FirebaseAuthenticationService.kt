@@ -6,6 +6,7 @@ import android.util.Log
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.github.epfl.meili.tool.FirestoreUtil
+import com.github.epfl.meili.models.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -19,7 +20,7 @@ class FirebaseAuthenticationService : AuthenticationService {
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
 
-    override fun init() {
+    init {
         val context = MainApplication.applicationContext()
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -33,14 +34,18 @@ class FirebaseAuthenticationService : AuthenticationService {
 
     }
 
-    override fun getCurrentuser(): AuthUser? {
+    fun setAuth(authService: FirebaseAuth) {
+        auth = authService
+    }
+
+    override fun getCurrentUser(): User? {
         var user = auth.currentUser
 
         if (user == null) {
             return user
         }
 
-        return AuthUser(user.displayName, user.email)
+        return User(user.uid, user.displayName, user.email, " ", null)
     }
 
     override fun signInIntent(): Intent {
@@ -71,13 +76,7 @@ class FirebaseAuthenticationService : AuthenticationService {
                 }
     }
 
-    override fun onActivityResult(
-            activity: Activity,
-            requestCode: Int,
-            result: Int,
-            data: Intent?,
-            onComplete: () -> Unit
-    ) {
+    override fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?, onComplete: () -> Unit) {
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)

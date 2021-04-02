@@ -1,7 +1,9 @@
 package com.github.epfl.meili.messages
 
+import androidx.lifecycle.LiveData
 import com.github.epfl.meili.models.ChatMessage
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Abstract class of Databases for chat messages.
@@ -13,11 +15,31 @@ import java.util.*
  * @param path: Path to locate chat inside database
  */
 abstract class MessageDatabase(path: String) : Observable() {
+    private var observers: ArrayList<Observer> = ArrayList()
+
     init {
         if (path == "") {
             throw IllegalArgumentException("Path cannot be null")
         }
     }
 
-    abstract fun addMessageToDatabase(path: String, chatMessage: ChatMessage)
+    abstract fun addMessageToDatabase(chatMessage: ChatMessage)
+
+    abstract fun getMessages(): ArrayList<ChatMessage>
+
+    override fun addObserver(o: Observer?) { //TODO: write tests for observers
+        super.addObserver(o)
+        if(o != null && !observers.contains(o)){
+            observers.add(o)
+        }
+        notifyObservers()
+    }
+
+    override fun notifyObservers() {
+        super.notifyObservers()
+
+        for(observer in observers){
+            observer.update(this, getMessages())
+        }
+    }
 }

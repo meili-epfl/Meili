@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.github.epfl.meili.*
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.models.User.Companion.toUser
 
 //import com.recyclerview.item.PersonItem
 
@@ -52,7 +53,8 @@ object FirestoreUtil {
     fun getCurrentUser(onComplete: (User) -> Unit) {
         currentUserDocRef.get()
             .addOnSuccessListener {
-                onComplete(it.toObject(User::class.java)!!)
+                onComplete(
+                    it.toUser()!!)
             }
     }
 
