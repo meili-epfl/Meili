@@ -28,7 +28,7 @@ class GoogleSignInActivity : AppCompatActivity() {
         updateUI()
     }
 
-    fun onGoogleButtonClick(view: View) {
+    fun onGoogleButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
         if (Auth.getCurrentUser() != null) {
             signOut()
         } else {
@@ -52,11 +52,11 @@ class GoogleSignInActivity : AppCompatActivity() {
             buttonMessage = "Sign Out"
         }
 
-        val textView = findViewById<TextView>(R.id.textFieldSignIn).apply {
+        findViewById<TextView>(R.id.textFieldSignIn).apply {
             text = message
         }
 
-        val buttonView = findViewById<Button>(R.id.signInButton).apply {
+        findViewById<Button>(R.id.signInButton).apply {
             text = buttonMessage
         }
     }
