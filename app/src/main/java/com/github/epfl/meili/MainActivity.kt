@@ -8,6 +8,7 @@ import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.poi.PoiActivity
 import com.github.epfl.meili.registerlogin.RegisterActivity
+import com.github.epfl.meili.review.ReviewsActivity
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 
@@ -24,18 +25,20 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.launchChatView -> {
                 Intent(this, ChatLogActivity::class.java)
+                        .putExtra("POI_KEY", PointOfInterest(LatLng(100.0,100.0),"tour-eiffel1", "tour-eiffel2"))
             }
             R.id.launchMapView -> {
                 Intent(this, MapActivity::class.java)
+            }
+            R.id.launchReviewView -> {
+                Intent(this, ReviewsActivity::class.java)
+                        .putExtra("POI_KEY", "lorem_ipsum")
             }
             else -> {
                 Intent(this, MainActivity::class.java)
             }
         }
 
-        if(view.id == R.id.launchChatView){
-            intent.putExtra("POI_KEY", PointOfInterest(LatLng(100.0,100.0),"tour-eiffel1", "tour-eiffel2"))
-        }
         startActivity(intent)
     }
 }

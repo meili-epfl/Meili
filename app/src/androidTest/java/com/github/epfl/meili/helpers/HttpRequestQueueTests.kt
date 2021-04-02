@@ -9,12 +9,12 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class HttpRequestQueueTests {
     @Test
-    fun getQueueWhenNotInitialized(){
+    fun getQueueWhenNotInitialized() {
         assertNotNull(HttpRequestQueue.getQueue())
     }
 
     @Test
-    fun getQueueReturnsSignleton(){
+    fun getQueueReturnsSignleton() {
         assertEquals(HttpRequestQueue.getQueue(), HttpRequestQueue.getQueue())
     }
 }

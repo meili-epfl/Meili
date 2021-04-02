@@ -74,9 +74,9 @@ class PoiService {
     }
 
     companion object {
-        const val LAT_MARGIN = 0.125
-        const val LNG_MARGIN = 0.125
-        const val OVERPASS_URL = "https://overpass-api.de/api/interpreter?data="
+        private const val LAT_MARGIN = 0.125
+        private const val LNG_MARGIN = 0.125
+        private const val OVERPASS_URL = "https://overpass-api.de/api/interpreter?data="
     }
 
     data class OverpassResponse(

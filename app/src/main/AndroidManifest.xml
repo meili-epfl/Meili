@@ -37,7 +37,11 @@
         <activity android:name=".registerlogin.LoginActivity" />
         <activity android:name=".registerlogin.RegisterActivity" />
         <activity android:name=".home.GoogleSignInActivity" />
-        <activity android:name=".poi.TestPoiRequest" />
+
+        <activity android:name=".review.ReviewsActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -47,6 +51,4 @@
             android:label="@string/title_activity_map"
             android:parentActivityName=".MainActivity" />
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>
