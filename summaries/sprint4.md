@@ -39,7 +39,9 @@ Overall good time estimates, the git problems slowed me down so I couldn't start
 
 ## Yingxuan
 
-### TODO
+During this week, I worked on refactoring the code of profile to integrate the MVVM model, but I did not go as far as I wish, because it's time consuming to understand how to apply the pattern, and I have a bug that I did not managed to fix it. I also rebased and made the feature to use the same User model as in main branch,  by adding fields in User, I had to modify lots of tests involving User, I think I need to reconsider if this is the best way to do.
+
+My time estimation is a little better, I asked other group members before the start of this sprint and learned that with MVVM model it may take time, so I planed to do this over 2 sprints. And since the refoactoring will require great change in testings, I decided after discussion with the team to refactor directly without finishing the test of last week's code which will be overwrite.
 
 
 ## Overall team
