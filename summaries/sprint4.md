@@ -29,7 +29,11 @@ Overall good time estimates, the git problems slowed me down so I couldn't start
 
 ## Marcel 
 
-### TODO
+This week I had two main tasks, the first one was making a service that will fetch Points of Interest around you. I am fetching the POIs from Overpass API from OpenStreetMap (thanks to Thomas's sugestion). In this task, I slightly underestimated the actual time but it was just by 1 hour, so I am getting close to making good estimates. 
+
+The second task I had to do was making a service that will handle the different POIs status per user (between Visible, Reachable and Available). This is resulting to be a much bigger task than I expected since I am needing a Firebase Database, Location Services and other smaller services. My estimate was of 4 hours since many of this services were already being used inside the app and I though I could reuse much of the code. However, we didn't have it well modularised so I am working on modularising the mentioned services and this will most likely double my original time estimate of 4 hours.
+
+Next week, I hope to finish the second task and start working on personalized markers on the Map for POIs.
 
 
 ## Thomas
