@@ -1,4 +1,4 @@
-package com.github.epfl.meili
+package com.github.epfl.meili.messages
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,12 +9,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.github.epfl.meili.helpers.DateAuxiliary
+import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.messages.ChatMessageViewModel
-import com.github.epfl.meili.messages.FirebaseMessageDatabaseAdapter
 import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.util.DateAuxiliary
 import com.google.android.gms.maps.model.PointOfInterest
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -23,7 +22,7 @@ import com.xwray.groupie.Item
 class ChatLogActivity : AppCompatActivity() {
 
     companion object {
-        val TAG = ChatLogActivity::class.java.simpleName
+        private const val TAG: String = "ChatLogActivity"
     }
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
@@ -39,7 +38,7 @@ class ChatLogActivity : AppCompatActivity() {
         findViewById<RecyclerView>(R.id.recycleview_chat_log).adapter = adapter
 
         Auth.isLoggedIn.observe(this) {
-            Log.d(TAG, "value received" + it)
+            Log.d(TAG, "value received $it")
             verifyAndUpdateUserIsLoggedIn(it)
         }
 
@@ -86,7 +85,7 @@ class ChatLogActivity : AppCompatActivity() {
     private fun listenForMessages() {
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
-            var newMessages = list.minus(messsageSet)
+            val newMessages = list.minus(messsageSet)
 
             newMessages.forEach { message ->
                 Log.d(TAG, "loading message: ${message.text}")
@@ -123,7 +122,7 @@ class ChatItem(private val message: ChatMessage, private val isChatMessageFromCu
 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.itemView.findViewById<TextView>(R.id.text_gchat_message).text = message.text
-        var date = DateAuxiliary.getDateFromTimestamp(message.timestamp)
+        val date = DateAuxiliary.getDateFromTimestamp(message.timestamp)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_timestamp).text =
             DateAuxiliary.getTime(date)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
