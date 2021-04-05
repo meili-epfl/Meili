@@ -21,11 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ChatLogActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LatestMessagesActivity" />
-        </activity>
+        <activity android:name=".messages.ChatLogActivity" />
         <activity
             android:name=".poi.PoiActivity"
             android:parentActivityName=".map.MapActivity">
@@ -38,6 +34,9 @@
         <activity android:name=".registerlogin.RegisterActivity" />
         <activity android:name=".home.GoogleSignInActivity"></activity>
 
+        <activity android:name=".review.ReviewsActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -48,5 +47,4 @@
             android:label="@string/title_activity_map"
             android:parentActivityName=".MainActivity" />
     </application>
-
 </manifest>
