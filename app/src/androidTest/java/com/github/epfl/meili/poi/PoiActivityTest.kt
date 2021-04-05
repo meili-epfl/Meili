@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class PoiActivityTest {
     private val fake_poi: PointOfInterest =
-        PointOfInterest(LatLng(10.0, 10.0), "ChIJAAAAAAAAAAARg4pb6XR5bo0", "art_but")
+        PointOfInterest(LatLng(10.0, 10.0), "ChIJAAAAAAAAAAARg4pb6XR5bo0", "art_brut")
 
     @get:Rule
     val mActivityTestRule: ActivityTestRule<PoiActivity> =
