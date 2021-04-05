@@ -29,9 +29,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".map.MapActivity" />
         </activity>
-        <activity android:name=".LatestMessagesActivity" />
-        <activity android:name=".registerlogin.LoginActivity" />
-        <activity android:name=".registerlogin.RegisterActivity" />
         <activity android:name=".home.GoogleSignInActivity"></activity>
 
         <activity android:name=".review.ReviewsActivity"
