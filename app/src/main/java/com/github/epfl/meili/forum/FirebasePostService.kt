@@ -28,14 +28,15 @@ class FirebasePostService() : PostService() {
             }
 
             // Modify local list for each change in Firestore database
-            for (post in snapshot!!.documentChanges) {
-                when (post.type) {
-                    DocumentChange.Type.ADDED -> posts.add(post.document.toPost()!!)
+            for (postDocument in snapshot!!.documentChanges) {
+                val post = postDocument.document.toPost()!!
+                when (postDocument.type) {
+                    DocumentChange.Type.ADDED -> posts.add(post)
                     DocumentChange.Type.MODIFIED -> {
-                        posts.remove(post.document.toPost())
-                        posts.add(post.document.toPost()!!)
+                        posts.remove(post)
+                        posts.add(post)
                     }
-                    DocumentChange.Type.REMOVED -> posts.remove(post.document.toPost())
+                    DocumentChange.Type.REMOVED -> posts.remove(post)
                 }
             }
 
