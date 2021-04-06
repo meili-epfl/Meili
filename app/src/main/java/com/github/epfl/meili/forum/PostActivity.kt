@@ -15,9 +15,19 @@ class PostActivity : AppCompatActivity() {
     // Unique tag to tell where a log message came from
     private val TAG = "PostActivity"
 
+    // Views
+    private lateinit var authorView: TextView
+    private lateinit var titleView: TextView
+    private lateinit var textView: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
+
+        // Initialize views
+        authorView = findViewById<TextView>(R.id.post_author)
+        titleView = findViewById<TextView>(R.id.post_title)
+        textView = findViewById<TextView>(R.id.post_text)
 
         // Get post id
         val post_id = intent.getStringExtra(EXTRA_POST_ID)
@@ -42,9 +52,9 @@ class PostActivity : AppCompatActivity() {
     private fun createPostUI(post: Post?) {
         if (post != null) {
             // Add post information to the predefined templates
-            findViewById<TextView>(R.id.post_author).text = post.author
-            findViewById<TextView>(R.id.post_title).text = post.title
-            findViewById<TextView>(R.id.post_text).text = post.text
+            authorView.text = post.author
+            titleView.text = post.title
+            textView.text = post.text
         } else {
             Log.e(TAG, "Error showing post")
         }

@@ -7,8 +7,8 @@ import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.forum.Post.Companion.toPost
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNull
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule

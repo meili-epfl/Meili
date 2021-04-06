@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -18,9 +19,15 @@ class ForumActivity : AppCompatActivity() {
     private val TAG = "ForumActivity"
     private var shownPosts = ArrayList<Post>()
 
+    // Layout for the posts
+    private lateinit var forumLayout: LinearLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forum)
+
+        // Initialize view
+        forumLayout = findViewById<LinearLayout>(R.id.forum_layout)
 
         // Create observer that makes a UI for each post in the observed list
         val forumObserver = Observer<List<Post>> { posts ->
@@ -96,7 +103,7 @@ class ForumActivity : AppCompatActivity() {
         box.setBackgroundColor(Color.parseColor("#90e0ef")) // background color
 
         // Add the box to the parent linearLayout
-        findViewById<LinearLayout>(R.id.forum_layout).addView(box)
+        forumLayout.addView(box)
 
         return box
 
