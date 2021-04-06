@@ -3,7 +3,7 @@ package com.github.epfl.meili.forum
 import android.os.Parcelable
 import android.util.Log
 import com.google.firebase.firestore.DocumentSnapshot
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Post(
