@@ -64,7 +64,7 @@ class FirebasePostService() : PostService() {
     override fun addPost(author: String, title: String, text: String) {
         // Create post document (ID created by database)
         val postDocument = hashMapOf(
-            "username" to author,
+            "author" to author,
             "title" to title,
             "text" to text
         )
