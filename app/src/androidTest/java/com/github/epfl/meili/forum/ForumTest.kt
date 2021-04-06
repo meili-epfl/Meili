@@ -2,11 +2,8 @@ package com.github.epfl.meili.forum
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LiveData
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
@@ -17,17 +14,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.R
-import com.github.epfl.meili.forum.Post.Companion.toPost
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.MockAuthenticationService
+import com.github.epfl.meili.models.Post
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
@@ -36,7 +29,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.matches
 import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
@@ -79,7 +71,7 @@ class ForumTest {
             mockList.add(mockDocumentSnapshot)
             mockTask  // Needs a Task, so I put a mock Task
         }
-        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toPost() }).thenReturn(postList)
+        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toObject(Post::class.java) }).thenReturn(postList)
 
         FirebasePostService.dbProvider = { mockFirestore }
     }

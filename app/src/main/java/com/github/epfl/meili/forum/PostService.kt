@@ -1,11 +1,12 @@
 package com.github.epfl.meili.forum
 
+import com.github.epfl.meili.models.Post
 import java.util.*
 
 abstract class PostService : Observable() {
 
     private var observers: ArrayList<Observer> = ArrayList()
-    public var posts: ArrayList<Post> = ArrayList()
+    var posts: ArrayList<Post> = ArrayList()
 
     abstract fun getPostFromId(id: String?): Post?
     abstract fun getPosts(): List<Post>

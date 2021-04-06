@@ -1,5 +1,7 @@
 package com.github.epfl.meili.forum
 
+import com.github.epfl.meili.models.Post
+
 class MockPostService : PostService() {
     private var idCounter: Int = 0
     private val TAG = "MockPostService"
@@ -18,7 +20,7 @@ class MockPostService : PostService() {
     override fun getPostFromId(id: String?): Post? {
         for (post: Post in posts) {
             if (post.id == id) {
-                return post;
+                return post
             }
         }
         return null

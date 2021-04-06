@@ -9,8 +9,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.forum.FirebasePostService
-import com.github.epfl.meili.forum.Post
-import com.github.epfl.meili.forum.Post.Companion.toPost
+import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
 import com.github.epfl.meili.models.User
@@ -72,7 +71,7 @@ class MainActivityTest {
             .thenReturn(mockDocumentReference)
         Mockito.`when`(mockDocumentReference.get()).thenAnswer { mockDocumentSnapshot }
         Mockito.`when`(mockCollectionReference.get()).thenAnswer { mockQuerySnapshot }
-        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toPost() }).thenReturn(postList)
+        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toObject(Post::class.java) }).thenReturn(postList)
 
         FirebasePostService.dbProvider = { mockFirestore }
     }

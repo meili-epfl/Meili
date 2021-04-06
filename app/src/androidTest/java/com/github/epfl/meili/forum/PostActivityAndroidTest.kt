@@ -4,7 +4,6 @@ package com.github.epfl.meili.forum
 import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -13,9 +12,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.R
-import com.github.epfl.meili.forum.Post.Companion.toPost
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.MockAuthenticationService
+import com.github.epfl.meili.models.Post
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
 import org.hamcrest.Description
@@ -72,7 +71,7 @@ class PostActivityAndroidTest {
             mockList.add(mockDocumentSnapshot)
             mockTask  // Needs a Task, so I put a mock Task
         }
-        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toPost() }).thenReturn(postList)
+        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toObject(Post::class.java) }).thenReturn(postList)
 
         FirebasePostService.dbProvider = { mockFirestore }
     }

@@ -1,15 +1,15 @@
 package com.github.epfl.meili.forum
 
+import android.os.Parcel
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.epfl.meili.MainActivity
+import com.github.epfl.meili.models.Post
+import org.hamcrest.CoreMatchers.`is`
+import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import android.os.Parcel
-import org.hamcrest.CoreMatchers.`is`
-
-import org.junit.Assert.*
 
 
 @RunWith(AndroidJUnit4::class)

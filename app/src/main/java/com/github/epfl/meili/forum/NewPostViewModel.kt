@@ -4,7 +4,7 @@ import android.util.Log
 import com.github.epfl.meili.home.Auth
 import java.util.*
 
-object NewPostViewModel : ViewModelWithPostService() {
+object NewPostViewModel : PostServiceViewModel() {
 
     private val TAG = "NewPostViewModel"
 

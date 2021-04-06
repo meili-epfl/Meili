@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.github.epfl.meili.R
+import com.github.epfl.meili.models.Post
 
 // key to retrieve the post IDs
 const val EXTRA_POST_ID = "com.github.epfl.meili.forum.POST_ID"
