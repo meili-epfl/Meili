@@ -49,6 +49,6 @@
         <activity android:name=".forum.ForumActivity"
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".forum.PostActivity"
-            android:parentActivityName=".forum.ForumActivity"/>>
+            android:parentActivityName=".forum.ForumActivity"/>
     </application>
 </manifest>
