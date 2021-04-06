@@ -18,7 +18,7 @@ data class Post(
         private const val TAG = "Post"
 
         // Create Post from Firestore data
-        fun DocumentSnapshot.toPost(): Post? {
+        fun DocumentSnapshot.toObject(Post::class.java): Post? {
             return try {
                 val id = id
                 val author = getString("username")!! // !! Means we guarantee not null

@@ -1,7 +1,6 @@
 package com.github.epfl.meili.forum
 
 import androidx.lifecycle.ViewModel
-import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
 
 /** Abstract class for ViewModels using a Database of Posts */
