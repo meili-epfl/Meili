@@ -2,6 +2,7 @@ package com.github.epfl.meili.forum
 
 import android.util.Log
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.models.Post.Companion.toPost
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.*
@@ -29,14 +30,16 @@ class FirebasePostService() : PostService() {
 
             // Modify local list for each change in Firestore database
             for (postDocument in snapshot.documentChanges) {
-                val post = postDocument.document.toObject(Post::class.java)
-                when (postDocument.type) {
-                    DocumentChange.Type.ADDED -> posts.add(post)
-                    DocumentChange.Type.MODIFIED -> {
-                        posts.remove(post)
-                        posts.add(post)
+                val post = postDocument.document.toPost()
+                if (post != null) {
+                    when (postDocument.type) {
+                        DocumentChange.Type.ADDED -> posts.add(post)
+                        DocumentChange.Type.MODIFIED -> {
+                            posts.remove(post)
+                            posts.add(post)
+                        }
+                        DocumentChange.Type.REMOVED -> posts.remove(post)
                     }
-                    DocumentChange.Type.REMOVED -> posts.remove(post)
                 }
             }
 
