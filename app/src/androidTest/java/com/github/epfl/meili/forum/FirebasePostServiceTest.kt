@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.models.Post.Companion.toPost
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
 import org.junit.Assert.assertEquals
@@ -69,7 +70,7 @@ class FirebasePostServiceTest {
             mockList.add(mockDocumentSnapshot)
             mockTask  // Needs a Task, so I put a mock Task
         }
-        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toObject(Post::class.java) }).thenReturn(postList)
+        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toPost() }).thenReturn(postList)
 
         FirebasePostService.dbProvider = { mockFirestore }
     }

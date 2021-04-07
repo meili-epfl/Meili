@@ -17,6 +17,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.MockAuthenticationService
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.models.Post.Companion.toPost
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
 import org.hamcrest.Description
@@ -71,7 +72,7 @@ class ForumTest {
             mockList.add(mockDocumentSnapshot)
             mockTask  // Needs a Task, so I put a mock Task
         }
-        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toObject(Post::class.java) }).thenReturn(postList)
+        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toPost() }).thenReturn(postList)
 
         FirebasePostService.dbProvider = { mockFirestore }
     }
