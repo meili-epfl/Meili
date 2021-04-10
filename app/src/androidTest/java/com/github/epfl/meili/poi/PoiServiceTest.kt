@@ -28,7 +28,6 @@ class PoiServiceTest {
 
     @Test
     fun customOnSuccessFromTest() {
-
         poiService.customOnSuccessFrom { assertEquals(expectedList, it) }(json)
     }
 

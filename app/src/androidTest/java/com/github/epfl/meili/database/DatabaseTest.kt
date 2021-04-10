@@ -27,7 +27,7 @@ class DatabaseTest {
             values.plus(Pair("uid", PointOfInterest()))
         }
 
-        override fun addElement(uid: String, element: PointOfInterest) {
+        override fun addElement(uid: String?, element: PointOfInterest?) {
 
         }
 

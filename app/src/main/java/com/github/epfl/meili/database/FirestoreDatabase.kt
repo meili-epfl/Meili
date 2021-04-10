@@ -23,8 +23,10 @@ class FirestoreDatabase<T: Any>(path: String, val ofClass: Class<T>) : Database<
         registration = ref.addSnapshotListener(this)
     }
 
-    override fun addElement(uid: String, element: T) {
-        ref.document(uid).set(element!!)
+    override fun addElement(uid: String?, element: T?) {
+        if(uid!=null && element!=null) {
+            ref.document(uid).set(element!!)
+        }
     }
 
     override fun onDestroy() {

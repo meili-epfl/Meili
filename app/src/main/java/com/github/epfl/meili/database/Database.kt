@@ -5,7 +5,7 @@ import java.util.*
 abstract class Database<T>(private val path: String): Observable() {
     abstract var values: Map<String, T>
 
-    abstract fun addElement(uid: String, element: T)
+    abstract fun addElement(uid: String?, element: T?)
 
     private var observers: Set<Observer> = HashSet()
 
