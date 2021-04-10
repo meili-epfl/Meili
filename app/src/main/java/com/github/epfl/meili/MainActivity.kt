@@ -4,10 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
-import com.github.epfl.meili.poi.PoiActivity
-import com.github.epfl.meili.registerlogin.RegisterActivity
+import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.review.ReviewsActivity
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
@@ -33,6 +33,9 @@ class MainActivity : AppCompatActivity() {
             R.id.launchReviewView -> {
                 Intent(this, ReviewsActivity::class.java)
                         .putExtra("POI_KEY", "lorem_ipsum")
+            }
+            R.id.launchForumView -> {
+                Intent(this, ForumActivity::class.java)
             }
             else -> {
                 Intent(this, MainActivity::class.java)

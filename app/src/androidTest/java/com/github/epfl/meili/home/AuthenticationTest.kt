@@ -3,7 +3,7 @@ package com.github.epfl.meili.home
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
-import junit.framework.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,9 +40,9 @@ class AuthenticationTest {
         }
 
         val user = Auth.getCurrentUser()!!
-        Assert.assertEquals(user.username, MOCK_NAME)
-        Assert.assertEquals(user.email, MOCK_EMAIL)
-        Assert.assertEquals(Auth.isLoggedIn.value, true)
+        assertEquals(user.username, MOCK_NAME)
+        assertEquals(user.email, MOCK_EMAIL)
+        assertEquals(Auth.isLoggedIn.value, true)
     }
 
     @Test
@@ -54,7 +54,7 @@ class AuthenticationTest {
         }
 
         val user = Auth.getCurrentUser()
-        Assert.assertEquals(true, Objects.isNull(user))
-        Assert.assertEquals(Auth.isLoggedIn.value, false)
+        assertEquals(true, Objects.isNull(user))
+        assertEquals(Auth.isLoggedIn.value, false)
     }
 }

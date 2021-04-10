@@ -5,8 +5,8 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
-import com.github.epfl.meili.helpers.CustomMath
-import com.github.epfl.meili.helpers.HttpRequestQueue
+import com.github.epfl.meili.util.CustomMath
+import com.github.epfl.meili.util.HttpRequestQueue
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName

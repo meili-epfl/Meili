@@ -1,4 +1,4 @@
-package com.github.epfl.meili.helpers
+package com.github.epfl.meili.util
 
 import com.google.android.gms.maps.model.LatLng
 

@@ -1,4 +1,4 @@
-package com.github.epfl.meili.helpers
+package com.github.epfl.meili.util
 
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
