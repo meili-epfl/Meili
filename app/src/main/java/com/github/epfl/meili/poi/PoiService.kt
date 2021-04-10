@@ -5,7 +5,7 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
-import com.github.epfl.meili.helpers.HttpRequestQueue
+import com.github.epfl.meili.util.HttpRequestQueue
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
@@ -65,7 +65,7 @@ class PoiService {
         fun getCustomPois(): List<PointOfInterest> {
             val poiList = ArrayList<PointOfInterest>()
             for (poi in pointsOfInterest) {
-                if (poi.poiTags != null && poi.poiTags!!.name != null && poi.uid != null) {
+                if (poi.poiTags?.name != null && poi.uid != null) {
                     poiList.add(poi.toStandardPoi())
                 }
             }

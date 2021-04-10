@@ -1,11 +1,8 @@
 package com.github.epfl.meili.review
 
 import android.util.Log
-import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.models.Review
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
-import com.google.firebase.ktx.Firebase
 
 class FirestoreReviewService(private val poiKey: String) : ReviewService(), EventListener<QuerySnapshot> {
 

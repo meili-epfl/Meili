@@ -1,8 +1,6 @@
 package com.github.epfl.meili.messages
 
 import com.github.epfl.meili.models.ChatMessage
-import java.util.*
-import kotlin.collections.ArrayList
 
 class MockMessageDatabase(path: String) : MessageDatabase(path) {
     private var messages: ArrayList<ChatMessage> = ArrayList()
