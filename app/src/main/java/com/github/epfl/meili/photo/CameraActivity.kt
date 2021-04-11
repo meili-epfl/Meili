@@ -6,10 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
-import android.view.OrientationEventListener
-import android.view.ScaleGestureDetector
-import android.view.Surface
+import android.view.*
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -56,6 +53,32 @@ class CameraActivity : AppCompatActivity() {
             getZoomDetector().onTouchEvent(event)
             return@setOnTouchListener true
         }
+
+
+        // Listen to tap events on the viewfinder and set them as focus regions
+        previewView.setOnTouchListener(View.OnTouchListener { view: View, motionEvent: MotionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> true
+                MotionEvent.ACTION_UP -> {
+                    // Get the MeteringPointFactory from PreviewView
+                    val factory = previewView.getMeteringPointFactory()
+
+                    // Create a MeteringPoint from the tap coordinates
+                    val point = factory.createPoint(motionEvent.x, motionEvent.y)
+
+                    // Create a MeteringAction from the MeteringPoint, you can configure it to specify the metering mode
+                    val action = FocusMeteringAction.Builder(point).build()
+
+                    // Trigger the focus and metering. The method returns a ListenableFuture since the operation
+                    // is asynchronous. You can use it get notified when the focus is successful or if it fails.
+                    camera.cameraControl.startFocusAndMetering(action)
+
+                    true
+                }
+                else -> false
+            }
+        })
+
 
         // Set up extra camera features
         makePhotosHaveOrientation()
