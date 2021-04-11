@@ -3,24 +3,19 @@ package com.github.epfl.meili.photo
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.OrientationEventListener
+import android.view.ScaleGestureDetector
 import android.view.Surface
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -37,7 +32,9 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var preview: Preview
     private lateinit var cameraSelector: CameraSelector
+    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
     private lateinit var outputDirectory: File
+    private lateinit var camera: Camera
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,11 +43,40 @@ class CameraActivity : AppCompatActivity() {
         startCameraIfPermitted()
 
         // Setup button's callback function
-        val camera = findViewById<ImageButton>(R.id.camera_capture_button)
-        camera.setOnClickListener { takePhoto() }
+        val camera_button = findViewById<ImageButton>(R.id.camera_capture_button)
+        camera_button.setOnClickListener { takePhoto() }
 
         val camera_switch = findViewById<ImageButton>(R.id.camera_switch_button)
         camera_switch.setOnClickListener { switchCamera() }
+
+        val previewView = findViewById<PreviewView>(R.id.camera_preview)
+
+
+        // Listen to pinch gestures
+        val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
+                // Get the camera's current zoom ratio
+                val currentZoomRatio = camera.cameraInfo.zoomState.value?.zoomRatio ?: 0F
+
+                // Get the pinch gesture's scaling factor
+                val delta = detector.scaleFactor
+
+                // Update the camera's zoom ratio. This is an asynchronous operation that returns
+                // a ListenableFuture, allowing you to listen to when the operation completes.
+                camera.cameraControl.setZoomRatio(currentZoomRatio * delta)
+
+                // Return true, as the event was handled
+                return true
+            }
+        }
+        val scaleGestureDetector = ScaleGestureDetector(applicationContext, listener)
+
+// Attach the pinch gesture listener to the viewfinder
+        previewView.setOnTouchListener { _, event ->
+            scaleGestureDetector.onTouchEvent(event)
+            return@setOnTouchListener true
+        }
+
 
         // Set up extra camera features
         makePhotosHaveOrientation()
@@ -66,6 +92,13 @@ class CameraActivity : AppCompatActivity() {
         cameraProviderFuture.addListener({
             cameraProvider = cameraProviderFuture.get() // Guaranteed to exist
 
+            // Select lensFacing depending on the available cameras
+            lensFacing = when {
+                hasBackCamera() -> CameraSelector.LENS_FACING_BACK
+                hasFrontCamera() -> CameraSelector.LENS_FACING_FRONT
+                else -> throw IllegalStateException("Back and front camera are unavailable")
+            }
+
             // Setup Preview use case --> to display the preview to the screen
             preview = Preview.Builder().build()
 
@@ -76,7 +109,7 @@ class CameraActivity : AppCompatActivity() {
 
             // Setup which camera to select (default is back)
             cameraSelector = CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .requireLensFacing(lensFacing)
                 .build()
 
             // Display preview in activity
@@ -84,7 +117,7 @@ class CameraActivity : AppCompatActivity() {
             preview.setSurfaceProvider(previewView.surfaceProvider)
 
             // Attach the lifecycle of the camera to the activity's lifecycle
-            cameraProvider.bindToLifecycle(
+            camera = cameraProvider.bindToLifecycle(
                 this as LifecycleOwner, cameraSelector, preview, imageCapture
             )
 
@@ -141,7 +174,31 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun switchCamera() {
+        lensFacing = if (CameraSelector.LENS_FACING_FRONT == lensFacing) {
+            CameraSelector.LENS_FACING_BACK
+        } else {
+            CameraSelector.LENS_FACING_FRONT
+        }
 
+        //TODO: make it work
+    }
+
+    private fun getZoomDetector(): ScaleGestureDetector {
+        val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
+                // Get the current camera zoom ratio
+                val currentZoomRatio: Float = camera.cameraInfo.zoomState.value?.zoomRatio ?: 1F
+
+                // Get by how much the scale has changed due to the user's pinch gesture
+                val delta = detector.scaleFactor
+
+                // Update the camera's zoom ratio
+                camera.cameraControl.setZoomRatio(currentZoomRatio * delta)
+                return true
+            }
+        }
+
+        return ScaleGestureDetector(applicationContext, listener)
     }
 
     /** Checks if the app's access to the camera is granted */
@@ -221,6 +278,16 @@ class CameraActivity : AppCompatActivity() {
         }
         return if (mediaDir != null && mediaDir.exists())
             mediaDir else applicationContext.filesDir
+    }
+
+    /** Returns true if the device has an available back camera. False otherwise */
+    private fun hasBackCamera(): Boolean {
+        return cameraProvider?.hasCamera(CameraSelector.DEFAULT_BACK_CAMERA) ?: false
+    }
+
+    /** Returns true if the device has an available front camera. False otherwise */
+    private fun hasFrontCamera(): Boolean {
+        return cameraProvider?.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA) ?: false
     }
 
     companion object {
