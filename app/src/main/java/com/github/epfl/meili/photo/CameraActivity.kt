@@ -29,7 +29,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var preview: Preview
     private lateinit var cameraSelector: CameraSelector
     private lateinit var camera: Camera
-    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
+    //private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
 
     private lateinit var outputDirectory: File // directory where photos get saved
 
@@ -47,7 +47,7 @@ class CameraActivity : AppCompatActivity() {
         cameraButton.setOnClickListener { takePhoto() }
 
         val cameraSwitch = findViewById<ImageButton>(R.id.camera_switch_button)
-        cameraSwitch.setOnClickListener { switchCamera() }
+        //cameraSwitch.setOnClickListener { switchCamera() }
 
         previewView = findViewById(R.id.camera_preview)
         previewView.setOnTouchListener(getPreviewTouchListener())
@@ -135,11 +135,11 @@ class CameraActivity : AppCompatActivity() {
             cameraProvider = cameraProviderFuture.get() // Guaranteed to exist
 
             // Select lensFacing depending on the available cameras
-            lensFacing = when {
-                hasBackCamera() -> CameraSelector.LENS_FACING_BACK
-                //hasFrontCamera() -> CameraSelector.LENS_FACING_FRONT // not working yet
-                else -> throw IllegalStateException("Back and front camera are unavailable")
-            }
+//            lensFacing = when {
+//                hasBackCamera() -> CameraSelector.LENS_FACING_BACK
+//                //hasFrontCamera() -> CameraSelector.LENS_FACING_FRONT // not working yet
+//                else -> throw IllegalStateException("Back and front camera are unavailable")
+//            }
 
             // Setup Preview use case --> to display the preview to the screen
             preview = Preview.Builder().build()
@@ -151,7 +151,7 @@ class CameraActivity : AppCompatActivity() {
 
             // Setup which camera to select (default is back)
             cameraSelector = CameraSelector.Builder()
-                .requireLensFacing(lensFacing)
+                .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
                 .build()
 
             // Display preview in activity
@@ -218,7 +218,7 @@ class CameraActivity : AppCompatActivity() {
 //        } else {
 //            CameraSelector.LENS_FACING_FRONT
 //        }
-        lensFacing = CameraSelector.LENS_FACING_FRONT
+        //lensFacing = CameraSelector.LENS_FACING_FRONT
         //TODO: make it work
     }
 
