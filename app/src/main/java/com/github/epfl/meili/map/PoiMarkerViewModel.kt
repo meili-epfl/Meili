@@ -97,8 +97,6 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
         var poiMap = mPointsOfInterest.value!!
         var statusMap = mPointsOfInterestStatus.value!!
 
-        val begsize = poiMap.size
-
         for (poi in list) {
             if (!poiMap.containsKey(poi.uid)) {
                 poiMap = poiMap + Pair(poi.uid, poi)

@@ -1,10 +1,13 @@
 package com.github.epfl.meili.database
 
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.poi.PointOfInterest
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.*
 import junit.framework.Assert.assertEquals
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
@@ -12,7 +15,7 @@ import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
 class FirestoreDatabaseTest {
-    private val db = FirestoreDatabase("test_path", PointOfInterest::class.java)
+    private lateinit var db: FirestoreDatabase<PointOfInterest>
     private val poi1 = PointOfInterest(LatLng(41.075000, 1.130870), "place1", "place1")
     private val poi2 = PointOfInterest(LatLng(41.063563, 1.083658), "place2", "place2")
 
@@ -20,6 +23,10 @@ class FirestoreDatabaseTest {
     private val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
     private val mockDocument: DocumentReference = Mockito.mock(DocumentReference::class.java)
     private val mockListenerRegistration: ListenerRegistration = Mockito.mock(ListenerRegistration::class.java)
+
+    @get:Rule
+    var testRule: ActivityScenarioRule<MainActivity> =
+            ActivityScenarioRule(MainActivity::class.java)
 
     init {
         setupMocks()
@@ -34,6 +41,7 @@ class FirestoreDatabaseTest {
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
+        db = FirestoreDatabase("test_path", PointOfInterest::class.java)
     }
 
     private fun getMockDocumentSnapshot(id: String, poi: PointOfInterest): DocumentSnapshot {
@@ -42,7 +50,6 @@ class FirestoreDatabaseTest {
         Mockito.`when`(mockDocumentSnapshot.toObject(PointOfInterest::class.java)).thenReturn(poi)
         return mockDocumentSnapshot
     }
-
 
     @Test
     fun addElementTest() {
@@ -64,7 +71,6 @@ class FirestoreDatabaseTest {
     @Test
     fun onDestroyTest() {
         Mockito.`when`(mockListenerRegistration.remove()).then {
-            assert(false)
             return@then null
         }
 
