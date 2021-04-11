@@ -49,6 +49,9 @@ class CameraActivity : AppCompatActivity() {
         val camera = findViewById<ImageButton>(R.id.camera_capture_button)
         camera.setOnClickListener { takePhoto() }
 
+        val camera_switch = findViewById<ImageButton>(R.id.camera_switch_button)
+        camera_switch.setOnClickListener { switchCamera() }
+
         // Set up extra camera features
         makePhotosHaveOrientation()
 
@@ -135,6 +138,10 @@ class CameraActivity : AppCompatActivity() {
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
+    }
+
+    private fun switchCamera() {
+
     }
 
     /** Checks if the app's access to the camera is granted */
