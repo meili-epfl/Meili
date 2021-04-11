@@ -3,6 +3,7 @@ package com.github.epfl.meili.photo
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,7 @@ import android.view.KeyEvent
 import android.view.OrientationEventListener
 import android.view.Surface
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
@@ -18,6 +20,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -43,7 +46,8 @@ class CameraActivity : AppCompatActivity() {
         startCameraIfPermitted()
 
         // Setup button's callback function
-        findViewById<Button>(R.id.camera_capture_button).setOnClickListener { takePhoto() }
+        val camera = findViewById<ImageButton>(R.id.camera_capture_button)
+        camera.setOnClickListener { takePhoto() }
 
         // Set up extra camera features
         makePhotosHaveOrientation()
@@ -165,8 +169,16 @@ class CameraActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return when (keyCode) {
             KeyEvent.KEYCODE_VOLUME_DOWN -> { // Take photo when volume down is pressed
-                val shutter = findViewById<Button>(R.id.camera_capture_button)
-                shutter.performClick()
+                val shutter = findViewById<ImageButton>(R.id.camera_capture_button)
+                shutter.apply {
+                    performClick()
+                    isPressed = true
+                    invalidate()
+                    postDelayed({ // Press for a small delay to show that button has been pressed
+                        invalidate()
+                        isPressed = false
+                    }, 200L)
+                }
                 true
             }
             else -> super.onKeyDown(keyCode, event)
