@@ -55,12 +55,9 @@ class CameraActivity : AppCompatActivity() {
                 // Get the camera's current zoom ratio
                 val currentZoomRatio = camera.cameraInfo.zoomState.value?.zoomRatio ?: 0F
 
-                // Get the pinch gesture's scaling factor
-                val delta = detector.scaleFactor
-
                 // Update the camera's zoom ratio. This is an asynchronous operation that returns
                 // a ListenableFuture, allowing you to listen to when the operation completes.
-                camera.cameraControl.setZoomRatio(currentZoomRatio * delta)
+                camera.cameraControl.setZoomRatio(currentZoomRatio * detector.scaleFactor)
 
                 // Return true, as the event was handled
                 return true
@@ -112,7 +109,7 @@ class CameraActivity : AppCompatActivity() {
             // Select lensFacing depending on the available cameras
             lensFacing = when {
                 hasBackCamera() -> CameraSelector.LENS_FACING_BACK
-                hasFrontCamera() -> CameraSelector.LENS_FACING_FRONT
+                //hasFrontCamera() -> CameraSelector.LENS_FACING_FRONT // not working yet
                 else -> throw IllegalStateException("Back and front camera are unavailable")
             }
 
@@ -195,12 +192,12 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun switchCamera() {
-        lensFacing = if (CameraSelector.LENS_FACING_FRONT == lensFacing) {
-            CameraSelector.LENS_FACING_BACK
-        } else {
-            CameraSelector.LENS_FACING_FRONT
-        }
-
+//        lensFacing = if (CameraSelector.LENS_FACING_FRONT == lensFacing) {
+//            CameraSelector.LENS_FACING_BACK
+//        } else {
+//            CameraSelector.LENS_FACING_FRONT
+//        }
+        lensFacing = CameraSelector.LENS_FACING_FRONT
         //TODO: make it work
     }
 
@@ -223,12 +220,6 @@ class CameraActivity : AppCompatActivity() {
             if (allPermissionsGranted()) {
                 startCamera() // When authorized, start the camera
             } else {
-                // Notify user when they have not set the permission
-                Toast.makeText(
-                    this,
-                    "Meili does not have permission to use the camera",
-                    Toast.LENGTH_SHORT
-                ).show()
                 finish()
             }
         }
@@ -290,9 +281,9 @@ class CameraActivity : AppCompatActivity() {
     }
 
     /** Returns true if the device has an available front camera. False otherwise */
-    private fun hasFrontCamera(): Boolean {
-        return cameraProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
-    }
+//    private fun hasFrontCamera(): Boolean {
+//        return cameraProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
+//    }
 
     companion object {
         private const val REQUEST_CODE_PERMISSIONS = 10
