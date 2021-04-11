@@ -11,7 +11,10 @@ import android.view.Surface
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.*
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
@@ -21,8 +24,6 @@ import com.github.epfl.meili.R
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 class CameraActivity : AppCompatActivity() {
 
@@ -32,9 +33,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var preview: Preview
     private lateinit var cameraSelector: CameraSelector
-
-    private val REQUEST_CODE_PERMISSIONS = 10
-    private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+    private lateinit var outputDirectory: File
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,13 +46,16 @@ class CameraActivity : AppCompatActivity() {
 
         // Set up extra camera features
         makePhotosHaveOrientation()
+
+        // Determine the output directory
+        outputDirectory = getOutputDirectory()
     }
 
     /** Sets up camera */
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
-        cameraProviderFuture.addListener(Runnable {
+        cameraProviderFuture.addListener({
             cameraProvider = cameraProviderFuture.get() // Guaranteed to exist
 
             // Setup Preview use case --> to display the preview to the screen
@@ -88,20 +90,34 @@ class CameraActivity : AppCompatActivity() {
             return
         }
 
+        // Create time-stamped output file to hold the image
+        val photoFile = File(
+            outputDirectory,
+            SimpleDateFormat(
+                FILENAME_FORMAT, Locale.US
+            ).format(System.currentTimeMillis()) + ".jpg"
+        )
+
+        // Create output options object which contains file + metadata
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
         // Set up behaviour for when a photo is taken
-        imageCapture!!.takePicture(ContextCompat.getMainExecutor(this),
-            object : ImageCapture.OnImageCapturedCallback() { // object with callback functions for pictures
+        imageCapture!!.takePicture(
+            outputOptions,
+            ContextCompat.getMainExecutor(this),
+            object :
+                ImageCapture.OnImageSavedCallback { // object with callback functions for pictures
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
-                override fun onCaptureSuccess(image: ImageProxy) {
-                    Log.d(TAG, "Photo capture is a success !")
-                    // TODO : process image
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    val savedUri = Uri.fromFile(photoFile)
+                    val msg = "Photo capture succeeded: $savedUri"
+                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, msg)
                 }
-
             })
-
     }
 
     /** Checks if device has access to start the camera, if not, ask the user for permission */
@@ -153,9 +169,9 @@ class CameraActivity : AppCompatActivity() {
         }
 
         val orientationEventListener = object : OrientationEventListener(this as Context) {
-            override fun onOrientationChanged(orientation : Int) {
+            override fun onOrientationChanged(orientation: Int) {
                 // Monitors orientation values to determine the target rotation value
-                val rotation : Int = when (orientation) {
+                val rotation: Int = when (orientation) {
                     in 45..134 -> Surface.ROTATION_270
                     in 135..224 -> Surface.ROTATION_180
                     in 225..314 -> Surface.ROTATION_90
@@ -166,5 +182,19 @@ class CameraActivity : AppCompatActivity() {
             }
         }
         orientationEventListener.enable()
+    }
+
+    private fun getOutputDirectory(): File {
+        val mediaDir = applicationContext.externalMediaDirs.firstOrNull()?.let {
+            File(it, baseContext.resources.getString(R.string.app_name)).apply { mkdirs() }
+        }
+        return if (mediaDir != null && mediaDir.exists())
+            mediaDir else applicationContext.filesDir
+    }
+
+    companion object {
+        private const val REQUEST_CODE_PERMISSIONS = 10
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     }
 }

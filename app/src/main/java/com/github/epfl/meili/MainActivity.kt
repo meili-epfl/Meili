@@ -1,5 +1,6 @@
 package com.github.epfl.meili
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -9,6 +10,7 @@ import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.photo.CameraActivity
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
