@@ -172,7 +172,6 @@ class CameraActivity : AppCompatActivity() {
             Log.d(TAG, "Camera is not set up correctly")
             return
         }
-
         // Create time-stamped output file to hold the image
         val photoFile = File(
             outputDirectory,
@@ -180,8 +179,6 @@ class CameraActivity : AppCompatActivity() {
                 FILENAME_FORMAT, Locale.US
             ).format(System.currentTimeMillis()) + ".jpg"
         )
-
-        // Set up behaviour for when a photo is taken
         imageCapture!!.takePicture(
             ImageCapture.OutputFileOptions.Builder(photoFile).build(),
             ContextCompat.getMainExecutor(this),
@@ -190,7 +187,6 @@ class CameraActivity : AppCompatActivity() {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
-
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val intent = Intent(applicationContext, PhotoDisplayActivity::class.java)
                     intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
