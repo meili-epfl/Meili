@@ -169,9 +169,9 @@ class CameraActivity : AppCompatActivity() {
     /** Takes a picture */
     private fun takePhoto() {
         if (imageCapture == null) {
-            Log.d(TAG, "Camera is not set up correctly")
             return
         }
+
         // Create time-stamped output file to hold the image
         val photoFile = File(
             outputDirectory,
@@ -179,6 +179,8 @@ class CameraActivity : AppCompatActivity() {
                 FILENAME_FORMAT, Locale.US
             ).format(System.currentTimeMillis()) + ".jpg"
         )
+
+        // Set up behaviour for when a photo is taken
         imageCapture!!.takePicture(
             ImageCapture.OutputFileOptions.Builder(photoFile).build(),
             ContextCompat.getMainExecutor(this),
