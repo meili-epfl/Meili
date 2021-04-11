@@ -21,22 +21,16 @@ class MainActivity : AppCompatActivity() {
     fun onClick(view: View) {
         val intent: Intent = when (view.id) {
             R.id.launchSignInView -> {
-                Intent(this, GoogleSignInActivity::class.java)
-            }
+                Intent(this, GoogleSignInActivity::class.java) }
             R.id.launchChatView -> {
-                Intent(this, ChatLogActivity::class.java)
-            }
+                Intent(this, ChatLogActivity::class.java) }
             R.id.launchMapView -> {
-                Intent(this, MapActivity::class.java)
-            }
+                Intent(this, MapActivity::class.java) }
             R.id.launchCameraView -> {
-                Intent(this, CameraActivity::class.java)
-            }
+                Intent(this, CameraActivity::class.java) }
             else -> {
-                Intent(this, MainActivity::class.java)
-            }
+                Intent(this, MainActivity::class.java) }
         }
-
         if (view.id == R.id.launchChatView) {
             intent.putExtra(
                 "POI_KEY",

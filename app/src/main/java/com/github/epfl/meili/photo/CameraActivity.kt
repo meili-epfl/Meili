@@ -181,12 +181,9 @@ class CameraActivity : AppCompatActivity() {
             ).format(System.currentTimeMillis()) + ".jpg"
         )
 
-        // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-
         // Set up behaviour for when a photo is taken
         imageCapture!!.takePicture(
-            outputOptions,
+            ImageCapture.OutputFileOptions.Builder(photoFile).build(),
             ContextCompat.getMainExecutor(this),
             object :
                 ImageCapture.OnImageSavedCallback { // object with callback functions for pictures
@@ -195,11 +192,8 @@ class CameraActivity : AppCompatActivity() {
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(photoFile)
-
-                    // Display photo in other activity
                     val intent = Intent(applicationContext, PhotoDisplayActivity::class.java)
-                    intent.putExtra(URI_KEY, savedUri)
+                    intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
                     startActivity(intent)
                 }
             })
