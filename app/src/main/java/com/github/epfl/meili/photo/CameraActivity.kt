@@ -2,6 +2,7 @@ package com.github.epfl.meili.photo
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -21,8 +22,8 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CameraActivity : AppCompatActivity() {
 
+class CameraActivity : AppCompatActivity() {
     private val TAG = "CameraActivity"
 
     private var imageCapture: ImageCapture? = null // is null when camera hasn't started
@@ -40,28 +41,42 @@ class CameraActivity : AppCompatActivity() {
         startCameraIfPermitted()
 
         // Setup button's callback function
-        val camera_button = findViewById<ImageButton>(R.id.camera_capture_button)
-        camera_button.setOnClickListener { takePhoto() }
+        val cameraButton = findViewById<ImageButton>(R.id.camera_capture_button)
+        cameraButton.setOnClickListener { takePhoto() }
 
-        val camera_switch = findViewById<ImageButton>(R.id.camera_switch_button)
-        camera_switch.setOnClickListener { switchCamera() }
+        val cameraSwitch = findViewById<ImageButton>(R.id.camera_switch_button)
+        cameraSwitch.setOnClickListener { switchCamera() }
 
         val previewView = findViewById<PreviewView>(R.id.camera_preview)
 
-        // Attach the pinch gesture listener to the viewfinder
-        previewView.setOnTouchListener { _, event ->
-            getZoomDetector().onTouchEvent(event)
-            return@setOnTouchListener true
-        }
+        // Listen to pinch gestures
+        val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
+                // Get the camera's current zoom ratio
+                val currentZoomRatio = camera.cameraInfo.zoomState.value?.zoomRatio ?: 0F
 
+                // Get the pinch gesture's scaling factor
+                val delta = detector.scaleFactor
+
+                // Update the camera's zoom ratio. This is an asynchronous operation that returns
+                // a ListenableFuture, allowing you to listen to when the operation completes.
+                camera.cameraControl.setZoomRatio(currentZoomRatio * delta)
+
+                // Return true, as the event was handled
+                return true
+            }
+        }
+        val scaleGestureDetector = ScaleGestureDetector(applicationContext, listener)
 
         // Listen to tap events on the viewfinder and set them as focus regions
-        previewView.setOnTouchListener(View.OnTouchListener { view: View, motionEvent: MotionEvent ->
+        previewView.setOnTouchListener { view: View, motionEvent: MotionEvent ->
+            view.performClick()
+            scaleGestureDetector.onTouchEvent(motionEvent)
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> true
                 MotionEvent.ACTION_UP -> {
                     // Get the MeteringPointFactory from PreviewView
-                    val factory = previewView.getMeteringPointFactory()
+                    val factory = previewView.meteringPointFactory
 
                     // Create a MeteringPoint from the tap coordinates
                     val point = factory.createPoint(motionEvent.x, motionEvent.y)
@@ -77,7 +92,7 @@ class CameraActivity : AppCompatActivity() {
                 }
                 else -> false
             }
-        })
+        }
 
 
         // Set up extra camera features
@@ -159,6 +174,10 @@ class CameraActivity : AppCompatActivity() {
                     val msg = "Photo capture succeeded: $savedUri"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
                     Log.d(TAG, msg)
+
+                    val intent = Intent(applicationContext, PhotoDisplayActivity::class.java)
+                    intent.putExtra(URI_KEY, savedUri)
+                    startActivity(intent)
                 }
             })
     }
@@ -185,26 +204,6 @@ class CameraActivity : AppCompatActivity() {
         //TODO: make it work
     }
 
-    private fun getZoomDetector(): ScaleGestureDetector {
-        // Listen to pinch gestures
-        val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-            override fun onScale(detector: ScaleGestureDetector): Boolean {
-                // Get the camera's current zoom ratio
-                val currentZoomRatio = camera.cameraInfo.zoomState.value?.zoomRatio ?: 0F
-
-                // Get the pinch gesture's scaling factor
-                val delta = detector.scaleFactor
-
-                // Update the camera's zoom ratio. This is an asynchronous operation that returns
-                // a ListenableFuture, allowing you to listen to when the operation completes.
-                camera.cameraControl.setZoomRatio(currentZoomRatio * delta)
-
-                // Return true, as the event was handled
-                return true
-            }
-        }
-        return ScaleGestureDetector(applicationContext, listener)
-    }
 
     /** Checks if the app's access to the camera is granted */
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -287,17 +286,18 @@ class CameraActivity : AppCompatActivity() {
 
     /** Returns true if the device has an available back camera. False otherwise */
     private fun hasBackCamera(): Boolean {
-        return cameraProvider?.hasCamera(CameraSelector.DEFAULT_BACK_CAMERA) ?: false
+        return cameraProvider.hasCamera(CameraSelector.DEFAULT_BACK_CAMERA)
     }
 
     /** Returns true if the device has an available front camera. False otherwise */
     private fun hasFrontCamera(): Boolean {
-        return cameraProvider?.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA) ?: false
+        return cameraProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
     }
 
     companion object {
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        const val URI_KEY = "URI_KEY"
     }
 }
