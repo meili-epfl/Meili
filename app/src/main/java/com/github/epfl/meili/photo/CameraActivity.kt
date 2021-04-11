@@ -51,32 +51,11 @@ class CameraActivity : AppCompatActivity() {
 
         val previewView = findViewById<PreviewView>(R.id.camera_preview)
 
-
-        // Listen to pinch gestures
-        val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-            override fun onScale(detector: ScaleGestureDetector): Boolean {
-                // Get the camera's current zoom ratio
-                val currentZoomRatio = camera.cameraInfo.zoomState.value?.zoomRatio ?: 0F
-
-                // Get the pinch gesture's scaling factor
-                val delta = detector.scaleFactor
-
-                // Update the camera's zoom ratio. This is an asynchronous operation that returns
-                // a ListenableFuture, allowing you to listen to when the operation completes.
-                camera.cameraControl.setZoomRatio(currentZoomRatio * delta)
-
-                // Return true, as the event was handled
-                return true
-            }
-        }
-        val scaleGestureDetector = ScaleGestureDetector(applicationContext, listener)
-
-// Attach the pinch gesture listener to the viewfinder
+        // Attach the pinch gesture listener to the viewfinder
         previewView.setOnTouchListener { _, event ->
-            scaleGestureDetector.onTouchEvent(event)
+            getZoomDetector().onTouchEvent(event)
             return@setOnTouchListener true
         }
-
 
         // Set up extra camera features
         makePhotosHaveOrientation()
@@ -184,20 +163,23 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun getZoomDetector(): ScaleGestureDetector {
+        // Listen to pinch gestures
         val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
-                // Get the current camera zoom ratio
-                val currentZoomRatio: Float = camera.cameraInfo.zoomState.value?.zoomRatio ?: 1F
+                // Get the camera's current zoom ratio
+                val currentZoomRatio = camera.cameraInfo.zoomState.value?.zoomRatio ?: 0F
 
-                // Get by how much the scale has changed due to the user's pinch gesture
+                // Get the pinch gesture's scaling factor
                 val delta = detector.scaleFactor
 
-                // Update the camera's zoom ratio
+                // Update the camera's zoom ratio. This is an asynchronous operation that returns
+                // a ListenableFuture, allowing you to listen to when the operation completes.
                 camera.cameraControl.setZoomRatio(currentZoomRatio * delta)
+
+                // Return true, as the event was handled
                 return true
             }
         }
-
         return ScaleGestureDetector(applicationContext, listener)
     }
 
