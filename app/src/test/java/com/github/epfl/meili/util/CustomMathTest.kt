@@ -1,6 +1,5 @@
 package com.github.epfl.meili.util
 
-import com.github.epfl.meili.helpers.CustomMath
 import com.google.android.gms.maps.model.LatLng
 import junit.framework.Assert.assertEquals
 import org.junit.Test
