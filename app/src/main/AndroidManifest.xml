@@ -39,11 +39,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ChatLogActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LatestMessagesActivity" />
-        </activity>
+        <activity android:name=".messages.ChatLogActivity" />
         <activity
             android:name=".poi.PoiActivity"
             android:parentActivityName=".map.MapActivity">
@@ -51,10 +47,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".map.MapActivity" />
         </activity>
-        <activity android:name=".LatestMessagesActivity" />
-        <activity android:name=".registerlogin.LoginActivity" />
-        <activity android:name=".registerlogin.RegisterActivity" />
         <activity android:name=".home.GoogleSignInActivity" />
+
+        <activity android:name=".review.ReviewsActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -64,6 +61,12 @@
             android:name=".map.MapActivity"
             android:label="@string/title_activity_map"
             android:parentActivityName=".MainActivity" />
-    </application>
 
+        <activity android:name=".forum.NewPostActivity"
+            android:parentActivityName=".forum.ForumActivity"/>
+        <activity android:name=".forum.ForumActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".forum.PostActivity"
+            android:parentActivityName=".forum.ForumActivity"/>
+    </application>
 </manifest>

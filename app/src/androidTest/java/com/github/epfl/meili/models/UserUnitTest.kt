@@ -1,14 +1,12 @@
 package com.github.epfl.meili.models
 
-
 import android.os.Parcel
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.epfl.meili.MainActivity
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.Test
-
-import org.junit.Assert.*
+import org.junit.Assert.assertThat
 import org.junit.Rule
+import org.junit.Test
 
 
 class UserUnitTest {
@@ -52,7 +50,6 @@ class UserUnitTest {
 
         var otherUser = User(TEST_UID, TEST_USERNAME, TEST_EMAIL)
 
-
         assertThat(user.hashCode(), `is`(otherUser.hashCode()))
     }
 
@@ -75,5 +72,4 @@ class UserUnitTest {
         var nullUser = null
         assertThat(user.equals(nullUser), `is`(false))
     }
-
 }
