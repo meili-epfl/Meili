@@ -29,7 +29,6 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var preview: Preview
     private lateinit var cameraSelector: CameraSelector
     private lateinit var camera: Camera
-    //private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
 
     private lateinit var outputDirectory: File // directory where photos get saved
 
@@ -45,9 +44,6 @@ class CameraActivity : AppCompatActivity() {
         // Setup callbacks
         cameraButton = findViewById(R.id.camera_capture_button)
         cameraButton.setOnClickListener { takePhoto() }
-
-        val cameraSwitch = findViewById<ImageButton>(R.id.camera_switch_button)
-        //cameraSwitch.setOnClickListener { switchCamera() }
 
         previewView = findViewById(R.id.camera_preview)
         previewView.setOnTouchListener(getPreviewTouchListener())
@@ -134,13 +130,6 @@ class CameraActivity : AppCompatActivity() {
         cameraProviderFuture.addListener({
             cameraProvider = cameraProviderFuture.get() // Guaranteed to exist
 
-            // Select lensFacing depending on the available cameras
-//            lensFacing = when {
-//                hasBackCamera() -> CameraSelector.LENS_FACING_BACK
-//                //hasFrontCamera() -> CameraSelector.LENS_FACING_FRONT // not working yet
-//                else -> throw IllegalStateException("Back and front camera are unavailable")
-//            }
-
             // Setup Preview use case --> to display the preview to the screen
             preview = Preview.Builder().build()
 
@@ -189,6 +178,7 @@ class CameraActivity : AppCompatActivity() {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
+
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val intent = Intent(applicationContext, PhotoDisplayActivity::class.java)
                     intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
@@ -208,20 +198,6 @@ class CameraActivity : AppCompatActivity() {
             )
         }
     }
-
-    /**
-     * Doesn't work yet
-     */
-    private fun switchCamera() {
-//        lensFacing = if (CameraSelector.LENS_FACING_FRONT == lensFacing) {
-//            CameraSelector.LENS_FACING_BACK
-//        } else {
-//            CameraSelector.LENS_FACING_FRONT
-//        }
-        //lensFacing = CameraSelector.LENS_FACING_FRONT
-        //TODO: make it work
-    }
-
 
     /** Checks if the app's access to the camera is granted */
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -264,14 +240,6 @@ class CameraActivity : AppCompatActivity() {
         return if (mediaDir != null && mediaDir.exists())
             mediaDir else applicationContext.filesDir
     }
-
-    private fun hasBackCamera(): Boolean {
-        return cameraProvider.hasCamera(CameraSelector.DEFAULT_BACK_CAMERA)
-    }
-
-//    private fun hasFrontCamera(): Boolean {
-//        return cameraProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
-//    }
 
     companion object {
         private const val REQUEST_CODE_PERMISSIONS = 10

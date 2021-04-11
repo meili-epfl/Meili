@@ -90,9 +90,9 @@ class CameraActivityTest {
 
         val mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
-        mDevice.setOrientationLeft();
-        mDevice.setOrientationNatural();
-        mDevice.setOrientationRight();
+        mDevice.setOrientationLeft()
+        mDevice.setOrientationNatural()
+        mDevice.setOrientationRight()
 
         Thread.sleep(2000)
 
