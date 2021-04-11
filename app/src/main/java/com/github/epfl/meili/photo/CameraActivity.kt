@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.OrientationEventListener
 import android.view.Surface
 import android.widget.Button
@@ -158,6 +159,17 @@ class CameraActivity : AppCompatActivity() {
                 ).show()
                 finish()
             }
+        }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        return when (keyCode) {
+            KeyEvent.KEYCODE_VOLUME_DOWN -> { // Take photo when volume down is pressed
+                val shutter = findViewById<Button>(R.id.camera_capture_button)
+                shutter.performClick()
+                true
+            }
+            else -> super.onKeyDown(keyCode, event)
         }
     }
 
