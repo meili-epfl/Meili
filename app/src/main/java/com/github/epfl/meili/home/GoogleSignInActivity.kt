@@ -28,7 +28,7 @@ class GoogleSignInActivity : AppCompatActivity() {
         updateUI()
     }
 
-    fun onGoogleButtonClick(view: View) {
+    fun onGoogleButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
         if (Auth.getCurrentUser() != null) {
             signOut()
         } else {
@@ -47,25 +47,19 @@ class GoogleSignInActivity : AppCompatActivity() {
     private fun updateUI() {
         var message: String = "Sign in"
         var buttonMessage = "Sign In"
+
         if (Auth.isLoggedIn.value!!) {
             message = Auth.name!!
             buttonMessage = "Sign Out"
         }
 
-        val textView = findViewById<TextView>(R.id.textFieldSignIn).apply {
-            text = message
-        }
-
-        val buttonView = findViewById<Button>(R.id.signInButton).apply {
-            text = buttonMessage
-        }
+        findViewById<TextView>(R.id.textFieldSignIn).text = message
+        findViewById<Button>(R.id.signInButton).text = buttonMessage
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         Auth.onActivityResult(this, requestCode, resultCode, data)
     }
-
 }

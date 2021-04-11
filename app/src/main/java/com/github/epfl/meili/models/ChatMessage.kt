@@ -3,7 +3,7 @@ package com.github.epfl.meili.models
 import android.os.Parcelable
 import android.util.Log
 import com.google.firebase.firestore.DocumentSnapshot
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ChatMessage(
@@ -20,7 +20,6 @@ data class ChatMessage(
         // Create Post from Firestore data
         fun DocumentSnapshot.toChatMessage(): ChatMessage? {
             return try {
-                val id =  id // Not used
                 val text = getString("text")!!
                 val fromId = getString("fromId")!!
                 val toId = getString("toId")!!
