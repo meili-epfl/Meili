@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -22,7 +21,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class CameraActivity : AppCompatActivity() {
     private val TAG = "CameraActivity"
 
@@ -30,9 +28,13 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var preview: Preview
     private lateinit var cameraSelector: CameraSelector
-    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
-    private lateinit var outputDirectory: File
     private lateinit var camera: Camera
+    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
+
+    private lateinit var outputDirectory: File // directory where photos get saved
+
+    private lateinit var cameraButton: ImageButton
+    private lateinit var previewView: PreviewView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,63 +42,89 @@ class CameraActivity : AppCompatActivity() {
 
         startCameraIfPermitted()
 
-        // Setup button's callback function
-        val cameraButton = findViewById<ImageButton>(R.id.camera_capture_button)
+        // Setup callbacks
+        cameraButton = findViewById(R.id.camera_capture_button)
         cameraButton.setOnClickListener { takePhoto() }
 
         val cameraSwitch = findViewById<ImageButton>(R.id.camera_switch_button)
         cameraSwitch.setOnClickListener { switchCamera() }
 
-        val previewView = findViewById<PreviewView>(R.id.camera_preview)
+        previewView = findViewById(R.id.camera_preview)
+        previewView.setOnTouchListener(getPreviewTouchListener())
 
-        // Listen to pinch gestures
-        val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        // Set up extra camera features
+        makePhotosHaveOrientation()
+
+        outputDirectory = getOutputDirectory()
+    }
+
+    /** Callback function for permissions */
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // Checks if the request code is the same as the one sent to the device
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (allPermissionsGranted()) {
+                startCamera() // When authorized, start the camera
+            } else {
+                finish()
+            }
+        }
+    }
+
+    /**
+     * Used to detect if volume down button is pressed to take photo
+     */
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        return when (keyCode) {
+            KeyEvent.KEYCODE_VOLUME_DOWN -> { // Take photo when volume down is pressed
+                cameraButton.apply {
+                    performClick()
+                    isPressed = true
+                    invalidate()
+                    postDelayed({ // Press for a small delay to show that button has been pressed
+                        invalidate()
+                        isPressed = false
+                    }, PRESS_DELAY)
+                }
+                true
+            }
+            else -> super.onKeyDown(keyCode, event)
+        }
+    }
+
+    /**
+     * Creates the touch listener for the previewView
+     */
+    private fun getPreviewTouchListener(): (View, MotionEvent) -> Boolean {
+        // Pinch to zoom
+        val pinchListener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
-                // Get the camera's current zoom ratio
                 val currentZoomRatio = camera.cameraInfo.zoomState.value?.zoomRatio ?: 0F
-
-                // Update the camera's zoom ratio. This is an asynchronous operation that returns
-                // a ListenableFuture, allowing you to listen to when the operation completes.
                 camera.cameraControl.setZoomRatio(currentZoomRatio * detector.scaleFactor)
-
-                // Return true, as the event was handled
                 return true
             }
         }
-        val scaleGestureDetector = ScaleGestureDetector(applicationContext, listener)
+        val scaleGestureDetector = ScaleGestureDetector(applicationContext, pinchListener)
 
-        // Listen to tap events on the viewfinder and set them as focus regions
-        previewView.setOnTouchListener { view: View, motionEvent: MotionEvent ->
+        return { view: View, motionEvent: MotionEvent ->
             view.performClick()
+            // Touch to focus camera
             scaleGestureDetector.onTouchEvent(motionEvent)
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> true
                 MotionEvent.ACTION_UP -> {
-                    // Get the MeteringPointFactory from PreviewView
                     val factory = previewView.meteringPointFactory
-
-                    // Create a MeteringPoint from the tap coordinates
                     val point = factory.createPoint(motionEvent.x, motionEvent.y)
-
-                    // Create a MeteringAction from the MeteringPoint, you can configure it to specify the metering mode
                     val action = FocusMeteringAction.Builder(point).build()
-
-                    // Trigger the focus and metering. The method returns a ListenableFuture since the operation
-                    // is asynchronous. You can use it get notified when the focus is successful or if it fails.
                     camera.cameraControl.startFocusAndMetering(action)
-
                     true
                 }
                 else -> false
             }
         }
-
-
-        // Set up extra camera features
-        makePhotosHaveOrientation()
-
-        // Determine the output directory
-        outputDirectory = getOutputDirectory()
     }
 
     /** Sets up camera */
@@ -168,10 +196,8 @@ class CameraActivity : AppCompatActivity() {
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
-                    val msg = "Photo capture succeeded: $savedUri"
-                    Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, msg)
 
+                    // Display photo in other activity
                     val intent = Intent(applicationContext, PhotoDisplayActivity::class.java)
                     intent.putExtra(URI_KEY, savedUri)
                     startActivity(intent)
@@ -191,6 +217,9 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Doesn't work yet
+     */
     private fun switchCamera() {
 //        lensFacing = if (CameraSelector.LENS_FACING_FRONT == lensFacing) {
 //            CameraSelector.LENS_FACING_BACK
@@ -209,40 +238,6 @@ class CameraActivity : AppCompatActivity() {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    /** Callback function for permissions */
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        // Checks if the request code is the same as the one sent to the device
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (allPermissionsGranted()) {
-                startCamera() // When authorized, start the camera
-            } else {
-                finish()
-            }
-        }
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        return when (keyCode) {
-            KeyEvent.KEYCODE_VOLUME_DOWN -> { // Take photo when volume down is pressed
-                val shutter = findViewById<ImageButton>(R.id.camera_capture_button)
-                shutter.apply {
-                    performClick()
-                    isPressed = true
-                    invalidate()
-                    postDelayed({ // Press for a small delay to show that button has been pressed
-                        invalidate()
-                        isPressed = false
-                    }, 200L)
-                }
-                true
-            }
-            else -> super.onKeyDown(keyCode, event)
-        }
-    }
 
     /** Sets up rotation metadata for Image Capture use case */
     private fun makePhotosHaveOrientation() {
@@ -267,6 +262,9 @@ class CameraActivity : AppCompatActivity() {
         orientationEventListener.enable()
     }
 
+    /**
+     * Figures out where to store photos depending on whether external storage media is available
+     */
     private fun getOutputDirectory(): File {
         val mediaDir = applicationContext.externalMediaDirs.firstOrNull()?.let {
             File(it, baseContext.resources.getString(R.string.app_name)).apply { mkdirs() }
@@ -275,12 +273,10 @@ class CameraActivity : AppCompatActivity() {
             mediaDir else applicationContext.filesDir
     }
 
-    /** Returns true if the device has an available back camera. False otherwise */
     private fun hasBackCamera(): Boolean {
         return cameraProvider.hasCamera(CameraSelector.DEFAULT_BACK_CAMERA)
     }
 
-    /** Returns true if the device has an available front camera. False otherwise */
 //    private fun hasFrontCamera(): Boolean {
 //        return cameraProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
 //    }
@@ -290,5 +286,6 @@ class CameraActivity : AppCompatActivity() {
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         const val URI_KEY = "URI_KEY"
+        private const val PRESS_DELAY = 200L
     }
 }
