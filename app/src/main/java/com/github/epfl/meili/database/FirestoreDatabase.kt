@@ -6,7 +6,7 @@ import com.google.firebase.firestore.*
 class FirestoreDatabase<T: Any>(path: String, val ofClass: Class<T>) : Database<T>(path), EventListener<QuerySnapshot> {
 
     companion object {
-        private const val TAG: String = "FirestoreReviewService"
+        private const val TAG: String = "FirestoreDatabase"
 
         private val DEFAULT_DATABASE = { FirebaseFirestore.getInstance() }
 
