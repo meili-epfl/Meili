@@ -18,6 +18,8 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.runner.AndroidJUnit4
 import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiObjectNotFoundException
+import androidx.test.uiautomator.UiSelector
 import com.github.epfl.meili.R
 import com.schibsted.spain.barista.interaction.PermissionGranter
 import org.hamcrest.Description
@@ -46,6 +48,11 @@ class CameraActivityTest {
         GrantPermissionRule.grant(
             "android.permission.CAMERA"
         )
+
+    @Throws(UiObjectNotFoundException::class)
+    fun reactToPermission(device: UiDevice, text: String) {
+        device.findObject(UiSelector().textContains(text)).click()
+    }
 
     @Test
     fun cameraActivityTest() {
