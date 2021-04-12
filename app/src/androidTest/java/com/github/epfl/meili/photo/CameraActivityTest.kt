@@ -19,6 +19,7 @@ import androidx.test.rule.GrantPermissionRule
 import androidx.test.runner.AndroidJUnit4
 import androidx.test.uiautomator.UiDevice
 import com.github.epfl.meili.R
+import com.schibsted.spain.barista.interaction.PermissionGranter
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
@@ -48,6 +49,8 @@ class CameraActivityTest {
 
     @Test
     fun cameraActivityTest() {
+        PermissionGranter.allowPermissionsIfNeeded("android.permission.CAMERA")
+        PermissionGranter.allowPermissionsIfNeeded("android.permissions.CAMERA")
         val appCompatImageButton = onView(
             allOf(
                 withId(R.id.camera_switch_button), withContentDescription("Switch camera"),
