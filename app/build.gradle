@@ -111,6 +111,9 @@ dependencies {
     // If you want to additionally use the CameraX Extensions library
     implementation "androidx.camera:camera-extensions:1.0.0-alpha22"
 
+    // Image cropping
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0-alpha05'
 }
 tasks.withType(Test) {
