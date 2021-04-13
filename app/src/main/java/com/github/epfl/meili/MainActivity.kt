@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
             R.id.launchMapView -> Intent(this, MapActivity::class.java)
             R.id.launchReviewView -> Intent(this, ReviewsActivity::class.java)
                     .putExtra("POI_KEY", "lorem_ipsum")
-            R.id.launchPhotoView -> Intent(this, PhotoTestActivity::class.java)
+            R.id.launchPhotoView -> Intent(this, PhotoDemoActivity::class.java)
             R.id.launchForumView -> Intent(this, ForumActivity::class.java)
             else -> Intent(this, MainActivity::class.java)
         }

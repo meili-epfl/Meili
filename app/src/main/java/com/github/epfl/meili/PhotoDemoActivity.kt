@@ -13,10 +13,16 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.github.epfl.meili.util.FirebaseStorageService
+import com.github.epfl.meili.R
+import com.github.epfl.meili.storage.FirebaseStorageService
+import com.github.epfl.meili.storage.StorageService
 import com.squareup.picasso.Picasso
 
-class PhotoTestActivity : AppCompatActivity() {
+class PhotoDemoActivity : AppCompatActivity() {
+
+    companion object {
+        var storageService: () -> StorageService = { FirebaseStorageService }
+    }
 
     private lateinit var choose: Button
     private lateinit var upload: Button
@@ -38,7 +44,7 @@ class PhotoTestActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_photo_test)
+        setContentView(R.layout.activity_photo_demo)
 
         choose = findViewById(R.id.choose_button)
         upload = findViewById(R.id.upload_button)
@@ -57,13 +63,13 @@ class PhotoTestActivity : AppCompatActivity() {
                 if (filePath == null) {
                     Toast.makeText(applicationContext, "Choose an image first", Toast.LENGTH_SHORT).show()
                 } else {
-                    FirebaseStorageService.uploadFile("images/myfavimage", filePath!!, {
+                    storageService().uploadFile("images/myfavimage", filePath!!, {
                         Toast.makeText(applicationContext, "Image successfully uploaded", Toast.LENGTH_SHORT).show()
                     })
                 }
             }
             show -> {
-                FirebaseStorageService.getDownloadUrl("images/myfavimage", {uri -> getDownloadUrlCallback(uri)})
+                storageService().getDownloadUrl("images/myfavimage", { uri -> getDownloadUrlCallback(uri)})
             }
         }
     }
