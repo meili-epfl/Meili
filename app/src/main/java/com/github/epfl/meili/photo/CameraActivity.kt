@@ -140,7 +140,7 @@ class CameraActivity : AppCompatActivity() {
 
             // Setup which camera to select (default is back)
             cameraSelector = CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
+                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build()
 
             // Display preview in activity
