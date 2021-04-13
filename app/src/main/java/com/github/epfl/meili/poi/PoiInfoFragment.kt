@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.github.epfl.meili.R
 import com.google.android.gms.maps.model.PointOfInterest
-import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.*
 
@@ -20,6 +19,7 @@ import com.google.android.libraries.places.api.net.*
 class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
     companion object {
         private const val TAG = "PoiInfoFragment"
+        var placesClientService: () -> PlacesClientService = { PlacesClientService() }
     }
 
     override fun onCreateView(
@@ -33,8 +33,8 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Initialize Places API entry point
-        Places.initialize(activity?.applicationContext!!, getString(R.string.google_maps_key))
-        val placesClient = Places.createClient(activity?.applicationContext!!)
+        val placesClient =
+            placesClientService().getPlacesClient(activity, getString(R.string.google_maps_key))
 
         val placeId = poi.placeId
 
@@ -52,7 +52,6 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
 
         placesClient.fetchPlace(request)
             .addOnSuccessListener(getOnSuccessListener(placeId, view, placesClient))
-
     }
 
     private fun getOnSuccessListener(
