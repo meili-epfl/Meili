@@ -24,9 +24,6 @@ class PoiMarkerViewModelTest {
     private val poi1 = PointOfInterest(LatLng(41.075000, 1.130870), "place1", "place1")
     private val poi2 = PointOfInterest(LatLng(41.063563, 1.083658), "place2", "place2")
     private val testPosition = LatLng(41.075534, 1.131070)
-    private val json = JSONObject(
-            "{\"elements\":[{\"id\":1234,\"lat\":12,\"lon\":34,\"tags\":{\"name\":\"Monument a Jaume I\"}}, {\"id\":1234,\"lat\":12,\"lon\":34}]}"
-    )
 
     init {
         setupMocks()
