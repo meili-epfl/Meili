@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.TopSpacingItemDecoration
@@ -111,7 +112,7 @@ class ReviewsActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this).get(ReviewsActivityViewModel::class.java)
 
-        viewModel.setReviewService(FirestoreReviewService(poiKey))
+        viewModel.setReviewService(FirestoreDatabase<Review>(poiKey, Review::class.java))
         viewModel.getReviews().observe(this, { map -> reviewsMapListener(map) })
 
         viewModel.getAverageRating().observe(this, {averageRating ->

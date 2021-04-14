@@ -50,11 +50,11 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     }
 
     override fun update(o: Observable?, arg: Any?) {
-        mPointsOfInterest.value = mPointsOfInterest.value!! + database!!.values
+        mPointsOfInterest.value = mPointsOfInterest.value!! + database!!.elements
 
         // update status of each Poi to VISITED
         var statusMap: Map<String, PointOfInterestStatus> = mPointsOfInterestStatus.value!!
-        for (poi in database!!.values) {
+        for (poi in database!!.elements) {
             statusMap = statusMap + Pair(poi.value.uid, PointOfInterestStatus.VISITED)
         }
 
@@ -80,7 +80,7 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
         val unreachablePois = mPointsOfInterest.value!!.values.minus(reachablePois)
 
         if (database != null) {
-            val visitedPois = database!!.values
+            val visitedPois = database!!.elements
 
             for (poi in unreachablePois) {
                 statusMap = statusMap + Pair(
@@ -110,7 +110,7 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
 
     fun setPoiVisited(poi: PointOfInterest) {
         if (mPointsOfInterestStatus.value!![poi.uid] == PointOfInterestStatus.REACHABLE) {
-            if (database != null && !database!!.values.containsKey(poi.uid)) {
+            if (database != null && !database!!.elements.containsKey(poi.uid)) {
                 database!!.addElement(poi.uid, poi)
             }
         }
@@ -120,9 +120,9 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
         val shouldCallService = lastUserLocation == null
         lastUserLocation = LatLng(location.latitude, location.longitude)
 
-        Log.d(TAG, "lastUserLocation" + lastUserLocation)
+        Log.d(TAG, "lastUserLocation $lastUserLocation")
         if (shouldCallService && poiService != null) {
-            Log.d(TAG, "lastUserLocation" + lastUserLocation)
+            Log.d(TAG, "lastUserLocation $lastUserLocation")
             poiService!!.requestPois(
                     lastUserLocation!!,
                     { poiList -> onSuccessPoiReceived(poiList) },
@@ -138,8 +138,8 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     }
 
     /**
-     * VISIBLE: means that POI is loaded in your device
      * VISITED: means that the user interacted with this POI when it was reachable
+     * VISIBLE: means that POI is loaded in your device
      * REACHABLE: means that the user is close enough to the POI and is allowed to interact with it
      */
     enum class PointOfInterestStatus {
