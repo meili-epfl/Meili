@@ -140,7 +140,7 @@ class CameraActivity : AppCompatActivity() {
 
             // Setup which camera to select (default is back)
             cameraSelector = CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_FRONT)
+                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build()
 
             // Display preview in activity
@@ -180,7 +180,7 @@ class CameraActivity : AppCompatActivity() {
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val intent = Intent(applicationContext, PhotoDisplayActivity::class.java)
+                    val intent = Intent(applicationContext, PhotoEditActivity::class.java)
                     intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
                     startActivity(intent)
                 }
