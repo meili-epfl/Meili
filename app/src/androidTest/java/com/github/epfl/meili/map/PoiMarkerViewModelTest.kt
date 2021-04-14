@@ -21,8 +21,8 @@ class PoiMarkerViewModelTest {
 
     private var service: PoiMarkerViewModel = PoiMarkerViewModel()
     private val testPoiList = ArrayList<PointOfInterest>()
-    private val poi1 = PointOfInterest(LatLng(41.075000, 1.130870), "place1", "place1")
-    private val poi2 = PointOfInterest(LatLng(41.063563, 1.083658), "place2", "place2")
+    private val poi1 = PointOfInterest(41.075000, 1.130870, "place1", "place1")
+    private val poi2 = PointOfInterest(41.063563, 1.083658, "place2", "place2")
     private val testPosition = LatLng(41.075534, 1.131070)
 
     init {

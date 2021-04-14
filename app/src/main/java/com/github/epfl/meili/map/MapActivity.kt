@@ -107,9 +107,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         poiMarkerViewModel.mPointsOfInterestStatus.observe(this){
             addItems(it)
         }
-
-        // Add cluster items (markers) to the cluster manager.
-        //addItems()
     }
 
     private fun addItems(map: Map<String, PoiMarkerViewModel.PointOfInterestStatus>) {
