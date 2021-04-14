@@ -32,6 +32,7 @@ class PhotoEditActivity : AppCompatActivity() {
         binding.cropButton.setOnClickListener { cropImage() }
         binding.show.setOnClickListener { showPreview() }
         binding.hide.setOnClickListener { resetVisibilities() }
+        binding.paintModeButton.setOnClickListener { togglePaint() }
 
         resetVisibilities()
 
@@ -46,8 +47,20 @@ class PhotoEditActivity : AppCompatActivity() {
         binding.paintImageView.visibility = View.GONE
         binding.cropModeButton.visibility = View.GONE
         binding.show.visibility = View.GONE
+        binding.paintModeButton.visibility = View.GONE
+        binding.paintImageView.inEditMode = false
+        binding.paintModeButton.setBackgroundColor(0)
 
         findViewById<ImageView>(R.id.preview).setImageDrawable(binding.paintImageView.drawable)
+    }
+
+    /** Callback function for paint mode */
+    private fun togglePaint() {
+        binding.paintImageView.inEditMode = !binding.paintImageView.inEditMode
+        if (binding.paintImageView.inEditMode)
+            binding.paintModeButton.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
+        else
+            binding.paintModeButton.setBackgroundColor(0)
     }
 
     /** Callback function for cancel button */
@@ -60,6 +73,9 @@ class PhotoEditActivity : AppCompatActivity() {
         binding.cropButton.visibility = View.GONE
         binding.previewContainer.visibility = View.GONE
         binding.show.visibility = View.VISIBLE
+        binding.paintModeButton.visibility = View.VISIBLE
+        binding.paintImageView.inEditMode = false
+        binding.paintModeButton.setBackgroundColor(0)
     }
 
     /** Callback function for crop mode button */
@@ -71,6 +87,9 @@ class PhotoEditActivity : AppCompatActivity() {
         binding.cancelButton.visibility = View.VISIBLE
         binding.cropButton.visibility = View.VISIBLE
         binding.show.visibility = View.GONE
+        binding.paintModeButton.visibility = View.GONE
+        binding.paintImageView.inEditMode = false
+        binding.paintModeButton.setBackgroundColor(0)
 
         binding.cropImageView.setImageBitmap((binding.paintImageView.drawable as BitmapDrawable).bitmap) // Show image in crop tool
     }
