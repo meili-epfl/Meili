@@ -15,16 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabDone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
-        android:contentDescription="Done"
-        android:src="?android:attr/textCheckMark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/image_edit_view" />
 
     <com.theartofdev.edmodo.cropper.CropImageView
         android:id="@+id/crop_image"
@@ -86,6 +76,16 @@
 
         <TextView
             android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:text="Close"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/show"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

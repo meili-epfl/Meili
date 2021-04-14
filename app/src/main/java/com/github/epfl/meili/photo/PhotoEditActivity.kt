@@ -7,15 +7,18 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
+import com.github.epfl.meili.databinding.ActivityPhotoEditBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.theartofdev.edmodo.cropper.CropImageView
 import tech.picnic.fingerpaintview.FingerPaintImageView
 
 
 class PhotoEditActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityPhotoEditBinding
+
     private lateinit var uri: Uri
 
-    private lateinit var imageEditView: FingerPaintImageView
+    private lateinit var imageEditView: FingerPaintImageView // like an image view but can be drawn upon
     private lateinit var cropImageView: CropImageView
     private lateinit var cropModeButton: ImageButton
     private lateinit var cancelButton: Button
@@ -26,13 +29,14 @@ class PhotoEditActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_photo_edit)
+        binding = ActivityPhotoEditBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Initialize views
         imageEditView = findViewById(R.id.image_edit_view)
         cropImageView = findViewById(R.id.crop_image)
         cropImageView.setOnCropImageCompleteListener { _, _ ->
-            imageEditView.clear()
+            imageEditView.clear() // clear drawn lines so that they don't get duplicated after crop
             imageEditView.setImageDrawable(null) // required hack to update image using same uri
             imageEditView.setImageURI(uri) // Set imageView to new cropped image
             resetVisibilities() // Go back to main screen
