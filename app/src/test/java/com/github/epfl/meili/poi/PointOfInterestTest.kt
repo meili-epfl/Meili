@@ -10,7 +10,7 @@ class PointOfInterestTest {
 
     @Test
     fun toStringTest(){
-        assertEquals("{POI:lat/lng: (41.075,1.13087),name:place1,uid:place1}", poi1.toString())
+        assertEquals("{POI:lat:41.075long:1.13087,name:place1,uid:place1}", poi1.toString())
     }
 
     @Test
