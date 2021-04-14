@@ -4,105 +4,80 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.*
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.databinding.ActivityPhotoEditBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.theartofdev.edmodo.cropper.CropImageView
-import tech.picnic.fingerpaintview.FingerPaintImageView
 
 
 class PhotoEditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPhotoEditBinding
-
     private lateinit var uri: Uri
-
-    private lateinit var imageEditView: FingerPaintImageView // like an image view but can be drawn upon
-    private lateinit var cropImageView: CropImageView
-    private lateinit var cropModeButton: ImageButton
-    private lateinit var cancelButton: Button
-    private lateinit var cropButton: Button
-    private lateinit var fabDone: FloatingActionButton
-
-    private lateinit var previewContainer: RelativeLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPhotoEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize views
-        imageEditView = findViewById(R.id.image_edit_view)
-        cropImageView = findViewById(R.id.crop_image)
-        cropImageView.setOnCropImageCompleteListener { _, _ ->
-            imageEditView.clear() // clear drawn lines so that they don't get duplicated after crop
-            imageEditView.setImageDrawable(null) // required hack to update image using same uri
-            imageEditView.setImageURI(uri) // Set imageView to new cropped image
+        binding.cropImageView.setOnCropImageCompleteListener { _, _ ->
+            binding.paintImageView.clear() // clear drawn lines so that they don't get duplicated after crop
+            binding.paintImageView.setImageDrawable(null) // required hack to update image using same uri
+            binding.paintImageView.setImageURI(uri) // Set imageView to new cropped image
             resetVisibilities() // Go back to main screen
         }
 
-        cropModeButton = findViewById(R.id.image_crop_mode_button)
-        cancelButton = findViewById(R.id.image_cancel_button)
-        cropButton = findViewById(R.id.image_crop_button)
-
         // Setup callbacks
-        cropModeButton.setOnClickListener { cropMode() }
-        cancelButton.setOnClickListener { resetVisibilities() }
-        cropButton.setOnClickListener { cropImage() }
+        binding.cropModeButton.setOnClickListener { cropMode() }
+        binding.cancelButton.setOnClickListener { resetVisibilities() }
+        binding.cropButton.setOnClickListener { cropImage() }
+        binding.show.setOnClickListener { showPreview() }
+        binding.hide.setOnClickListener { resetVisibilities() }
 
-
-        previewContainer = findViewById(R.id.previewContainer)
-        fabDone = findViewById(R.id.fabDone)
-        fabDone.setOnClickListener {
-            previewContainer.visibility = View.VISIBLE
-            imageEditView.visibility = View.GONE
-            cropModeButton.visibility = View.GONE
-            fabDone.visibility = View.GONE
-
-            findViewById<ImageView>(R.id.preview).setImageDrawable(imageEditView.drawable)
-
-
-        }
-        findViewById<TextView>(R.id.close).setOnClickListener {
-            resetVisibilities()
-        }
         resetVisibilities()
 
         // Set imageView to given image from camera activity
         uri = intent.getParcelableExtra(CameraActivity.URI_KEY)!!
-        imageEditView.setImageURI(uri)
+        binding.paintImageView.setImageURI(uri)
+    }
+
+    /** Callback function for preview mode */
+    private fun showPreview() {
+        binding.previewContainer.visibility = View.VISIBLE
+        binding.paintImageView.visibility = View.GONE
+        binding.cropModeButton.visibility = View.GONE
+        binding.show.visibility = View.GONE
+
+        findViewById<ImageView>(R.id.preview).setImageDrawable(binding.paintImageView.drawable)
     }
 
     /** Callback function for cancel button */
     private fun resetVisibilities() {
         // Set visibility of required views
-        imageEditView.visibility = View.VISIBLE
-        cropImageView.visibility = View.GONE
-        cropModeButton.visibility = View.VISIBLE
-        cancelButton.visibility = View.GONE
-        cropButton.visibility = View.GONE
-        previewContainer.visibility = View.GONE
-        fabDone.visibility = View.VISIBLE
+        binding.paintImageView.visibility = View.VISIBLE
+        binding.cropImageView.visibility = View.GONE
+        binding.cropModeButton.visibility = View.VISIBLE
+        binding.cancelButton.visibility = View.GONE
+        binding.cropButton.visibility = View.GONE
+        binding.previewContainer.visibility = View.GONE
+        binding.show.visibility = View.VISIBLE
     }
 
     /** Callback function for crop mode button */
     private fun cropMode() {
         // Set visibility of required views
-        imageEditView.visibility = View.GONE
-        cropImageView.visibility = View.VISIBLE
-        cropModeButton.visibility = View.GONE
-        cancelButton.visibility = View.VISIBLE
-        cropButton.visibility = View.VISIBLE
-        fabDone.visibility = View.GONE
+        binding.paintImageView.visibility = View.GONE
+        binding.cropImageView.visibility = View.VISIBLE
+        binding.cropModeButton.visibility = View.GONE
+        binding.cancelButton.visibility = View.VISIBLE
+        binding.cropButton.visibility = View.VISIBLE
+        binding.show.visibility = View.GONE
 
-        //cropImageView.setImageUriAsync(uri) // Show image in crop tool
-        cropImageView.setImageBitmap((imageEditView.drawable as BitmapDrawable).bitmap)
+        binding.cropImageView.setImageBitmap((binding.paintImageView.drawable as BitmapDrawable).bitmap) // Show image in crop tool
     }
 
     /** Callback function for crop button */
     private fun cropImage() {
         // Async callback to function defined in onCreate()
-        cropImageView.saveCroppedImageAsync(uri)
+        binding.cropImageView.saveCroppedImageAsync(uri)
     }
 }
