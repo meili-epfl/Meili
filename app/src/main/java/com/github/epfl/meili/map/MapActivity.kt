@@ -6,12 +6,15 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.poi.PoiActivity
+import com.github.epfl.meili.poi.PoiService
 import com.github.epfl.meili.poi.PointOfInterest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -20,8 +23,10 @@ import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.Marker
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.maps.android.clustering.ClusterManager
@@ -42,8 +47,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var location: Location? = null
 
-    // Cluster Manager
+    // Cluster Manager for PoiMarkers
     private lateinit var clusterManager: ClusterManager<PoiItem>
+
+    private lateinit var clusterRenderer: PoiRenderer
+
+    private val poiMarkerViewModel = PoiMarkerViewModel()
+
+    private val poiItems: HashMap<String, PoiItem> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,18 +69,27 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         placesClient = Places.createClient(this)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
+        val locationService = LocationService()
+        locationService.listenToLocationChanges(poiMarkerViewModel)
+        poiMarkerViewModel.setPoiService(PoiService())
+        poiMarkerViewModel.setDatabase(FirestoreDatabase<PointOfInterest>("users-poi-list/user-id/poi-list", PointOfInterest::class.java)) //TODO: put user id
+
+        poiMarkerViewModel.mPointsOfInterestStatus.observe(this){
+
+        }
         // Initialize map
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
     }
 
     private fun setUpClusterer() {
-        // Position the map.
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(51.503186, -0.126446), 10f))
-
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
         clusterManager = ClusterManager(this, map)
+
+        clusterRenderer = PoiRenderer(this, map, clusterManager)
+
+        clusterManager.renderer = clusterRenderer
 
         // Point the map's listeners at the listeners implemented by the cluster
         // manager.
@@ -84,17 +104,28 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             true
         }
 
+        poiMarkerViewModel.mPointsOfInterestStatus.observe(this){
+            addItems(it)
+        }
+
         // Add cluster items (markers) to the cluster manager.
-        addItems()
+        //addItems()
     }
 
-    private fun addItems() {
+    private fun addItems(map: Map<String, PoiMarkerViewModel.PointOfInterestStatus>) {
+        val newMap = HashMap<PoiItem, PoiMarkerViewModel.PointOfInterestStatus>()
+        for (entry in map.entries){
+            val poiItem:PoiItem
+            if(poiItems.containsKey(entry.key)) {
+                poiItem = poiItems[entry.key]!!
+            }else{
+                Log.d("Map Activity", entry.key)
+                poiItem =  PoiItem(poiMarkerViewModel.mPointsOfInterest.value?.get(entry.key)!!)
+            }
+            newMap.put(poiItem, entry.value)
+        }
 
-        val poi1 = PointOfInterest(LatLng(41.075000, 1.130870), "place1", "place1")
-        val poi2 = PointOfInterest(LatLng(41.063563, 1.083658), "place2", "place2")
-
-        clusterManager.addItem(PoiItem(poi1))
-        clusterManager.addItem(PoiItem(poi2))
+        clusterRenderer.renderClusterItems(newMap)
     }
 
     private fun isPermissionGranted(): Boolean {

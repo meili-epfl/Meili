@@ -66,7 +66,7 @@ open class PoiService {
         val reachablePois = ArrayList<PointOfInterest>()
         if(userPosition!=null && poiList!=null && radius != null) {
             for (poi in poiList) {
-                val distance = CustomMath.distanceOnSphere(userPosition, poi.latLng)
+                val distance = CustomMath.distanceOnSphere(userPosition, poi.getLatLng())
                 if (distance < radius) {
                     reachablePois.add(poi)
                 }
@@ -109,7 +109,7 @@ data class OverpassPointOfInterest(
     val uid: String? = null
 ) {
     fun toStandardPoi(): PointOfInterest {
-        return PointOfInterest(LatLng(lat!!, lon!!), poiTags!!.name!!, uid!!)
+        return PointOfInterest(lat!!, lon!!, poiTags!!.name!!, uid!!)
     }
 }
 

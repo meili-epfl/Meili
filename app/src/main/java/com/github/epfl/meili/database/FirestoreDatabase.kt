@@ -42,6 +42,7 @@ class FirestoreDatabase<T: Any>(path: String, val ofClass: Class<T>) : Database<
             val rs: MutableMap<String, T> = HashMap()
 
             for (document in snapshot.documents) {
+                Log.d(TAG, document.toString())
                 rs[document.id] = document.toObject(ofClass)!!
             }
 
