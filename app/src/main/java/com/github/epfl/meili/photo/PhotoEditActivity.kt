@@ -15,7 +15,7 @@ import tech.picnic.fingerpaintview.FingerPaintImageView
 class PhotoEditActivity : AppCompatActivity() {
     private lateinit var uri: Uri
 
-    private lateinit var imageDisplay: FingerPaintImageView
+    private lateinit var imageEditView: FingerPaintImageView
     private lateinit var cropImageView: CropImageView
     private lateinit var cropModeButton: ImageButton
     private lateinit var cancelButton: Button
@@ -29,11 +29,12 @@ class PhotoEditActivity : AppCompatActivity() {
         setContentView(R.layout.activity_photo_edit)
 
         // Initialize views
-        imageDisplay = findViewById(R.id.image_display)
+        imageEditView = findViewById(R.id.image_edit_view)
         cropImageView = findViewById(R.id.crop_image)
         cropImageView.setOnCropImageCompleteListener { _, _ ->
-            imageDisplay.setImageDrawable(null) // required hack to update image using same uri
-            imageDisplay.setImageURI(uri) // Set imageView to new cropped image
+            imageEditView.clear()
+            imageEditView.setImageDrawable(null) // required hack to update image using same uri
+            imageEditView.setImageURI(uri) // Set imageView to new cropped image
             resetVisibilities() // Go back to main screen
         }
 
@@ -51,11 +52,11 @@ class PhotoEditActivity : AppCompatActivity() {
         fabDone = findViewById(R.id.fabDone)
         fabDone.setOnClickListener {
             previewContainer.visibility = View.VISIBLE
-            imageDisplay.visibility = View.GONE
+            imageEditView.visibility = View.GONE
             cropModeButton.visibility = View.GONE
             fabDone.visibility = View.GONE
 
-            findViewById<ImageView>(R.id.preview).setImageDrawable(imageDisplay.drawable)
+            findViewById<ImageView>(R.id.preview).setImageDrawable(imageEditView.drawable)
 
 
         }
@@ -66,13 +67,13 @@ class PhotoEditActivity : AppCompatActivity() {
 
         // Set imageView to given image from camera activity
         uri = intent.getParcelableExtra(CameraActivity.URI_KEY)!!
-        imageDisplay.setImageURI(uri)
+        imageEditView.setImageURI(uri)
     }
 
     /** Callback function for cancel button */
     private fun resetVisibilities() {
         // Set visibility of required views
-        imageDisplay.visibility = View.VISIBLE
+        imageEditView.visibility = View.VISIBLE
         cropImageView.visibility = View.GONE
         cropModeButton.visibility = View.VISIBLE
         cancelButton.visibility = View.GONE
@@ -84,7 +85,7 @@ class PhotoEditActivity : AppCompatActivity() {
     /** Callback function for crop mode button */
     private fun cropMode() {
         // Set visibility of required views
-        imageDisplay.visibility = View.GONE
+        imageEditView.visibility = View.GONE
         cropImageView.visibility = View.VISIBLE
         cropModeButton.visibility = View.GONE
         cancelButton.visibility = View.VISIBLE
@@ -92,7 +93,7 @@ class PhotoEditActivity : AppCompatActivity() {
         fabDone.visibility = View.GONE
 
         //cropImageView.setImageUriAsync(uri) // Show image in crop tool
-        cropImageView.setImageBitmap((imageDisplay.drawable as BitmapDrawable).bitmap)
+        cropImageView.setImageBitmap((imageEditView.drawable as BitmapDrawable).bitmap)
     }
 
     /** Callback function for crop button */

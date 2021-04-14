@@ -6,7 +6,7 @@
     android:background="@android:color/darker_gray">
 
     <tech.picnic.fingerpaintview.FingerPaintImageView
-        android:id="@+id/image_display"
+        android:id="@+id/image_edit_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -24,7 +24,7 @@
         android:contentDescription="Done"
         android:src="?android:attr/textCheckMark"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/image_display" />
+        app:layout_constraintEnd_toEndOf="@+id/image_edit_view" />
 
     <com.theartofdev.edmodo.cropper.CropImageView
         android:id="@+id/crop_image"
