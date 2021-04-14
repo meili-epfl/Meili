@@ -5,8 +5,8 @@ import junit.framework.Assert.assertEquals
 import org.junit.Test
 
 class PointOfInterestTest {
-    private val poi1 = PointOfInterest(LatLng(41.075000, 1.130870), "place1", "place1")
-    private val poi2 = PointOfInterest(LatLng(41.063563, 1.083658), "place2", "place2")
+    private val poi1 = PointOfInterest(41.075000, 1.130870, "place1", "place1")
+    private val poi2 = PointOfInterest(41.063563, 1.083658, "place2", "place2")
 
     @Test
     fun toStringTest(){
@@ -15,8 +15,9 @@ class PointOfInterestTest {
 
     @Test
     fun equalsTest(){
-        assertEquals(poi1.equals(PointOfInterest(LatLng(41.075000, 1.130870), "place1", "place1")), true)
+        assertEquals(poi1.equals(PointOfInterest(41.075000, 1.130870, "place1", "place1")), true)
         assertEquals(poi1.equals(poi2), false)
         assertEquals(poi1.equals(poi1), true)
+        assertEquals(poi1.equals(ArrayList<PointOfInterest>()), false)
     }
 }
