@@ -3,7 +3,7 @@ package com.github.epfl.meili.database
 import android.util.Log
 import com.google.firebase.firestore.*
 
-class FirestoreDatabase<T: Any>(private val key: String, private val ofClass: Class<T>) : Database<T>(key), EventListener<QuerySnapshot> {
+class FirestoreDatabase<T: Any>(private val path: String, private val ofClass: Class<T>) : Database<T>(path), EventListener<QuerySnapshot> {
 
     companion object {
         private const val TAG: String = "FirestoreDatabase"
@@ -17,7 +17,7 @@ class FirestoreDatabase<T: Any>(private val key: String, private val ofClass: Cl
 
     private val registration: ListenerRegistration
 
-    private val ref: CollectionReference = databaseProvider().collection(key)
+    private val ref: CollectionReference = databaseProvider().collection(path)
 
     init {
         registration = ref.addSnapshotListener(this)
