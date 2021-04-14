@@ -26,7 +26,7 @@ class ReviewsActivity : AppCompatActivity() {
 
     private var currentUserReview: Review? = null
 
-    private lateinit var reviewAdapter: ReviewRecyclerAdapter
+    private lateinit var reviewsAdapter: ReviewsRecyclerAdapter
     private lateinit var viewModel: ReviewsActivityViewModel
 
     private lateinit var listReviewsView: View
@@ -132,17 +132,17 @@ class ReviewsActivity : AppCompatActivity() {
             }
         }
 
-        reviewAdapter.submitList(map.toList())
-        reviewAdapter.notifyDataSetChanged()
+        reviewsAdapter.submitList(map.toList())
+        reviewsAdapter.notifyDataSetChanged()
     }
 
     private fun initRecyclerView() {
-        reviewAdapter = ReviewRecyclerAdapter()
+        reviewsAdapter = ReviewsRecyclerAdapter()
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ReviewsActivity)
             addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
-            adapter = reviewAdapter
+            adapter = reviewsAdapter
         }
     }
 
