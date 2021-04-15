@@ -48,7 +48,7 @@ class MainActivityTest {
             mockRegistration
         }
 
-        FirestoreDatabase.databaseProvider = {mockFirestore}
+        FirestoreDatabase.databaseProvider = { mockFirestore }
 
         UiThreadStatement.runOnUiThread {
             val mockAuth = mock(AuthenticationService::class.java)
@@ -70,7 +70,7 @@ class MainActivityTest {
 
         Mockito.`when`(mockFirestore.collection("posts")).thenReturn(mockCollectionReference)
         Mockito.`when`(mockCollectionReference.document(ArgumentMatchers.any()))
-            .thenReturn(mockDocumentReference)
+                .thenReturn(mockDocumentReference)
         Mockito.`when`(mockDocumentReference.get()).thenAnswer { mockDocumentSnapshot }
         Mockito.`when`(mockCollectionReference.get()).thenAnswer { mockQuerySnapshot }
         Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toPost() }).thenReturn(postList)

@@ -13,6 +13,11 @@ import com.google.android.gms.maps.model.LatLng
 import java.util.*
 import kotlin.collections.HashMap
 
+/**
+ * PoiMarkerViewModel is the class that handles the POIs list
+ * This list is Personalized for each user and depending on its position and the history of visited POIs
+ * each POI will have a different status between VISITED, VISIBLE and REACHABLE
+ */
 class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
 
     private var database: Database<PointOfInterest>? = null
