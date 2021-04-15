@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
+import com.github.epfl.meili.map.MapActivity
 
 class GoogleSignInActivity : AppCompatActivity() {
 
@@ -49,8 +50,8 @@ class GoogleSignInActivity : AppCompatActivity() {
         var buttonMessage = "Sign In"
 
         if (Auth.isLoggedIn.value!!) {
-            message = Auth.name!!
-            buttonMessage = "Sign Out"
+            val intent = Intent(this, MapActivity::class.java)
+            startActivity(intent)
         }
 
         findViewById<TextView>(R.id.textFieldSignIn).text = message
