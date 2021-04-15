@@ -21,11 +21,11 @@ open class PoiRenderer(context: Context?, map: GoogleMap?, val clusterManager: C
         if (poiStatusMap == null || !poiStatusMap!!.contains(item)) {
             icon = DEFAULT_ICON
         } else {
-            when (poiStatusMap!![item]) {
-                PoiMarkerViewModel.PointOfInterestStatus.REACHABLE -> icon = REACHABLE_ICON
-                PoiMarkerViewModel.PointOfInterestStatus.VISITED -> icon = VISITED_ICON
-                PoiMarkerViewModel.PointOfInterestStatus.VISIBLE -> icon = VISIBLE_ICON
-                else -> icon = DEFAULT_ICON
+            icon = when (poiStatusMap!![item]) {
+                PoiMarkerViewModel.PointOfInterestStatus.REACHABLE -> REACHABLE_ICON
+                PoiMarkerViewModel.PointOfInterestStatus.VISITED -> VISITED_ICON
+                PoiMarkerViewModel.PointOfInterestStatus.VISIBLE -> VISIBLE_ICON
+                else -> DEFAULT_ICON
             }
         }
         markerOptions.icon(icon)
