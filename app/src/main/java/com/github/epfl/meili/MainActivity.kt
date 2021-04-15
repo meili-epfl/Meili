@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -24,17 +25,22 @@ class MainActivity : AppCompatActivity() {
         val intent: Intent = when (view.id) {
             R.id.launchSignInView -> Intent(this, GoogleSignInActivity::class.java)
             R.id.launchChatView -> Intent(this, ChatLogActivity::class.java)
-                    .putExtra("POI_KEY", PointOfInterest(LatLng(100.0,100.0),"tour-eiffel1", "tour-eiffel2"))
+                .putExtra("POI_KEY", POI)
             R.id.launchMapView -> Intent(this, MapActivity::class.java)
             R.id.launchReviewView -> Intent(this, ReviewsActivity::class.java)
-                    .putExtra("POI_KEY", "lorem_ipsum")
+                .putExtra("POI_KEY", "lorem_ipsum")
             R.id.launchPoiView -> Intent(this, PoiActivity::class.java)
-                .putExtra("POI_KEY", PointOfInterest(LatLng(10.0, 10.0), "ChIJAAAAAAAAAAARg4pb6XR5bo0", "Musée de l'Art Brut"))
+                .putExtra("POI_KEY", POI)
             R.id.launchPhotoView -> Intent(this, PhotoDemoActivity::class.java)
             R.id.launchForumView -> Intent(this, ForumActivity::class.java)
             R.id.launchCameraView -> Intent(this, CameraActivity::class.java)
             else -> Intent(this, MainActivity::class.java)
         }
         startActivity(intent)
+    }
+
+    companion object {
+        private const val POI: PointOfInterest =
+            PointOfInterest(LatLng(10.0, 10.0), "ChIJAAAAAAAAAAARg4pb6XR5bo0", "art_brut")
     }
 }
