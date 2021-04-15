@@ -25,7 +25,7 @@ open class PoiService {
             val typeOfObjects = "node"
 
             /*bounding box: lowest_lat, lowest_lng, highest_lat, highest_long*/
-            val bbox = "(" + (latLng!!.latitude - LAT_MARGIN) + "," + (latLng.longitude - LNG_MARGIN) + "," +
+            val bbox = "(" + (latLng.latitude - LAT_MARGIN) + "," + (latLng.longitude - LNG_MARGIN) + "," +
                     (latLng.latitude + LAT_MARGIN) + "," + (latLng.longitude + LNG_MARGIN) + ")"
 
             val filter = "[historic=monument]"
@@ -90,7 +90,7 @@ data class OverpassResponse(
     fun getCustomPois(): List<PointOfInterest> {
         val poiList = ArrayList<PointOfInterest>()
         for (poi in pointsOfInterest) {
-            if (poi.poiTags != null && poi.poiTags!!.name != null && poi.uid != null) {
+            if (poi.poiTags != null && poi.poiTags.name != null && poi.uid != null) {
                 poiList.add(poi.toStandardPoi())
             }
         }
