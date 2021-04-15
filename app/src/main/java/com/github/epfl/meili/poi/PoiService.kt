@@ -21,7 +21,7 @@ open class PoiService {
 
     open fun requestPois(latLng: LatLng?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((VolleyError) -> Unit)?) {
 
-        if(latLng!=null && onSuccess != null && onError!= null){
+        if (latLng != null && onSuccess != null && onError != null) {
             val typeOfObjects = "node"
 
             /*bounding box: lowest_lat, lowest_lng, highest_lat, highest_long*/
@@ -64,9 +64,9 @@ open class PoiService {
      */
     open fun getReachablePoi(userPosition: LatLng?, poiList: List<PointOfInterest>?, radius: Double?): List<PointOfInterest> {
         val reachablePois = ArrayList<PointOfInterest>()
-        if(userPosition!=null && poiList!=null && radius != null) {
+        if (userPosition != null && poiList != null && radius != null) {
             for (poi in poiList) {
-                val distance = CustomMath.distanceOnSphere(userPosition, poi.latLng)
+                val distance = CustomMath.distanceOnSphere(userPosition, poi.getLatLng())
                 if (distance < radius) {
                     reachablePois.add(poi)
                 }
@@ -84,8 +84,8 @@ open class PoiService {
 }
 
 data class OverpassResponse(
-    @SerializedName("elements")
-    val pointsOfInterest: List<OverpassPointOfInterest> = ArrayList()
+        @SerializedName("elements")
+        val pointsOfInterest: List<OverpassPointOfInterest> = ArrayList()
 ) {
     fun getCustomPois(): List<PointOfInterest> {
         val poiList = ArrayList<PointOfInterest>()
@@ -99,21 +99,21 @@ data class OverpassResponse(
 }
 
 data class OverpassPointOfInterest(
-    @SerializedName("lat")
-    val lat: Double? = null,
-    @SerializedName("lon")
-    val lon: Double? = null,
-    @SerializedName("tags")
-    val poiTags: PoiTag? = null,
-    @SerializedName("id")
-    val uid: String? = null
+        @SerializedName("lat")
+        val lat: Double? = null,
+        @SerializedName("lon")
+        val lon: Double? = null,
+        @SerializedName("tags")
+        val poiTags: PoiTag? = null,
+        @SerializedName("id")
+        val uid: String? = null
 ) {
     fun toStandardPoi(): PointOfInterest {
-        return PointOfInterest(LatLng(lat!!, lon!!), poiTags!!.name!!, uid!!)
+        return PointOfInterest(lat!!, lon!!, poiTags!!.name!!, uid!!)
     }
 }
 
 data class PoiTag(
-    @SerializedName("name")
-    val name: String? = null
+        @SerializedName("name")
+        val name: String? = null
 )
