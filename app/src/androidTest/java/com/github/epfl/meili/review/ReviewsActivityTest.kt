@@ -21,6 +21,8 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Review
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PointOfInterest
 import com.google.firebase.firestore.*
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
@@ -41,7 +43,8 @@ class ReviewsActivityTest {
 
     companion object {
         private const val TEST_UID = "MrPerfect"
-        private const val TEST_POI_KEY = "poiKey"
+        //Review now Takes entire POI with the intent instead of a string
+        private val TEST_POI_KEY = PointOfInterest(LatLng(100.0,100.0),"lorem_ipsum1", "lorem_ipsum2")
         private const val TEST_TITLE = "Beach too sandy"
         private const val TEST_SUMMARY = "Water too wet"
 

@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
                     .putExtra("POI_KEY", PointOfInterest(LatLng(100.0,100.0),"tour-eiffel1", "tour-eiffel2"))
             R.id.launchMapView -> Intent(this, MapActivity::class.java)
             R.id.launchReviewView -> Intent(this, ReviewsActivity::class.java)
-                    .putExtra("POI_KEY", "lorem_ipsum")
+                    .putExtra("POI_KEY", PointOfInterest(LatLng(100.0,100.0),"lorem_ipsum1", "lorem_ipsum2"))
             R.id.launchPhotoView -> Intent(this, PhotoDemoActivity::class.java)
             R.id.launchForumView -> Intent(this, ForumActivity::class.java)
             R.id.launchCameraView -> Intent(this, CameraActivity::class.java)

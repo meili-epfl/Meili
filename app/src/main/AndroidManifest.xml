@@ -18,6 +18,57 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
         
+
+        <!-- Kept to add new features easily and integrate later -->
+        <activity android:name=".MainActivity" />
+
+        <!-- Activities in order of appearance -->
+
+        <!-- Sign in screen first and automatically goto map in case the user is signed in -->
+        <activity android:name=".home.GoogleSignInActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Map -->
+        <activity
+            android:name=".map.MapActivity"
+            android:label="@string/title_activity_map"
+            android:parentActivityName=".home.GoogleSignInActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".home.GoogleSignInActivity" />
+        </activity>
+
+        <!-- POI features: forum, chat & review system -->
+        <activity
+            android:name=".messages.ChatLogActivity"
+            android:parentActivityName=".map.MapActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".map.MapActivity" />
+        </activity>
+
+        <activity
+            android:name=".forum.ForumActivity"
+            android:parentActivityName=".map.MapActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".map.MapActivity" />
+        </activity>
+
+        <activity
+            android:name=".review.ReviewsActivity"
+            android:parentActivityName=".map.MapActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".map.MapActivity" />
+        </activity>
+
+        <!-- New Stuff -->
         <activity android:name=".PhotoDemoActivity" />
         <activity
             android:name=".photo.CameraActivity"
@@ -33,11 +84,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".photo.CameraActivity" />
         </activity>
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-        <activity android:name=".messages.ChatLogActivity" />
+        
+        <!-- Secondary Activities -->
         <activity
             android:name=".poi.PoiActivity"
             android:parentActivityName=".map.MapActivity">
@@ -45,31 +93,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".map.MapActivity" />
         </activity>
-        <activity android:name=".home.GoogleSignInActivity">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-        </activity>
-
-        <activity android:name=".review.ReviewsActivity"
-            android:parentActivityName=".MainActivity">
-        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".map.MapActivity"
-            android:label="@string/title_activity_map"
-            android:parentActivityName=".MainActivity" />
-
-        <activity android:name=".forum.ForumActivity"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".forum.PostActivity"
-            android:parentActivityName=".forum.ForumActivity"/>
+            android:name=".forum.PostActivity"
+            android:parentActivityName=".forum.ForumActivity" />
     </application>
 
 </manifest>

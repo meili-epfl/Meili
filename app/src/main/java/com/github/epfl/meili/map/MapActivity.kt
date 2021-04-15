@@ -13,6 +13,7 @@ import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.poi.PoiActivity
 import com.github.epfl.meili.poi.PoiService
 import com.github.epfl.meili.poi.PointOfInterest
@@ -164,6 +165,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         setUpClusterer()
+        map.setOnPoiClickListener(this)
+    }
+
+    override fun onPoiClick(poi: PointOfInterest) {
+        val intent = Intent(this, ForumActivity::class.java)
+        intent.putExtra(POI_KEY, poi)
+        startActivity(intent)
     }
 
     private fun getLocationPermission() {

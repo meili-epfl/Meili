@@ -29,6 +29,11 @@ class GoogleSignInActivity : AppCompatActivity() {
         updateUI()
     }
 
+    fun OnMapViewButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
+        val intent = Intent(this, MapActivity::class.java)
+        startActivity(intent)
+    }
+
     fun onGoogleButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
         if (Auth.getCurrentUser() != null) {
             signOut()
@@ -49,9 +54,14 @@ class GoogleSignInActivity : AppCompatActivity() {
         var message: String = "Sign in"
         var buttonMessage = "Sign In"
 
+        //disable map button if not signed in
+        val button = findViewById<Button>(R.id.mapButton)
+        button.isEnabled = false
+
         if (Auth.isLoggedIn.value!!) {
-            val intent = Intent(this, MapActivity::class.java)
-            startActivity(intent)
+            message = Auth.name!!
+            buttonMessage = "Sign Out"
+            button.isEnabled = true
         }
 
         findViewById<TextView>(R.id.textFieldSignIn).text = message
