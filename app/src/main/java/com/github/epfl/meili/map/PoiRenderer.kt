@@ -13,7 +13,6 @@ open class PoiRenderer(context: Context?, map: GoogleMap?, val clusterManager: C
     private var poiStatusMap: Map<PoiItem, PoiMarkerViewModel.PointOfInterestStatus>? = null
 
     override fun onBeforeClusterItemRendered(item: PoiItem, markerOptions: MarkerOptions) {
-        val color: Float
         val icon: BitmapDescriptor
         if (poiStatusMap == null || !poiStatusMap!!.contains(item)) {
             icon = DEFAULT_ICON

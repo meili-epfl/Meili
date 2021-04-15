@@ -40,12 +40,7 @@ class FirestoreDatabase<T: Any>(private val path: String, private val ofClass: C
             val vs: MutableMap<String, T> = HashMap()
 
             for (document in snapshot.documents) {
-<<<<<<< HEAD
-                Log.d(TAG, document.toString())
-                rs[document.id] = document.toObject(ofClass)!!
-=======
                 vs[document.id] = document.toObject(ofClass)!!
->>>>>>> 8edff669cec91d93862df81ac0d59c6bec5245a5
             }
 
             elements = vs
