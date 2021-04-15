@@ -8,7 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.github.epfl.meili.R
 import com.github.epfl.meili.map.MapActivity
-import com.github.epfl.meili.poi.PointOfInterest
+import com.google.android.gms.maps.model.PointOfInterest
 
 class PoiActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager2
