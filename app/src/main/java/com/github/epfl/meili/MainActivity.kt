@@ -25,10 +25,10 @@ class MainActivity : AppCompatActivity() {
         val intent: Intent = when (view.id) {
             R.id.launchSignInView -> Intent(this, GoogleSignInActivity::class.java)
             R.id.launchChatView -> Intent(this, ChatLogActivity::class.java)
-                .putExtra("POI_KEY", POI)
+                    .putExtra("POI_KEY", PointOfInterest(LatLng(100.0,100.0),"tour-eiffel1", "tour-eiffel2"))
             R.id.launchMapView -> Intent(this, MapActivity::class.java)
             R.id.launchReviewView -> Intent(this, ReviewsActivity::class.java)
-                .putExtra("POI_KEY", "lorem_ipsum")
+                    .putExtra("POI_KEY", "lorem_ipsum")
             R.id.launchPoiView -> Intent(this, PoiActivity::class.java)
                 .putExtra("POI_KEY", POI)
             R.id.launchPhotoView -> Intent(this, PhotoDemoActivity::class.java)
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val POI: PointOfInterest =
+        private val POI: PointOfInterest =
             PointOfInterest(LatLng(10.0, 10.0), "ChIJAAAAAAAAAAARg4pb6XR5bo0", "art_brut")
     }
 }
