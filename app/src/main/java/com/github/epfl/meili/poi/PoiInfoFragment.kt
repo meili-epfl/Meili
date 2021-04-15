@@ -63,7 +63,6 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
     ): (FetchPlaceResponse) -> Unit =
         { response: FetchPlaceResponse ->
             val place = response.place
-            Log.i(TAG, placeId)
 
             val openText = when {
                 place.isOpen == null -> ""
