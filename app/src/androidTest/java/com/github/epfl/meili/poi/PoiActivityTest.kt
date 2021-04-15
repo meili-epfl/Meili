@@ -22,7 +22,6 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPhotoResponse
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.PlacesClient
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,19 +39,8 @@ class PoiActivityTest {
     private val mockPlaces: PlacesClientService = Mockito.mock(PlacesClientService::class.java)
     private val mockPlacesClient: PlacesClient = Mockito.mock(PlacesClient::class.java)
 
-    @get:Rule
-    val mActivityTestRule: ActivityTestRule<PoiActivity> =
-        object : ActivityTestRule<PoiActivity>(PoiActivity::class.java) {
-            override fun getActivityIntent(): Intent {
-                val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-                return Intent(targetContext, PoiActivity::class.java).apply {
-                    putExtra("POI_KEY", fake_poi)
-                }
-            }
-        }
 
-    @Before
-    fun setup() {
+    init {
         val placeBuilder = Place.builder()
         placeBuilder.address = "mockAddress"
         placeBuilder.phoneNumber = "mockPhone"
@@ -65,7 +53,6 @@ class PoiActivityTest {
         val tcs: TaskCompletionSource<FetchPlaceResponse> = TaskCompletionSource()
         tcs.setResult(fpr)
 
-        `when`(mockPlaces.getPlacesClient(any(), any())).thenReturn(mockPlacesClient)
         `when`(mockPlacesClient.fetchPlace(any())).thenReturn(tcs.task)
 
 
@@ -76,8 +63,21 @@ class PoiActivityTest {
 
         `when`(mockPlacesClient.fetchPhoto(any())).thenReturn(tcs2.task)
 
+        `when`(mockPlaces.getPlacesClient(any(), any())).thenReturn(mockPlacesClient)
+
         PoiInfoFragment.placesClientService = { mockPlaces }
     }
+
+    @get:Rule
+    val mActivityTestRule: ActivityTestRule<PoiActivity> =
+        object : ActivityTestRule<PoiActivity>(PoiActivity::class.java) {
+            override fun getActivityIntent(): Intent {
+                val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+                return Intent(targetContext, PoiActivity::class.java).apply {
+                    putExtra("POI_KEY", fake_poi)
+                }
+            }
+        }
 
     @Test
     fun poiActivityTest() {

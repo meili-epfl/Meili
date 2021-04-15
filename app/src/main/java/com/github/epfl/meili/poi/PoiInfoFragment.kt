@@ -12,6 +12,7 @@ import com.github.epfl.meili.R
 import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.*
+import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * Fragment to be displayed inside of PoiActivity and which contains basic info about POI
@@ -19,7 +20,8 @@ import com.google.android.libraries.places.api.net.*
 class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
     companion object {
         private const val TAG = "PoiInfoFragment"
-        var placesClientService: () -> PlacesClientService = { PlacesClientService() }
+        private val DEFAULT_SERVICE = { PlacesClientService() }
+        var placesClientService: () -> PlacesClientService = DEFAULT_SERVICE
     }
 
     override fun onCreateView(
