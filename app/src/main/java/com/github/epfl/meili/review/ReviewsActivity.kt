@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.TopSpacingItemDecoration
@@ -25,7 +26,7 @@ class ReviewsActivity : AppCompatActivity() {
 
     private var currentUserReview: Review? = null
 
-    private lateinit var reviewAdapter: ReviewRecyclerAdapter
+    private lateinit var reviewsAdapter: ReviewsRecyclerAdapter
     private lateinit var viewModel: ReviewsActivityViewModel
 
     private lateinit var listReviewsView: View
@@ -111,7 +112,7 @@ class ReviewsActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this).get(ReviewsActivityViewModel::class.java)
 
-        viewModel.setReviewService(FirestoreReviewService(poiKey))
+        viewModel.setReviewService(FirestoreDatabase<Review>(poiKey, Review::class.java))
         viewModel.getReviews().observe(this, { map -> reviewsMapListener(map) })
 
         viewModel.getAverageRating().observe(this, {averageRating ->
@@ -131,17 +132,17 @@ class ReviewsActivity : AppCompatActivity() {
             }
         }
 
-        reviewAdapter.submitList(map.toList())
-        reviewAdapter.notifyDataSetChanged()
+        reviewsAdapter.submitList(map.toList())
+        reviewsAdapter.notifyDataSetChanged()
     }
 
     private fun initRecyclerView() {
-        reviewAdapter = ReviewRecyclerAdapter()
+        reviewsAdapter = ReviewsRecyclerAdapter()
         val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ReviewsActivity)
             addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
-            adapter = reviewAdapter
+            adapter = reviewsAdapter
         }
     }
 

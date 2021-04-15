@@ -1,32 +1,30 @@
-package com.github.epfl.meili.review
+package com.github.epfl.meili.database
 
 import android.util.Log
-import com.github.epfl.meili.models.Review
 import com.google.firebase.firestore.*
 
-class FirestoreReviewService(private val poiKey: String) : ReviewService(), EventListener<QuerySnapshot> {
+class FirestoreDatabase<T: Any>(private val path: String, private val ofClass: Class<T>) : Database<T>(path), EventListener<QuerySnapshot> {
 
     companion object {
-        private const val TAG: String = "FirestoreReviewService"
+        private const val TAG: String = "FirestoreDatabase"
 
         private val DEFAULT_DATABASE = { FirebaseFirestore.getInstance() }
 
         var databaseProvider: () -> FirebaseFirestore = DEFAULT_DATABASE
     }
 
-    override var reviews: Map<String, Review> = HashMap()
-    override var averageRating: Float = 0f
+    override var elements: Map<String, T> = HashMap()
 
     private val registration: ListenerRegistration
 
-    private val ref: CollectionReference = databaseProvider().collection("reviews/$poiKey/poi_reviews")
+    private val ref: CollectionReference = databaseProvider().collection(path)
 
     init {
         registration = ref.addSnapshotListener(this)
     }
 
-    override fun addReview(uid: String, review: Review) {
-        ref.document(uid).set(review)
+    override fun addElement(uid: String, element: T?) {
+        ref.document(uid).set(element!!)
     }
 
     override fun onDestroy() {
@@ -39,14 +37,13 @@ class FirestoreReviewService(private val poiKey: String) : ReviewService(), Even
         }
 
         if (snapshot != null) {
-            val rs: MutableMap<String, Review> = HashMap()
+            val vs: MutableMap<String, T> = HashMap()
 
             for (document in snapshot.documents) {
-                rs[document.id] = document.toObject(Review::class.java)!!
+                vs[document.id] = document.toObject(ofClass)!!
             }
 
-            reviews = rs
-            averageRating = Review.averageRating(reviews)
+            elements = vs
 
             this.notifyObservers()
         } else {
