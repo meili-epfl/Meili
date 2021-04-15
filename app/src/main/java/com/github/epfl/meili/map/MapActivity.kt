@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -18,15 +17,12 @@ import com.github.epfl.meili.poi.PoiService
 import com.github.epfl.meili.poi.PointOfInterest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.gms.maps.model.Marker
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.maps.android.clustering.ClusterManager
@@ -62,27 +58,27 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Initialize API entry points
         Places.initialize(
-            applicationContext,
-            getString(R.string.google_maps_key)
+                applicationContext,
+                getString(R.string.google_maps_key)
         ) // change API key here
 
         placesClient = Places.createClient(this)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-        val locationService = LocationService()
-        locationService.listenToLocationChanges(poiMarkerViewModel)
-        poiMarkerViewModel.setPoiService(PoiService())
-        poiMarkerViewModel.setDatabase(FirestoreDatabase<PointOfInterest>("users-poi-list/user-id/poi-list", PointOfInterest::class.java)) //TODO: put user id
-
-        poiMarkerViewModel.mPointsOfInterestStatus.observe(this){
-
-        }
         // Initialize map
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
     }
 
     private fun setUpClusterer() {
+        if (isPermissionGranted()) {
+            val locationService = LocationService()
+            locationService.listenToLocationChanges(poiMarkerViewModel)
+        }
+
+        poiMarkerViewModel.setPoiService(PoiService())
+        poiMarkerViewModel.setDatabase(FirestoreDatabase("users-poi-list/user-id/poi-list", PointOfInterest::class.java)) //TODO: put user id
+
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
         clusterManager = ClusterManager(this, map)
@@ -104,20 +100,19 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             true
         }
 
-        poiMarkerViewModel.mPointsOfInterestStatus.observe(this){
+        poiMarkerViewModel.mPointsOfInterestStatus.observe(this) {
             addItems(it)
         }
     }
 
     private fun addItems(map: Map<String, PoiMarkerViewModel.PointOfInterestStatus>) {
         val newMap = HashMap<PoiItem, PoiMarkerViewModel.PointOfInterestStatus>()
-        for (entry in map.entries){
-            val poiItem:PoiItem
-            if(poiItems.containsKey(entry.key)) {
+        for (entry in map.entries) {
+            val poiItem: PoiItem
+            if (poiItems.containsKey(entry.key)) {
                 poiItem = poiItems[entry.key]!!
-            }else{
-                Log.d("Map Activity", entry.key)
-                poiItem =  PoiItem(poiMarkerViewModel.mPointsOfInterest.value?.get(entry.key)!!)
+            } else {
+                poiItem = PoiItem(poiMarkerViewModel.mPointsOfInterest.value?.get(entry.key)!!)
             }
             newMap.put(poiItem, entry.value)
         }
@@ -127,18 +122,22 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun isPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
-            this.applicationContext,
-            Manifest.permission.ACCESS_FINE_LOCATION
+                this.applicationContext,
+                Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<String>,
+            grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         updateMapUI()
+        if (isPermissionGranted()) {
+            val locationService = LocationService()
+            locationService.listenToLocationChanges(poiMarkerViewModel)
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -161,8 +160,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             error("Assertion failed")
         }
         ActivityCompat.requestPermissions(
-            this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            REQUEST_CODE
+                this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_CODE
         )
     }
 
@@ -187,10 +186,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             if (task.isSuccessful && task.result != null) {
                 location = task.result
                 map.moveCamera(
-                    newLatLngZoom(
-                        LatLng(location!!.latitude, location!!.longitude),
-                        DEFAULT_ZOOM.toFloat()
-                    )
+                        newLatLngZoom(
+                                LatLng(location!!.latitude, location!!.longitude),
+                                DEFAULT_ZOOM.toFloat()
+                        )
                 )
             }
         }

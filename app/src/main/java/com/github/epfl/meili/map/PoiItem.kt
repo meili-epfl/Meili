@@ -6,7 +6,7 @@ import com.google.maps.android.clustering.ClusterItem
 
 class PoiItem(val poi: PointOfInterest): ClusterItem {
     override fun getPosition(): LatLng {
-        return LatLng(poi.latitude, poi.longitude)
+        return poi.getLatLng()
     }
 
     override fun getTitle(): String? {
