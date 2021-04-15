@@ -10,87 +10,86 @@
         android:id="@+id/launchSignInView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
         android:onClick="onClick"
         android:text="Launch Sign In View"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.316" />
+        app:layout_constraintEnd_toEndOf="@+id/launchChatView"
+        app:layout_constraintTop_toBottomOf="@+id/launchPoiView" />
 
     <Button
         android:id="@+id/launchMapView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="29dp"
         android:onClick="onClick"
         android:text="Launch Map View"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/launchSignInView"
-        app:layout_constraintVertical_bias="0.833" />
-
-    <Button
-        android:id="@+id/launchChatView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onClick"
-        android:text="Launch Chatting view"
-        app:layout_constraintBottom_toTopOf="@+id/launchMapView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/launchReviewView" />
-
-    <Button
-        android:id="@+id/launchReviewView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onClick"
-        android:text="Launch Review View"
-        app:layout_constraintBottom_toTopOf="@+id/launchSignInView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/launchChatView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
+        android:onClick="onClick"
+        android:text="Launch Chatting view"
+        app:layout_constraintBottom_toTopOf="@+id/launchForumView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/launchPoiView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="38dp"
+        android:onClick="onClick"
+        android:text="Launch POI view"
+        app:layout_constraintStart_toStartOf="@+id/launchMapView"
+        app:layout_constraintTop_toBottomOf="@+id/launchMapView" />
+
+    <Button
+        android:id="@+id/launchReviewView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="11dp"
+        android:onClick="onClick"
+        android:text="Launch Review View"
+        app:layout_constraintEnd_toEndOf="@+id/launchCameraView"
+        app:layout_constraintTop_toBottomOf="@+id/launchCameraView" />
+
+    <Button
         android:id="@+id/launchPhotoView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="3dp"
+        android:layout_marginBottom="60dp"
         android:onClick="onClick"
         android:text="Launch Photo View"
-        app:layout_constraintBottom_toTopOf="@+id/launchMapView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/launchChatView" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/launchForumView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
         android:onClick="onClick"
         android:text="Launch Forum View"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.512"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/launchMapView" />
+        app:layout_constraintBottom_toTopOf="@+id/launchCameraView"
+        app:layout_constraintStart_toStartOf="@+id/launchCameraView" />
 
     <Button
         android:id="@+id/launchCameraView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="247dp"
         android:onClick="onClick"
         android:text="Launch Camera View"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.51"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/launchSignInView"
-        app:layout_constraintVertical_bias="0.655" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

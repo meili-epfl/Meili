@@ -9,6 +9,7 @@ import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.photo.CameraActivity
+import com.github.epfl.meili.poi.PoiActivity
 import com.github.epfl.meili.review.ReviewsActivity
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
@@ -27,6 +28,8 @@ class MainActivity : AppCompatActivity() {
             R.id.launchMapView -> Intent(this, MapActivity::class.java)
             R.id.launchReviewView -> Intent(this, ReviewsActivity::class.java)
                     .putExtra("POI_KEY", "lorem_ipsum")
+            R.id.launchPoiView -> Intent(this, PoiActivity::class.java)
+                .putExtra("POI_KEY", PointOfInterest(LatLng(10.0, 10.0), "ChIJAAAAAAAAAAARg4pb6XR5bo0", "Musée de l'Art Brut"))
             R.id.launchPhotoView -> Intent(this, PhotoDemoActivity::class.java)
             R.id.launchForumView -> Intent(this, ForumActivity::class.java)
             R.id.launchCameraView -> Intent(this, CameraActivity::class.java)
