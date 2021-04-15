@@ -8,6 +8,7 @@ import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.messages.ChatLogActivity
+import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.review.ReviewsActivity
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PointOfInterest
@@ -28,9 +29,9 @@ class MainActivity : AppCompatActivity() {
                     .putExtra("POI_KEY", "lorem_ipsum")
             R.id.launchPhotoView -> Intent(this, PhotoDemoActivity::class.java)
             R.id.launchForumView -> Intent(this, ForumActivity::class.java)
+            R.id.launchCameraView -> Intent(this, CameraActivity::class.java)
             else -> Intent(this, MainActivity::class.java)
         }
-
         startActivity(intent)
     }
 }
