@@ -2,10 +2,6 @@ package com.github.epfl.meili.poi
 
 import com.google.android.gms.maps.model.LatLng
 import org.junit.Assert.assertEquals
-<<<<<<< HEAD
-
-=======
->>>>>>> 8edff669cec91d93862df81ac0d59c6bec5245a5
 import org.junit.Test
 
 class PointOfInterestTest {

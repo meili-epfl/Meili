@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.poi.PoiActivity
 import com.github.epfl.meili.poi.PoiService
 import com.github.epfl.meili.poi.PointOfInterest
@@ -76,8 +77,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             locationService.listenToLocationChanges(poiMarkerViewModel)
         }
 
+
         poiMarkerViewModel.setPoiService(PoiService())
-        poiMarkerViewModel.setDatabase(FirestoreDatabase("users-poi-list/user-id/poi-list", PointOfInterest::class.java)) //TODO: put user id
+
+        val currentUser = Auth.getCurrentUser()
+        if (currentUser != null) {
+            poiMarkerViewModel.setDatabase(FirestoreDatabase("users-poi-list/${currentUser.uid}/poi-list", PointOfInterest::class.java))
+        }
+
 
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
