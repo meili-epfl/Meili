@@ -2,7 +2,11 @@
 
 ## Ahmed
 
-TODO
+This week I worked on adding the upvote/downvote feature for the forum posts. At first it seemed like a trivial task but using the transaction seemed different to what I have seen before. I have now finished the functionality but the tests are still due.
+
+My estimates this time were wrong due to the fact that the task seemed easy but wasn't.
+
+I still feel like I am improving a lot by these challenges. I have learned this time to read a bit about the documentation of an API I am willing to use for the sprint before trying to make an accurate guess of the time this feature is going to take.
 
 
 ## Aman
