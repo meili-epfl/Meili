@@ -10,12 +10,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.FirebasePostService
-import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.models.Post.Companion.toPost
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
+import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.models.Post.Companion.toPost
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.review.FirestoreReviewService
 import com.google.firebase.firestore.*
 import com.schibsted.spain.barista.interaction.PermissionGranter
 import org.junit.After
@@ -49,7 +48,6 @@ class MainActivityTest {
             mockRegistration
         }
 
-        FirestoreReviewService.databaseProvider = { mockFirestore }
         FirestoreDatabase.databaseProvider = {mockFirestore}
 
         UiThreadStatement.runOnUiThread {

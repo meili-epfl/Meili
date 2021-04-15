@@ -3,7 +3,7 @@ package com.github.epfl.meili.database
 import android.util.Log
 import com.google.firebase.firestore.*
 
-class FirestoreDatabase<T: Any>(path: String, val ofClass: Class<T>) : Database<T>(path), EventListener<QuerySnapshot> {
+class FirestoreDatabase<T: Any>(private val path: String, private val ofClass: Class<T>) : Database<T>(path), EventListener<QuerySnapshot> {
 
     companion object {
         private const val TAG: String = "FirestoreDatabase"
@@ -13,7 +13,7 @@ class FirestoreDatabase<T: Any>(path: String, val ofClass: Class<T>) : Database<
         var databaseProvider: () -> FirebaseFirestore = DEFAULT_DATABASE
     }
 
-    override var values: Map<String, T> = HashMap()
+    override var elements: Map<String, T> = HashMap()
 
     private val registration: ListenerRegistration
 
@@ -23,10 +23,8 @@ class FirestoreDatabase<T: Any>(path: String, val ofClass: Class<T>) : Database<
         registration = ref.addSnapshotListener(this)
     }
 
-    override fun addElement(uid: String?, element: T?) {
-        if(uid!=null && element!=null) {
-            ref.document(uid).set(element!!)
-        }
+    override fun addElement(uid: String, element: T?) {
+        ref.document(uid).set(element!!)
     }
 
     override fun onDestroy() {
@@ -39,14 +37,18 @@ class FirestoreDatabase<T: Any>(path: String, val ofClass: Class<T>) : Database<
         }
 
         if (snapshot != null) {
-            val rs: MutableMap<String, T> = HashMap()
+            val vs: MutableMap<String, T> = HashMap()
 
             for (document in snapshot.documents) {
+<<<<<<< HEAD
                 Log.d(TAG, document.toString())
                 rs[document.id] = document.toObject(ofClass)!!
+=======
+                vs[document.id] = document.toObject(ofClass)!!
+>>>>>>> 8edff669cec91d93862df81ac0d59c6bec5245a5
             }
 
-            values = rs
+            elements = vs
 
             this.notifyObservers()
         } else {

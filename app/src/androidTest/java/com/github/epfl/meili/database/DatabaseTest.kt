@@ -11,28 +11,29 @@ class DatabaseTest {
     @Test
     fun addObserverTest() {
         val db: Database<PointOfInterest> = MockDatabase()
-        db.addObserver({ obs, arg ->
+        db.addObserver { obs, _ ->
             assertEquals(obs, db)
-        })
+        }
 
         db.notifyObservers()
         db.addElement("uid", PointOfInterest())
         db.onDestroy()
     }
 
-    class MockDatabase() : Database<PointOfInterest>("mockPath") {
-        override var values: Map<String, PointOfInterest> = HashMap()
+    class MockDatabase() : Database<PointOfInterest>("mockKey") {
+        override var elements: Map<String, PointOfInterest> = HashMap()
 
         init {
-            values.plus(Pair("uid", PointOfInterest()))
-        }
-
-        override fun addElement(uid: String?, element: PointOfInterest?) {
-
+            elements.plus(Pair("uid", PointOfInterest()))
         }
 
         override fun onDestroy() {
 
         }
+
+        override fun addElement(uid: String, element: PointOfInterest?) {
+
+        }
+
     }
 }

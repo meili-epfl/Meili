@@ -25,8 +25,7 @@ class FirestoreDatabaseTest {
     private val mockListenerRegistration: ListenerRegistration = Mockito.mock(ListenerRegistration::class.java)
 
     @get:Rule
-    var testRule: ActivityScenarioRule<MainActivity> =
-            ActivityScenarioRule(MainActivity::class.java)
+    var testRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
 
     init {
         setupMocks()
@@ -97,14 +96,14 @@ class FirestoreDatabaseTest {
         documents.add(mockDocumentSnapshot1)
         documents.add(mockDocumentSnapshot2)
 
-        val expectedValues = HashMap<String, PointOfInterest>()
-        expectedValues.put(poi1.uid, poi1)
-        expectedValues.put(poi2.uid, poi2)
+        val expectedElements = HashMap<String, PointOfInterest>()
+        expectedElements[poi1.uid] = poi1
+        expectedElements[poi2.uid] = poi2
 
         val mockSnapshot = Mockito.mock(QuerySnapshot::class.java)
         Mockito.`when`(mockSnapshot.documents).thenReturn(documents)
 
         db.onEvent(mockSnapshot, null)
-        assertEquals(db.values, expectedValues)
+        assertEquals(db.elements, expectedElements)
     }
 }

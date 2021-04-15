@@ -50,15 +50,14 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     }
 
     override fun update(o: Observable?, arg: Any?) {
-        mPointsOfInterest.value = mPointsOfInterest.value!! + database!!.values
+        mPointsOfInterest.value = mPointsOfInterest.value!! + database!!.elements
 
         // update status of each Poi to VISITED
         var statusMap: Map<String, PointOfInterestStatus> = mPointsOfInterestStatus.value!!
-        for (poi in database!!.values) {
+        for (poi in database!!.elements) {
             statusMap = statusMap + Pair(poi.value.uid, PointOfInterestStatus.VISITED)
         }
 
-        Log.d(TAG, database!!.values.toString())
         mPointsOfInterestStatus.value = statusMap
 
         setReachablePois()
@@ -81,8 +80,9 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
             // Unset unreachable pois to either VISIBLE or VISITED
             val unreachablePois = mPointsOfInterest.value!!.values.minus(reachablePois)
 
+
             if (database != null) {
-                val visitedPois = database!!.values
+                val visitedPois = database!!.elements
 
                 for (poi in unreachablePois) {
                     statusMap = statusMap + Pair(
@@ -113,7 +113,7 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
 
     fun setPoiVisited(poi: PointOfInterest) {
         if (mPointsOfInterestStatus.value!![poi.uid] == PointOfInterestStatus.REACHABLE) {
-            if (database != null && !database!!.values.containsKey(poi.uid)) {
+            if (database != null && !database!!.elements.containsKey(poi.uid)) {
                 database!!.addElement(poi.uid, poi)
             }
         }
@@ -132,9 +132,9 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
                         { poiList -> onSuccessPoiReceived(poiList) },
                         { error -> onError(error) })
             }
-
-            setReachablePois()
         }
+
+        setReachablePois()
     }
 
     companion object {
@@ -143,8 +143,8 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     }
 
     /**
-     * VISIBLE: means that POI is loaded in your device
      * VISITED: means that the user interacted with this POI when it was reachable
+     * VISIBLE: means that POI is loaded in your device
      * REACHABLE: means that the user is close enough to the POI and is allowed to interact with it
      */
     enum class PointOfInterestStatus {

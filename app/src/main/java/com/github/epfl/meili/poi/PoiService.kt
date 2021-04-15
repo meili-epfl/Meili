@@ -21,11 +21,11 @@ open class PoiService {
 
     open fun requestPois(latLng: LatLng?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((VolleyError) -> Unit)?) {
 
-        if(latLng!=null && onSuccess != null && onError!= null){
+        if (latLng != null && onSuccess != null && onError != null) {
             val typeOfObjects = "node"
 
             /*bounding box: lowest_lat, lowest_lng, highest_lat, highest_long*/
-            val bbox = "(" + (latLng!!.latitude - LAT_MARGIN) + "," + (latLng.longitude - LNG_MARGIN) + "," +
+            val bbox = "(" + (latLng.latitude - LAT_MARGIN) + "," + (latLng.longitude - LNG_MARGIN) + "," +
                     (latLng.latitude + LAT_MARGIN) + "," + (latLng.longitude + LNG_MARGIN) + ")"
 
             val filter = "[historic=monument]"
@@ -64,7 +64,7 @@ open class PoiService {
      */
     open fun getReachablePoi(userPosition: LatLng?, poiList: List<PointOfInterest>?, radius: Double?): List<PointOfInterest> {
         val reachablePois = ArrayList<PointOfInterest>()
-        if(userPosition!=null && poiList!=null && radius != null) {
+        if (userPosition != null && poiList != null && radius != null) {
             for (poi in poiList) {
                 val distance = CustomMath.distanceOnSphere(userPosition, poi.getLatLng())
                 if (distance < radius) {
@@ -84,13 +84,13 @@ open class PoiService {
 }
 
 data class OverpassResponse(
-    @SerializedName("elements")
-    val pointsOfInterest: List<OverpassPointOfInterest> = ArrayList()
+        @SerializedName("elements")
+        val pointsOfInterest: List<OverpassPointOfInterest> = ArrayList()
 ) {
     fun getCustomPois(): List<PointOfInterest> {
         val poiList = ArrayList<PointOfInterest>()
         for (poi in pointsOfInterest) {
-            if (poi.poiTags != null && poi.poiTags!!.name != null && poi.uid != null) {
+            if (poi.poiTags != null && poi.poiTags.name != null && poi.uid != null) {
                 poiList.add(poi.toStandardPoi())
             }
         }
@@ -99,14 +99,14 @@ data class OverpassResponse(
 }
 
 data class OverpassPointOfInterest(
-    @SerializedName("lat")
-    val lat: Double? = null,
-    @SerializedName("lon")
-    val lon: Double? = null,
-    @SerializedName("tags")
-    val poiTags: PoiTag? = null,
-    @SerializedName("id")
-    val uid: String? = null
+        @SerializedName("lat")
+        val lat: Double? = null,
+        @SerializedName("lon")
+        val lon: Double? = null,
+        @SerializedName("tags")
+        val poiTags: PoiTag? = null,
+        @SerializedName("id")
+        val uid: String? = null
 ) {
     fun toStandardPoi(): PointOfInterest {
         return PointOfInterest(lat!!, lon!!, poiTags!!.name!!, uid!!)
@@ -114,6 +114,6 @@ data class OverpassPointOfInterest(
 }
 
 data class PoiTag(
-    @SerializedName("name")
-    val name: String? = null
+        @SerializedName("name")
+        val name: String? = null
 )

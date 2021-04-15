@@ -4,7 +4,7 @@ import com.github.epfl.meili.poi.PointOfInterest
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 
-class PoiItem(val poi: PointOfInterest): ClusterItem {
+class PoiItem(val poi: PointOfInterest) : ClusterItem {
     override fun getPosition(): LatLng {
         return poi.getLatLng()
     }
