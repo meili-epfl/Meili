@@ -1,13 +1,13 @@
-package com.github.epfl.meili.review
+package com.github.epfl.meili.database
 
-import com.github.epfl.meili.models.Review
 import java.util.*
+import kotlin.collections.HashSet
 
-abstract class ReviewService : Observable() {
-    abstract var reviews: Map<String, Review>
-    abstract var averageRating: Float
 
-    abstract fun addReview(uid: String, review: Review)
+abstract class Database<T>(private val path: String): Observable() {
+    abstract var elements: Map<String, T>
+
+    abstract fun addElement(uid: String, element: T?)
 
     private var observers: Set<Observer> = HashSet()
 
@@ -20,7 +20,7 @@ abstract class ReviewService : Observable() {
 
     override fun notifyObservers() {
         super.notifyObservers()
-        observers.forEach {o: Observer -> o.update(this, reviews)}
+        observers.forEach {o: Observer -> o.update(this, elements)}
     }
 
     abstract fun onDestroy()

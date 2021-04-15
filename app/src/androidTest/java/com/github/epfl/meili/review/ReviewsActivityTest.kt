@@ -18,6 +18,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Review
 import com.google.firebase.firestore.*
@@ -66,7 +67,7 @@ class ReviewsActivityTest {
     private val mockSnapshotAfterEdition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
 
     private val mockAuthenticationService = MockAuthenticationService()
-    private lateinit var service: FirestoreReviewService
+    private lateinit var database: FirestoreDatabase<Review>
 
     private var testAverageRatingBeforeAddition: Float = 0f
     private var testAverageRatingAfterAddition: Float = 0f
@@ -81,7 +82,7 @@ class ReviewsActivityTest {
 
         `when`(mockFirestore.collection(any())).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
-            (invocation.arguments[0] as FirestoreReviewService).also { service = it }
+            (invocation.arguments[0] as FirestoreDatabase<Review>).also { database = it }
             mockListenerRegistration
         }
         `when`(mockCollection.document(Mockito.matches(TEST_UID))).thenReturn(mockDocument)
@@ -98,7 +99,7 @@ class ReviewsActivityTest {
         `when`(mockSnapshotAfterEdition.documents).thenReturn(mockDocumentListAfterEdition)
 
         // Inject dependencies
-        FirestoreReviewService.databaseProvider = { mockFirestore }
+        FirestoreDatabase.databaseProvider = { mockFirestore }
         Auth.authService = mockAuthenticationService
     }
 
@@ -144,7 +145,7 @@ class ReviewsActivityTest {
     @Test
     fun signedOutDisplayTest() {
         mockAuthenticationService.signOut()
-        service.onEvent(mockSnapshotBeforeAddition, null)
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
@@ -158,7 +159,7 @@ class ReviewsActivityTest {
     @Test
     fun signedInDisplayTest() {
         mockAuthenticationService.signInIntent()
-        service.onEvent(mockSnapshotBeforeAddition, null)
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
@@ -172,7 +173,7 @@ class ReviewsActivityTest {
     @Test
     fun signedInCancelAddingTest() {
         mockAuthenticationService.signInIntent()
-        service.onEvent(mockSnapshotBeforeAddition, null)
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())
 
@@ -190,7 +191,7 @@ class ReviewsActivityTest {
     @Test
     fun signedInAddReviewTest() {
         mockAuthenticationService.signInIntent()
-        service.onEvent(mockSnapshotBeforeAddition, null)
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())
 
@@ -201,7 +202,7 @@ class ReviewsActivityTest {
         onView(withId(R.id.submit_review)).perform(click())
 
         // send reviews map with added review to review service
-        service.onEvent(mockSnapshotAfterAddition, null)
+        database.onEvent(mockSnapshotAfterAddition, null)
 
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
@@ -219,7 +220,7 @@ class ReviewsActivityTest {
     @Test
     fun signedInEditReviewTest() {
         mockAuthenticationService.signInIntent()
-        service.onEvent(mockSnapshotAfterAddition, null) // mock user has existing review
+        database.onEvent(mockSnapshotAfterAddition, null) // mock user has existing review
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())
 
@@ -234,7 +235,7 @@ class ReviewsActivityTest {
         onView(withId(R.id.submit_review)).perform(click())
 
         // send reviews map with edited review to review service
-        service.onEvent(mockSnapshotAfterEdition, null)
+        database.onEvent(mockSnapshotAfterEdition, null)
 
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
