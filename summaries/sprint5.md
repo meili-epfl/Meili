@@ -30,7 +30,9 @@ This week, I worked on finishing the task of implementing a user-personalised PO
 
 Something I believe I could improve for next week is to collaborate more with the team. It is true, however,  that this my tasks were really different from the ones from the rest of the team.
 
-Something positive about this week is that I am happy since my time estimates are starting to be more accurate. Moreover, I am also happy because I was able to find a solution pretty efficiently in time to the problem of how to dynamically update the markers on the map. I didn't find any information on the internet on how to achieve this with cluster items. 
+Something positive about this week is that I am happy since my time estimates are starting to be more accurate. Moreover, I am also happy because I was able to find a solution pretty efficiently in time to the problem of how to dynamically update the markers on the map. I didn't find any information on the internet on how to achieve this with cluster items.
+
+Finally, next week, I plan to work, among other tasks, on using, in addition to the Overpass API, the Google Places API to get more detailed information about the POIs.
 
 ## Thomas (Scrum Master)
 
@@ -40,10 +42,10 @@ I am happy with what I have achieved for the drawing feature, as I managed to im
 
 I didn't manage to totally finish what I has planned to do, as I still need to implement the color picker for the drawing feature, and to test the activity. But I have caught up on branches which I hadn't managed to merge, so now I will be able to focus more on my work.
 
-Finally, next week, I plan to work, among other tasks, on using, in addition to the Overpass API, the Google Places API to get more detailed information about the POIs.
 
 ## Yingxuan
 
+TODO
 
 
 ## Overall team
