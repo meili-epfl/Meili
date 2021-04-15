@@ -7,16 +7,15 @@ import android.net.Uri
  */
 interface StorageService {
     /**
-     * Upload a file from local storage to the remote database
+     * Upload a ByteArray to the remote database
      * remotePath (String): the path to be used in the remote database
      *                      eg.
      *                          Forum: "images/forum/{post_id}"
      *                          Profile: "images/avatar/{user_id}" or "images/profile/{user_id}"
-     * filePath (Uri): the local path
      */
-    fun uploadFile(
+    fun uploadBytes(
         remotePath: String,
-        filePath: Uri,
+        byteArray: ByteArray,
         onSuccessCallback: () -> Unit={},
         onFailureCallback: () -> Unit={}
     )

@@ -7,12 +7,11 @@ object FirebaseStorageService: StorageService {
 
     private val firebaseStorage = FirebaseStorage.getInstance()
 
-    override fun uploadFile(remotePath: String, filePath: Uri, onSuccessCallback: () -> Unit, onFailureCallback: () -> Unit) {
-        firebaseStorage.getReference(remotePath).putFile(filePath)
-                .addOnSuccessListener { _ -> onSuccessCallback() }
-                .addOnFailureListener { _ -> onFailureCallback() }
+    override fun uploadBytes(remotePath: String, byteArray: ByteArray, onSuccessCallback: () -> Unit, onFailureCallback: () -> Unit) {
+        firebaseStorage.getReference(remotePath).putBytes(byteArray)
+            .addOnSuccessListener { _ -> onSuccessCallback() }
+            .addOnFailureListener { _ -> onFailureCallback() }
     }
-
     override fun getDownloadUrl(remotePath: String, onSuccessListener: (Uri) -> Unit, onFailureListener: (Exception) -> Unit) {
         firebaseStorage.getReference(remotePath).downloadUrl
                 .addOnSuccessListener(onSuccessListener)

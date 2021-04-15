@@ -4,9 +4,9 @@ import android.net.Uri
 import com.github.epfl.meili.storage.StorageService
 
 object MockStorageService: StorageService {
-    override fun uploadFile(
-        firebasePath: String,
-        filePath: Uri,
+    override fun uploadBytes(
+        remotePath: String,
+        byteArray: ByteArray,
         onSuccessCallback: () -> Unit,
         onFailureCallback: () -> Unit
     ) {
@@ -14,7 +14,7 @@ object MockStorageService: StorageService {
     }
 
     override fun getDownloadUrl(
-        firebasePath: String,
+        remotePath: String,
         onSuccessListener: (Uri) -> Unit,
         onFailureListener: (Exception) -> Unit
     ) {
