@@ -15,7 +15,7 @@ import kotlin.collections.HashMap
 
 /**
  * PoiMarkerViewModel is the class that handles the POIs list
- * This list is Personalized for each user and depending on its position and the history of visited POIs
+ * This list is Personalized for each user and depending on their position and the history of visited POIs
  * each POI will have a different status between VISITED, VISIBLE and REACHABLE
  */
 class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
