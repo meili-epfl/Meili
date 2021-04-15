@@ -41,20 +41,17 @@ class CameraActivity : AppCompatActivity() {
 
         startCameraIfPermitted()
 
-        // Setup callbacks
         cameraButton = findViewById(R.id.camera_capture_button)
         cameraButton.setOnClickListener { takePhoto() }
 
         previewView = findViewById(R.id.camera_preview)
         previewView.setOnTouchListener(getPreviewTouchListener())
 
-        // Set up extra camera features
         makePhotosHaveOrientation()
 
         outputDirectory = getOutputDirectory()
     }
 
-    /** Callback function for permissions */
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>,
         grantResults: IntArray
@@ -123,27 +120,22 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    /** Sets up camera */
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
             cameraProvider = cameraProviderFuture.get() // Guaranteed to exist
 
-            // Setup Preview use case --> to display the preview to the screen
             preview = Preview.Builder().build()
 
-            // Setup Image Capture use case --> allows user to take photos
             imageCapture = ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
                 .build()
 
-            // Setup which camera to select (default is back)
             cameraSelector = CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build()
 
-            // Display preview in activity
             val previewView = findViewById<PreviewView>(R.id.camera_preview)
             preview.setSurfaceProvider(previewView.surfaceProvider)
 
@@ -155,7 +147,6 @@ class CameraActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
-    /** Takes a picture */
     private fun takePhoto() {
         if (imageCapture == null) {
             return
@@ -174,7 +165,7 @@ class CameraActivity : AppCompatActivity() {
             ImageCapture.OutputFileOptions.Builder(photoFile).build(),
             ContextCompat.getMainExecutor(this),
             object :
-                ImageCapture.OnImageSavedCallback { // object with callback functions for pictures
+                ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
@@ -190,16 +181,14 @@ class CameraActivity : AppCompatActivity() {
     /** Checks if device has access to start the camera, if not, ask the user for permission */
     private fun startCameraIfPermitted() {
         if (allPermissionsGranted()) {
-            startCamera() // When authorized, start the camera
+            startCamera()
         } else {
-            // Ask device for permission to use the camera
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
     }
 
-    /** Checks if the app's access to the camera is granted */
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it
