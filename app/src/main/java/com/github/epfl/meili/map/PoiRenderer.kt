@@ -8,7 +8,11 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
 
-open class PoiRenderer(context: Context?, map: GoogleMap?, val clusterManager: ClusterManager<PoiItem>) : DefaultClusterRenderer<PoiItem>(context, map, clusterManager) {
+/**
+ * PoiRenderer is the class which renders POIs as Markers on the Map and also handles cluster rendering
+ */
+open class PoiRenderer(context: Context?, map: GoogleMap?, val clusterManager: ClusterManager<PoiItem>)
+    : DefaultClusterRenderer<PoiItem>(context, map, clusterManager) {
 
     private var poiStatusMap: Map<PoiItem, PoiMarkerViewModel.PointOfInterestStatus>? = null
 

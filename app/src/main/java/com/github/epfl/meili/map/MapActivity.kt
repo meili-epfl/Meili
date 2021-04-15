@@ -103,6 +103,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         clusterManager.setOnClusterItemClickListener {
             val intent = Intent(this, PoiActivity::class.java)
             intent.putExtra(POI_KEY, it.poi)
+
+            if(poiMarkerViewModel.mPointsOfInterestStatus.value?.get(it.poi) ==PoiMarkerViewModel.PointOfInterestStatus.REACHABLE){
+                poiMarkerViewModel.setPoiVisited(it.poi)
+            }
+
             startActivity(intent)
             true
         }
@@ -141,6 +146,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         updateMapUI()
+
         if (isPermissionGranted()) {
             val locationService = LocationService()
             locationService.listenToLocationChanges(poiMarkerViewModel)

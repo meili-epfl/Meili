@@ -4,6 +4,10 @@ import com.github.epfl.meili.poi.PointOfInterest
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 
+/**
+ * Cluster Item representing a POI to be added as item in the ClusterManager (for representing POIs
+ * on Map as Markers)
+ */
 class PoiItem(val poi: PointOfInterest) : ClusterItem {
     override fun getPosition(): LatLng {
         return poi.getLatLng()
