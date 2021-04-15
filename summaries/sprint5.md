@@ -7,16 +7,18 @@ TODO
 
 ## Aman 
 
-This week, I was able to finish the tasks I assigned to myself. I completed the choice, upload, and download (with compression) of an image to/from Firebase Storage.
+TODO
 
-My time estimates were very good in general. I underestimated one task (the upload) by an hour or so. I used this freed-up time to refactor one of my old features to use a general database implementation and remove redundant code. I also used a bit of my free time to help one of teammates with Mockito and dependency injection.
-
-Next week, I plan on finishing my current user story by integrating the upload/download, camera, and the forum features. 
 
 ## Ewan
 
-TODO
+This week I worked on cropping photos, resizing and rotating the photos. I'm not quite done with the feature, because Android does not provide a way to get an angle from a two finger rotating motion. I am still figuring out how to implement this. The cropping functionality and the function to rotate from a given angle are done, but not yet tested.
 
+I also helped Thomas to figure out how to make cirrus work for the camera tests, as they only passed locally. This feature was merged successfully.
+
+I'm not quite sure what counts for last week or this week, but I finished the forum by implementing the last PR nitpicks during the holidays. I also made the presentation video for the mid semester demo.
+
+As we weren't sure what tools to use and what to implement for the photo editing, it took me some extra time to figure out what libraries to use, so my time estimates are off quite a bit. I should also account for testing more in my future time estimates.
 
 ## Marcel 
 
