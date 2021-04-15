@@ -8,6 +8,8 @@ import com.github.epfl.meili.MainApplication
 
 /**
  * This service is supposing that permissions have already being granted before using it
+ *
+ * It's role is to provide location updates to the location listener passed as parameter in listenToLocationChanges function
  */
 class LocationService {
     private var locationManager: LocationManager
