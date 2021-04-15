@@ -8,6 +8,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.FirebasePostService
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.Post.Companion.toPost
@@ -49,6 +50,7 @@ class MainActivityTest {
         }
 
         FirestoreReviewService.databaseProvider = { mockFirestore }
+        FirestoreDatabase.databaseProvider = {mockFirestore}
 
         UiThreadStatement.runOnUiThread {
             val mockAuth = mock(AuthenticationService::class.java)
@@ -98,14 +100,14 @@ class MainActivityTest {
         Intents.intended(toPackage("com.github.epfl.meili"))
     }
 
-    /*@Test
+    @Test
     fun clickingOnMapViewButtonShouldLaunchIntent() {
         PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
 
         onView(withId(R.id.launchMapView)).perform(click())
 
         Intents.intended(toPackage("com.github.epfl.meili"))
-    }*/
+    }
 
     @Test
     fun clickingOnReviewViewButtonShouldLaunchIntent() {
