@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.github.epfl.meili.R
 import com.github.epfl.meili.storage.FirebaseStorageService
 import com.github.epfl.meili.storage.StorageService
 import com.squareup.picasso.Picasso
@@ -30,6 +29,11 @@ class PhotoDemoActivity : AppCompatActivity() {
     private lateinit var imageView: ImageView
     private var filePath: Uri? = null
 
+    /*
+        the getBitmap function has been deprecated and replaced by decodeBitmap in Android.
+        However, SDK versions < 28 don't support decodeBitmap.
+        Since Meili's min SDK version is 23, we need to support both old and new versions.
+    */
     private val getContent: ActivityResultLauncher<String> =
         registerForActivityResult(ActivityResultContracts.GetContent()) { filePath ->
             val bitmap = if (Build.VERSION.SDK_INT < 28) {
