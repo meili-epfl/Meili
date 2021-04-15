@@ -5,9 +5,13 @@
 TODO
 
 
-## Aman 
+## Aman
 
-TODO
+This week, I was able to finish the tasks I assigned to myself. I completed the choice, upload, and download (with compression) of an image to/from Firebase Storage.
+
+My time estimates were very good in general. I underestimated one task (the upload) by an hour or so. I used this freed-up time to refactor one of my old features to use a general database implementation and remove redundant code. I also used a bit of my free time to help one of teammates with Mockito and dependency injection.
+
+Next week, I plan on finishing my current user story by integrating the upload/download, camera, and the forum features. 
 
 
 ## Ewan
