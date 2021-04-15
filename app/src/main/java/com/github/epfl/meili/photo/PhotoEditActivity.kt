@@ -1,5 +1,7 @@
 package com.github.epfl.meili.photo
 
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -92,11 +94,32 @@ class PhotoEditActivity : AppCompatActivity() {
         binding.paintModeButton.setBackgroundColor(0)
 
         binding.cropImageView.setImageBitmap((binding.paintImageView.drawable as BitmapDrawable).bitmap) // Show image in crop tool
+        rotateImage(30F)
     }
 
     /** Callback function for crop button */
     private fun cropImage() {
         // Async callback to function defined in onCreate()
         binding.cropImageView.saveCroppedImageAsync(uri)
+    }
+
+    /** Rotate image in crop mode */
+    private fun rotateImage(degrees: Float) {
+        val bitmap = (binding.paintImageView.drawable as BitmapDrawable).bitmap // Get bitmap
+        val matrix = Matrix() // rotation matrix
+        matrix.postRotate(degrees)
+
+        // Apply rotation matrix
+        val rotated = Bitmap.createBitmap(
+            bitmap,
+            0,
+            0,
+            bitmap.width,
+            bitmap.height,
+            matrix,
+            true
+        )
+
+        binding.cropImageView.setImageBitmap(rotated) // Show image in crop tool
     }
 }
