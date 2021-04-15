@@ -22,7 +22,7 @@ class PoiServiceTest {
 
     @Before
     fun initList() {
-        val expectedPoi = PointOfInterest(LatLng(12.0, 34.0), "Monument a Jaume I", "1234")
+        val expectedPoi = PointOfInterest(12.0, 34.0, "Monument a Jaume I", "1234")
         expectedList.add(expectedPoi)
     }
 
@@ -51,8 +51,8 @@ class PoiServiceTest {
     fun getReachablePoiTest(){
         val userPos = LatLng(41.075534,1.131070)
         val poiList = ArrayList<PointOfInterest>()
-        val poi1 = PointOfInterest(LatLng(41.075000,1.130870), "place1", "place1")
-        val poi2 = PointOfInterest(LatLng(41.063563,1.083658), "place2", "place2")
+        val poi1 = PointOfInterest(41.075000,1.130870, "place1", "place1")
+        val poi2 = PointOfInterest(41.063563,1.083658, "place2", "place2")
         poiList.add(poi1)
         poiList.add(poi2)
 

@@ -83,6 +83,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx:22.1.2'
 
     implementation 'com.android.volley:volley:1.2.0'
+    implementation 'com.google.maps.android:maps-utils-ktx:2.4.0'
 
     implementation "com.xwray:groupie:2.9.0"
     implementation 'com.squareup.picasso:picasso:2.71828'

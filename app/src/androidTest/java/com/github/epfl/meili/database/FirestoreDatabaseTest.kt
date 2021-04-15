@@ -16,8 +16,8 @@ import org.mockito.Mockito
 @RunWith(AndroidJUnit4::class)
 class FirestoreDatabaseTest {
     private lateinit var db: FirestoreDatabase<PointOfInterest>
-    private val poi1 = PointOfInterest(LatLng(41.075000, 1.130870), "place1", "place1")
-    private val poi2 = PointOfInterest(LatLng(41.063563, 1.083658), "place2", "place2")
+    private val poi1 = PointOfInterest(41.075000, 1.130870, "place1", "place1")
+    private val poi2 = PointOfInterest(41.063563, 1.083658, "place2", "place2")
 
     private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
     private val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)

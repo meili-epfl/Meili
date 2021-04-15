@@ -13,6 +13,11 @@ import com.google.android.gms.maps.model.LatLng
 import java.util.*
 import kotlin.collections.HashMap
 
+/**
+ * PoiMarkerViewModel is the class that handles the POIs list
+ * This list is Personalized for each user and depending on their position and the history of visited POIs
+ * each POI will have a different status between VISITED, VISIBLE and REACHABLE
+ */
 class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
 
     private var database: Database<PointOfInterest>? = null
@@ -64,33 +69,36 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     }
 
     fun setReachablePois() {
-        //set all reachable pois to REACHABLE status
-        val reachablePois = poiService!!.getReachablePoi(
-                lastUserLocation!!,
-                mPointsOfInterest.value!!.values.toList(),
-                REACHABLE_DIST
-        )
-        var statusMap = mPointsOfInterestStatus.value!!
+        if (lastUserLocation != null) {
+            //set all reachable pois to REACHABLE status
+            val reachablePois = poiService!!.getReachablePoi(
+                    lastUserLocation!!,
+                    mPointsOfInterest.value!!.values.toList(),
+                    REACHABLE_DIST
+            )
+            var statusMap = mPointsOfInterestStatus.value!!
 
-        for (poi in reachablePois) {
-            statusMap = statusMap + Pair(poi.uid, PointOfInterestStatus.REACHABLE)
-        }
-
-        // Unset unreachable pois to either VISIBLE or VISITED
-        val unreachablePois = mPointsOfInterest.value!!.values.minus(reachablePois)
-
-        if (database != null) {
-            val visitedPois = database!!.elements
-
-            for (poi in unreachablePois) {
-                statusMap = statusMap + Pair(
-                        poi.uid,
-                        if (visitedPois.containsKey(poi.uid)) PointOfInterestStatus.VISITED else PointOfInterestStatus.VISIBLE
-                )
+            for (poi in reachablePois) {
+                statusMap = statusMap + Pair(poi.uid, PointOfInterestStatus.REACHABLE)
             }
-        }
 
-        mPointsOfInterestStatus.value = statusMap
+            // Unset unreachable pois to either VISIBLE or VISITED
+            val unreachablePois = mPointsOfInterest.value!!.values.minus(reachablePois)
+
+
+            if (database != null) {
+                val visitedPois = database!!.elements
+
+                for (poi in unreachablePois) {
+                    statusMap = statusMap + Pair(
+                            poi.uid,
+                            if (visitedPois.containsKey(poi.uid)) PointOfInterestStatus.VISITED else PointOfInterestStatus.VISIBLE
+                    )
+                }
+            }
+
+            mPointsOfInterestStatus.value = statusMap
+        }
     }
 
     fun addPoiList(list: List<PointOfInterest>) {
@@ -104,8 +112,8 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
             }
         }
 
-        mPointsOfInterestStatus.value = statusMap
         mPointsOfInterest.value = poiMap
+        mPointsOfInterestStatus.value = statusMap
     }
 
     fun setPoiVisited(poi: PointOfInterest) {
@@ -118,15 +126,17 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
 
     override fun onLocationChanged(location: Location) {
         val shouldCallService = lastUserLocation == null
-        lastUserLocation = LatLng(location.latitude, location.longitude)
+        val newLocation = LatLng(location.latitude, location.longitude)
 
-        Log.d(TAG, "lastUserLocation $lastUserLocation")
-        if (shouldCallService && poiService != null) {
-            Log.d(TAG, "lastUserLocation $lastUserLocation")
-            poiService!!.requestPois(
-                    lastUserLocation!!,
-                    { poiList -> onSuccessPoiReceived(poiList) },
-                    { error -> onError(error) })
+        if (lastUserLocation != newLocation) {
+            lastUserLocation = newLocation
+            if (shouldCallService && poiService != null) {
+                Log.d(TAG, "lastUserLocation" + lastUserLocation)
+                poiService!!.requestPois(
+                        lastUserLocation!!,
+                        { poiList -> onSuccessPoiReceived(poiList) },
+                        { error -> onError(error) })
+            }
         }
 
         setReachablePois()
