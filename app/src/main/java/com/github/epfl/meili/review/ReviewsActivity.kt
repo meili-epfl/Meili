@@ -20,7 +20,7 @@ import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
-import com.google.android.gms.maps.model.PointOfInterest
+import com.github.epfl.meili.poi.PointOfInterest
 
 
 class ReviewsActivity : AppCompatActivity() {

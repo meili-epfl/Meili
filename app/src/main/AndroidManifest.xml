@@ -43,6 +43,30 @@
                 android:value=".home.GoogleSignInActivity" />
         </activity>
 
+        <!-- Map menu features -->
+        <activity
+            android:name=".PhotoDemoActivity"
+            android:parentActivityName=".map.MapActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".map.MapActivity" />
+        </activity>
+
+        <activity
+            android:name=".photo.CameraActivity"
+            android:parentActivityName=".map.MapActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".map.MapActivity" />
+        </activity>
+        <activity
+            android:name=".photo.PhotoDisplayActivity"
+            android:parentActivityName=".photo.CameraActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".photo.CameraActivity" />
+        </activity>
+
         <!-- POI features: forum, chat & review system -->
         <activity
             android:name=".messages.ChatLogActivity"
@@ -68,23 +92,6 @@
                 android:value=".map.MapActivity" />
         </activity>
 
-        <!-- New Stuff -->
-        <activity android:name=".PhotoDemoActivity" />
-        <activity
-            android:name=".photo.CameraActivity"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
-        <activity
-            android:name=".photo.PhotoDisplayActivity"
-            android:parentActivityName=".photo.CameraActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".photo.CameraActivity" />
-        </activity>
-        
         <!-- Secondary Activities -->
         <activity
             android:name=".poi.PoiActivity"

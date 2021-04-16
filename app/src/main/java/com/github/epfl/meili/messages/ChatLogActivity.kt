@@ -19,7 +19,7 @@ import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.review.ReviewsActivity
 import com.github.epfl.meili.util.DateAuxiliary
-import com.google.android.gms.maps.model.PointOfInterest
+import com.github.epfl.meili.poi.PointOfInterest
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -56,10 +56,10 @@ class ChatLogActivity : AppCompatActivity() {
             val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)
             supportActionBar?.title = poi?.name
 
-            groupId = poi?.placeId!!
+            groupId = poi?.uid!!
 
-            Log.d(TAG, "the poi is ${poi.name} and has id ${poi.placeId}")
-            ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter("POI/${poi.placeId}"))
+            Log.d(TAG, "the poi is ${poi.name} and has id ${poi.uid}")
+            ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter("POI/${poi.uid}"))
 
             listenForMessages()
 

@@ -6,16 +6,23 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.epfl.meili.BuildConfig
+import com.github.epfl.meili.PhotoDemoActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.messages.ChatLogActivity
+import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.poi.PoiActivity
 import com.github.epfl.meili.poi.PoiService
 import com.github.epfl.meili.poi.PointOfInterest
+import com.github.epfl.meili.review.ReviewsActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
@@ -99,7 +106,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Add on click listener
         clusterManager.setOnClusterItemClickListener {
-            val intent = Intent(this, PoiActivity::class.java)
+            val intent = Intent(this, ForumActivity::class.java)
             intent.putExtra(POI_KEY, it.poi)
 
             if(poiMarkerViewModel.mPointsOfInterestStatus.value?.get(it.poi) ==PoiMarkerViewModel.PointOfInterestStatus.REACHABLE){
@@ -204,5 +211,28 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        //Inflate menu to enable adding chat and review buttons on the top
+        menuInflater.inflate(R.menu.nav_map_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        //Now that the buttons are added at the top control what each menu buttons does
+        val intent: Intent = when (item?.itemId) {
+            R.id.menu_camera_from_map -> {
+                Intent(this, CameraActivity::class.java)
+            }
+            R.id.menu_chat_images_from_map-> {
+                Intent(this, PhotoDemoActivity::class.java)
+            }
+            else -> {
+                Intent(this, MapActivity::class.java)
+            }
+        }
+        startActivity(intent)
+        return super.onOptionsItemSelected(item)
     }
 }
