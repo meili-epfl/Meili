@@ -13,6 +13,7 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.TopSpacingItemDecoration
+import com.github.epfl.meili.util.MeiliViewModel
 
 
 class ReviewsActivity : AppCompatActivity() {
@@ -27,7 +28,7 @@ class ReviewsActivity : AppCompatActivity() {
     private var currentUserReview: Review? = null
 
     private lateinit var reviewsAdapter: ReviewsRecyclerAdapter
-    private lateinit var viewModel: ReviewsActivityViewModel
+    private lateinit var viewModel: MeiliViewModel<Review>
 
     private lateinit var listReviewsView: View
     private lateinit var editReviewView: View
@@ -86,7 +87,7 @@ class ReviewsActivity : AppCompatActivity() {
         val title = editTitleView.text.toString()
         val summary = editSummaryView.text.toString()
 
-        viewModel.addReview(Auth.getCurrentUser()!!.uid, Review(rating, title, summary))
+        viewModel.addElement(Auth.getCurrentUser()!!.uid, Review(rating, title, summary))
     }
 
     private fun editReviewButtonListener() {
@@ -110,13 +111,11 @@ class ReviewsActivity : AppCompatActivity() {
         floatingActionButton = findViewById(R.id.fab_add_edit_review)
         averageRatingView = findViewById(R.id.average_rating)
 
-        viewModel = ViewModelProvider(this).get(ReviewsActivityViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
-        viewModel.setReviewService(FirestoreDatabase<Review>(poiKey, Review::class.java))
-        viewModel.getReviews().observe(this, { map -> reviewsMapListener(map) })
-
-        viewModel.getAverageRating().observe(this, {averageRating ->
-            averageRatingView.text = getString(R.string.average_rating_format).format(averageRating)
+        viewModel.setDatabase(FirestoreDatabase<Review>(poiKey, Review::class.java))
+        viewModel.getElements().observe(this, { map ->
+            reviewsMapListener(map)
         })
     }
 
@@ -132,6 +131,8 @@ class ReviewsActivity : AppCompatActivity() {
             }
         }
 
+        averageRatingView.text = getString(R.string.average_rating_format)
+                                    .format(Review.averageRating(map))
         reviewsAdapter.submitList(map.toList())
         reviewsAdapter.notifyDataSetChanged()
     }
