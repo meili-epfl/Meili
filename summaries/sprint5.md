@@ -49,7 +49,7 @@ I didn't manage to totally finish what I has planned to do, as I still need to i
 
 ## Yingxuan
 
-TODO
+During this week, I worked on the profile with MVVM model, without big progress. I feel like even I read various sources explaining the subject and compared the code of different features implementing this model, I do not have a clear vision on it. I ran into error like illegal state exception because of some asynchronous function but cannot resolve the problem. Then I tried to bypass the issue by creating new functions but it did not work out. 
 
 
 ## Overall team
