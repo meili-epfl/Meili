@@ -22,6 +22,7 @@ import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import com.github.epfl.meili.poi.PointOfInterest
 import com.github.epfl.meili.util.MeiliViewModel
+import com.github.epfl.meili.util.TopSpacingItemDecoration
 
 
 class ReviewsActivity : AppCompatActivity() {
