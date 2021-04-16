@@ -105,9 +105,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".forum.PostActivity"
-            android:parentActivityName=".forum.ForumActivity" />
+        <activity android:name=".forum.PostActivity"
+            android:parentActivityName=".forum.ForumActivity"/>
     </application>
 
 </manifest>
