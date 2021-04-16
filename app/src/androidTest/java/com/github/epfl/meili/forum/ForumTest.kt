@@ -125,7 +125,7 @@ class ForumTest {
         )
 
         // Press Create Post button
-        Espresso.onView(ViewMatchers.withId(R.id.new_post_create_button))
+        Espresso.onView(ViewMatchers.withId(R.id.submit_post))
             .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
     }
 

@@ -12,13 +12,12 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Review
-import com.github.epfl.meili.util.TopSpacingItemDecoration
 import com.github.epfl.meili.util.MeiliViewModel
+import com.github.epfl.meili.util.TopSpacingItemDecoration
 
 
 class ReviewsActivity : AppCompatActivity() {
     companion object {
-        private const val TAG: String = "ReviewsActivity"
         private const val CARD_PADDING: Int = 30
 
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
@@ -27,7 +26,7 @@ class ReviewsActivity : AppCompatActivity() {
 
     private var currentUserReview: Review? = null
 
-    private lateinit var reviewsAdapter: ReviewsRecyclerAdapter
+    private lateinit var recyclerAdapter: ReviewsRecyclerAdapter
     private lateinit var viewModel: MeiliViewModel<Review>
 
     private lateinit var listReviewsView: View
@@ -101,8 +100,8 @@ class ReviewsActivity : AppCompatActivity() {
 
     private fun initReviewEditView() {
         ratingBar = findViewById(R.id.rating_bar)
-        editTitleView = findViewById(R.id.edit_title)
-        editSummaryView = findViewById(R.id.edit_summary)
+        editTitleView = findViewById(R.id.review_edit_title)
+        editSummaryView = findViewById(R.id.review_edit_summary)
         submitButton = findViewById(R.id.submit_review)
         cancelButton = findViewById(R.id.cancel_review)
     }
@@ -111,9 +110,10 @@ class ReviewsActivity : AppCompatActivity() {
         floatingActionButton = findViewById(R.id.fab_add_edit_review)
         averageRatingView = findViewById(R.id.average_rating)
 
+        @Suppress("UNCHECKED_CAST")
         viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
-        viewModel.setDatabase(FirestoreDatabase<Review>(poiKey, Review::class.java))
+        viewModel.setDatabase(FirestoreDatabase(poiKey, Review::class.java))
         viewModel.getElements().observe(this, { map ->
             reviewsMapListener(map)
         })
@@ -131,29 +131,28 @@ class ReviewsActivity : AppCompatActivity() {
             }
         }
 
-        averageRatingView.text = getString(R.string.average_rating_format)
-                                    .format(Review.averageRating(map))
-        reviewsAdapter.submitList(map.toList())
-        reviewsAdapter.notifyDataSetChanged()
+        averageRatingView.text = getString(R.string.average_rating_format).format(Review.averageRating(map))
+        recyclerAdapter.submitList(map.toList())
+        recyclerAdapter.notifyDataSetChanged()
     }
 
     private fun initRecyclerView() {
-        reviewsAdapter = ReviewsRecyclerAdapter()
-        val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
+        recyclerAdapter = ReviewsRecyclerAdapter()
+        val recyclerView: RecyclerView = findViewById(R.id.reviews_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ReviewsActivity)
             addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
-            adapter = reviewsAdapter
+            adapter = recyclerAdapter
         }
     }
 
     private fun initLoggedInListener() {
         Auth.isLoggedIn.observe(this, { loggedIn ->
             floatingActionButton.isEnabled = loggedIn
-            if (loggedIn)
-                floatingActionButton.visibility = View.VISIBLE
+            floatingActionButton.visibility = if (loggedIn)
+                View.VISIBLE
             else
-                floatingActionButton.visibility = View.GONE
+                View.GONE
         })
     }
 

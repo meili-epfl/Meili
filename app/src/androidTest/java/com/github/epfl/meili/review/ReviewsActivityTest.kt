@@ -196,8 +196,8 @@ class ReviewsActivityTest {
         onView(withId(R.id.fab_add_edit_review)).perform(click())
 
         onView(withId(R.id.rating_bar)).perform(setRating(ADDED_REVIEW_RATING))
-        onView(withId(R.id.edit_title)).perform(clearText(), typeText(TEST_ADDED_TITLE), closeSoftKeyboard())
-        onView(withId(R.id.edit_summary)).perform(clearText(), typeText(TEST_SUMMARY), closeSoftKeyboard())
+        onView(withId(R.id.review_edit_title)).perform(clearText(), typeText(TEST_ADDED_TITLE), closeSoftKeyboard())
+        onView(withId(R.id.review_edit_summary)).perform(clearText(), typeText(TEST_SUMMARY), closeSoftKeyboard())
 
         onView(withId(R.id.submit_review)).perform(click())
 
@@ -207,7 +207,7 @@ class ReviewsActivityTest {
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.recycler_view))
+        onView(withId(R.id.reviews_recycler_view))
                 .check(matches(isDisplayed()))
                 .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_UID))))
 
@@ -225,13 +225,13 @@ class ReviewsActivityTest {
         onView(withId(R.id.fab_add_edit_review)).perform(click())
 
         // old review is displayed
-        onView(withId(R.id.edit_title)).check(matches(editTextContainsText(TEST_ADDED_TITLE)))
-        onView(withId(R.id.edit_summary)).check(matches(editTextContainsText(TEST_SUMMARY)))
+        onView(withId(R.id.review_edit_title)).check(matches(editTextContainsText(TEST_ADDED_TITLE)))
+        onView(withId(R.id.review_edit_summary)).check(matches(editTextContainsText(TEST_SUMMARY)))
         onView(withId(R.id.rating_bar)).check(matches(ratingBarHasRating(ADDED_REVIEW_RATING)))
 
         // edit review
         onView(withId(R.id.rating_bar)).perform(setRating(EDITED_REVIEW_RATING))
-        onView(withId(R.id.edit_title)).perform(clearText(), typeText(TEST_EDITED_TITLE), closeSoftKeyboard())
+        onView(withId(R.id.review_edit_title)).perform(clearText(), typeText(TEST_EDITED_TITLE), closeSoftKeyboard())
         onView(withId(R.id.submit_review)).perform(click())
 
         // send reviews map with edited review to review service
@@ -240,7 +240,7 @@ class ReviewsActivityTest {
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.recycler_view))
+        onView(withId(R.id.reviews_recycler_view))
             .check(matches(isDisplayed()))
             .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_UID))))
 

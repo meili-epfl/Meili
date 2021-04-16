@@ -162,7 +162,7 @@ class PostActivityAndroidTest {
 
         val materialButton5 = onView(
             allOf(
-                withId(R.id.new_post_create_button), withText("Create post"),
+                withId(R.id.submit_post), withText("Create post"),
                 childAtPosition(
                     childAtPosition(
                         withId(android.R.id.content),
