@@ -1,5 +1,6 @@
 package com.github.epfl.meili.forum
 
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -18,8 +19,10 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.models.Review
 import com.google.firebase.firestore.*
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -27,7 +30,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.*
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.contains
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
@@ -43,7 +47,6 @@ class ForumActivityTest {
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
     private val mockCollection: CollectionReference = mock(CollectionReference::class.java)
     private val mockDocument: DocumentReference = mock(DocumentReference::class.java)
-    private val mockListenerRegistration: ListenerRegistration = mock(ListenerRegistration::class.java)
 
     private val mockSnapshotBeforeAddition: QuerySnapshot = mock(QuerySnapshot::class.java)
     private val mockSnapshotAfterAddition: QuerySnapshot = mock(QuerySnapshot::class.java)
@@ -53,14 +56,17 @@ class ForumActivityTest {
     private lateinit var database: FirestoreDatabase<Post>
 
     @get:Rule
-    var testRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
+    var testRule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(ForumActivity::class.java)
 
-    @Before
-    fun initializeMockDatabase() {
+    init {
+        setupMocks()
+    }
+
+    private fun setupMocks() {
         `when`(mockFirestore.collection("posts")).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
-            (invocation.arguments[0] as FirestoreDatabase<Post>).also { database = it }
-            mockListenerRegistration
+            database = invocation.arguments[0] as FirestoreDatabase<Post>
+            mock(ListenerRegistration::class.java)
         }
         `when`(mockCollection.document(contains(TEST_UID))).thenReturn(mockDocument)
 
@@ -84,10 +90,10 @@ class ForumActivityTest {
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.list_posts)).check(matches(isDisplayed()))
-        onView(withId(R.id.edit_post)).check(matches(CoreMatchers.not(isDisplayed())))
+        onView(withId(R.id.edit_post)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.create_post)).check(matches(isNotEnabled()))
-        onView(withId(R.id.create_post)).check(matches(CoreMatchers.not(isDisplayed())))
+        onView(withId(R.id.create_post)).check(matches(not(isDisplayed())))
     }
 
     @Test
@@ -96,7 +102,7 @@ class ForumActivityTest {
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.list_posts)).check(matches(isDisplayed()))
-        onView(withId(R.id.edit_post)).check(matches(CoreMatchers.not(isDisplayed())))
+        onView(withId(R.id.edit_post)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.create_post)).check(matches(isEnabled()))
         onView(withId(R.id.create_post)).check(matches(isDisplayed()))
@@ -109,13 +115,13 @@ class ForumActivityTest {
 
         onView(withId(R.id.create_post)).perform(click())
 
-        onView(withId(R.id.list_posts)).check(matches(CoreMatchers.not(isDisplayed())))
+        onView(withId(R.id.list_posts)).check(matches(not(isDisplayed())))
         onView(withId(R.id.edit_post)).check(matches(isDisplayed()))
 
         onView(withId(R.id.cancel_post)).perform(click())
 
         onView(withId(R.id.list_posts)).check(matches(isDisplayed()))
-        onView(withId(R.id.edit_post)).check(matches(CoreMatchers.not(isDisplayed())))
+        onView(withId(R.id.edit_post)).check(matches(not(isDisplayed())))
 
         onView(withText(TEST_POST.title)).check(doesNotExist())
     }
@@ -132,7 +138,7 @@ class ForumActivityTest {
 
         onView(withId(R.id.submit_post)).perform(click())
 
-        // send posts map with added review to review service
+        // send posts map with added post to the database
         database.onEvent(mockSnapshotAfterAddition, null)
 
         onView(withId(R.id.list_posts)).check(matches(isDisplayed()))

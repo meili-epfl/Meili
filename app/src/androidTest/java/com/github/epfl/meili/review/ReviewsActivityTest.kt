@@ -59,7 +59,6 @@ class ReviewsActivityTest {
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
     private val mockCollection: CollectionReference = mock(CollectionReference::class.java)
     private val mockDocument: DocumentReference = mock(DocumentReference::class.java)
-    private val mockListenerRegistration: ListenerRegistration = mock(ListenerRegistration::class.java)
 
     private val mockSnapshotBeforeAddition: QuerySnapshot = mock(QuerySnapshot::class.java)
     private val mockSnapshotAfterAddition: QuerySnapshot = mock(QuerySnapshot::class.java)
@@ -79,8 +78,8 @@ class ReviewsActivityTest {
     private fun setupMocks() {
         `when`(mockFirestore.collection(any())).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
-            (invocation.arguments[0] as FirestoreDatabase<Review>).also { database = it }
-            mockListenerRegistration
+            database = invocation.arguments[0] as FirestoreDatabase<Review>
+            mock(ListenerRegistration::class.java)
         }
         `when`(mockCollection.document(ArgumentMatchers.matches(TEST_UID))).thenReturn(mockDocument)
 
