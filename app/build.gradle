@@ -71,6 +71,10 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 
     implementation 'com.android.volley:volley:1.2.0'
+
+    // KTX for the Maps SDK for Android library
+    implementation 'com.google.maps.android:maps-ktx:3.0.0'
+    // KTX for the Maps SDK for Android Utility Library
     implementation 'com.google.maps.android:maps-utils-ktx:2.4.0'
 
     implementation "com.xwray:groupie:2.9.0"
