@@ -7,14 +7,13 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
-import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.models.Post.Companion.toPost
 import com.github.epfl.meili.models.User
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.schibsted.spain.barista.interaction.PermissionGranter
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -22,18 +21,16 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
 
-    private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
-    private val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
-    private val mockRegistration: ListenerRegistration = Mockito.mock(ListenerRegistration::class.java)
+    private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
+    private val mockCollection: CollectionReference = mock(CollectionReference::class.java)
+    private val mockRegistration: ListenerRegistration = mock(ListenerRegistration::class.java)
 
     @get:Rule
     var testRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
@@ -42,39 +39,16 @@ class MainActivityTest {
     fun setup() {
         Intents.init()
 
-        Mockito.`when`(mockFirestore.collection(any())).thenReturn(mockCollection)
-        Mockito.`when`(mockCollection.addSnapshotListener(any())).thenAnswer { _ ->
+        `when`(mockFirestore.collection(any())).thenReturn(mockCollection)
+        `when`(mockCollection.addSnapshotListener(any())).thenAnswer { _ ->
             mockRegistration
         }
 
         FirestoreDatabase.databaseProvider = { mockFirestore }
 
-        UiThreadStatement.runOnUiThread {
-            val mockAuth = mock(AuthenticationService::class.java)
-
-            `when`(mockAuth.getCurrentUser()).thenReturn(User("hi", "hi", "hi"))
-
-            Auth.setAuthenticationService(mockAuth)
-        }
-    }
-
-    @Before
-    fun initializeMockDatabase() {
-        val mockFirestore = Mockito.mock(FirebaseFirestore::class.java)
-        val mockDocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
-        val mockCollectionReference = Mockito.mock(CollectionReference::class.java)
-        val mockDocumentReference = Mockito.mock(DocumentReference::class.java)
-        val mockQuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
-        val postList = emptyList<Post>()
-
-        Mockito.`when`(mockFirestore.collection("posts")).thenReturn(mockCollectionReference)
-        Mockito.`when`(mockCollectionReference.document(ArgumentMatchers.any()))
-                .thenReturn(mockDocumentReference)
-        Mockito.`when`(mockDocumentReference.get()).thenAnswer { mockDocumentSnapshot }
-        Mockito.`when`(mockCollectionReference.get()).thenAnswer { mockQuerySnapshot }
-        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toPost() }).thenReturn(postList)
-
-        FirebasePostService.dbProvider = { mockFirestore }
+        val mockAuth = mock(AuthenticationService::class.java)
+        `when`(mockAuth.getCurrentUser()).thenReturn(User("hi", "hi", "hi"))
+        Auth.setAuthenticationService(mockAuth)
     }
 
     @After
