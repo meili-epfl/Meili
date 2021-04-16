@@ -31,6 +31,7 @@ class MainActivityTest {
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
     private val mockCollection: CollectionReference = mock(CollectionReference::class.java)
     private val mockRegistration: ListenerRegistration = mock(ListenerRegistration::class.java)
+    private val mockAuthenticationService: AuthenticationService = mock(AuthenticationService::class.java)
 
     @get:Rule
     var testRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
@@ -40,15 +41,11 @@ class MainActivityTest {
         Intents.init()
 
         `when`(mockFirestore.collection(any())).thenReturn(mockCollection)
-        `when`(mockCollection.addSnapshotListener(any())).thenAnswer { _ ->
-            mockRegistration
-        }
+        `when`(mockCollection.addSnapshotListener(any())).thenAnswer { mockRegistration }
+        `when`(mockAuthenticationService.getCurrentUser()).thenReturn(User("hi", "hi", "hi"))
 
         FirestoreDatabase.databaseProvider = { mockFirestore }
-
-        val mockAuth = mock(AuthenticationService::class.java)
-        `when`(mockAuth.getCurrentUser()).thenReturn(User("hi", "hi", "hi"))
-        Auth.setAuthenticationService(mockAuth)
+        Auth.setAuthenticationService(mockAuthenticationService)
     }
 
     @After

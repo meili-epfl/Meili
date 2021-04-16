@@ -29,9 +29,10 @@ import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 
 
 @Suppress("UNCHECKED_CAST")
@@ -39,8 +40,6 @@ import org.mockito.Mockito.`when`
 class ReviewsActivityTest {
 
     companion object {
-        private const val TAG = "ReviewsActivityTest"
-
         private const val TEST_UID = "MrPerfect"
         private const val TEST_POI_KEY = "poiKey"
         private const val TEST_TITLE = "Beach too sandy"
@@ -57,14 +56,14 @@ class ReviewsActivityTest {
         private const val TEST_EDITED_TITLE = "Looks good to me"
     }
 
-    private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
-    private val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
-    private val mockDocument: DocumentReference = Mockito.mock(DocumentReference::class.java)
-    private val mockListenerRegistration: ListenerRegistration = Mockito.mock(ListenerRegistration::class.java)
+    private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
+    private val mockCollection: CollectionReference = mock(CollectionReference::class.java)
+    private val mockDocument: DocumentReference = mock(DocumentReference::class.java)
+    private val mockListenerRegistration: ListenerRegistration = mock(ListenerRegistration::class.java)
 
-    private val mockSnapshotBeforeAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
-    private val mockSnapshotAfterAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
-    private val mockSnapshotAfterEdition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
+    private val mockSnapshotBeforeAddition: QuerySnapshot = mock(QuerySnapshot::class.java)
+    private val mockSnapshotAfterAddition: QuerySnapshot = mock(QuerySnapshot::class.java)
+    private val mockSnapshotAfterEdition: QuerySnapshot = mock(QuerySnapshot::class.java)
 
     private val mockAuthenticationService = MockAuthenticationService()
     private lateinit var database: FirestoreDatabase<Review>
@@ -78,16 +77,14 @@ class ReviewsActivityTest {
     }
 
     private fun setupMocks() {
-        mockAuthenticationService.setMockUid(TEST_UID)
-
         `when`(mockFirestore.collection(any())).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
             (invocation.arguments[0] as FirestoreDatabase<Review>).also { database = it }
             mockListenerRegistration
         }
-        `when`(mockCollection.document(Mockito.matches(TEST_UID))).thenReturn(mockDocument)
+        `when`(mockCollection.document(ArgumentMatchers.matches(TEST_UID))).thenReturn(mockDocument)
 
-        var mockDocumentList = beforeAdditionList()
+        val mockDocumentList = beforeAdditionList()
         `when`(mockSnapshotBeforeAddition.documents).thenReturn(mockDocumentList)
 
         val mockDocumentListAfterAddition = ArrayList(mockDocumentList)
@@ -97,6 +94,8 @@ class ReviewsActivityTest {
         val mockDocumentListAfterEdition = ArrayList(mockDocumentList)
         mockDocumentListAfterEdition.add(editedReviewDocumentSnapshot())
         `when`(mockSnapshotAfterEdition.documents).thenReturn(mockDocumentListAfterEdition)
+
+        mockAuthenticationService.setMockUid(TEST_UID)
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
@@ -130,7 +129,7 @@ class ReviewsActivityTest {
     }
 
     private fun getMockDocumentSnapshot(id: String, review: Review): DocumentSnapshot {
-        val mockDocumentSnapshot: DocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
+        val mockDocumentSnapshot: DocumentSnapshot = mock(DocumentSnapshot::class.java)
         `when`(mockDocumentSnapshot.id).thenReturn(id)
         `when`(mockDocumentSnapshot.toObject(Review::class.java)).thenReturn(review)
         return mockDocumentSnapshot
