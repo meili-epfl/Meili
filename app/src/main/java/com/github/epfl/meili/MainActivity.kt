@@ -11,7 +11,8 @@ import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.review.ReviewsActivity
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PointOfInterest
+import com.github.epfl.meili.poi.PointOfInterest
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
