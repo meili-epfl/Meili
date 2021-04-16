@@ -18,7 +18,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onClick"
-            android:text="Choose" />
+            android:text="Choose"
+            android:backgroundTint="@color/pink"
+            android:textColor="@color/brown"/>
 
         <Button
             android:id="@+id/upload_button"
@@ -26,7 +28,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onClick"
-            android:text="Upload" />
+            android:text="Upload"
+            android:backgroundTint="@color/pink"
+            android:textColor="@color/brown"/>
 
         <Button
             android:id="@+id/show_button"
@@ -34,7 +38,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="onClick"
-            android:text="Show" />
+            android:text="Show"
+            android:backgroundTint="@color/pink"
+            android:textColor="@color/brown"/>
     </LinearLayout>
 
     <ImageView

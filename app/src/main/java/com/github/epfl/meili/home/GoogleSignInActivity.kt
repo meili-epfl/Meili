@@ -51,7 +51,7 @@ class GoogleSignInActivity : AppCompatActivity() {
     }
 
     private fun updateUI() {
-        var message: String = "Sign in"
+        var message: String = "Sign In to use the map"
         var buttonMessage = "Sign In"
 
         //disable map button if not signed in
@@ -59,7 +59,7 @@ class GoogleSignInActivity : AppCompatActivity() {
         button.isEnabled = false
 
         if (Auth.isLoggedIn.value!!) {
-            message = Auth.name!!
+            message = "Welcome "+Auth.name!!+"!"
             buttonMessage = "Sign Out"
             button.isEnabled = true
         }
