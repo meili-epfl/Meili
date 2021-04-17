@@ -10,14 +10,12 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.*
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
-import com.github.epfl.meili.PhotoDemoActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
@@ -26,7 +24,6 @@ import com.github.epfl.meili.models.User
 import com.github.epfl.meili.storage.FirebaseStorageService
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
-import com.squareup.picasso.Picasso
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
