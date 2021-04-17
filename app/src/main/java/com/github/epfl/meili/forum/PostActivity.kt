@@ -2,6 +2,7 @@ package com.github.epfl.meili.forum
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,13 @@ import com.github.epfl.meili.storage.FirebaseStorageService
 import com.squareup.picasso.Picasso
 
 class PostActivity : AppCompatActivity() {
+
+    companion object {
+        private const val TAG = "PostActivity"
+        private val DEFAULT_URI = Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
+
+        var picasso: () -> Picasso = { Picasso.get() }
+    }
 
     private lateinit var imageView: ImageView
     private lateinit var postId: String
@@ -31,10 +39,17 @@ class PostActivity : AppCompatActivity() {
         titleView.text = post.title
         textView.text = post.text
 
-        FirebaseStorageService.getDownloadUrl("forum/$postId", { uri -> getDownloadUrlCallback(uri)})
+        FirebaseStorageService.getDownloadUrl(
+                "forum/$postId",
+                { uri -> getDownloadUrlCallback(uri)},
+                { exception ->
+                    Log.e(TAG,"Image not found", exception)
+                    getDownloadUrlCallback(DEFAULT_URI)
+                }
+        )
     }
 
     private fun getDownloadUrlCallback(uri: Uri) {
-        Picasso.get().load(uri).into(imageView)
+        picasso().load(uri).into(imageView)
     }
 }
