@@ -1,6 +1,5 @@
 package com.github.epfl.meili.forum
 
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -11,22 +10,21 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.models.Review
 import com.google.firebase.firestore.*
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -148,19 +146,24 @@ class ForumActivityTest {
                 .check(matches(isDisplayed()))
                 .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_POST.title))))
 
-        onView(withText(TEST_POST.title)).check(matches(isDisplayed()))
+        onView(textViewContainsText(TEST_POST.title)).check(matches(isDisplayed()))
         onView(textViewContainsText(TEST_UID)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun viewPostTest() {
+    fun viewPostIntentsTest() {
+        mockAuthenticationService.signOut()
+        database.onEvent(mockSnapshotAfterAddition, null)
         onView(withId(R.id.forum_recycler_view))
                 .check(matches(isDisplayed()))
                 .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_POST.title))))
 
         Intents.init()
         onView(withText(TEST_POST.title)).perform(click())
-        Intents.intended(hasComponent(PostActivity::class.java.name))
+        Intents.intended(allOf(
+                hasExtra("Post", TEST_POST),
+                hasComponent(PostActivity::class.java.name)
+        ))
         Intents.release()
     }
     
