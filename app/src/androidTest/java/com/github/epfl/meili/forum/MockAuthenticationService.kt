@@ -9,15 +9,20 @@ import com.github.epfl.meili.models.User
 class MockAuthenticationService : AuthenticationService {
 
     private var mockUid: String = "1234"
+    private var username: String = "username"
     private var signedIn: Boolean = false
 
     fun setMockUid(uid: String) {
         mockUid = uid
     }
 
+    fun setUsername(username: String) {
+        this.username = username
+    }
+
     override fun getCurrentUser(): User? {
         return if (signedIn) {
-            User(mockUid, "", "")
+            User(mockUid, username, "")
         } else {
             null
         }

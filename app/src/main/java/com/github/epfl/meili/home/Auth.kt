@@ -56,6 +56,6 @@ object Auth : ViewModel() {
             email = null
         }
 
-        isLoggedIn.postValue(user != null)
+        isLoggedIn.value = (user != null)
     }
 }

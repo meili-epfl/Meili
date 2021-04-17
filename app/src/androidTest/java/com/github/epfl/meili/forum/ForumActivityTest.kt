@@ -39,7 +39,8 @@ class ForumActivityTest {
 
     companion object {
         private const val TEST_UID = "UID"
-        private val TEST_POST = Post("AUTHOR", "TITLE", "TEXT")
+        private const val TEST_USERNAME = "AUTHOR"
+        private val TEST_POST = Post(TEST_USERNAME, "TITLE", "TEXT")
     }
 
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
@@ -76,6 +77,7 @@ class ForumActivityTest {
         `when`(mockSnapshotAfterAddition.documents).thenReturn(listOf(mockDocumentSnapshot))
 
         mockAuthenticationService.setMockUid(TEST_UID)
+        mockAuthenticationService.setUsername(TEST_USERNAME)
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
@@ -147,7 +149,7 @@ class ForumActivityTest {
                 .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_POST.title))))
 
         onView(textViewContainsText(TEST_POST.title)).check(matches(isDisplayed()))
-        onView(textViewContainsText(TEST_UID)).check(matches(isDisplayed()))
+        onView(textViewContainsText(TEST_USERNAME)).check(matches(isDisplayed()))
     }
 
     @Test
