@@ -18,7 +18,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
         
-        <activity android:name=".PhotoDemoActivity" />
         <activity
             android:name=".photo.CameraActivity"
             android:parentActivityName=".MainActivity">

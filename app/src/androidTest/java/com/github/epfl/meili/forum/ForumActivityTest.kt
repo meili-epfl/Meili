@@ -111,7 +111,6 @@ class ForumActivityTest {
         `when`(mockTask.addOnSuccessListener(any())).thenReturn(mockTask)
 
         FirebaseStorageService.storageProvider = { mockFirebase }
-        PostActivity.picasso = { mock(Picasso::class.java) }
     }
 
     @Test

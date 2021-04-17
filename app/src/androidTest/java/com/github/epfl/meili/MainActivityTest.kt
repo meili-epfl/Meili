@@ -69,7 +69,6 @@ class MainActivityTest {
         `when`(mockTask.addOnSuccessListener(any())).thenReturn(mockTask)
 
         FirebaseStorageService.storageProvider = { mockFirebase }
-        PostActivity.picasso = { mock(Picasso::class.java) }
 
         UiThreadStatement.runOnUiThread {
             val mockAuth = mock(AuthenticationService::class.java)

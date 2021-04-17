@@ -55,9 +55,7 @@ class PostActivityTest {
         Mockito.`when`(mockReference.downloadUrl).thenReturn(mockTask as Task<Uri>?)
         Mockito.`when`(mockTask.addOnSuccessListener(any())).thenReturn(mockTask)
 
-
         FirebaseStorageService.storageProvider = { mockFirebase }
-        PostActivity.picasso = { Mockito.mock(Picasso::class.java) }
     }
 
     @get:Rule

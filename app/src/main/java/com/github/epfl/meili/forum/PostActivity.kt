@@ -16,8 +16,6 @@ class PostActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "PostActivity"
         private val DEFAULT_URI = Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
-
-        var picasso: () -> Picasso = { Picasso.get() }
     }
 
     private lateinit var imageView: ImageView
@@ -50,6 +48,6 @@ class PostActivity : AppCompatActivity() {
     }
 
     private fun getDownloadUrlCallback(uri: Uri) {
-        picasso().load(uri).into(imageView)
+        Picasso.get().load(uri).into(imageView)
     }
 }
