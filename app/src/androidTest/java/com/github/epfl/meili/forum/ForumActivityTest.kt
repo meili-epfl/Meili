@@ -1,5 +1,6 @@
 package com.github.epfl.meili.forum
 
+import android.net.Uri
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -19,8 +20,13 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.storage.FirebaseStorageService
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.StorageTask
+import com.google.firebase.storage.UploadTask
+import com.squareup.picasso.Picasso
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
@@ -30,6 +36,7 @@ import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.contains
 import org.mockito.Mockito.`when`
@@ -61,6 +68,7 @@ class ForumActivityTest {
 
     init {
         setupMocks()
+        setupPostActivityMocks()
     }
 
     private fun setupMocks() {
@@ -85,6 +93,25 @@ class ForumActivityTest {
         FirestoreDatabase.databaseProvider = { mockFirestore }
         FirebaseStorageService.storageProvider = { mock(FirebaseStorage::class.java)}
         Auth.authService = mockAuthenticationService
+    }
+
+    private fun setupPostActivityMocks() {
+        val mockFirebase = mock(FirebaseStorage::class.java)
+        val mockReference = mock(StorageReference::class.java)
+        `when`(mockFirebase.getReference(ArgumentMatchers.anyString())).thenReturn(mockReference)
+
+        val mockUploadTask = mock(UploadTask::class.java)
+        `when`(mockReference.putBytes(any())).thenReturn(mockUploadTask)
+
+        val mockStorageTask = mock(StorageTask::class.java)
+        `when`(mockUploadTask.addOnSuccessListener(any())).thenReturn(mockStorageTask as StorageTask<UploadTask.TaskSnapshot>?)
+
+        val mockTask = mock(Task::class.java)
+        `when`(mockReference.downloadUrl).thenReturn(mockTask as Task<Uri>?)
+        `when`(mockTask.addOnSuccessListener(any())).thenReturn(mockTask)
+
+        FirebaseStorageService.storageProvider = { mockFirebase }
+        PostActivity.picasso = { mock(Picasso::class.java) }
     }
 
     @Test
