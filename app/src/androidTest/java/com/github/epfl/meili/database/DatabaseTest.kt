@@ -20,7 +20,7 @@ class DatabaseTest {
         db.onDestroy()
     }
 
-    class MockDatabase() : Database<PointOfInterest>("mockKey") {
+    class MockDatabase() : Database<PointOfInterest>() {
         override var elements: Map<String, PointOfInterest> = HashMap()
 
         init {

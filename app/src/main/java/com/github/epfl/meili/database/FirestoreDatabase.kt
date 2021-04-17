@@ -3,7 +3,7 @@ package com.github.epfl.meili.database
 import android.util.Log
 import com.google.firebase.firestore.*
 
-class FirestoreDatabase<T: Any>(private val path: String, private val ofClass: Class<T>) : Database<T>(path), EventListener<QuerySnapshot> {
+class FirestoreDatabase<T: Any>(path: String, private val ofClass: Class<T>) : Database<T>(), EventListener<QuerySnapshot> {
 
     companion object {
         private const val TAG: String = "FirestoreDatabase"
@@ -23,8 +23,8 @@ class FirestoreDatabase<T: Any>(private val path: String, private val ofClass: C
         registration = ref.addSnapshotListener(this)
     }
 
-    override fun addElement(uid: String, element: T?) {
-        ref.document(uid).set(element!!)
+    override fun addElement(key: String, element: T?) {
+        ref.document(key).set(element!!)
     }
 
     override fun onDestroy() {
