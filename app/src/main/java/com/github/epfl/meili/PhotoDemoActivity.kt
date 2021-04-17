@@ -26,8 +26,6 @@ class PhotoDemoActivity : AppCompatActivity() {
 
     companion object {
         private const val COMPRESSION_QUALITY = 75 // 0 (max compression) to 100 (min compression)
-
-        var storageService: () -> StorageService = { FirebaseStorageService }
     }
 
     private lateinit var executor: ExecutorService
@@ -69,7 +67,7 @@ class PhotoDemoActivity : AppCompatActivity() {
         }
 
         executor.execute {
-            storageService().uploadBytes("images/myfavimage", compressed(bitmap!!), {
+            FirebaseStorageService.uploadBytes("images/myfavimage", compressed(bitmap!!), {
                 runOnUiThread {
                     Toast.makeText(applicationContext, "Image successfully uploaded", Toast.LENGTH_SHORT).show()
                 }
@@ -104,7 +102,7 @@ class PhotoDemoActivity : AppCompatActivity() {
                 }
             }
             show -> {
-                storageService().getDownloadUrl("images/myfavimage", { uri -> getDownloadUrlCallback(uri)})
+                FirebaseStorageService.getDownloadUrl("images/myfavimage", { uri -> getDownloadUrlCallback(uri)})
             }
         }
     }
