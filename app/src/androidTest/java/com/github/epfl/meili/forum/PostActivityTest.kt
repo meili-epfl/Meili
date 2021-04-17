@@ -11,10 +11,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.storage.FirebaseStorageService
+import com.google.firebase.storage.FirebaseStorage
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 
 
 @RunWith(AndroidJUnit4::class)
@@ -26,6 +29,10 @@ class PostActivityTest {
 
     private val intent = Intent(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext, PostActivity::class.java)
             .putExtra("Post", TEST_POST)
+
+    init {
+        FirebaseStorageService.storageProvider = { Mockito.mock(FirebaseStorage::class.java) }
+    }
 
     @get:Rule
     var testRule: ActivityScenarioRule<PostActivity> = ActivityScenarioRule(intent)
