@@ -1,7 +1,6 @@
 package com.github.epfl.meili.photo
 
 
-import android.content.pm.ActivityInfo
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup

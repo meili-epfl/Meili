@@ -1,8 +1,8 @@
 package com.github.epfl.meili.map
 
-import android.os.Bundle
 import android.location.Location
 import android.location.LocationListener
+import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

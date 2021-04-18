@@ -18,7 +18,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
-import com.squareup.picasso.Picasso
 import org.hamcrest.CoreMatchers.containsString
 import org.junit.Rule
 import org.junit.Test

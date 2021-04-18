@@ -3,7 +3,6 @@ package com.github.epfl.meili.poi
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
-import com.google.android.apps.common.testing.accessibility.framework.replacements.Point
 import com.google.android.gms.maps.model.LatLng
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
