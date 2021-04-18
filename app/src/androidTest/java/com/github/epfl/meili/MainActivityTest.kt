@@ -100,6 +100,15 @@ class MainActivityTest {
     }
 
     @Test
+    fun clickingOnMapViewButtonShouldLaunchIntent() {
+        PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
+
+        onView(withId(R.id.launchMapView)).perform(click())
+
+        Intents.intended(toPackage("com.github.epfl.meili"))
+    }
+
+    @Test
     fun clickingOnReviewViewButtonShouldLaunchIntent() {
         onView(withId(R.id.launchReviewView)).perform(click())
 
