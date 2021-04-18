@@ -30,6 +30,12 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     val mPointsOfInterestStatus: MutableLiveData<Map<String, PointOfInterestStatus>> =
             MutableLiveData(HashMap())
 
+    override fun onProviderEnabled(provider: String) {}
+
+    override fun onProviderDisabled(provider: String) {}
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+
     fun setPoiService(service: PoiService) {
         this.poiService = service
         if (lastUserLocation != null) {
