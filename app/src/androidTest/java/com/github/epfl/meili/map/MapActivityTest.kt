@@ -10,6 +10,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObjectNotFoundException
 import androidx.test.uiautomator.UiSelector
+import com.github.epfl.meili.database.FirestoreDatabase
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.schibsted.spain.barista.interaction.PermissionGranter
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -21,6 +25,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -30,11 +37,13 @@ class MapActivityTest {
     @get: Rule
     var testRule = ActivityScenarioRule(MapActivity::class.java)
 
-    private fun assertViewWithTextIsVisible(device: UiDevice, text: String) {
-        val allowButton = device.findObject(UiSelector().textContains(text))
-        if (!allowButton.exists()) {
-            throw AssertionError("View with text <$text> not found!")
-        }
+    init {
+        val mockFirestore = mock(FirebaseFirestore::class.java)
+        val mockCollection = mock(CollectionReference::class.java)
+        `when`(mockFirestore.collection(any())).thenReturn(mockCollection)
+        `when`(mockCollection.addSnapshotListener(any())).thenAnswer { mock(ListenerRegistration::class.java) }
+
+        FirestoreDatabase.databaseProvider = { mockFirestore }
     }
 
     @Throws(UiObjectNotFoundException::class)
@@ -51,7 +60,6 @@ class MapActivityTest {
        Thread.sleep(2000)
        assertViewWithTextIsVisible(device, "ALLOW")
        assertViewWithTextIsVisible(device, "DENY")
-
        // cleanup for the next test
        reactToPermission(device, "DENY")
    }

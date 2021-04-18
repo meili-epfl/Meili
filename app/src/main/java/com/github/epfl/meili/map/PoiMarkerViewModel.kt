@@ -1,5 +1,6 @@
 package com.github.epfl.meili.map
 
+import android.os.Bundle
 import android.location.Location
 import android.location.LocationListener
 import android.util.Log
@@ -29,6 +30,11 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     val mPointsOfInterestStatus: MutableLiveData<Map<String, PointOfInterestStatus>> =
             MutableLiveData(HashMap())
 
+    override fun onProviderEnabled(provider: String) {}
+
+    override fun onProviderDisabled(provider: String) {}
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
 
     fun setPoiService(service: PoiService) {
         this.poiService = service
