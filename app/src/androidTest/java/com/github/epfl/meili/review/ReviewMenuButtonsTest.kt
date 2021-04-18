@@ -104,9 +104,6 @@ class ReviewMenuButtonsTest {
     private val mockAuthenticationService = MockAuthenticationService()
     private lateinit var database: FirestoreDatabase<Review>
 
-    private var testAverageRatingBeforeAddition: Float = 0f
-    private var testAverageRatingAfterAddition: Float = 0f
-    private var testAverageRatingAfterEdition: Float = 0f
 
     init {
         setupMocks()
@@ -121,19 +118,6 @@ class ReviewMenuButtonsTest {
             mockListenerRegistration
         }
         `when`(mockCollection.document(Mockito.matches(TEST_UID))).thenReturn(mockDocument)
-
-        var mockDocumentList = beforeAdditionList()
-        `when`(mockSnapshotBeforeAddition.documents).thenReturn(mockDocumentList)
-
-        val mockDocumentListAfterAddition = ArrayList(mockDocumentList)
-        mockDocumentListAfterAddition.add(addedReviewDocumentSnapshot())
-        `when`(mockSnapshotAfterAddition.documents).thenReturn(mockDocumentListAfterAddition)
-
-        val mockDocumentListAfterEdition = ArrayList(mockDocumentList)
-        mockDocumentListAfterEdition.add(editedReviewDocumentSnapshot())
-        `when`(mockSnapshotAfterEdition.documents).thenReturn(mockDocumentListAfterEdition)
-
-
 
         val mockTask = Mockito.mock(Task::class.java)
 
@@ -159,46 +143,6 @@ class ReviewMenuButtonsTest {
         Auth.authService = mockAuthenticationService
     }
 
-    private fun editedReviewDocumentSnapshot(): DocumentSnapshot {
-        testAverageRatingAfterEdition =
-            (NUM_REVIEWS_BEFORE_ADDITION * testAverageRatingBeforeAddition + EDITED_REVIEW_RATING) /
-                    (NUM_REVIEWS_BEFORE_ADDITION + 1)
-        return getMockDocumentSnapshot(
-            TEST_UID,
-            Review(EDITED_REVIEW_RATING, TEST_EDITED_TITLE, TEST_SUMMARY)
-        )
-    }
-
-    private fun addedReviewDocumentSnapshot(): DocumentSnapshot {
-        testAverageRatingAfterAddition =
-            (NUM_REVIEWS_BEFORE_ADDITION * testAverageRatingBeforeAddition + ADDED_REVIEW_RATING) /
-                    (NUM_REVIEWS_BEFORE_ADDITION + 1)
-        return getMockDocumentSnapshot(
-            TEST_UID,
-            Review(ADDED_REVIEW_RATING, TEST_ADDED_TITLE, TEST_SUMMARY)
-        )
-    }
-
-    private fun beforeAdditionList(): MutableList<DocumentSnapshot> {
-        val reviews: MutableMap<String, Review> = HashMap() // to compute average rating
-        val documentList: MutableList<DocumentSnapshot> = ArrayList()
-
-        for (i in 1..NUM_REVIEWS_BEFORE_ADDITION) {
-            val review = Review(i.toFloat() / 2, TEST_TITLE, TEST_SUMMARY)
-            reviews[i.toString()] = review
-            documentList.add(getMockDocumentSnapshot(i.toString(), review))
-        }
-
-        testAverageRatingBeforeAddition = Review.averageRating(reviews)
-        return documentList
-    }
-
-    private fun getMockDocumentSnapshot(id: String, review: Review): DocumentSnapshot {
-        val mockDocumentSnapshot: DocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
-        `when`(mockDocumentSnapshot.id).thenReturn(id)
-        `when`(mockDocumentSnapshot.toObject(Review::class.java)).thenReturn(review)
-        return mockDocumentSnapshot
-    }
 
     private val intent =
         Intent(getInstrumentation().targetContext.applicationContext, ReviewsActivity::class.java)
