@@ -2,7 +2,6 @@ package com.github.epfl.meili.photo
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -32,10 +31,6 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         setContentView(binding.root)
 
 
-        binding.colorSlider.setOnColorChangeListener { _, _, color ->
-            binding.paintImageView.strokeColor = color
-        }
-
         /*binding.paintImageView.setOnTouchListener { _, event ->
             rotationGestureDetector.onTouchEvent(event) // Make crop container listen to touch events
         }*/
@@ -53,7 +48,8 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         binding.cropButton.setOnClickListener { cropImage() }
         binding.show.setOnClickListener { showPreview() }
         binding.hide.setOnClickListener { resetVisibilities() }
-        binding.paintModeButton.setOnClickListener { togglePaint() }
+        binding.paintModeButton.setOnClickListener { toggleDrawing() }
+        binding.colorSlider.setOnColorChangeListener { _, _, _ -> changeDrawingColor() }
 
         resetVisibilities()
 
@@ -69,24 +65,35 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         binding.cropModeButton.visibility = View.GONE
         binding.show.visibility = View.GONE
         binding.paintModeButton.visibility = View.GONE
-        binding.paintImageView.inEditMode = false
-        binding.paintModeButton.setBackgroundColor(0)
-        binding.colorSlider.visibility = View.GONE
+        stopDrawing()
 
         findViewById<ImageView>(R.id.preview).setImageDrawable(binding.paintImageView.drawable)
     }
 
+    private fun changeDrawingColor() {
+        binding.paintImageView.strokeColor = binding.colorSlider.color
+    }
+
+    private fun startDrawing() {
+        binding.paintImageView.inEditMode = true
+        binding.paintModeButton.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
+        binding.colorSlider.visibility = View.VISIBLE
+    }
+
+    private fun stopDrawing() {
+        binding.paintImageView.inEditMode = false
+        binding.paintModeButton.setBackgroundColor(0)
+        binding.colorSlider.visibility = View.GONE
+    }
+
+
     /** Callback function for paint mode */
-    private fun togglePaint() {
-        binding.paintImageView.inEditMode = !binding.paintImageView.inEditMode
-        if (binding.paintImageView.inEditMode) {
-            binding.paintModeButton.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
-            binding.colorSlider.visibility = View.VISIBLE
-        }
-        else {
-            binding.paintModeButton.setBackgroundColor(0)
-            binding.colorSlider.visibility = View.GONE
-        }
+    private fun toggleDrawing() {
+        if (!binding.paintImageView.inEditMode)
+            startDrawing()
+        else
+            stopDrawing()
+
     }
 
     /** Callback function for cancel button */
@@ -100,9 +107,7 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         binding.previewContainer.visibility = View.GONE
         binding.show.visibility = View.VISIBLE
         binding.paintModeButton.visibility = View.VISIBLE
-        binding.paintImageView.inEditMode = false
-        binding.paintModeButton.setBackgroundColor(0)
-        binding.colorSlider.visibility = View.GONE
+        stopDrawing()
     }
 
     /** Callback function for crop mode button */
@@ -115,9 +120,7 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         binding.cropButton.visibility = View.VISIBLE
         binding.show.visibility = View.GONE
         binding.paintModeButton.visibility = View.GONE
-        binding.paintImageView.inEditMode = false
-        binding.paintModeButton.setBackgroundColor(0)
-        binding.colorSlider.visibility = View.GONE
+        stopDrawing()
 
         binding.cropImageView.setImageBitmap((binding.paintImageView.drawable as BitmapDrawable).bitmap) // Show image in crop tool
     }
