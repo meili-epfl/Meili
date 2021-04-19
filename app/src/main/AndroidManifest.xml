@@ -48,6 +48,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".map.MapActivity" />
         </activity>
+
         <activity android:name=".home.GoogleSignInActivity" />
         <activity
             android:name=".review.ReviewsActivity"
