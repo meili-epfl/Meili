@@ -32,7 +32,6 @@ class MainActivityTest {
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
     private val mockCollection: CollectionReference = mock(CollectionReference::class.java)
     private val mockRegistration: ListenerRegistration = mock(ListenerRegistration::class.java)
-    private val mockAuthenticationService: AuthenticationService = mock(AuthenticationService::class.java)
 
     @get:Rule
     var testRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
