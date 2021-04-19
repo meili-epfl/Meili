@@ -1,6 +1,5 @@
-package com.github.epfl.meili.helpers
+package com.github.epfl.meili.util
 
-import com.github.epfl.meili.util.DateAuxiliary
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.junit.Test

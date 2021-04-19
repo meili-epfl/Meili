@@ -38,7 +38,11 @@ Next week, I hope to finish the second task and start working on personalized ma
 
 ## Thomas
 
-### TODO
+This week I worked on displaying the picture once it has been taken by the camera. This was accomplished faster than I thought. So I then worked on adding more functionality to the basic camera which Ewan implemented. Now the user can zoom in, tap to focus and also use the lower volume button to take a picture. I also added animated appearances for the camera's buttons. 
+
+I managed to implement more features than I has planned, so I am happy.
+
+However, I did not yet manage to merge the poi info activity because I didn't yet manage to mock it. But Aman has said that he will help me :)
 
 
 ## Yingxuan

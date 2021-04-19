@@ -21,25 +21,16 @@ class MainActivity : AppCompatActivity() {
 
     fun onClick(view: View) {
         val intent: Intent = when (view.id) {
-            R.id.launchSignInView -> {
-                Intent(this, GoogleSignInActivity::class.java) }
-            R.id.launchChatView -> {
-                Intent(this, ChatLogActivity::class.java)
-                    .putExtra(
-                        "POI_KEY",
-                        PointOfInterest(LatLng(100.0, 100.0), "tour-eiffel1", "tour-eiffel2")
-                    ) }
-            R.id.launchCameraView -> {
-                Intent(this, CameraActivity::class.java) }
-            R.id.launchMapView -> {
-                Intent(this, MapActivity::class.java) }
-            R.id.launchReviewView -> {
-                Intent(this, ReviewsActivity::class.java)
-                    .putExtra("POI_KEY", "lorem_ipsum") }
-            R.id.launchForumView -> {
-                Intent(this, ForumActivity::class.java) }
-            else -> {
-                Intent(this, MainActivity::class.java) }
+            R.id.launchSignInView -> Intent(this, GoogleSignInActivity::class.java)
+            R.id.launchChatView -> Intent(this, ChatLogActivity::class.java)
+                    .putExtra("POI_KEY", PointOfInterest(LatLng(100.0,100.0),"tour-eiffel1", "tour-eiffel2"))
+            R.id.launchMapView -> Intent(this, MapActivity::class.java)
+            R.id.launchReviewView -> Intent(this, ReviewsActivity::class.java)
+                    .putExtra("POI_KEY", "lorem_ipsum")
+            R.id.launchPhotoView -> Intent(this, PhotoDemoActivity::class.java)
+            R.id.launchForumView -> Intent(this, ForumActivity::class.java)
+            R.id.launchCameraView -> Intent(this, CameraActivity::class.java)
+            else -> Intent(this, MainActivity::class.java)
         }
         startActivity(intent)
     }

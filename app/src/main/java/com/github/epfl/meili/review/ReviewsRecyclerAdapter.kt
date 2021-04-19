@@ -9,11 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Review
 
-class ReviewRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    companion object {
-        private const val TAG: String = "ReviewRecyclerAdapter"
-    }
-
+class ReviewsRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var items: List<Pair<String, Review>> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
