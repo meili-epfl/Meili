@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.github.epfl.meili.R
-import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.*
 import com.google.firebase.firestore.FirebaseFirestore
@@ -38,7 +37,7 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
         val placesClient =
             placesClientService().getPlacesClient(activity, getString(R.string.google_maps_key))
 
-        val placeId = poi.placeId
+        val placeId = poi.uid
 
         // Places API query fields
         val placeFields = listOf(

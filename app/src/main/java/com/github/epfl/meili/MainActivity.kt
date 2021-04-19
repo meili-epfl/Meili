@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private val POI: PointOfInterest =
-            PointOfInterest(LatLng(10.0, 10.0), "ChIJAAAAAAAAAAARg4pb6XR5bo0", "art_brut")
+        private val POI: com.github.epfl.meili.poi.PointOfInterest =
+            com.github.epfl.meili.poi.PointOfInterest(10.0, 10.0, "art_brut","ChIJAAAAAAAAAAARg4pb6XR5bo0")
     }
 }
