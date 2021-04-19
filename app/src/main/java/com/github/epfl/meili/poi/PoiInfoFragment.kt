@@ -1,7 +1,6 @@
 package com.github.epfl.meili.poi
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import androidx.fragment.app.Fragment
 import com.github.epfl.meili.R
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.*
-import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * Fragment to be displayed inside of PoiActivity and which contains basic info about POI
@@ -49,14 +47,16 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
             Place.Field.PHOTO_METADATAS
         )
 
-        val request = FetchPlaceRequest.newInstance(placeId!!, placeFields)
+        val request = FetchPlaceRequest.newInstance(placeId, placeFields)
 
         placesClient.fetchPlace(request)
-            .addOnSuccessListener(getOnSuccessListener(placeId, view, placesClient))
+            .addOnSuccessListener(getOnSuccessListener(view, placesClient)).addOnFailureListener {
+                val infoTextView = view.findViewById<TextView>(R.id.infoTextView)
+                infoTextView.text = "No information found for this point of interest :("
+            }
     }
 
     private fun getOnSuccessListener(
-        placeId: String,
         view: View,
         placesClient: PlacesClient
     ): (FetchPlaceResponse) -> Unit =
