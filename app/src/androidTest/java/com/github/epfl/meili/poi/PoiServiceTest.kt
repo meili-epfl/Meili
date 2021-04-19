@@ -21,22 +21,20 @@ class PoiServiceTest {
     val poiService = PoiService()
     val expectedList = ArrayList<PointOfInterest>()
     val json: JSONObject
+    val poi1 = PointOfInterest(-33.870775, 151.199025, "Rhythmboat Cruises", "ChIJyWEHuEmuEmsRm9hTkapTCrk", "http://maps.gstatic.com/mapfiles/place_api/icons/travel_agent-71.png")
+    val poi2 = PointOfInterest(-33.867591, 151.201196, "Australian Cruise Group", "ChIJrTLr-GyuEmsRBfy61i59si0", "http://maps.gstatic.com/mapfiles/place_api/icons/travel_agent-71.png")
 
     init {
         json = getJsonDataFromAsset("poi-search-response.json")
     }
 
-
-
-    @Before
-    fun initList() {
-        val expectedPoi = PointOfInterest(12.0, 34.0, "Monument a Jaume I", "1234")
-        expectedList.add(expectedPoi)
-    }
-
     @Test
     fun customOnSuccessFromTest() {
-        poiService.customOnSuccessFrom { assertEquals(expectedList, it) }(json)
+        poiService.customOnSuccessFrom {
+            assertEquals(it[0], poi1)
+            assertEquals(it[it.size-1], poi2)
+            assertEquals(it[it.size-1].openNow, true)
+        }(json)
     }
 
     @Test
@@ -44,7 +42,11 @@ class PoiServiceTest {
         val latLng = LatLng(23.0, 12.0)
         val mockQueue = Mockito.mock(RequestQueue::class.java)
 
-        val onSuccess: (List<PointOfInterest>) -> Unit = { it -> assertEquals(expectedList, it) }
+        val onSuccess: (List<PointOfInterest>) -> Unit = {
+            assertEquals(it[0], poi1)
+            assertEquals(it[it.size-1], poi2)
+            assertEquals(it[it.size-1].openNow, true)
+        }
 
         Mockito.`when`(mockQueue.add(Mockito.any(JsonObjectRequest::class.java))).then {
             poiService.customOnSuccessFrom(onSuccess)(json)
