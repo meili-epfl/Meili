@@ -1,8 +1,10 @@
 package com.github.epfl.meili.poi
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
+import com.github.epfl.meili.MainApplication
 import com.google.android.apps.common.testing.accessibility.framework.replacements.Point
 import com.google.android.gms.maps.model.LatLng
 import org.json.JSONObject
@@ -11,14 +13,20 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
+import java.io.File
+import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class PoiServiceTest {
     val poiService = PoiService()
     val expectedList = ArrayList<PointOfInterest>()
-    val json = JSONObject(
-            "{\"elements\":[{\"id\":1234,\"lat\":12,\"lon\":34,\"tags\":{\"name\":\"Monument a Jaume I\"}}, {\"id\":1234,\"lat\":12,\"lon\":34}]}"
-    )
+    val json: JSONObject
+
+    init {
+        json = getJsonDataFromAsset("poi-search-response.json")
+    }
+
+
 
     @Before
     fun initList() {
@@ -60,5 +68,13 @@ class PoiServiceTest {
         expectedList.add(poi1)
 
         assertEquals(expectedList, PoiService().getReachablePoi(userPos, poiList, 75.0))
+    }
+
+    private fun getJsonDataFromAsset(fileName: String): JSONObject {
+        val jsonString: String
+
+        jsonString = getInstrumentation().context.assets.open(fileName).bufferedReader().use { it.readText() }
+
+        return JSONObject(jsonString)
     }
 }
