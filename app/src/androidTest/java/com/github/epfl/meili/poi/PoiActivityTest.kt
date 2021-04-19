@@ -13,8 +13,6 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.github.epfl.meili.R
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PointOfInterest
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.libraries.places.api.model.OpeningHours
 import com.google.android.libraries.places.api.model.PhotoMetadata
@@ -34,7 +32,7 @@ import org.mockito.Mockito.`when`
 @RunWith(AndroidJUnit4::class)
 class PoiActivityTest {
     private val fake_poi: PointOfInterest =
-        PointOfInterest(LatLng(10.0, 10.0), "ChIJAAAAAAAAAAARg4pb6XR5bo0", "art_brut")
+        PointOfInterest(10.0, 10.0, "art_brut","ChIJAAAAAAAAAAARg4pb6XR5bo0")
 
     private val mockPlaces: PlacesClientService = Mockito.mock(PlacesClientService::class.java)
     private val mockPlacesClient: PlacesClient = Mockito.mock(PlacesClient::class.java)
