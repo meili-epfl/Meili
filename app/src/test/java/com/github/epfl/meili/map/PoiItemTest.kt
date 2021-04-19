@@ -1,6 +1,5 @@
 package com.github.epfl.meili.map
 
-import com.github.epfl.meili.poi.PointOfInterest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

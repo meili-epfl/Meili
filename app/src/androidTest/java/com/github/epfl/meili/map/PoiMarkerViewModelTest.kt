@@ -5,7 +5,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.poi.PoiService
-import com.github.epfl.meili.poi.PointOfInterest
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.*
 import org.junit.Assert.assertEquals
