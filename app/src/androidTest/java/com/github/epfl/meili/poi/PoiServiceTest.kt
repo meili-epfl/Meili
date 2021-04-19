@@ -4,17 +4,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
-import com.github.epfl.meili.MainApplication
-import com.google.android.apps.common.testing.accessibility.framework.replacements.Point
 import com.google.android.gms.maps.model.LatLng
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
-import java.io.File
-import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class PoiServiceTest {
@@ -32,8 +27,8 @@ class PoiServiceTest {
     fun customOnSuccessFromTest() {
         poiService.customOnSuccessFrom {
             assertEquals(it[0], poi1)
-            assertEquals(it[it.size-1], poi2)
-            assertEquals(it[it.size-1].openNow, true)
+            assertEquals(it[it.size - 1], poi2)
+            assertEquals(it[it.size - 1].openNow, true)
         }(json)
     }
 
@@ -44,8 +39,8 @@ class PoiServiceTest {
 
         val onSuccess: (List<PointOfInterest>) -> Unit = {
             assertEquals(it[0], poi1)
-            assertEquals(it[it.size-1], poi2)
-            assertEquals(it[it.size-1].openNow, true)
+            assertEquals(it[it.size - 1], poi2)
+            assertEquals(it[it.size - 1].openNow, true)
         }
 
         Mockito.`when`(mockQueue.add(Mockito.any(JsonObjectRequest::class.java))).then {
@@ -58,11 +53,11 @@ class PoiServiceTest {
     }
 
     @Test
-    fun getReachablePoiTest(){
-        val userPos = LatLng(41.075534,1.131070)
+    fun getReachablePoiTest() {
+        val userPos = LatLng(41.075534, 1.131070)
         val poiList = ArrayList<PointOfInterest>()
-        val poi1 = PointOfInterest(41.075000,1.130870, "place1", "place1")
-        val poi2 = PointOfInterest(41.063563,1.083658, "place2", "place2")
+        val poi1 = PointOfInterest(41.075000, 1.130870, "place1", "place1")
+        val poi2 = PointOfInterest(41.063563, 1.083658, "place2", "place2")
         poiList.add(poi1)
         poiList.add(poi2)
 

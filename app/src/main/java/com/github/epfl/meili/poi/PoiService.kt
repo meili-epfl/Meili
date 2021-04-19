@@ -107,7 +107,7 @@ data class PlacesPointOfInterest(
         val openingHours: PoiOpeningHours? = null
 ) {
     fun toStandardPoi(): PointOfInterest {
-        if(openingHours!=null){
+        if (openingHours != null) {
             return PointOfInterest(geometry!!.latLng!!.latitude!!, geometry.latLng!!.longitude!!, name!!, uid!!, icon!!, poiTypes!!, openingHours.openNow)
         }
         return PointOfInterest(geometry!!.latLng!!.latitude!!, geometry.latLng!!.longitude!!, name!!, uid!!, icon!!, poiTypes!!)
