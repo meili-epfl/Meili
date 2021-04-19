@@ -15,6 +15,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.rtugeek.android.colorseekbar.ColorSeekBar
+        android:id="@+id/colorSlider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="654dp"
+        app:colorSeeds="@array/material_colors"
+        app:isVertical="false"
+        app:barHeight="5dp"
+        app:thumbHeight="30dp"
+        app:showAlphaBar="false"
+        app:layout_constraintBottom_toTopOf="@+id/crop_mode_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <com.theartofdev.edmodo.cropper.CropImageView
         android:id="@+id/crop_image_view"
@@ -35,6 +50,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/colorSlider"
         app:srcCompat="@drawable/ic_switch" />
 
     <Button

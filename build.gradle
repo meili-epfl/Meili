@@ -20,7 +20,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url "https://jitpack.io" } // library to draw with finger on photos
+        maven { url "https://jitpack.io" }
     }
 }
 
