@@ -18,7 +18,6 @@ import kotlin.math.sin
 
 
 class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotationGestureListener {
-    private val TAG = "PhotoEditActivity"
 
     private lateinit var binding: ActivityPhotoEditBinding
     private lateinit var uri: Uri
@@ -30,7 +29,7 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         binding = ActivityPhotoEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.paintImageView.setOnTouchListener { v, event ->
+        binding.paintImageView.setOnTouchListener { _, event ->
             rotationGestureDetector.onTouchEvent(event) // Make crop container listen to touch events
         }
 
@@ -129,8 +128,14 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         val newWidth = (width * cos + height * sin).toInt()
         val newHeight = (width * sin + height * cos).toInt()
 
-        val matrix = Matrix().apply { postRotate(angle, width / 2f, height / 2f) } // rotation matrix
-            .apply { postTranslate((newWidth - width) / 2f, (newHeight - height) / 2f) } // Translation matrix
+        val matrix =
+            Matrix().apply { postRotate(angle, width / 2f, height / 2f) } // rotation matrix
+                .apply {
+                    postTranslate(
+                        (newWidth - width) / 2f,
+                        (newHeight - height) / 2f
+                    )
+                } // Translation matrix
 
         // Apply rotation
         val rotated = Bitmap.createBitmap(
