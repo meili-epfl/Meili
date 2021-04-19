@@ -3,8 +3,9 @@ package com.github.epfl.meili.database
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.epfl.meili.MainActivity
+import com.github.epfl.meili.poi.PointOfInterest
 import com.google.firebase.firestore.*
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

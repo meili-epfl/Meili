@@ -1,7 +1,8 @@
 package com.github.epfl.meili.database
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import junit.framework.Assert.assertEquals
+import com.github.epfl.meili.poi.PointOfInterest
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -30,7 +31,7 @@ class DatabaseTest {
 
         }
 
-        override fun addElement(uid: String, element: PointOfInterest?) {
+        override fun addElement(key: String, element: PointOfInterest?) {
 
         }
 

@@ -108,9 +108,9 @@ data class PlacesPointOfInterest(
 ) {
     fun toStandardPoi(): PointOfInterest {
         if(openingHours!=null){
-            return PointOfInterest(geometry!!.latLng!!.latitude!!, geometry!!.latLng!!.longitude!!, name!!, uid!!, icon!!, poiTypes!!, openingHours.openNow)
+            return PointOfInterest(geometry!!.latLng!!.latitude!!, geometry.latLng!!.longitude!!, name!!, uid!!, icon!!, poiTypes!!, openingHours.openNow)
         }
-        return PointOfInterest(geometry!!.latLng!!.latitude!!, geometry!!.latLng!!.longitude!!, name!!, uid!!, icon!!, poiTypes!!)
+        return PointOfInterest(geometry!!.latLng!!.latitude!!, geometry.latLng!!.longitude!!, name!!, uid!!, icon!!, poiTypes!!)
     }
 }
 
