@@ -76,7 +76,7 @@ open class PoiService {
     }
 }
 
-data class GooglePlacesResponse( //TODO: change name
+data class GooglePlacesResponse(
         @SerializedName("results")
         val pointsOfInterest: List<PlacesPointOfInterest> = ArrayList()
 ) {
