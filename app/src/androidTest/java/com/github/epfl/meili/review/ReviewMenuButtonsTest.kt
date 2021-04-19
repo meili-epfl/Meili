@@ -1,49 +1,25 @@
 package com.github.epfl.meili.review
 
 import android.content.Intent
-import android.view.View
-import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.RatingBar
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.forum.FirebasePostService
-import com.github.epfl.meili.forum.ForumViewModel
-import com.github.epfl.meili.forum.MockPostService
-import com.github.epfl.meili.forum.PostViewModel
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.messages.ChatMessageViewModel
 import com.github.epfl.meili.messages.MockMessageDatabase
-import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.models.Post.Companion.toPost
 import com.github.epfl.meili.models.Review
-import com.google.android.gms.maps.model.LatLng
 import com.github.epfl.meili.poi.PointOfInterest
-import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers
-import org.hamcrest.TypeSafeMatcher
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -54,8 +30,6 @@ import org.mockito.Mockito.`when`
 class ReviewMenuButtonsTest {
 
     companion object {
-        private const val TAG = "ReviewsActivityTest"
-
         private const val TEST_UID = "MrPerfect"
 
         //Review now Takes entire POI with the intent instead of a string
@@ -77,72 +51,46 @@ class ReviewMenuButtonsTest {
         private const val fake_message = "fake_text"
         private const val fake_id = "fake_id"
         private const val fake_name = "fake_name_sender"
-
-        private const val TEST_USERNAME = "test_username"
-        private const val TEST_EMAIL = "test@meili.com"
-
     }
 
     private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
     private val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
     private val mockDocument: DocumentReference = Mockito.mock(DocumentReference::class.java)
-    private val mockListenerRegistration: ListenerRegistration =
-        Mockito.mock(ListenerRegistration::class.java)
 
     private val mockSnapshotBeforeAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
     private val mockSnapshotAfterAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
     private val mockSnapshotAfterEdition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
 
-    private val mockDocumentReference: DocumentReference = Mockito.mock(DocumentReference::class.java)
-    private val mockDocumentSnapshot: DocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
-    private val mockCollectionReference = Mockito.mock(CollectionReference::class.java)
-    private val mockQuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
-
-    private val mockList = ArrayList<DocumentSnapshot>()
-    private val postList = ArrayList<Post>()
-
     private val mockAuthenticationService = MockAuthenticationService()
     private lateinit var database: FirestoreDatabase<Review>
 
+    private var testAverageRatingBeforeAddition: Float = 0f
+    private var testAverageRatingAfterAddition: Float = 0f
+    private var testAverageRatingAfterEdition: Float = 0f
 
     init {
         setupMocks()
     }
 
     private fun setupMocks() {
-        mockAuthenticationService.setMockUid(TEST_UID)
-
         `when`(mockFirestore.collection(any())).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
-            (invocation.arguments[0] as FirestoreDatabase<Review>).also { database = it }
-            mockListenerRegistration
+            database = invocation.arguments[0] as FirestoreDatabase<Review>
+            Mockito.mock(ListenerRegistration::class.java)
         }
-        `when`(mockCollection.document(Mockito.matches(TEST_UID))).thenReturn(mockDocument)
-
-        val mockTask = Mockito.mock(Task::class.java)
+        `when`(mockCollection.document(ArgumentMatchers.matches(TEST_UID))).thenReturn(mockDocument)
 
 
-        val mockCollection = Mockito.mock(CollectionReference::class.java)
-        `when`(mockFirestore.collection(any())).thenReturn(mockCollection)
-        `when`(mockCollection.addSnapshotListener(any())).thenAnswer { Mockito.mock(ListenerRegistration::class.java) }
 
-        FirestoreDatabase.databaseProvider = { mockFirestore }
-        `when`(mockFirestore.collection("posts")).thenReturn(mockCollectionReference)
-        `when`(mockCollectionReference.document(any())).thenReturn(mockDocumentReference)
-        `when`(mockDocumentReference.get()).thenAnswer { mockDocumentSnapshot }
-        `when`(mockCollectionReference.get()).thenAnswer { mockQuerySnapshot }
-        `when`(mockCollectionReference.add(any())).thenAnswer {
-            mockList.add(mockDocumentSnapshot)
-            mockTask  // Needs a Task, so I put a mock Task
-        }
-        `when`(mockQuerySnapshot.documents.mapNotNull { it.toPost() }).thenReturn(postList)
 
-        FirebasePostService.dbProvider = { mockFirestore }
+
+
+        mockAuthenticationService.setMockUid(TEST_UID)
+
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
         Auth.authService = mockAuthenticationService
     }
-
 
     private val intent =
         Intent(getInstrumentation().targetContext.applicationContext, ReviewsActivity::class.java)
@@ -151,23 +99,12 @@ class ReviewMenuButtonsTest {
     @get:Rule
     var rule: ActivityScenarioRule<ReviewsActivity> = ActivityScenarioRule(intent)
 
-    @Before
-    fun initiateAuthAndService() {
-        UiThreadStatement.runOnUiThread {
-            //Injecting authentication Service
-            val mockAuthService = com.github.epfl.meili.home.MockAuthenticationService()
-            Auth.setAuthenticationService(mockAuthService)
-
-            mockAuthService.signInIntent()
-
-            Auth.isLoggedIn.value = true
-            Auth.email = TEST_EMAIL
-            Auth.name = TEST_USERNAME
-        }
-    }
 
     @Test
     fun clickChatMenuButton() {
+        mockAuthenticationService.signInIntent()
+        database.onEvent(mockSnapshotBeforeAddition, null)
+
         //Mock Chatting service to test chat button
         ChatMessageViewModel.setMessageDatabase(MockMessageDatabase(MOCK_PATH))
         ChatMessageViewModel.addMessage(fake_message, fake_id, fake_id, 10, fake_name)
@@ -181,9 +118,8 @@ class ReviewMenuButtonsTest {
 
     @Test
     fun clickForumMenuButton() {
-        val mockPostService = MockPostService()
-        ForumViewModel.changePostService(mockPostService)
-        PostViewModel.changePostService(mockPostService)
+        mockAuthenticationService.signInIntent()
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(
             Matchers.allOf(

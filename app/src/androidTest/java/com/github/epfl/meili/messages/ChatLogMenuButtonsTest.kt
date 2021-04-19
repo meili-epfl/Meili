@@ -9,27 +9,24 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.forum.FirebasePostService
+import com.github.epfl.meili.forum.ForumActivity
+import com.github.epfl.meili.forum.ForumMenuButtonsTests
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
 import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.models.Post.Companion.toPost
+import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.models.User
-import com.google.android.gms.maps.model.LatLng
 import com.github.epfl.meili.poi.PointOfInterest
-import com.google.android.gms.tasks.Task
+import com.github.epfl.meili.review.ReviewMenuButtonsTest
 import com.google.firebase.firestore.*
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -41,93 +38,84 @@ import org.mockito.Mockito
 @LargeTest
 class ChatLogMenuButtonsTest {
 
-    private val MOCK_PATH = "POI/mock-poi"
-    private val fake_message = "fake_text"
-    private val fake_id = "fake_id"
-    private val fake_name = "fake_name_sender"
-    private val fake_poi: PointOfInterest =
-        PointOfInterest(10.0, 10.0, "fake_poi", "fake_poi")
-    private val MOCK_EMAIL = "moderator2@gmail.com"
-    private val MOCK_PASSWORD = "123123"
+    companion object {
+        private const val TEST_UID = "UID"
+        private const val TEST_USERNAME = "AUTHOR"
+        private val TEST_POST = Post(TEST_USERNAME, "TITLE", "TEXT")
+        private const val MOCK_PATH = "POI/mock-poi"
+        private const val fake_message = "fake_text"
+        private const val fake_id = "fake_id"
+        private const val fake_name = "fake_name_sender"
+        private val fake_poi = PointOfInterest(10.0, 10.0, "fakepoi1", "fakepoi2")
+    }
 
-    private val TEST_TEXT = "test text"
-    private val TEST_TITLE = "test title"
-    private val TEST_USERNAME = "test_username"
-    private val TEST_EMAIL = "test@meili.com"
-    private val postList = ArrayList<Post>()
-    private val mockPost = Post("test id", TEST_USERNAME, TEST_TITLE, TEST_TEXT)
-    private val mockList = ArrayList<DocumentSnapshot>()
+    private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
+    private val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
+    private val mockDocument: DocumentReference = Mockito.mock(DocumentReference::class.java)
 
+    private val mockSnapshotBeforeAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
+    private val mockSnapshotAfterAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
 
-    private lateinit var mockFirestore: FirebaseFirestore
-    private lateinit var mockDocumentSnapshot: DocumentSnapshot
-    private lateinit var mockCollectionReference: CollectionReference
-    private lateinit var mockDocumentReference: DocumentReference
-    private lateinit var mockQuerySnapshot: QuerySnapshot
+    private val mockAuth = Mockito.mock(AuthenticationService::class.java)
+
+    private lateinit var database: FirestoreDatabase<Post>
+
+    private val intent = Intent(
+        InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
+        ChatLogActivity::class.java
+    )
+        .putExtra("POI_KEY", fake_poi)
 
     @get:Rule
-    val mActivityTestRule: ActivityTestRule<ChatLogActivity> =
-        object : ActivityTestRule<ChatLogActivity>(ChatLogActivity::class.java) {
-            override fun getActivityIntent(): Intent {
-                val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+    var rule: ActivityScenarioRule<ChatLogActivity> = ActivityScenarioRule(intent)
 
-                val intent = Intent(targetContext, ChatLogActivity::class.java).apply {
-                    putExtra("POI_KEY", fake_poi)
-                }
+    init {
+        setupMocks()
+    }
 
-                UiThreadStatement.runOnUiThread {
-                    val mockAuth = Mockito.mock(AuthenticationService::class.java)
-
-                    Mockito.`when`(mockAuth.getCurrentUser())
-                        .thenReturn(User("fake_uid", "fake_name", "fake_email"))
-
-                    Mockito.`when`(mockAuth.signInIntent()).thenReturn(intent)
-                    Auth.setAuthenticationService(mockAuth)
-                }
-
-                return intent
-
+    private fun setupMocks() {
+        Mockito.`when`(mockFirestore.collection((ArgumentMatchers.any())))
+            .thenReturn(mockCollection)
+        Mockito.`when`(mockCollection.addSnapshotListener(ArgumentMatchers.any()))
+            .thenAnswer { invocation ->
+                database = invocation.arguments[0] as FirestoreDatabase<Post>
+                Mockito.mock(ListenerRegistration::class.java)
             }
+        Mockito.`when`(mockCollection.document(ArgumentMatchers.contains(TEST_UID)))
+            .thenReturn(mockDocument)
+
+        Mockito.`when`(mockSnapshotBeforeAddition.documents)
+            .thenReturn(ArrayList<DocumentSnapshot>())
+
+
+
+        val mockDocumentSnapshot: DocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
+        Mockito.`when`(mockDocumentSnapshot.id).thenReturn(TEST_UID)
+        Mockito.`when`(mockDocumentSnapshot.toObject(Post::class.java))
+            .thenReturn(TEST_POST)
+        Mockito.`when`(mockSnapshotAfterAddition.documents).thenReturn(listOf(mockDocumentSnapshot))
+
+
+        UiThreadStatement.runOnUiThread {
+
+
+            Mockito.`when`(mockAuth.getCurrentUser())
+                .thenReturn(User("fake_uid", "fake_name", "fake_email"))
+
+            Mockito.`when`(mockAuth.signInIntent()).thenReturn(intent)
+            Auth.setAuthenticationService(mockAuth)
         }
 
-
-    @Before
-    fun initializeMockDatabase() {
-        postList.add(mockPost)
-
-        mockFirestore = Mockito.mock(FirebaseFirestore::class.java)
-        mockDocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
-        mockCollectionReference = Mockito.mock(CollectionReference::class.java)
-        mockDocumentReference = Mockito.mock(DocumentReference::class.java)
-        mockQuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
-        val mockTask = Mockito.mock(Task::class.java)
-
-
-        val mockCollection = Mockito.mock(CollectionReference::class.java)
-        Mockito.`when`(mockFirestore.collection(ArgumentMatchers.any())).thenReturn(mockCollection)
-        Mockito.`when`(mockCollection.addSnapshotListener(ArgumentMatchers.any())).thenAnswer { Mockito.mock(ListenerRegistration::class.java) }
-
+        // Inject dependencies
+        ChatMessageViewModel.setMessageDatabase(MockMessageDatabase(MOCK_PATH))
+        ChatMessageViewModel.addMessage(fake_message, fake_id, fake_id, 10, fake_name)
         FirestoreDatabase.databaseProvider = { mockFirestore }
-        Mockito.`when`(mockFirestore.collection("posts")).thenReturn(mockCollectionReference)
-        Mockito.`when`(mockCollectionReference.document(ArgumentMatchers.any())).thenReturn(mockDocumentReference)
-        Mockito.`when`(mockDocumentReference.get()).thenAnswer { mockDocumentSnapshot }
-        Mockito.`when`(mockCollectionReference.get()).thenAnswer { mockQuerySnapshot }
-        Mockito.`when`(mockCollectionReference.add(ArgumentMatchers.any())).thenAnswer {
-            mockList.add(mockDocumentSnapshot)
-            mockTask  // Needs a Task, so I put a mock Task
-        }
-        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toPost() }).thenReturn(postList)
-
-        FirebasePostService.dbProvider = { mockFirestore }
-
-
     }
 
     @Before
     fun init() {
         UiThreadStatement.runOnUiThread {
-            ChatMessageViewModel.setMessageDatabase(MockMessageDatabase(MOCK_PATH))
-            ChatMessageViewModel.addMessage(fake_message, fake_id, fake_id, 10, fake_name)
+
         }
     }
 
@@ -143,7 +131,8 @@ class ChatLogMenuButtonsTest {
 
 
     @Test
-    fun clickForumMenuButton(){
+    fun clickForumMenuButton() {
+
         onView(
             allOf(
                 withId(R.id.menu_forum_from_chat), withText("Forum"),
@@ -152,7 +141,8 @@ class ChatLogMenuButtonsTest {
     }
 
     @Test
-    fun clickReviewMenuButton(){
+    fun clickReviewMenuButton() {
+
         onView(
             allOf(
                 withId(R.id.menu_reviews_from_chat), withText("Reviews"),

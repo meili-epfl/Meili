@@ -1,115 +1,96 @@
 package com.github.epfl.meili.forum
 
-import android.view.View
-import android.view.ViewGroup
+
+import android.content.Intent
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.internal.runner.junit4.statement.UiThreadStatement
+import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.home.MockAuthenticationService
 import com.github.epfl.meili.messages.ChatMessageViewModel
 import com.github.epfl.meili.messages.MockMessageDatabase
 import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.models.Post.Companion.toPost
 import com.github.epfl.meili.poi.PointOfInterest
-import com.github.epfl.meili.review.ReviewsActivityViewModel
-import com.google.android.gms.tasks.Task
+import com.github.epfl.meili.review.ReviewsActivity
+import com.github.epfl.meili.review.ReviewsActivityTest
 import com.google.firebase.firestore.*
-import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 
+@Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class ForumMenuButtonsTests {
 
-    private val TEST_TEXT = "test text"
-    private val TEST_TITLE = "test title"
-    private val TEST_USERNAME = "test_username"
-    private val TEST_EMAIL = "test@meili.com"
-    private val postList = ArrayList<Post>()
-    private val mockPost = Post("test id", TEST_USERNAME, TEST_TITLE, TEST_TEXT)
-    private val mockList = ArrayList<DocumentSnapshot>()
-
-    private val MOCK_PATH = "POI/mock-poi"
-    private val fake_message = "fake_text"
-    private val fake_id = "fake_id"
-    private val fake_name = "fake_name_sender"
-    private val fake_poi: PointOfInterest =
-        PointOfInterest(10.0, 10.0, "fake_poi", "fake_poi")
-
-    private lateinit var mockFirestore: FirebaseFirestore
-    private lateinit var mockDocumentSnapshot: DocumentSnapshot
-    private lateinit var mockCollectionReference: CollectionReference
-    private lateinit var mockDocumentReference: DocumentReference
-    private lateinit var mockQuerySnapshot: QuerySnapshot
-
-    @get:Rule
-    var testRule: ActivityScenarioRule<MainActivity> =
-        ActivityScenarioRule(MainActivity::class.java)
-
-    @Before
-    fun initializeMockDatabase() {
-        postList.add(mockPost)
-
-        mockFirestore = Mockito.mock(FirebaseFirestore::class.java)
-        mockDocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
-        mockCollectionReference = Mockito.mock(CollectionReference::class.java)
-        mockDocumentReference = Mockito.mock(DocumentReference::class.java)
-        mockQuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
-        val mockTask = Mockito.mock(Task::class.java)
-
-
-        val mockCollection = Mockito.mock(CollectionReference::class.java)
-        Mockito.`when`(mockFirestore.collection(any())).thenReturn(mockCollection)
-        Mockito.`when`(mockCollection.addSnapshotListener(any())).thenAnswer { Mockito.mock(ListenerRegistration::class.java) }
-
-        FirestoreDatabase.databaseProvider = { mockFirestore }
-        Mockito.`when`(mockFirestore.collection("posts")).thenReturn(mockCollectionReference)
-        Mockito.`when`(mockCollectionReference.document(any())).thenReturn(mockDocumentReference)
-        Mockito.`when`(mockDocumentReference.get()).thenAnswer { mockDocumentSnapshot }
-        Mockito.`when`(mockCollectionReference.get()).thenAnswer { mockQuerySnapshot }
-        Mockito.`when`(mockCollectionReference.add(any())).thenAnswer {
-            mockList.add(mockDocumentSnapshot)
-            mockTask  // Needs a Task, so I put a mock Task
-        }
-        Mockito.`when`(mockQuerySnapshot.documents.mapNotNull { it.toPost() }).thenReturn(postList)
-
-        FirebasePostService.dbProvider = { mockFirestore }
-
-
+    companion object {
+        private const val TEST_UID = "UID"
+        private const val TEST_USERNAME = "AUTHOR"
+        private val TEST_POST = Post(TEST_USERNAME, "TITLE", "TEXT")
+        private const val MOCK_PATH = "POI/mock-poi"
+        private const val fake_message = "fake_text"
+        private const val fake_id = "fake_id"
+        private const val fake_name = "fake_name_sender"
+        private val TEST_POI_KEY = PointOfInterest(100.0,100.0,"lorem_ipsum1", "lorem_ipsum2")
     }
 
-    @Before
-    fun initiateAuthAndService() {
-        UiThreadStatement.runOnUiThread {
-            //Injecting authentication Service
-            val mockAuthService = MockAuthenticationService()
-            Auth.setAuthenticationService(mockAuthService)
+    private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
+    private val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
+    private val mockDocument: DocumentReference = Mockito.mock(DocumentReference::class.java)
 
-            mockAuthService.signInIntent()
+    private val mockSnapshotBeforeAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
+    private val mockSnapshotAfterAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
 
-            Auth.isLoggedIn.value = true
-            Auth.email = TEST_EMAIL
-            Auth.name = TEST_USERNAME
+    private val mockAuthenticationService = MockAuthenticationService()
+
+    private lateinit var database: FirestoreDatabase<Post>
+
+    private val intent = Intent(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext, ForumActivity::class.java)
+        .putExtra("POI_KEY", TEST_POI_KEY)
+
+    @get:Rule
+    var rule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(intent)
+
+    init {
+        setupMocks()
+    }
+
+    private fun setupMocks() {
+        Mockito.`when`(mockFirestore.collection((any()))).thenReturn(mockCollection)
+        Mockito.`when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
+            database = invocation.arguments[0] as FirestoreDatabase<Post>
+            Mockito.mock(ListenerRegistration::class.java)
         }
+        Mockito.`when`(mockCollection.document(ArgumentMatchers.contains(TEST_UID)))
+            .thenReturn(mockDocument)
+
+        Mockito.`when`(mockSnapshotBeforeAddition.documents).thenReturn(ArrayList<DocumentSnapshot>())
+
+        val mockDocumentSnapshot: DocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
+        Mockito.`when`(mockDocumentSnapshot.id).thenReturn(TEST_UID)
+        Mockito.`when`(mockDocumentSnapshot.toObject(Post::class.java))
+            .thenReturn(TEST_POST)
+        Mockito.`when`(mockSnapshotAfterAddition.documents).thenReturn(listOf(mockDocumentSnapshot))
+
+        mockAuthenticationService.setMockUid(TEST_UID)
+        mockAuthenticationService.setUsername(TEST_USERNAME)
+
+        // Inject dependencies
+        FirestoreDatabase.databaseProvider = { mockFirestore }
+        Auth.authService = mockAuthenticationService
     }
 
     @Before
@@ -122,91 +103,15 @@ class ForumMenuButtonsTests {
         Intents.release()
     }
 
-
-    @Test
-    fun addPostToForumTest() {
-        // Press Forum button
-        Espresso.onView(ViewMatchers.withId(R.id.launchForumView))
-            .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
-
-        // Press + button
-        Espresso.onView(ViewMatchers.withId(R.id.forum_new_post_button))
-            .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
-
-        // Type test title
-        Espresso.onView(ViewMatchers.withId(R.id.new_post_title)).perform(
-            ViewActions.typeText(TEST_TITLE),
-            ViewActions.closeSoftKeyboard()
-        )
-
-        // Type test text
-        Espresso.onView(ViewMatchers.withId(R.id.new_post_text)).perform(
-            ViewActions.typeText(TEST_TEXT),
-            ViewActions.closeSoftKeyboard()
-        )
-
-        // Press Create Post button
-        Espresso.onView(ViewMatchers.withId(R.id.new_post_create_button))
-            .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
-    }
-
-    @Test
-    fun viewPostTest() {
-        val mockPostService = MockPostService()
-        ForumViewModel.changePostService(mockPostService)
-        PostViewModel.changePostService(mockPostService)
-        mockPostService.addPost(TEST_USERNAME, TEST_TITLE, TEST_TEXT)
-
-        // Press Forum button
-        Espresso.onView(ViewMatchers.withId(R.id.launchForumView))
-            .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
-
-        //Click on the mock post
-        Espresso.onView(
-            ViewMatchers.withChild(withText(TEST_TITLE))
-        ).check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
-
-        // Check username
-        Espresso.onView(
-            allOf(
-                ViewMatchers.withId(R.id.post_author),
-                withText(TEST_USERNAME)
-            )
-        ).check(ViewAssertions.matches(withText(TEST_USERNAME)))
-            .check(ViewAssertions.matches(isDisplayed()))
-
-        // Check title
-        Espresso.onView(
-            allOf(
-                ViewMatchers.withId(R.id.post_title),
-                withText(TEST_TITLE)
-            )
-        ).check(ViewAssertions.matches(withText(TEST_TITLE)))
-            .check(ViewAssertions.matches(isDisplayed()))
-
-        // Check text
-        Espresso.onView(
-            allOf(
-                ViewMatchers.withId(R.id.post_text),
-                withText(TEST_TEXT)
-            )
-        ).check(ViewAssertions.matches(withText(TEST_TEXT)))
-            .check(ViewAssertions.matches(isDisplayed()))
-    }
-
     @Test
     fun clickChatMenuButton() {
-        val mockPostService = MockPostService()
-        ForumViewModel.changePostService(mockPostService)
-        PostViewModel.changePostService(mockPostService)
+        mockAuthenticationService.signInIntent()
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
         //Mock Chatting service to test chat button
         ChatMessageViewModel.setMessageDatabase(MockMessageDatabase(MOCK_PATH))
         ChatMessageViewModel.addMessage(fake_message, fake_id, fake_id, 10, fake_name)
 
-        // Press Forum button
-        Espresso.onView(ViewMatchers.withId(R.id.launchForumView))
-            .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
 
         //click on the chat button
         Espresso.onView(
@@ -218,15 +123,9 @@ class ForumMenuButtonsTests {
 
     @Test
     fun clickReviewMenuButton() {
-        val mockPostService = MockPostService()
-        ForumViewModel.changePostService(mockPostService)
-        PostViewModel.changePostService(mockPostService)
+        mockAuthenticationService.signInIntent()
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
-
-
-        // Press Forum button
-        Espresso.onView(ViewMatchers.withId(R.id.launchForumView))
-            .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
 
         //click on the reviews  button
         Espresso.onView(
@@ -236,22 +135,5 @@ class ForumMenuButtonsTests {
         ).perform(ViewActions.click())
     }
 
-    private fun childAtPosition(
-        parentMatcher: Matcher<View>, position: Int
-    ): Matcher<View> {
-
-        return object : TypeSafeMatcher<View>() {
-            override fun describeTo(description: Description) {
-                description.appendText("Child at position $position in parent ")
-                parentMatcher.describeTo(description)
-            }
-
-            public override fun matchesSafely(view: View): Boolean {
-                val parent = view.parent
-                return parent is ViewGroup && parentMatcher.matches(parent)
-                        && view == parent.getChildAt(position)
-            }
-        }
-    }
 
 }
