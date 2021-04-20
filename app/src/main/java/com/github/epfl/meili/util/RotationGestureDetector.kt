@@ -2,14 +2,17 @@ package com.github.epfl.meili.util
 
 import android.util.Log
 import android.view.MotionEvent
+import android.widget.ImageView
 import androidx.core.view.MotionEventCompat
 import kotlin.math.atan2
 
 // Reference used : https://stackoverflow.com/questions/10682019/android-two-finger-rotation
 /** Detects two finger rotation motions */
-class RotationGestureDetector(listener: OnRotationGestureListener) {
+class RotationGestureDetector(listener: OnRotationGestureListener, imageView: ImageView) {
 
     private val TAG = "RotationGestureDetector"
+
+    private val imageView = imageView
 
     // Initial finger position values
     private var x1 = 0f
@@ -75,7 +78,8 @@ class RotationGestureDetector(listener: OnRotationGestureListener) {
                 Log.d(TAG, "Cancel")
             }
         }
-        return true
+
+        return imageView.onTouchEvent(event)
     }
 
     /** Compute angle between lines formed by previous positions and new positions */

@@ -18,7 +18,7 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
 
     private lateinit var binding: ActivityPhotoEditBinding
     private lateinit var uri: Uri
-    private val rotationGestureDetector = RotationGestureDetector(this)
+    private lateinit var rotationGestureDetector : RotationGestureDetector
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -27,9 +27,10 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         binding = ActivityPhotoEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        // Make paintImageView listen to rotation events
+        rotationGestureDetector = RotationGestureDetector(this, binding.paintImageView)
         binding.paintImageView.setOnTouchListener { _, event ->
-            rotationGestureDetector.onTouchEvent(event) // Make crop container listen to touch events
+            rotationGestureDetector.onTouchEvent(event)
         }
 
         binding.cropImageView.setOnCropImageCompleteListener { _, _ ->
