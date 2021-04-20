@@ -13,6 +13,7 @@ class RotationGestureDetector(listener: OnRotationGestureListener, imageView: Im
     private val TAG = "RotationGestureDetector"
 
     private val imageView = imageView
+    var rotatable = true
 
     // Initial finger position values
     private var x1 = 0f
@@ -36,52 +37,56 @@ class RotationGestureDetector(listener: OnRotationGestureListener, imageView: Im
 
     /** Computes correct indices and positions based on the touch event */
     fun onTouchEvent(event: MotionEvent): Boolean {
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> { // First touch
-                ptrID1 = event.getPointerId(event.actionIndex) // first finger down's pointer
-                Log.d(TAG, "First")
-            }
-            MotionEvent.ACTION_POINTER_DOWN -> { // Second touch
-                ptrID2 = event.getPointerId(event.actionIndex) // second finger down's pointer ID
 
-                x1 = event.getX(event.findPointerIndex(ptrID1))
-                y1 = event.getY(event.findPointerIndex(ptrID1))
-                x2 = event.getX(event.findPointerIndex(ptrID2))
-                y2 = event.getY(event.findPointerIndex(ptrID2))
-                Log.d(TAG, "Second")
-            }
-            MotionEvent.ACTION_MOVE -> { // Either finger moves
-                if (ptrID1 != INVALID_PTR_ID && ptrID2 != INVALID_PTR_ID) {
-                    // Get new positions
-                    val newx1 = event.getX(event.findPointerIndex(ptrID1))
-                    val newy1 = event.getY(event.findPointerIndex(ptrID1))
-                    val newx2 = event.getX(event.findPointerIndex(ptrID2))
-                    val newy2 = event.getY(event.findPointerIndex(ptrID2))
-
-                    // compute angle and notify listener
-                    angle = angleBetweenLines(newx1, newy1, newx2, newy2)
-                    listener.onRotation(angle)
+        if (!rotatable) {
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> { // First touch
+                    ptrID1 = event.getPointerId(event.actionIndex) // first finger down's pointer
+                    Log.d(TAG, "First")
                 }
-                Log.d(TAG, "Angle")
-            }
-            MotionEvent.ACTION_UP -> { // First finger lifted
-                ptrID1 = INVALID_PTR_ID
-                Log.d(TAG, "Up")
-            }
-            MotionEvent.ACTION_POINTER_UP -> { // Second finger lifted
-                ptrID2 = INVALID_PTR_ID
-                Log.d(TAG, "ptr_up")
-            }
-            MotionEvent.ACTION_CANCEL -> { // Action is canceled
-                ptrID1 = INVALID_PTR_ID
-                ptrID2 = INVALID_PTR_ID
-                Log.d(TAG, "Cancel")
+                MotionEvent.ACTION_POINTER_DOWN -> { // Second touch
+                    ptrID2 =
+                        event.getPointerId(event.actionIndex) // second finger down's pointer ID
+
+                    x1 = event.getX(event.findPointerIndex(ptrID1))
+                    y1 = event.getY(event.findPointerIndex(ptrID1))
+                    x2 = event.getX(event.findPointerIndex(ptrID2))
+                    y2 = event.getY(event.findPointerIndex(ptrID2))
+                    Log.d(TAG, "Second")
+                }
+                MotionEvent.ACTION_MOVE -> { // Either finger moves
+                    if (ptrID1 != INVALID_PTR_ID && ptrID2 != INVALID_PTR_ID) {
+                        // Get new positions
+                        val newx1 = event.getX(event.findPointerIndex(ptrID1))
+                        val newy1 = event.getY(event.findPointerIndex(ptrID1))
+                        val newx2 = event.getX(event.findPointerIndex(ptrID2))
+                        val newy2 = event.getY(event.findPointerIndex(ptrID2))
+
+                        // compute angle and notify listener
+                        angle = angleBetweenLines(newx1, newy1, newx2, newy2)
+                        listener.onRotation(angle)
+                    }
+                    Log.d(TAG, "Angle")
+                }
+                MotionEvent.ACTION_UP -> { // First finger lifted
+                    ptrID1 = INVALID_PTR_ID
+                    Log.d(TAG, "Up")
+                }
+                MotionEvent.ACTION_POINTER_UP -> { // Second finger lifted
+                    ptrID2 = INVALID_PTR_ID
+                    Log.d(TAG, "ptr_up")
+                }
+                MotionEvent.ACTION_CANCEL -> { // Action is canceled
+                    ptrID1 = INVALID_PTR_ID
+                    ptrID2 = INVALID_PTR_ID
+                    Log.d(TAG, "Cancel")
+                }
             }
         }
 
         // Only call imageView's onTouch if 1 finger motion
         var success = true
-        if (event.pointerCount == 1) {
+        if (rotatable) {
             success = imageView.onTouchEvent(event)
         }
 

@@ -73,12 +73,14 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
     }
 
     private fun startDrawing() {
+        rotationGestureDetector.rotatable = true
         binding.paintImageView.inEditMode = true
         binding.paintModeButton.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
         binding.colorSlider.visibility = View.VISIBLE
     }
 
     private fun stopDrawing() {
+        rotationGestureDetector.rotatable = false
         binding.paintImageView.inEditMode = false
         binding.paintModeButton.setBackgroundColor(0)
         binding.colorSlider.visibility = View.GONE
