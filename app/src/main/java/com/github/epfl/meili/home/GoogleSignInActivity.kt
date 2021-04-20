@@ -29,7 +29,7 @@ class GoogleSignInActivity : AppCompatActivity() {
         updateUI()
     }
 
-    fun OnMapViewButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
+    fun onMapViewButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
         val intent = Intent(this, MapActivity::class.java)
         startActivity(intent)
     }

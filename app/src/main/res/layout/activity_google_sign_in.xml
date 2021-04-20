@@ -39,7 +39,7 @@
         android:text="Open Map View"
         android:backgroundTint="@color/pink"
         android:textColor="@color/brown"
-        android:onClick="OnMapViewButtonClick"
+        android:onClick="onMapViewButtonClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
