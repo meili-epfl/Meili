@@ -79,7 +79,13 @@ class RotationGestureDetector(listener: OnRotationGestureListener, imageView: Im
             }
         }
 
-        return imageView.onTouchEvent(event)
+        // Only call imageView's onTouch if 1 finger motion
+        var success = true
+        if (event.pointerCount == 1) {
+            success = imageView.onTouchEvent(event)
+        }
+
+        return success
     }
 
     /** Compute angle between lines formed by previous positions and new positions */
