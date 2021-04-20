@@ -12,9 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.databinding.ActivityPhotoEditBinding
 import com.github.epfl.meili.util.RotationGestureDetector
-import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.sin
 
 
 class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotationGestureListener {
@@ -31,9 +28,9 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         setContentView(binding.root)
 
 
-        /*binding.paintImageView.setOnTouchListener { _, event ->
+        binding.paintImageView.setOnTouchListener { _, event ->
             rotationGestureDetector.onTouchEvent(event) // Make crop container listen to touch events
-        }*/
+        }
 
         binding.cropImageView.setOnCropImageCompleteListener { _, _ ->
             binding.paintImageView.clear() // clear drawn lines so that they don't get duplicated after crop
@@ -67,7 +64,7 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         binding.paintModeButton.visibility = View.GONE
         stopDrawing()
 
-        findViewById<ImageView>(R.id.preview).setImageDrawable(binding.paintImageView.drawable)
+        findViewById<ImageView>(R.id.preview).setImageBitmap(getRotatedBitmap())
     }
 
     private fun changeDrawingColor() {
@@ -108,6 +105,8 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         binding.show.visibility = View.VISIBLE
         binding.paintModeButton.visibility = View.VISIBLE
         stopDrawing()
+
+        binding.paintImageView.rotation = 0f
     }
 
     /** Callback function for crop mode button */
@@ -122,7 +121,7 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         binding.paintModeButton.visibility = View.GONE
         stopDrawing()
 
-        binding.cropImageView.setImageBitmap((binding.paintImageView.drawable as BitmapDrawable).bitmap) // Show image in crop tool
+        binding.cropImageView.setImageBitmap(getRotatedBitmap()) // Show image in crop tool
     }
 
     /** Callback function for crop button */
@@ -134,37 +133,12 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
     /** Callback function for RotationGestureDetector.OnRotationGestureListener
      * Rotates crop image when two finger rotation motion */
     override fun onRotation(angle: Float) {
-        val bitmap = (binding.paintImageView.drawable as BitmapDrawable).bitmap // Get bitmap
+        binding.paintImageView.rotation += angle
+    }
 
-        val radians = Math.toRadians(angle.toDouble())
-        val sin = abs(sin(radians))
-        val cos = abs(cos(radians))
-        // figure out total width and height of new bitmap
-        val width = bitmap.width
-        val height = bitmap.height
-        val newWidth = (width * cos + height * sin).toInt()
-        val newHeight = (width * sin + height * cos).toInt()
-
-        val matrix =
-            Matrix().apply { postRotate(angle, width / 2f, height / 2f) } // rotation matrix
-                .apply {
-                    postTranslate(
-                        (newWidth - width) / 2f,
-                        (newHeight - height) / 2f
-                    )
-                } // Translation matrix
-
-        // Apply rotation
-        val rotated = Bitmap.createBitmap(
-            bitmap,
-            0,
-            0,
-            width,
-            height,
-            matrix,
-            true
-        )
-
-        binding.paintImageView.setImageBitmap(rotated) // Show image
+    private fun getRotatedBitmap(): Bitmap {
+        val original = (binding.paintImageView.drawable as BitmapDrawable).bitmap
+        val matrix = Matrix().apply { postRotate(binding.paintImageView.rotation) }
+        return Bitmap.createBitmap(original, 0, 0, original.width, original.height, matrix, true)
     }
 }
