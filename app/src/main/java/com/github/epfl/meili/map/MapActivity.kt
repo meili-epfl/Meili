@@ -106,7 +106,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             val intent = Intent(this, ForumActivity::class.java)
             intent.putExtra(POI_KEY, it.poi)
 
-            if(poiMarkerViewModel.mPointsOfInterestStatus.value?.get(it.poi) ==PoiMarkerViewModel.PointOfInterestStatus.REACHABLE){
+            if (poiMarkerViewModel.mPointsOfInterestStatus.value?.get(it.poi) == PoiMarkerViewModel.PointOfInterestStatus.REACHABLE) {
                 poiMarkerViewModel.setPoiVisited(it.poi)
             }
 
