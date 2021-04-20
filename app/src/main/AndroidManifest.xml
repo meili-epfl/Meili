@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.github.epfl.meili">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -20,24 +21,30 @@
         
 
         <!-- Kept to add new features easily and integrate later -->
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
 
         <!-- Activities in order of appearance -->
 
         <!-- Sign in screen first and automatically goto map in case the user is signed in -->
-        <activity android:name=".home.GoogleSignInActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity
+            android:name=".home.GoogleSignInActivity"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
 
         <!-- Map -->
         <activity
             android:name=".map.MapActivity"
             android:label="@string/title_activity_map"
-            android:parentActivityName=".home.GoogleSignInActivity" >
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".home.GoogleSignInActivity" />
