@@ -30,7 +30,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
-class ForumMenuButtonsTests {
+class ForumMenuButtonsTest {
 
     companion object {
         private const val MOCK_CHAT_PATH = "POI/mock-poi"
