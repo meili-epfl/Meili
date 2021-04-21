@@ -121,13 +121,6 @@ class MainActivityTest {
         Intents.intended(toPackage("com.github.epfl.meili"))
     }
 
-    @Test
-    fun clickingOnPhotoViewShouldLaunchIntent() {
-        onView(withId(R.id.launchPhotoView)).perform(click())
-
-        Intents.intended(toPackage("com.github.epfl.meili"))
-    }
-
 //    @Test
 //    fun testNavigation() {
 //        PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
