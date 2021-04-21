@@ -16,8 +16,8 @@ import androidx.test.rule.ActivityTestRule
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
-import com.github.epfl.meili.models.User
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.models.User
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.`is`

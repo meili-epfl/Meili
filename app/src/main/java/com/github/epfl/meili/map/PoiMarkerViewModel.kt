@@ -8,8 +8,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.volley.VolleyError
 import com.github.epfl.meili.database.Database
-import com.github.epfl.meili.poi.PoiService
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.poi.PoiService
 import com.google.android.gms.maps.model.LatLng
 import java.util.*
 import kotlin.collections.HashMap

@@ -15,9 +15,9 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.models.PointOfInterest
 import com.google.firebase.firestore.*
 import org.hamcrest.Matchers.allOf
 import org.junit.After

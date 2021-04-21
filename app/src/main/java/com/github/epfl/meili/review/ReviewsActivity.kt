@@ -17,8 +17,8 @@ import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.messages.ChatLogActivity
-import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 

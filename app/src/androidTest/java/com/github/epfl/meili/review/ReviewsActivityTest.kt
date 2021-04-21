@@ -20,8 +20,8 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.models.Review
 import com.google.firebase.firestore.*
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
