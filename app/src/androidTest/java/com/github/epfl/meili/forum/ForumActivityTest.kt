@@ -19,6 +19,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.storage.FirebaseStorageService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
@@ -32,6 +33,8 @@ import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -64,6 +67,12 @@ class ForumActivityTest {
 
     @get:Rule
     var testRule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(ForumActivity::class.java)
+
+    @Before
+    fun initIntents() = Intents.init()
+
+    @After
+    fun releaseIntents() = Intents.release()
 
     init {
         setupMocks()
@@ -188,13 +197,22 @@ class ForumActivityTest {
                 .check(matches(isDisplayed()))
                 .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_POST.title))))
 
-        Intents.init()
         onView(withText(TEST_POST.title)).perform(click())
         Intents.intended(allOf(
                 hasExtra("Post", TEST_POST),
                 hasComponent(PostActivity::class.java.name)
         ))
-        Intents.release()
+    }
+
+    @Test
+    fun useCameraIntentsTest() {
+        mockAuthenticationService.signOut()
+        database.onEvent(mockSnapshotBeforeAddition, null)
+
+        onView(withId(R.id.create_post)).perform(click())
+
+        onView(withId(R.id.post_use_camera)).perform(click())
+        Intents.intended(hasComponent(CameraActivity::class.java.name))
     }
     
     private fun textViewContainsText(content: String): Matcher<View?> {

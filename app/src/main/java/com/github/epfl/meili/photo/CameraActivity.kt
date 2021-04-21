@@ -154,24 +154,17 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun takePhoto() {
-        if (imageCapture == null) {
-            return
-        }
+        if (imageCapture == null) { return }
 
         // Create time-stamped output file to hold the image
-        val photoFile = File(
-            outputDirectory,
-            SimpleDateFormat(
-                FILENAME_FORMAT, Locale.US
-            ).format(System.currentTimeMillis()) + ".jpg"
-        )
+        val photoFile = File(outputDirectory,
+                SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".jpg")
 
         // Set up behaviour for when a photo is taken
         imageCapture!!.takePicture(
             ImageCapture.OutputFileOptions.Builder(photoFile).build(),
             ContextCompat.getMainExecutor(this),
-            object :
-                ImageCapture.OnImageSavedCallback {
+            object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
@@ -182,7 +175,8 @@ class CameraActivity : AppCompatActivity() {
                     setResult(RESULT_OK, intent)
                     finish()
                 }
-            })
+            }
+        )
     }
 
     /** Checks if device has access to start the camera, if not, ask the user for permission */
