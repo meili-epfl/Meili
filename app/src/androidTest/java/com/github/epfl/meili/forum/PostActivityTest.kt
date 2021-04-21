@@ -36,8 +36,8 @@ class PostActivityTest {
     }
 
     private val intent = Intent(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext, PostActivity::class.java)
-            .putExtra("Post", TEST_POST)
-            .putExtra("PostId", TEST_ID)
+            .putExtra(Post.TAG, TEST_POST)
+            .putExtra(PostActivity.POST_ID, TEST_ID)
 
     init {
         val mockFirebase = Mockito.mock(FirebaseStorage::class.java)

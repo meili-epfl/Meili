@@ -16,6 +16,7 @@ class PostActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "PostActivity"
         private val DEFAULT_URI = Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
+        const val POST_ID = "Post_ID"
     }
 
     private lateinit var imageView: ImageView
@@ -26,7 +27,7 @@ class PostActivity : AppCompatActivity() {
         setContentView(R.layout.activity_post)
 
         val post: Post = intent.getParcelableExtra(Post.TAG)!!
-        postId = intent.getStringExtra("PostId")!!
+        postId = intent.getStringExtra(POST_ID)!!
 
         val authorView: TextView = findViewById(R.id.post_author)
         val titleView: TextView = findViewById(R.id.post_title)

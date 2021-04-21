@@ -120,7 +120,7 @@ class ForumActivity : AppCompatActivity() {
         val postId: String = (view as TextView).text.toString()
         val intent: Intent = Intent(this, PostActivity::class.java)
                 .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
-                .putExtra("PostId", postId)
+                .putExtra(PostActivity.POST_ID, postId)
         startActivity(intent)
     }
 
@@ -201,7 +201,7 @@ class ForumActivity : AppCompatActivity() {
         }
     }
 
-    private fun compressed(bitmap: Bitmap): ByteArray {
+    private fun compressBitmap(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, stream)
         return stream.toByteArray()
@@ -213,7 +213,7 @@ class ForumActivity : AppCompatActivity() {
         }
 
         executor.execute {
-            FirebaseStorageService.uploadBytes(remotePath, compressed(bitmap!!))
+            FirebaseStorageService.uploadBytes(remotePath, compressBitmap(bitmap!!))
         }
     }
 
