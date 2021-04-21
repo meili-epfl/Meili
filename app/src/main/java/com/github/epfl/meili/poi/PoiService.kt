@@ -7,6 +7,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.util.CustomMath
 import com.github.epfl.meili.util.HttpRequestQueue
 import com.google.android.gms.maps.model.LatLng

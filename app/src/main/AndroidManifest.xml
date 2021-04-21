@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.github.epfl.meili">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,7 +18,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
         
-
         <!-- Kept to add new features easily and integrate later -->
         <activity android:name=".MainActivity">
         <intent-filter>
@@ -50,28 +48,12 @@
                 android:value=".home.GoogleSignInActivity" />
         </activity>
 
-        <!-- Map menu features -->
-        <activity
-            android:name=".PhotoDemoActivity"
-            android:parentActivityName=".map.MapActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".map.MapActivity" />
-        </activity>
-
         <activity
             android:name=".photo.CameraActivity"
-            android:parentActivityName=".map.MapActivity">
+            android:parentActivityName=".forum.ForumActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".map.MapActivity" />
-        </activity>
-        <activity
-            android:name=".photo.PhotoDisplayActivity"
-            android:parentActivityName=".photo.CameraActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".photo.CameraActivity" />
+                android:value=".forum.ForumActivity" />
         </activity>
 
         <!-- POI features: forum, chat & review system -->

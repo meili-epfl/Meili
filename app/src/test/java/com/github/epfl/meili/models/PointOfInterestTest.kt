@@ -1,4 +1,4 @@
-package com.github.epfl.meili.poi
+package com.github.epfl.meili.models
 
 import com.google.android.gms.maps.model.LatLng
 import org.junit.Assert.assertEquals

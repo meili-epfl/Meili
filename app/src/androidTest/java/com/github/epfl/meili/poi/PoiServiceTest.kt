@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
+import com.github.epfl.meili.models.PointOfInterest
 import com.google.android.gms.maps.model.LatLng
 import org.json.JSONObject
 import org.junit.Assert.assertEquals

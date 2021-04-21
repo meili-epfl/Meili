@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Looper
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.epfl.meili.MainApplication
-import com.github.epfl.meili.poi.PointOfInterest
+import com.github.epfl.meili.models.PointOfInterest
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.MarkerOptions

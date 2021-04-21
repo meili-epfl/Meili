@@ -2,29 +2,22 @@ package com.github.epfl.meili.messages
 
 
 import android.content.Intent
-import android.view.KeyEvent
-import android.view.View
-import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.forum.ForumActivity
-import com.github.epfl.meili.forum.ForumMenuButtonsTests
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.poi.PointOfInterest
-import com.github.epfl.meili.review.ReviewMenuButtonsTest
 import com.google.firebase.firestore.*
 import org.hamcrest.Matchers.allOf
 import org.junit.After

@@ -1,4 +1,4 @@
-package com.github.epfl.meili.poi
+package com.github.epfl.meili.models
 
 import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
@@ -35,6 +35,6 @@ data class PointOfInterest(
     companion object {
         const val START_CHAR = '{'
         const val END_CHAR = '}'
-        const val TAG = "PointOfInterestClass"
+        const val TAG = "PointOfInterest"
     }
 }
