@@ -8,8 +8,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -21,6 +23,7 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.storage.FirebaseStorageService
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
@@ -49,12 +52,18 @@ class ForumActivity : AppCompatActivity() {
     private lateinit var cancelButton: Button
 
     // image choice and upload
-    private val getContent =  registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it, contentResolver) }
-    private lateinit var chooseImageButton: ImageView
+    private val launchCameraActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
+                loadImage(result.data!!.data!!, contentResolver)
+            }
+        }
+    private val launchGallery =  registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it, contentResolver) }
+    private lateinit var useCameraButton: ImageView
+    private lateinit var useGalleryButton: ImageView
     private lateinit var displayImageView: ImageView
     private lateinit var executor: ExecutorService
     private var bitmap: Bitmap? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +89,8 @@ class ForumActivity : AppCompatActivity() {
         submitButton = findViewById(R.id.submit_post)
         cancelButton = findViewById(R.id.cancel_post)
 
-        chooseImageButton = findViewById(R.id.choose_image)
+        useCameraButton = findViewById(R.id.post_use_camera)
+        useGalleryButton = findViewById(R.id.post_use_gallery)
         displayImageView = findViewById(R.id.post_display_image)
     }
 
@@ -92,12 +102,11 @@ class ForumActivity : AppCompatActivity() {
 
     fun onForumButtonClick(view: View) {
         when(view) {
-            createPostButton -> {
-                showEditPostView()
-            }
+            createPostButton -> showEditPostView()
             submitButton -> addPost()
             cancelButton -> showListPostsView()
-            chooseImageButton -> getContent.launch("image/*")
+            useGalleryButton -> launchGallery.launch("image/*")
+            useCameraButton -> launchCameraActivity.launch(Intent(this, CameraActivity::class.java))
             else -> openPost(view.findViewById(R.id.post_id))
         }
     }

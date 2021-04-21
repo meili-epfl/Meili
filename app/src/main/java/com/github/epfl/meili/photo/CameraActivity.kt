@@ -22,7 +22,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CameraActivity : AppCompatActivity() {
-    private val TAG = "CameraActivity"
+    companion object {
+        private const val REQUEST_CODE_PERMISSIONS = 10
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        private const val PRESS_DELAY = 200L
+        private const val TAG = "CameraActivity"
+    }
 
     private var imageCapture: ImageCapture? = null // is null when camera hasn't started
     private lateinit var cameraProvider: ProcessCameraProvider
@@ -171,9 +177,10 @@ class CameraActivity : AppCompatActivity() {
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val intent = Intent(applicationContext, PhotoDisplayActivity::class.java)
-                    intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
-                    startActivity(intent)
+                    val intent = Intent()
+                    intent.data = Uri.fromFile(photoFile)
+                    setResult(RESULT_OK, intent)
+                    finish()
                 }
             })
     }
@@ -228,13 +235,5 @@ class CameraActivity : AppCompatActivity() {
         }
         return if (mediaDir != null && mediaDir.exists())
             mediaDir else applicationContext.filesDir
-    }
-
-    companion object {
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-        const val URI_KEY = "URI_KEY"
-        private const val PRESS_DELAY = 200L
     }
 }
