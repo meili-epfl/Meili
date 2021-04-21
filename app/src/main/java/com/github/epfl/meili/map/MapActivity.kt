@@ -15,7 +15,7 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.poi.PoiService
-import com.github.epfl.meili.poi.PointOfInterest
+import com.github.epfl.meili.models.PointOfInterest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom

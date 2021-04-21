@@ -1,5 +1,6 @@
 package com.github.epfl.meili.poi
 
+import com.github.epfl.meili.models.PointOfInterest
 import com.google.android.gms.maps.model.LatLng
 import org.junit.Assert.assertEquals
 import org.junit.Test

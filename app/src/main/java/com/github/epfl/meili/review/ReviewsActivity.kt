@@ -18,7 +18,7 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Review
-import com.github.epfl.meili.poi.PointOfInterest
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 
@@ -55,9 +55,7 @@ class ReviewsActivity : AppCompatActivity() {
         listReviewsView = findViewById(R.id.list_reviews)
         editReviewView = findViewById(R.id.edit_review)
 
-
-        //take the entire poi even if only the name is needed in case you want to go to chat acitivty directly
-        val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.name
+        val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
         showListReviewsView()
         initReviewEditView()
         initRecyclerView()
@@ -122,7 +120,7 @@ class ReviewsActivity : AppCompatActivity() {
         @Suppress("UNCHECKED_CAST")
         viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
-        viewModel.setDatabase(FirestoreDatabase(poiKey, Review::class.java))
+        viewModel.setDatabase(FirestoreDatabase("review/$poiKey/reviews", Review::class.java))
         viewModel.getElements().observe(this, { map ->
             reviewsMapListener(map)
         })
@@ -185,7 +183,7 @@ class ReviewsActivity : AppCompatActivity() {
         // get the POI
         val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!
         //Now that the buttons are added at the top control what each menu buttons does
-        val intent: Intent = when (item?.itemId) {
+        val intent: Intent = when (item.itemId) {
             R.id.menu_chat_from_review -> {
                 Intent(this, ChatLogActivity::class.java)
                     .putExtra(MapActivity.POI_KEY, poi)

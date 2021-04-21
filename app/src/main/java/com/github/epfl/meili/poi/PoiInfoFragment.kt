@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.github.epfl.meili.R
+import com.github.epfl.meili.models.PointOfInterest
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.*
 

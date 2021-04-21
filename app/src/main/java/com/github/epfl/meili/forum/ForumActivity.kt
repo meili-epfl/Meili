@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -27,7 +28,7 @@ import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
-import com.github.epfl.meili.poi.PointOfInterest
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.review.ReviewsActivity
 import com.github.epfl.meili.storage.FirebaseStorageService
 import com.github.epfl.meili.util.MeiliViewModel
@@ -40,7 +41,6 @@ import java.util.concurrent.Executors
 class ForumActivity : AppCompatActivity() {
     companion object {
         private const val CARD_PADDING: Int = 30
-        private const val FIRESTORE_PATH: String = "posts"
         private const val COMPRESSION_QUALITY = 75 // 0 (max compression) to 100 (loss-less compression)
     }
 
@@ -76,9 +76,10 @@ class ForumActivity : AppCompatActivity() {
 
         executor = Executors.newSingleThreadExecutor()
 
+        val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
         initViews()
         initRecyclerView()
-        initViewModel()
+        initViewModel(poiKey)
         initLoggedInListener()
 
         showListPostsView()
@@ -119,7 +120,7 @@ class ForumActivity : AppCompatActivity() {
     private fun openPost(view: View) {
         val postId: String = (view as TextView).text.toString()
         val intent: Intent = Intent(this, PostActivity::class.java)
-                .putExtra("Post", viewModel.getElements().value?.get(postId))
+                .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
                 .putExtra("PostId", postId)
         startActivity(intent)
     }
@@ -145,11 +146,11 @@ class ForumActivity : AppCompatActivity() {
         showListPostsView()
     }
 
-    private fun initViewModel() {
+    private fun initViewModel(poiKey: String) {
         @Suppress("UNCHECKED_CAST")
         viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Post>
 
-        viewModel.setDatabase(FirestoreDatabase(FIRESTORE_PATH, Post::class.java))
+        viewModel.setDatabase(FirestoreDatabase("forum/$poiKey/posts", Post::class.java))
         viewModel.getElements().observe(this, { map ->
             recyclerAdapter.submitList(map.toList())
             recyclerAdapter.notifyDataSetChanged()

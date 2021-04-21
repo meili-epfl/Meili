@@ -25,7 +25,7 @@ class PostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
 
-        val post: Post = intent.getParcelableExtra("Post")!!
+        val post: Post = intent.getParcelableExtra(Post.TAG)!!
         postId = intent.getStringExtra("PostId")!!
 
         val authorView: TextView = findViewById(R.id.post_author)

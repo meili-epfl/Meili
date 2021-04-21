@@ -13,6 +13,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
+import com.github.epfl.meili.models.PointOfInterest
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.libraries.places.api.model.OpeningHours
 import com.google.android.libraries.places.api.model.PhotoMetadata

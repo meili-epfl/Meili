@@ -13,7 +13,7 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.messages.ChatMessageViewModel
 import com.github.epfl.meili.messages.MockMessageDatabase
-import com.github.epfl.meili.poi.PointOfInterest
+import com.github.epfl.meili.models.PointOfInterest
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration

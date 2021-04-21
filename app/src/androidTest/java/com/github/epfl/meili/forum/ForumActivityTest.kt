@@ -1,5 +1,6 @@
 package com.github.epfl.meili.forum
 
+import android.content.Intent
 import android.net.Uri
 import android.view.View
 import android.widget.TextView
@@ -15,11 +16,16 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.photo.CameraActivity
+import com.github.epfl.meili.review.ReviewsActivity
+import com.github.epfl.meili.review.ReviewsActivityTest
 import com.github.epfl.meili.storage.FirebaseStorageService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
@@ -52,6 +58,7 @@ class ForumActivityTest {
         private const val TEST_UID = "UID"
         private const val TEST_USERNAME = "AUTHOR"
         private val TEST_POST = Post(TEST_USERNAME, "TITLE", "TEXT")
+        private val TEST_POI_KEY = PointOfInterest(100.0,100.0,"lorem_ipsum1", "lorem_ipsum2")
     }
 
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
@@ -65,8 +72,11 @@ class ForumActivityTest {
 
     private lateinit var database: FirestoreDatabase<Post>
 
+    private val intent = Intent(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext, ForumActivity::class.java)
+            .putExtra(MapActivity.POI_KEY, TEST_POI_KEY)
+
     @get:Rule
-    var testRule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(ForumActivity::class.java)
+    var rule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(intent)
 
     @Before
     fun initIntents() = Intents.init()
@@ -80,7 +90,7 @@ class ForumActivityTest {
     }
 
     private fun setupMocks() {
-        `when`(mockFirestore.collection("posts")).thenReturn(mockCollection)
+        `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts")).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
             database = invocation.arguments[0] as FirestoreDatabase<Post>
             mock(ListenerRegistration::class.java)
@@ -206,7 +216,7 @@ class ForumActivityTest {
 
     @Test
     fun useCameraIntentsTest() {
-        mockAuthenticationService.signOut()
+        mockAuthenticationService.signInIntent()
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.create_post)).perform(click())

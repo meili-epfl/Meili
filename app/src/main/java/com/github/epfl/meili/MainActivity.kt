@@ -8,9 +8,8 @@ import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.messages.ChatLogActivity
-import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.poi.PoiActivity
-import com.github.epfl.meili.poi.PointOfInterest
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.review.ReviewsActivity
 
 
