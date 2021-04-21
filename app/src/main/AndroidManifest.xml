@@ -12,27 +12,76 @@
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/meili_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/meili_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
         
+        <!-- Kept to add new features easily and integrate later -->
+        <activity android:name=".MainActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
+        <!-- Activities in order of appearance -->
+
+        <!-- Sign in screen first and automatically goto map in case the user is signed in -->
         <activity
-            android:name=".photo.CameraActivity"
-            android:parentActivityName=".MainActivity">
+            android:name=".home.GoogleSignInActivity"
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <!-- Map -->
+        <activity
+            android:name=".map.MapActivity"
+            android:label="@string/title_activity_map"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".home.GoogleSignInActivity" />
         </activity>
-        <activity android:name=".messages.ChatLogActivity" />
+
+        <activity
+            android:name=".photo.CameraActivity"
+            android:parentActivityName=".forum.ForumActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".forum.ForumActivity" />
+        </activity>
+
+        <!-- POI features: forum, chat & review system -->
+        <activity
+            android:name=".messages.ChatLogActivity"
+            android:parentActivityName=".map.MapActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".map.MapActivity" />
+        </activity>
+
+        <activity
+            android:name=".forum.ForumActivity"
+            android:parentActivityName=".map.MapActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".map.MapActivity" />
+        </activity>
+
+        <activity
+            android:name=".review.ReviewsActivity"
+            android:parentActivityName=".map.MapActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".map.MapActivity" />
+        </activity>
+
+        <!-- Secondary Activities -->
         <activity
             android:name=".poi.PoiActivity"
             android:parentActivityName=".map.MapActivity">
@@ -41,22 +90,10 @@
                 android:value=".map.MapActivity" />
         </activity>
 
-        <activity android:name=".home.GoogleSignInActivity" />
-        <activity
-            android:name=".review.ReviewsActivity"
-            android:parentActivityName=".MainActivity" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".map.MapActivity"
-            android:label="@string/title_activity_map"
-            android:parentActivityName=".MainActivity" />
-
-        <activity android:name=".forum.ForumActivity"
-            android:parentActivityName=".MainActivity"/>
         <activity android:name=".forum.PostActivity"
             android:parentActivityName=".forum.ForumActivity"/>
     </application>

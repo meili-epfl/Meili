@@ -8,7 +8,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResult
@@ -21,9 +22,13 @@ import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
+import com.github.epfl.meili.poi.PointOfInterest
+import com.github.epfl.meili.review.ReviewsActivity
 import com.github.epfl.meili.storage.FirebaseStorageService
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
@@ -210,5 +215,34 @@ class ForumActivity : AppCompatActivity() {
         executor.execute {
             FirebaseStorageService.uploadBytes(remotePath, compressed(bitmap!!))
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        //Inflate menu to enable adding chat and review buttons on the top
+        menuInflater.inflate(R.menu.nav_forum_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // get the POI
+        val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!
+        //Now that the buttons are added at the top control what each menu buttons does
+        val intent: Intent = when (item?.itemId) {
+            R.id.menu_reviews_from_forum -> {
+                Intent(this, ReviewsActivity::class.java)
+                        .putExtra(MapActivity.POI_KEY, poi)
+            }
+            R.id.menu_chat_from_forum-> {
+                Intent(this, ChatLogActivity::class.java)
+                        .putExtra(MapActivity.POI_KEY, poi)
+            }
+            else -> {
+                Intent(this, ForumActivity::class.java)
+            }
+        }
+        //clear the older intents so that the back button works correctly
+        //intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        return super.onOptionsItemSelected(item)
     }
 }

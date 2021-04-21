@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
+import com.github.epfl.meili.map.MapActivity
 
 class GoogleSignInActivity : AppCompatActivity() {
 
@@ -28,6 +29,11 @@ class GoogleSignInActivity : AppCompatActivity() {
         updateUI()
     }
 
+    fun onMapViewButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
+        val intent = Intent(this, MapActivity::class.java)
+        startActivity(intent)
+    }
+
     fun onGoogleButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
         if (Auth.getCurrentUser() != null) {
             signOut()
@@ -45,12 +51,17 @@ class GoogleSignInActivity : AppCompatActivity() {
     }
 
     private fun updateUI() {
-        var message: String = "Sign in"
+        var message: String = "Sign In to use the map"
         var buttonMessage = "Sign In"
 
+        //disable map button if not signed in
+        val button = findViewById<Button>(R.id.mapButton)
+        button.isEnabled = false
+
         if (Auth.isLoggedIn.value!!) {
-            message = Auth.name!!
+            message = "Welcome "+Auth.name!!+"!"
             buttonMessage = "Sign Out"
+            button.isEnabled = true
         }
 
         findViewById<TextView>(R.id.textFieldSignIn).text = message

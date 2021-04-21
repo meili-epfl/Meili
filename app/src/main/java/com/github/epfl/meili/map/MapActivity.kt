@@ -12,8 +12,8 @@ import androidx.core.content.ContextCompat
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.poi.PoiActivity
 import com.github.epfl.meili.poi.PoiService
 import com.github.epfl.meili.poi.PointOfInterest
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -59,8 +59,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Initialize API entry points
         Places.initialize(
-                applicationContext,
-                getString(R.string.google_maps_key)
+            applicationContext,
+            getString(R.string.google_maps_key)
         ) // change API key here
 
         placesClient = Places.createClient(this)
@@ -99,10 +99,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Add on click listener
         clusterManager.setOnClusterItemClickListener {
-            val intent = Intent(this, PoiActivity::class.java)
+            val intent = Intent(this, ForumActivity::class.java)
             intent.putExtra(POI_KEY, it.poi)
 
-            if(poiMarkerViewModel.mPointsOfInterestStatus.value?.get(it.poi) ==PoiMarkerViewModel.PointOfInterestStatus.REACHABLE){
+            if (poiMarkerViewModel.mPointsOfInterestStatus.value?.get(it.poi) == PoiMarkerViewModel.PointOfInterestStatus.REACHABLE) {
                 poiMarkerViewModel.setPoiVisited(it.poi)
             }
 
@@ -132,15 +132,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun isPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
-                this.applicationContext,
-                Manifest.permission.ACCESS_FINE_LOCATION
+            this.applicationContext,
+            Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         updateMapUI()
@@ -171,8 +171,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             error("Assertion failed")
         }
         ActivityCompat.requestPermissions(
-                this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_CODE
+            this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            REQUEST_CODE
         )
     }
 
@@ -197,10 +197,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             if (task.isSuccessful && task.result != null) {
                 location = task.result
                 map.moveCamera(
-                        newLatLngZoom(
-                                LatLng(location!!.latitude, location!!.longitude),
-                                DEFAULT_ZOOM.toFloat()
-                        )
+                    newLatLngZoom(
+                        LatLng(location!!.latitude, location!!.longitude),
+                        DEFAULT_ZOOM.toFloat()
+                    )
                 )
             }
         }

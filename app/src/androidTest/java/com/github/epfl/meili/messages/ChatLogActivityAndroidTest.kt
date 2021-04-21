@@ -17,8 +17,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
 import com.github.epfl.meili.models.User
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PointOfInterest
+import com.github.epfl.meili.poi.PointOfInterest
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.`is`
@@ -39,7 +38,7 @@ class ChatLogActivityAndroidTest {
     private val fake_id = "fake_id"
     private val fake_name = "fake_name_sender"
     private val fake_poi: PointOfInterest =
-        PointOfInterest(LatLng(10.0, 10.0), "fake_poi", "fake_poi")
+        PointOfInterest(10.0, 10.0, "fake_poi", "fake_poi")
     private val MOCK_EMAIL = "moderator2@gmail.com"
     private val MOCK_PASSWORD = "123123"
 
