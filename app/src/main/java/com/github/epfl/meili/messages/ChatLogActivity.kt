@@ -20,6 +20,7 @@ import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.review.ReviewsActivity
 import com.github.epfl.meili.util.DateAuxiliary
+import com.github.epfl.meili.util.MenuInflaterHelper
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -115,31 +116,12 @@ class ChatLogActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        //Inflate menu to enable adding chat and review buttons on the top
-        menuInflater.inflate(R.menu.nav_chat_menu, menu)
+        MenuInflaterHelper.onCreateOptionsMenuHelper(this, R.menu.nav_chat_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // get the POI
-        val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!
-        //Now that the buttons are added at the top control what each menu buttons does
-        val intent: Intent = when (item?.itemId) {
-            R.id.menu_reviews_from_chat -> {
-                Intent(this, ReviewsActivity::class.java)
-                    .putExtra(MapActivity.POI_KEY, poi)
-            }
-            R.id.menu_forum_from_chat-> {
-                Intent(this, ForumActivity::class.java)
-                    .putExtra(MapActivity.POI_KEY, poi)
-            }
-            else -> {
-                Intent(this, ChatLogActivity::class.java)
-            }
-        }
-        //clear the older intents so that the back button works correctly
-        //intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
+        MenuInflaterHelper.onOptionsItemSelectedHelpoer(this, item, intent)
         return super.onOptionsItemSelected(item)
     }
 }

@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
+import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
@@ -31,6 +32,7 @@ import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.review.ReviewsActivity
 import com.github.epfl.meili.storage.FirebaseStorageService
 import com.github.epfl.meili.util.MeiliViewModel
+import com.github.epfl.meili.util.MenuInflaterHelper
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.ExecutorService
@@ -219,30 +221,12 @@ class ForumActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         //Inflate menu to enable adding chat and review buttons on the top
-        menuInflater.inflate(R.menu.nav_forum_menu, menu)
+        MenuInflaterHelper.onCreateOptionsMenuHelper(this, R.menu.nav_forum_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // get the POI
-        val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!
-        //Now that the buttons are added at the top control what each menu buttons does
-        val intent: Intent = when (item?.itemId) {
-            R.id.menu_reviews_from_forum -> {
-                Intent(this, ReviewsActivity::class.java)
-                        .putExtra(MapActivity.POI_KEY, poi)
-            }
-            R.id.menu_chat_from_forum-> {
-                Intent(this, ChatLogActivity::class.java)
-                        .putExtra(MapActivity.POI_KEY, poi)
-            }
-            else -> {
-                Intent(this, ForumActivity::class.java)
-            }
-        }
-        //clear the older intents so that the back button works correctly
-        //intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
+        MenuInflaterHelper.onOptionsItemSelectedHelpoer(this, item, intent)
         return super.onOptionsItemSelected(item)
     }
 }
