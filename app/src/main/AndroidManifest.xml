@@ -17,7 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
-        
+
         <activity android:name=".PhotoDemoActivity" />
         <activity
             android:name=".photo.CameraActivity"
@@ -28,6 +28,13 @@
         </activity>
         <activity
             android:name=".photo.PhotoEditActivity"
+            android:parentActivityName=".photo.CameraActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".photo.CameraActivity" />
+        </activity>
+        <activity
+            android:name=".photo.PhotoEditorActivity"
             android:parentActivityName=".photo.CameraActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

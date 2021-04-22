@@ -122,7 +122,6 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         binding.cropButton.visibility = View.VISIBLE
         binding.show.visibility = View.GONE
         binding.paintModeButton.visibility = View.GONE
-
         stopDrawing()
 
         binding.cropImageView.setImageBitmap(getRotatedBitmap()) // Show image in crop tool

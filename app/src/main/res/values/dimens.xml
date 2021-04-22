@@ -16,5 +16,10 @@
     <dimen name="shutter_button_margin">60dp</dimen>
 
     <dimen name="switch_camera_button_size">50dp</dimen>
+    <!--
+    Because the window insets on round devices are larger than 15dp, this padding only applies
+    to square screens.
+    -->
+    <dimen name="box_inset_layout_padding">0dp</dimen>
 
 </resources>

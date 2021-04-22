@@ -7,4 +7,10 @@
     <string name="submit_text">Submit</string>
     <string name="cancel_text">Cancel</string>
     <string name="fab_review_content_description">add/edit my review</string>
+    <string name="title_activity_photo_editor">PhotoEditorActivity</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
 </resources>
