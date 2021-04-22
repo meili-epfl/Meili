@@ -20,6 +20,7 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
 import com.google.firebase.firestore.*
 import org.hamcrest.CoreMatchers.not
@@ -41,7 +42,8 @@ class ReviewsActivityTest {
 
     companion object {
         private const val TEST_UID = "MrPerfect"
-        private const val TEST_POI_KEY = "poiKey"
+
+        private val TEST_POI_KEY = PointOfInterest(100.0,100.0,"lorem_ipsum1", "lorem_ipsum2")
         private const val TEST_TITLE = "Beach too sandy"
         private const val TEST_SUMMARY = "Water too wet"
 
@@ -76,7 +78,7 @@ class ReviewsActivityTest {
     }
 
     private fun setupMocks() {
-        `when`(mockFirestore.collection(any())).thenReturn(mockCollection)
+        `when`(mockFirestore.collection("review/${TEST_POI_KEY.uid}/reviews")).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
             database = invocation.arguments[0] as FirestoreDatabase<Review>
             mock(ListenerRegistration::class.java)

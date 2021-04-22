@@ -12,10 +12,10 @@ import androidx.core.content.ContextCompat
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.poi.PoiActivity
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiService
-import com.github.epfl.meili.poi.PointOfInterest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
@@ -104,7 +104,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Add on click listener
         clusterManager.setOnClusterItemClickListener {
-            val intent = Intent(this, PoiActivity::class.java)
+            val intent = Intent(this, ForumActivity::class.java)
             intent.putExtra(POI_KEY, it.poi)
 
             if (poiMarkerViewModel.mPointsOfInterestStatus.value?.get(it.poi) == PoiMarkerViewModel.PointOfInterestStatus.REACHABLE) {

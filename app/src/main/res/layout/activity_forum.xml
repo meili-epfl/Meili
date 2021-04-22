@@ -13,61 +13,91 @@
 
         <EditText
             android:id="@+id/post_edit_title"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
             android:ems="10"
             android:gravity="start|top"
             android:hint="Title (70 characters max.)"
             android:inputType="textMultiLine"
             android:maxLength="70"
-            app:layout_constraintBottom_toTopOf="@+id/post_edit_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/post_edit_text"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
             android:ems="10"
             android:gravity="start|top"
             android:hint="Text (500 characters max.)"
             android:inputType="textMultiLine"
             android:maxLength="500"
-            app:layout_constraintBottom_toTopOf="@+id/submit_post"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintTop_toBottomOf="@id/post_edit_title"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/submit_post"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="429dp"
-            android:layout_marginBottom="100dp"
-            android:onClick="onForumButtonClick"
-            android:text="Create post"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             />
 
-        <Button
-            android:id="@+id/cancel_post"
+        <ImageView
+            android:id="@+id/post_display_image"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="23dp"
-            android:onClick="onForumButtonClick"
-            android:text="Cancel"
-            app:layout_constraintEnd_toEndOf="parent"
+            tools:srcCompat="@tools:sample/backgrounds/scenic"
+            app:layout_constraintTop_toBottomOf="@id/post_edit_text"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/submit_post" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.7"
+            android:layout_height="0dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/post_display_image"
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/post_use_camera"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    app:srcCompat="@android:drawable/ic_menu_camera"
+                    android:onClick="onForumButtonClick"
+                    />
+
+                <ImageView
+                    android:id="@+id/post_use_gallery"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    app:srcCompat="@android:drawable/ic_menu_gallery"
+                    android:onClick="onForumButtonClick"
+                    />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/submit_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onForumButtonClick"
+                android:text="Create post"
+                />
+
+            <Button
+                android:id="@+id/cancel_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onForumButtonClick"
+                android:text="Cancel"/>
+
+        </LinearLayout>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -77,10 +107,11 @@
         android:id="@+id/list_posts">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/forum_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/forum_recycler_view"
-            />
+            tools:layout_editor_absoluteX="12dp"
+            tools:layout_editor_absoluteY="33dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/create_post"
