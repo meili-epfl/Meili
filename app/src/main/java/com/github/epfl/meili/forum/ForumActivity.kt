@@ -15,6 +15,7 @@ import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,7 +41,8 @@ import java.util.concurrent.Executors
 class ForumActivity : AppCompatActivity() {
     companion object {
         private const val CARD_PADDING: Int = 30
-        private const val COMPRESSION_QUALITY = 75 // 0 (max compression) to 100 (loss-less compression)
+        private const val COMPRESSION_QUALITY =
+            75 // 0 (max compression) to 100 (loss-less compression)
     }
 
     private lateinit var recyclerAdapter: ForumRecyclerAdapter
@@ -55,6 +57,11 @@ class ForumActivity : AppCompatActivity() {
     private lateinit var submitButton: Button
     private lateinit var cancelButton: Button
 
+    private lateinit var upvoteConstraintLayout: ConstraintLayout
+    private lateinit var upvoteButton: ImageButton
+    private lateinit var downvoteButton: ImageButton
+    private lateinit var upvoteText: TextView
+
     // image choice and upload
     private val launchCameraActivity =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -62,7 +69,12 @@ class ForumActivity : AppCompatActivity() {
                 loadImage(result.data!!.data!!, contentResolver)
             }
         }
-    private val launchGallery =  registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it, contentResolver) }
+    private val launchGallery = registerForActivityResult(ActivityResultContracts.GetContent()) {
+        loadImage(
+            it,
+            contentResolver
+        )
+    }
     private lateinit var useCameraButton: ImageView
     private lateinit var useGalleryButton: ImageView
     private lateinit var displayImageView: ImageView
@@ -97,6 +109,7 @@ class ForumActivity : AppCompatActivity() {
         useCameraButton = findViewById(R.id.post_use_camera)
         useGalleryButton = findViewById(R.id.post_use_gallery)
         displayImageView = findViewById(R.id.post_display_image)
+
     }
 
     override fun onDestroy() {
@@ -106,7 +119,7 @@ class ForumActivity : AppCompatActivity() {
     }
 
     fun onForumButtonClick(view: View) {
-        when(view) {
+        when (view) {
             createPostButton -> showEditPostView()
             submitButton -> addPost()
             cancelButton -> showListPostsView()
@@ -116,11 +129,15 @@ class ForumActivity : AppCompatActivity() {
         }
     }
 
+    fun onUpvoteButtonClick(view: View) {}
+
+    fun onDownvoteButtonClick(view: View) {}
+
     private fun openPost(view: View) {
         val postId: String = (view as TextView).text.toString()
         val intent: Intent = Intent(this, PostActivity::class.java)
-                .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
-                .putExtra(PostActivity.POST_ID, postId)
+            .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
+            .putExtra(PostActivity.POST_ID, postId)
         startActivity(intent)
     }
 
@@ -173,6 +190,11 @@ class ForumActivity : AppCompatActivity() {
                 View.VISIBLE
             else
                 View.GONE
+            upvoteConstraintLayout.isEnabled = loggedIn
+            upvoteConstraintLayout.visibility = if (loggedIn)
+                View.VISIBLE
+            else
+                View.GONE
         })
     }
 
@@ -189,7 +211,10 @@ class ForumActivity : AppCompatActivity() {
     private fun loadImage(filePath: Uri, contentResolver: ContentResolver) {
         executor.execute {
             val bitmap: Bitmap = if (Build.VERSION.SDK_INT < 28) {
-                MediaStore.Images.Media.getBitmap(contentResolver, filePath) // deprecated for SDK_INT >= 28
+                MediaStore.Images.Media.getBitmap(
+                    contentResolver,
+                    filePath
+                ) // deprecated for SDK_INT >= 28
             } else {
                 ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, filePath))
             }
@@ -230,11 +255,11 @@ class ForumActivity : AppCompatActivity() {
         val intent: Intent = when (item?.itemId) {
             R.id.menu_reviews_from_forum -> {
                 Intent(this, ReviewsActivity::class.java)
-                        .putExtra(MapActivity.POI_KEY, poi)
+                    .putExtra(MapActivity.POI_KEY, poi)
             }
-            R.id.menu_chat_from_forum-> {
+            R.id.menu_chat_from_forum -> {
                 Intent(this, ChatLogActivity::class.java)
-                        .putExtra(MapActivity.POI_KEY, poi)
+                    .putExtra(MapActivity.POI_KEY, poi)
             }
             else -> {
                 Intent(this, ForumActivity::class.java)
