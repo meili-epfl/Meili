@@ -42,13 +42,13 @@ class PoiServiceCachedTest {
         service.setSharedPreferences(mockSharedPreferences)
     }
 
-    private fun initPreferencesWithData(timestamp: Long){
+    private fun initPreferencesWithData(timestamp: Long) {
         `when`(mockSharedPreferences.getLong(Mockito.anyString(), Mockito.anyLong())).thenReturn(timestamp)
         `when`(mockSharedPreferences.getString(Mockito.anyString(), Mockito.anyString())).then {
             val key = it.arguments[0] as String
-            if(key == PoiServiceCached.POSITION_KEY){
+            if (key == PoiServiceCached.POSITION_KEY) {
                 return@then Gson().toJson(testPosition, LatLng::class.java)
-            }else{
+            } else {
                 return@then Gson().toJson(testPoiList, testPoiList::class.java)
             }
         }
@@ -56,11 +56,16 @@ class PoiServiceCachedTest {
         service.setSharedPreferences(mockSharedPreferences)
     }
 
+    private fun setInternetConnection(status: Boolean) {
+        `when`(mockInternetConnectionService.isConnectedToInternet(MainApplication.applicationContext())).thenReturn(status)
+        service.setInternetConnectionServicce(mockInternetConnectionService)
+    }
+
 
     @Test
     fun requestPoisWhenNoValidDataAndInternetConnection() {
-        `when`(mockInternetConnectionService.isConnectedToInternet(MainApplication.applicationContext())).thenReturn(true)
-        service.setInternetConnectionServicce(mockInternetConnectionService)
+        setInternetConnection(true)
+
         initEmptyPreferences()
 
         `when`(mockPoiGoogleRetriever.requestPoisAPI(Mockito.any(), Mockito.any(), Mockito.any())).then {
@@ -79,14 +84,14 @@ class PoiServiceCachedTest {
 
     @Test
     fun requestPoisWhenNoValidDataAndNoInternetConnectionCallsOnError() {
-        `when`(mockInternetConnectionService.isConnectedToInternet(MainApplication.applicationContext())).thenReturn(false)
-        service.setInternetConnectionServicce(mockInternetConnectionService)
+        setInternetConnection(false)
+
         initEmptyPreferences()
         service.requestPois(LatLng(0.0, 0.0), { assert(false) }, { assert(true) })
     }
 
     @Test
-    fun requestPoisWhenObjectDataIsValid(){
+    fun requestPoisWhenObjectDataIsValid() {
         service.lastPoiListResponse = testPoiList
         service.responseTimestamp = System.currentTimeMillis() / 1000
 
@@ -94,22 +99,25 @@ class PoiServiceCachedTest {
             assertEquals(testPoiList, it)
         }
 
-        service.requestPois(LatLng(0.0,0.0), customOnSuccess, {assert(false)})
+        service.requestPois(LatLng(0.0, 0.0), customOnSuccess, { assert(false) })
     }
 
     @Test
-    fun requestPoisWhenCachedDataIsValid(){
+    fun requestPoisWhenCachedDataIsValid() {
         initPreferencesWithData(System.currentTimeMillis() / 1000)
 
         val customOnSuccess: (List<PointOfInterest>) -> Unit = {
             assertEquals(testPoiList, it)
         }
 
-        service.requestPois(testPosition, customOnSuccess, {assert(false)})
+        service.requestPois(testPosition, customOnSuccess, { assert(false) })
     }
 
     @Test
-    fun requestPoisWhenObjectDataIsOldButOnlyOption(){
+    fun requestPoisWhenObjectDataIsOldButOnlyOption() {
+        setInternetConnection(false)
+        initEmptyPreferences()
+
         service.lastPoiListResponse = testPoiList
         service.responseTimestamp = 1L
 
@@ -117,18 +125,18 @@ class PoiServiceCachedTest {
             assertEquals(testPoiList, it)
         }
 
-        service.requestPois(LatLng(0.0,0.0), customOnSuccess, {assert(false)})
+        service.requestPois(LatLng(0.0, 0.0), customOnSuccess, { assert(false) })
     }
 
     @Test
-    fun requestPoisWhenCachedDataIsOldButOnlyOption(){
+    fun requestPoisWhenCachedDataIsOldButOnlyOption() {
+        setInternetConnection(false)
         initPreferencesWithData(1L)
 
         val customOnSuccess: (List<PointOfInterest>) -> Unit = {
             assertEquals(testPoiList, it)
         }
 
-        service.requestPois(testPosition, customOnSuccess, {assert(false)})
+        service.requestPois(testPosition, customOnSuccess, { assert(false) })
     }
-
 }
