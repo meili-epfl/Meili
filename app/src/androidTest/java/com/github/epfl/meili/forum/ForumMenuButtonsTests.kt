@@ -60,7 +60,7 @@ class ForumMenuButtonsTests {
     fun clickChatMenuButton() {
         Espresso.onView(
                 allOf(
-                        ViewMatchers.withId(R.id.menu_chat_from_forum), withText("Chat")
+                        ViewMatchers.withId(R.id.menu_chat), withText("Chat")
                 )
         ).perform(ViewActions.click())
     }
@@ -69,7 +69,7 @@ class ForumMenuButtonsTests {
     fun clickReviewMenuButton() {
         Espresso.onView(
                 allOf(
-                        ViewMatchers.withId(R.id.menu_reviews_from_forum), withText("Reviews")
+                        ViewMatchers.withId(R.id.menu_reviews), withText("Reviews")
                 )
         ).perform(ViewActions.click())
     }
