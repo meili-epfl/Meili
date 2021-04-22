@@ -1,11 +1,8 @@
 package com.github.epfl.meili.review
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,11 +14,11 @@ import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.MeiliViewModel
-import com.github.epfl.meili.util.MenuInflaterHelper
+import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 
 
-class ReviewsActivity : AppCompatActivity() {
+class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
     companion object {
         private const val CARD_PADDING: Int = 30
 
@@ -169,15 +166,5 @@ class ReviewsActivity : AppCompatActivity() {
     private fun showListReviewsView() {
         listReviewsView.visibility = View.VISIBLE
         editReviewView.visibility = View.GONE
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        MenuInflaterHelper.onCreateOptionsMenuHelper(this, R.menu.nav_review_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        MenuInflaterHelper.onOptionsItemSelectedHelper(this, item, intent)
-        return super.onOptionsItemSelected(item)
     }
 }

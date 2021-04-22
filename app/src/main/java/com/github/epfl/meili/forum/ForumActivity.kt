@@ -8,13 +8,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,14 +26,14 @@ import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.storage.FirebaseStorageService
 import com.github.epfl.meili.util.MeiliViewModel
-import com.github.epfl.meili.util.MenuInflaterHelper
+import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class ForumActivity : AppCompatActivity() {
+class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     companion object {
         private const val CARD_PADDING: Int = 30
         private const val COMPRESSION_QUALITY = 75 // 0 (max compression) to 100 (loss-less compression)
@@ -214,16 +211,5 @@ class ForumActivity : AppCompatActivity() {
         executor.execute {
             FirebaseStorageService.uploadBytes(remotePath, compressBitmap(bitmap!!))
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        //Inflate menu to enable adding chat and review buttons on the top
-        MenuInflaterHelper.onCreateOptionsMenuHelper(this, R.menu.nav_forum_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        MenuInflaterHelper.onOptionsItemSelectedHelper(this, item, intent)
-        return super.onOptionsItemSelected(item)
     }
 }

@@ -1,12 +1,9 @@
 package com.github.epfl.meili.util
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
 import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.forum.ForumActivity
@@ -32,21 +29,13 @@ object MenuInflaterHelper {
 
     private fun getIntentFromMenuItem(activity: Activity, item: MenuItem, poi: PointOfInterest): Intent{
 
-        val launchedActivity: AppCompatActivity = when (item?.itemId) {
-            R.id.menu_reviews -> {
-                ReviewsActivity()
-            }
-            R.id.menu_chat -> {
-                ChatLogActivity()
-            }
-            R.id.menu_forum -> {
-                ForumActivity()
-            }
-            else -> {
-                MainActivity()
-            }
+        val launchedActivityClass = when (item?.itemId) {
+            R.id.menu_reviews -> ReviewsActivity::class.java
+            R.id.menu_chat -> ChatLogActivity::class.java
+            R.id.menu_forum -> ForumActivity::class.java
+            else -> MainActivity::class.java
         }
-        return Intent(activity, launchedActivity::class.java).putExtra(MapActivity.POI_KEY, poi)
+        return Intent(activity, launchedActivityClass).putExtra(MapActivity.POI_KEY, poi)
 
     }
 }

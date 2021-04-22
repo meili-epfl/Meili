@@ -3,12 +3,9 @@ package com.github.epfl.meili.messages
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
@@ -18,12 +15,12 @@ import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.DateAuxiliary
-import com.github.epfl.meili.util.MenuInflaterHelper
+import com.github.epfl.meili.util.MenuActivity
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 
-class ChatLogActivity : AppCompatActivity() {
+class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
     companion object {
         private const val TAG: String = "ChatLogActivity"
@@ -33,7 +30,7 @@ class ChatLogActivity : AppCompatActivity() {
 
     private var currentUser: User? = null
     private lateinit var groupId: String
-    private var messsageSet = HashSet<ChatMessage>()
+    private var messageSet = HashSet<ChatMessage>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +86,7 @@ class ChatLogActivity : AppCompatActivity() {
     private fun listenForMessages() {
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
-            val newMessages = list.minus(messsageSet)
+            val newMessages = list.minus(messageSet)
 
             newMessages.forEach { message ->
                 Log.d(TAG, "loading message: ${message.text}")
@@ -97,7 +94,7 @@ class ChatLogActivity : AppCompatActivity() {
                 adapter.add(ChatItem(message, message.fromId == currentUser!!.uid))
             }
 
-            messsageSet.addAll(newMessages)
+            messageSet.addAll(newMessages)
 
             //scroll down
             val lastItemPos = adapter.itemCount - 1
@@ -113,24 +110,15 @@ class ChatLogActivity : AppCompatActivity() {
         Auth.onActivityResult(this, requestCode, resultCode, data)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        MenuInflaterHelper.onCreateOptionsMenuHelper(this, R.menu.nav_chat_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        MenuInflaterHelper.onOptionsItemSelectedHelper(this, item, intent)
-        return super.onOptionsItemSelected(item)
-    }
 }
 
 class ChatItem(private val message: ChatMessage, private val isChatMessageFromCurrentUser: Boolean) :
     Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
-        if (isChatMessageFromCurrentUser) {
-            return R.layout.chat_from_me_row
+        return if (isChatMessageFromCurrentUser) {
+            R.layout.chat_from_me_row
         } else {
-            return R.layout.chat_from_other_row
+            R.layout.chat_from_other_row
         }
     }
 
@@ -147,6 +135,4 @@ class ChatItem(private val message: ChatMessage, private val isChatMessageFromCu
                 message.fromName
         }
     }
-
-
 }
