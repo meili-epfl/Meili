@@ -1,150 +1,248 @@
 package com.github.epfl.meili.forum
 
+import android.content.ContentResolver
 import android.content.Intent
-import android.graphics.Color
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.home.GoogleSignInActivity
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.messages.ChatLogActivity
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.models.User
+import com.github.epfl.meili.photo.CameraActivity
+import com.github.epfl.meili.review.ReviewsActivity
+import com.github.epfl.meili.storage.FirebaseStorageService
+import com.github.epfl.meili.util.MeiliViewModel
+import com.github.epfl.meili.util.TopSpacingItemDecoration
+import java.io.ByteArrayOutputStream
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 
 class ForumActivity : AppCompatActivity() {
+    companion object {
+        private const val CARD_PADDING: Int = 30
+        private const val COMPRESSION_QUALITY = 75 // 0 (max compression) to 100 (loss-less compression)
+    }
 
-    private val TAG = "ForumActivity"
-    private var shownPosts = ArrayList<Post>()
+    private lateinit var recyclerAdapter: ForumRecyclerAdapter
+    private lateinit var viewModel: MeiliViewModel<Post>
 
-    // Layout for the posts
-    private lateinit var forumLayout: LinearLayout
+    private lateinit var listPostsView: View
+    private lateinit var createPostButton: ImageView
+
+    private lateinit var editPostView: View
+    private lateinit var editTitleView: EditText
+    private lateinit var editTextVIew: EditText
+    private lateinit var submitButton: Button
+    private lateinit var cancelButton: Button
+
+    // image choice and upload
+    private val launchCameraActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
+                loadImage(result.data!!.data!!, contentResolver)
+            }
+        }
+    private val launchGallery =  registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it, contentResolver) }
+    private lateinit var useCameraButton: ImageView
+    private lateinit var useGalleryButton: ImageView
+    private lateinit var displayImageView: ImageView
+    private lateinit var executor: ExecutorService
+    private var bitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forum)
 
-        // Initialize view
-        forumLayout = findViewById<LinearLayout>(R.id.forum_layout)
+        executor = Executors.newSingleThreadExecutor()
 
-        // Create observer that makes a UI for each post in the observed list
-        val forumObserver = Observer<List<Post>> { posts ->
-            updatePosts(posts) // Update the posts in UI
-        }
-        // Observe the posts from viewModel
-        ForumViewModel.posts.observe(this, forumObserver)
+        val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
+        initViews()
+        initRecyclerView()
+        initViewModel(poiKey)
+        initLoggedInListener()
+
+        showListPostsView()
     }
 
-    /** Called when the user taps a post */
-    fun openPost(view: View, post_id: String) {
-        val intent = Intent(this, PostActivity::class.java).apply {
-            putExtra(
-                EXTRA_POST_ID,
-                post_id
-            ) // pass ID to PostActivity so it knows which one to fetch
-        }
-        startActivity(intent) // starts the instance of PostActivity
+    private fun initViews() {
+        listPostsView = findViewById(R.id.list_posts)
+        createPostButton = findViewById(R.id.create_post)
+
+        editPostView = findViewById(R.id.edit_post)
+        editTitleView = findViewById(R.id.post_edit_title)
+        editTextVIew = findViewById(R.id.post_edit_text)
+        submitButton = findViewById(R.id.submit_post)
+        cancelButton = findViewById(R.id.cancel_post)
+
+        useCameraButton = findViewById(R.id.post_use_camera)
+        useGalleryButton = findViewById(R.id.post_use_gallery)
+        displayImageView = findViewById(R.id.post_display_image)
     }
 
-    /** Called when the user taps the + button */
-    fun goToPostCreation(view: View) {
-        // Only create post if logged in, Otherwise ask to log in first
-        val intent: Intent =
-            if (Auth.name != null) {
-                Intent(this, NewPostActivity::class.java)
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.onDestroy()
+        executor.shutdown()
+    }
+
+    fun onForumButtonClick(view: View) {
+        when(view) {
+            createPostButton -> showEditPostView()
+            submitButton -> addPost()
+            cancelButton -> showListPostsView()
+            useGalleryButton -> launchGallery.launch("image/*")
+            useCameraButton -> launchCameraActivity.launch(Intent(this, CameraActivity::class.java))
+            else -> openPost(view.findViewById(R.id.post_id))
+        }
+    }
+
+    private fun openPost(view: View) {
+        val postId: String = (view as TextView).text.toString()
+        val intent: Intent = Intent(this, PostActivity::class.java)
+                .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
+                .putExtra(PostActivity.POST_ID, postId)
+        startActivity(intent)
+    }
+
+    private fun addPost() {
+        if (BuildConfig.DEBUG && Auth.getCurrentUser() == null) {
+            error("Assertion failed")
+        }
+
+        val user: User = Auth.getCurrentUser()!!
+
+        val postId = "${user.uid}${System.currentTimeMillis()}"
+
+        val title = editTitleView.text.toString()
+        val text = editTextVIew.text.toString()
+
+        viewModel.addElement(postId, Post(user.username, title, text))
+
+        if (bitmap != null) {
+            compressAndUpload("forum/$postId")
+        }
+
+        showListPostsView()
+    }
+
+    private fun initViewModel(poiKey: String) {
+        @Suppress("UNCHECKED_CAST")
+        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Post>
+
+        viewModel.setDatabase(FirestoreDatabase("forum/$poiKey/posts", Post::class.java))
+        viewModel.getElements().observe(this, { map ->
+            recyclerAdapter.submitList(map.toList())
+            recyclerAdapter.notifyDataSetChanged()
+        })
+    }
+
+    private fun initRecyclerView() {
+        recyclerAdapter = ForumRecyclerAdapter()
+        val recyclerView: RecyclerView = findViewById(R.id.forum_recycler_view)
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@ForumActivity)
+            addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
+            adapter = recyclerAdapter
+        }
+    }
+
+    private fun initLoggedInListener() {
+        Auth.isLoggedIn.observe(this, { loggedIn ->
+            createPostButton.isEnabled = loggedIn
+            createPostButton.visibility = if (loggedIn)
+                View.VISIBLE
+            else
+                View.GONE
+        })
+    }
+
+    private fun showEditPostView() {
+        listPostsView.visibility = View.GONE
+        editPostView.visibility = View.VISIBLE
+    }
+
+    private fun showListPostsView() {
+        listPostsView.visibility = View.VISIBLE
+        editPostView.visibility = View.GONE
+    }
+
+    private fun loadImage(filePath: Uri, contentResolver: ContentResolver) {
+        executor.execute {
+            val bitmap: Bitmap = if (Build.VERSION.SDK_INT < 28) {
+                MediaStore.Images.Media.getBitmap(contentResolver, filePath) // deprecated for SDK_INT >= 28
             } else {
-                Intent(this, GoogleSignInActivity::class.java)
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, filePath))
             }
 
-        startActivity(intent) // starts the instance
-    }
-
-    /** Update the forum from new database information */
-    private fun updatePosts(posts: List<Post>) {
-        val newPosts = posts.minus(shownPosts)
-        for (post in newPosts) {
-            addPostToForum(post) // add new Post to forum
+            runOnUiThread {
+                this.bitmap = bitmap
+                displayImageView.setImageBitmap(bitmap)
+            }
         }
     }
 
-    /** Add a new post to the forum UI */
-    private fun addPostToForum(post: Post) {
-        val layout = makePostBox(post.id)
-        addAuthor(post.author, layout)
-        addTitle(post.title, layout)
-        shownPosts.add(post)
+    private fun compressBitmap(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, stream)
+        return stream.toByteArray()
     }
 
-    /** Makes the clickable box for the post information to go into */
-    private fun makePostBox(post_id: String): LinearLayout {
-        // Create vertical linear layout (box)
-        val box = LinearLayout(this)
-        box.orientation = LinearLayout.VERTICAL
-        box.id = post_id.hashCode() // Generate id
+    private fun compressAndUpload(remotePath: String) {
+        if (BuildConfig.DEBUG && bitmap == null) {
+            error("Assertion failed")
+        }
 
-        // Set layout parameters
-        val param = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, // layout_width
-            LinearLayout.LayoutParams.WRAP_CONTENT // layout_height
-        )
-        param.setMargins(0, 10, 0, 0) // layout_margin
-        box.layoutParams = param
-
-        // Set onClick behaviour
-        box.setOnClickListener(View.OnClickListener {
-            // function to call when clicked
-                view ->
-            openPost(view, post_id)  // pass id to know what post to fetch
-        })
-
-        // Set other aesthetic parameters
-        box.setBackgroundColor(Color.parseColor("#90e0ef")) // background color
-
-        // Add the box to the parent linearLayout
-        forumLayout.addView(box)
-
-        return box
-
+        executor.execute {
+            FirebaseStorageService.uploadBytes(remotePath, compressBitmap(bitmap!!))
+        }
     }
 
-    /** Adds the author to the post UI */
-    private fun addAuthor(author: String, linearLayout: LinearLayout) {
-        // Create TextView
-        val textView = TextView(this)
-        textView.text = author
-        textView.id = View.generateViewId() // Generate id
-
-        // Set layout parameters
-        val param = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT, // layout_width
-            LinearLayout.LayoutParams.WRAP_CONTENT // layout_height
-        )
-        param.setMargins(20, 20, 0, 10) // layout_margin
-        textView.layoutParams = param
-        textView.textSize = 14.0f
-
-        linearLayout.addView(textView)
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        //Inflate menu to enable adding chat and review buttons on the top
+        menuInflater.inflate(R.menu.nav_forum_menu, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
-    /** Adds the title to the post UI */
-    private fun addTitle(title: String, linearLayout: LinearLayout) {
-        // Create TextView
-        val textView = TextView(this)
-        textView.text = title
-        textView.id = View.generateViewId() // Generate id
-
-        // Set layout parameters
-        val param = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, // layout_width
-            LinearLayout.LayoutParams.WRAP_CONTENT // layout_height
-        )
-        param.setMargins(20, 0, 20, 20) // layout_margin
-        textView.layoutParams = param
-        textView.textSize = 18.0f
-
-        linearLayout.addView(textView)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // get the POI
+        val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!
+        //Now that the buttons are added at the top control what each menu buttons does
+        val intent: Intent = when (item?.itemId) {
+            R.id.menu_reviews_from_forum -> {
+                Intent(this, ReviewsActivity::class.java)
+                        .putExtra(MapActivity.POI_KEY, poi)
+            }
+            R.id.menu_chat_from_forum-> {
+                Intent(this, ChatLogActivity::class.java)
+                        .putExtra(MapActivity.POI_KEY, poi)
+            }
+            else -> {
+                Intent(this, ForumActivity::class.java)
+            }
+        }
+        //clear the older intents so that the back button works correctly
+        //intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        return super.onOptionsItemSelected(item)
     }
-
 }

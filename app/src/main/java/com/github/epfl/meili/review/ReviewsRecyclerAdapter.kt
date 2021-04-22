@@ -10,10 +10,6 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Review
 
 class ReviewsRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    companion object {
-        private const val TAG: String = "ReviewRecyclerAdapter"
-    }
-
     private var items: List<Pair<String, Review>> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =

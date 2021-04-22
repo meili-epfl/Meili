@@ -1,65 +1,54 @@
 package com.github.epfl.meili.forum
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
-
-// key to retrieve the post IDs
-const val EXTRA_POST_ID = "com.github.epfl.meili.forum.POST_ID"
+import com.github.epfl.meili.storage.FirebaseStorageService
+import com.squareup.picasso.Picasso
 
 class PostActivity : AppCompatActivity() {
 
-    // Unique tag to tell where a log message came from
-    private val TAG = "PostActivity"
+    companion object {
+        private const val TAG = "PostActivity"
+        private val DEFAULT_URI = Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
+        const val POST_ID = "Post_ID"
+    }
 
-    // Views
-    private lateinit var authorView: TextView
-    private lateinit var titleView: TextView
-    private lateinit var textView: TextView
+    private lateinit var imageView: ImageView
+    private lateinit var postId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
 
-        // Initialize views
-        authorView = findViewById<TextView>(R.id.post_author)
-        titleView = findViewById<TextView>(R.id.post_title)
-        textView = findViewById<TextView>(R.id.post_text)
+        val post: Post = intent.getParcelableExtra(Post.TAG)!!
+        postId = intent.getStringExtra(POST_ID)!!
 
-        // Get post id
-        val post_id = intent.getStringExtra(EXTRA_POST_ID)
+        val authorView: TextView = findViewById(R.id.post_author)
+        val titleView: TextView = findViewById(R.id.post_title)
+        val textView: TextView = findViewById(R.id.post_text)
+        imageView = findViewById(R.id.post_image)
 
-        if (post_id != null) {
-            PostViewModel.setID(post_id) // Set post id in the viewModel
+        authorView.text = post.author
+        titleView.text = post.title
+        textView.text = post.text
 
-            // Create observer that makes a UI for the current post
-            val postObserver = Observer<Post?> { post ->
-                createPostUI(post)
-            }
-
-            // Observe the post from viewModel
-            PostViewModel.post.observe(this, postObserver)
-        } else {
-            Log.e(TAG, "Error getting the post ID from the forum")
-        }
-
+        FirebaseStorageService.getDownloadUrl(
+                "forum/$postId",
+                { uri -> getDownloadUrlCallback(uri)},
+                { exception ->
+                    Log.e(TAG,"Image not found", exception)
+                    getDownloadUrlCallback(DEFAULT_URI)
+                }
+        )
     }
 
-    // Show post in post UI
-    private fun createPostUI(post: Post?) {
-        if (post != null) {
-            // Add post information to the predefined templates
-            authorView.text = post.author
-            titleView.text = post.title
-            textView.text = post.text
-        } else {
-            Log.e(TAG, "Error showing post")
-        }
-
+    private fun getDownloadUrlCallback(uri: Uri) {
+        Picasso.get().load(uri).into(imageView)
     }
-
 }

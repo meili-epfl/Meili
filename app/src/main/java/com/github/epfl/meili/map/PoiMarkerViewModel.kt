@@ -2,13 +2,14 @@ package com.github.epfl.meili.map
 
 import android.location.Location
 import android.location.LocationListener
+import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.volley.VolleyError
 import com.github.epfl.meili.database.Database
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiService
-import com.github.epfl.meili.poi.PointOfInterest
 import com.google.android.gms.maps.model.LatLng
 import java.util.*
 import kotlin.collections.HashMap
@@ -29,6 +30,11 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     val mPointsOfInterestStatus: MutableLiveData<Map<String, PointOfInterestStatus>> =
             MutableLiveData(HashMap())
 
+    override fun onProviderEnabled(provider: String) {}
+
+    override fun onProviderDisabled(provider: String) {}
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
 
     fun setPoiService(service: PoiService) {
         this.poiService = service

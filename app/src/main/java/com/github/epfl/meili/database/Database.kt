@@ -4,10 +4,10 @@ import java.util.*
 import kotlin.collections.HashSet
 
 
-abstract class Database<T>(private val path: String): Observable() {
+abstract class Database<T>: Observable() {
     abstract var elements: Map<String, T>
 
-    abstract fun addElement(uid: String, element: T?)
+    abstract fun addElement(key: String, element: T?)
 
     private var observers: Set<Observer> = HashSet()
 
