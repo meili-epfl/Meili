@@ -25,7 +25,11 @@ Overall, I am happy with my work this week as I am becoming more efficient. This
 
 ## Thomas
 
-###TODO
+This week, I first worked on integrating the changes Marcel made to the map with my poi info activiy, so that I can merge it. Then, I continued working on the photo editing. I added color picking for drawing on the image, and (since I had more time) the option to add filters to the image. I also added undo and redo buttons.
+
+Overall, adding the color picker was faster than I thought, so I had more time to implement the filters additionally.
+
+However, filters took more time to implement than I thought. So I did not have time to polish the activity to merge it. Next week, I have to be less greedy and first focus on my assigned task, merge it, and then think about doing something else.
 
 
 ## Yingxuan (Scrum Master)
