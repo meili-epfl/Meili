@@ -20,7 +20,11 @@ Overall, I am happy with my work this week as I am becoming more efficient. This
 
 ## Marcel 
 
-###TODO
+This week, I worked on changing the API that we were using to fetch the POIs, we used to use Overpass API and now we are using Google Places API. This task was completed and merge at the beginning of the week. My second task has been to work on a version of the service that fetches POIs from Google API to implement a 2-level caching system.
+
+Regarding my time estimates, for the first task I made an accurate one, however, for the second task, I have been off by 2 hours. The underestimation is due in some part because I wanted to take an extra task for this week (since the first one wasn't 8 hours long) and this probably made me underestimate it so that my workload was of 8 hours. I will try to be more accurate for next weeks even if that means adding 2 more hours of workload than expected.
+
+Overall, my two tasks this week have been fun and I feel I am making progress in time estimation, testing and developping android apps.
 
 
 ## Thomas
