@@ -14,7 +14,7 @@ I finished all my tasks for this sprint and took on an extra 4 hour task since I
 Overall, I am happy with my work this week as I am becoming more efficient. This is mainly because I'm learning to better dig throug documentation and testing is becoming less of hurdle since I understand mocking.
 
 ## Ewan 
-This week i made a tool that detects the angle made by a two finger rotation gesture. The tool works, but hasn't been tested yet. I had a lot of trouble applying the angle found in the editing feature, because rotating bitmaps make them bigger each time (think about fitting a rotated rectangle inside another). I also had trouble applying the rotation to the cropping tool, which overrides the onTouch function in the library, so I cannot make a custom onTouch function for it.
+This week i made a tool that detects the angle made by a two finger rotation gesture. The tool works, but hasn't been tested yet. I had a lot of trouble applying the angle found in the editing feature, because rotating bitmaps make them bigger each time (think about fitting a rotated rectangle inside another). I also had trouble applying the rotation to the cropping tool, which overrides the onTouch function in the library, so I cannot make a custom onTouch function for it. I spent 7h fixing this particular problem, which threw off the other tasks I had planned this week.
 
 The solution I ended up with was to rotate the ImageView directly, and rotate the bitmap only when we need the result of the rotation. This feature was not tested.
 
