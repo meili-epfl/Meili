@@ -45,6 +45,10 @@ class PoiServiceCached : PoiService {
         this.internetConnectionService = internetConnectionService
     }
 
+    fun setSharedPreferences(sharedPreferences: SharedPreferences){
+        this.mPrefs = sharedPreferences
+    }
+
     override fun requestPois(latLng: LatLng?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((VolleyError) -> Unit)?) {
         if (onSuccess != null && onError != null && latLng != null) {
             // If data saved in object is valid then return it
@@ -62,7 +66,7 @@ class PoiServiceCached : PoiService {
             }
 
             // Data saved in the object and on the phone are not valid hence we need to fetch from the API
-            else if (internetConnectionService.isConnectedToInternet()) {
+            else if (internetConnectionService.isConnectedToInternet(MainApplication.applicationContext())) {
                 Log.d(TAG, "Getting info from the API")
                 poiGoogleRetriever.requestPoisAPI(latLng, onSuccessSaveResponse(latLng) { onSuccess(it) }, onError)
             } else {
@@ -78,7 +82,6 @@ class PoiServiceCached : PoiService {
                 // Unfortunately there was no way to retrieve POIs
                 Log.d(TAG, "Not possible to retreive POIs")
                 onError(VolleyError("No Internet Connection and no cached data"))
-
             }
         }
     }
