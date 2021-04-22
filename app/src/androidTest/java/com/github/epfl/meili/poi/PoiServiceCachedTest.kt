@@ -42,8 +42,8 @@ class PoiServiceCachedTest {
         service.setSharedPreferences(mockSharedPreferences)
     }
 
-    private fun initPreferencesWithValidData(){
-        `when`(mockSharedPreferences.getLong(Mockito.anyString(), Mockito.anyLong())).thenReturn(System.currentTimeMillis() / 1000)
+    private fun initPreferencesWithData(timestamp: Long){
+        `when`(mockSharedPreferences.getLong(Mockito.anyString(), Mockito.anyLong())).thenReturn(timestamp)
         `when`(mockSharedPreferences.getString(Mockito.anyString(), Mockito.anyString())).then {
             val key = it.arguments[0] as String
             if(key == PoiServiceCached.POSITION_KEY){
@@ -55,6 +55,7 @@ class PoiServiceCachedTest {
 
         service.setSharedPreferences(mockSharedPreferences)
     }
+
 
     @Test
     fun requestPoisWhenNoValidDataAndInternetConnection() {
@@ -98,7 +99,7 @@ class PoiServiceCachedTest {
 
     @Test
     fun requestPoisWhenCachedDataIsValid(){
-        initPreferencesWithValidData()
+        initPreferencesWithData(System.currentTimeMillis() / 1000)
 
         val customOnSuccess: (List<PointOfInterest>) -> Unit = {
             assertEquals(testPoiList, it)
@@ -107,11 +108,10 @@ class PoiServiceCachedTest {
         service.requestPois(testPosition, customOnSuccess, {assert(false)})
     }
 
-    //TODO: finish two tests below
     @Test
     fun requestPoisWhenObjectDataIsOldButOnlyOption(){
         service.lastPoiListResponse = testPoiList
-        service.responseTimestamp = System.currentTimeMillis() / 1000
+        service.responseTimestamp = 1L
 
         val customOnSuccess: (List<PointOfInterest>) -> Unit = {
             assertEquals(testPoiList, it)
@@ -122,7 +122,7 @@ class PoiServiceCachedTest {
 
     @Test
     fun requestPoisWhenCachedDataIsOldButOnlyOption(){
-        initPreferencesWithValidData()
+        initPreferencesWithData(1L)
 
         val customOnSuccess: (List<PointOfInterest>) -> Unit = {
             assertEquals(testPoiList, it)
