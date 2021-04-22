@@ -1,17 +1,37 @@
 package com.github.epfl.meili.util
 
+import android.app.Activity
+import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.github.epfl.meili.MainActivity
+import com.github.epfl.meili.R
+import com.github.epfl.meili.forum.ForumActivity
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.messages.ChatLogActivity
+import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.review.ReviewsActivity
 
-open class MenuActivity(private val menuId: Int): AppCompatActivity() {
+open class MenuActivity(private val menuRes: Int): AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        MenuInflaterHelper.onCreateOptionsMenuHelper(this, menuId, menu)
+        this.menuInflater.inflate(menuRes, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        MenuInflaterHelper.onOptionsItemSelectedHelper(this, item, intent)
+        val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!
+        startActivity(getIntentFromMenuItem(this, item, poi))
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun getIntentFromMenuItem(activity: Activity, item: MenuItem, poi: PointOfInterest): Intent{
+        val launchedActivityClass = when (item.itemId) {
+            R.id.menu_reviews -> ReviewsActivity::class.java
+            R.id.menu_chat -> ChatLogActivity::class.java
+            R.id.menu_forum -> ForumActivity::class.java
+            else -> MainActivity::class.java
+        }
+        return Intent(activity, launchedActivityClass).putExtra(MapActivity.POI_KEY, poi)
     }
 }
