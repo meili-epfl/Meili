@@ -20,18 +20,18 @@ open class MenuActivity(private val menuRes: Int): AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!
-        startActivity(getIntentFromMenuItem(this, item, poi))
+        startActivity(getIntentFromMenuItem(this, item))
         return super.onOptionsItemSelected(item)
     }
 
-    private fun getIntentFromMenuItem(activity: Activity, item: MenuItem, poi: PointOfInterest): Intent{
+    private fun getIntentFromMenuItem(activity: Activity, item: MenuItem): Intent{
         val launchedActivityClass = when (item.itemId) {
             R.id.menu_reviews -> ReviewsActivity::class.java
             R.id.menu_chat -> ChatLogActivity::class.java
             R.id.menu_forum -> ForumActivity::class.java
             else -> MainActivity::class.java
         }
-        return Intent(activity, launchedActivityClass).putExtra(MapActivity.POI_KEY, poi)
+        return Intent(activity, launchedActivityClass)
+                .putExtra(MapActivity.POI_KEY, intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY))
     }
 }
