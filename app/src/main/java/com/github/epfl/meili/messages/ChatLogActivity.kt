@@ -3,8 +3,6 @@ package com.github.epfl.meili.messages
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -12,14 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
-import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
-import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.review.ReviewsActivity
 import com.github.epfl.meili.util.DateAuxiliary
+import com.google.android.gms.maps.model.PointOfInterest
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -53,13 +48,13 @@ class ChatLogActivity : AppCompatActivity() {
     fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
         if (isLoggedIn) {
             currentUser = Auth.getCurrentUser()
-            val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)
+            val poi = intent.getParcelableExtra<PointOfInterest>("POI_KEY")
             supportActionBar?.title = poi?.name
 
-            groupId = poi?.uid!!
+            groupId = poi?.placeId!!
 
-            Log.d(TAG, "the poi is ${poi.name} and has id ${poi.uid}")
-            ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter("POI/${poi.uid}"))
+            Log.d(TAG, "the poi is ${poi.name} and has id ${poi.placeId}")
+            ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter("POI/${poi.placeId}"))
 
             listenForMessages()
 
@@ -113,35 +108,6 @@ class ChatLogActivity : AppCompatActivity() {
 
         Auth.onActivityResult(this, requestCode, resultCode, data)
     }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        //Inflate menu to enable adding chat and review buttons on the top
-        menuInflater.inflate(R.menu.nav_chat_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // get the POI
-        val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!
-        //Now that the buttons are added at the top control what each menu buttons does
-        val intent: Intent = when (item?.itemId) {
-            R.id.menu_reviews_from_chat -> {
-                Intent(this, ReviewsActivity::class.java)
-                    .putExtra(MapActivity.POI_KEY, poi)
-            }
-            R.id.menu_forum_from_chat-> {
-                Intent(this, ForumActivity::class.java)
-                    .putExtra(MapActivity.POI_KEY, poi)
-            }
-            else -> {
-                Intent(this, ChatLogActivity::class.java)
-            }
-        }
-        //clear the older intents so that the back button works correctly
-        //intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
-        return super.onOptionsItemSelected(item)
-    }
 }
 
 class ChatItem(private val message: ChatMessage, private val isChatMessageFromCurrentUser: Boolean) :
@@ -167,6 +133,4 @@ class ChatItem(private val message: ChatMessage, private val isChatMessageFromCu
                 message.fromName
         }
     }
-
-
 }

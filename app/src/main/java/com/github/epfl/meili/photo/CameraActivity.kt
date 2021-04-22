@@ -22,13 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class CameraActivity : AppCompatActivity() {
-    companion object {
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-        private const val PRESS_DELAY = 200L
-        private const val TAG = "CameraActivity"
-    }
+    private val TAG = "CameraActivity"
 
     private var imageCapture: ImageCapture? = null // is null when camera hasn't started
     private lateinit var cameraProvider: ProcessCameraProvider
@@ -154,29 +148,34 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun takePhoto() {
-        if (imageCapture == null) { return }
+        if (imageCapture == null) {
+            return
+        }
 
         // Create time-stamped output file to hold the image
-        val photoFile = File(outputDirectory,
-                SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".jpg")
+        val photoFile = File(
+            outputDirectory,
+            SimpleDateFormat(
+                FILENAME_FORMAT, Locale.US
+            ).format(System.currentTimeMillis()) + ".jpg"
+        )
 
         // Set up behaviour for when a photo is taken
         imageCapture!!.takePicture(
             ImageCapture.OutputFileOptions.Builder(photoFile).build(),
             ContextCompat.getMainExecutor(this),
-            object : ImageCapture.OnImageSavedCallback {
+            object :
+                ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val intent = Intent()
-                    intent.data = Uri.fromFile(photoFile)
-                    setResult(RESULT_OK, intent)
-                    finish()
+                    val intent = Intent(applicationContext, PhotoEditActivity::class.java)
+                    intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
+                    startActivity(intent)
                 }
-            }
-        )
+            })
     }
 
     /** Checks if device has access to start the camera, if not, ask the user for permission */
@@ -229,5 +228,13 @@ class CameraActivity : AppCompatActivity() {
         }
         return if (mediaDir != null && mediaDir.exists())
             mediaDir else applicationContext.filesDir
+    }
+
+    companion object {
+        private const val REQUEST_CODE_PERMISSIONS = 10
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        const val URI_KEY = "URI_KEY"
+        private const val PRESS_DELAY = 200L
     }
 }

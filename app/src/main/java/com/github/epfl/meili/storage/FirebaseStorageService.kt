@@ -5,16 +5,15 @@ import com.google.firebase.storage.FirebaseStorage
 
 object FirebaseStorageService: StorageService {
 
-    private val DEFAULT_STORAGE = { FirebaseStorage.getInstance() }
-    var storageProvider: () -> FirebaseStorage = DEFAULT_STORAGE
+    private val firebaseStorage = FirebaseStorage.getInstance()
 
     override fun uploadBytes(remotePath: String, byteArray: ByteArray, onSuccessCallback: () -> Unit, onFailureCallback: () -> Unit) {
-        storageProvider().getReference(remotePath).putBytes(byteArray)
+        firebaseStorage.getReference(remotePath).putBytes(byteArray)
             .addOnSuccessListener { _ -> onSuccessCallback() }
             .addOnFailureListener { _ -> onFailureCallback() }
     }
     override fun getDownloadUrl(remotePath: String, onSuccessListener: (Uri) -> Unit, onFailureListener: (Exception) -> Unit) {
-        storageProvider().getReference(remotePath).downloadUrl
+        firebaseStorage.getReference(remotePath).downloadUrl
                 .addOnSuccessListener(onSuccessListener)
                 .addOnFailureListener(onFailureListener)
     }

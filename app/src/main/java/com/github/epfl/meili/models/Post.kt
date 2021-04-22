@@ -8,8 +8,4 @@ data class Post(
     var author: String = "",
     var title: String = "",
     var text: String = ""
-) : Parcelable {
-    companion object {
-        const val TAG = "Post"
-    }
-}
+) : Parcelable

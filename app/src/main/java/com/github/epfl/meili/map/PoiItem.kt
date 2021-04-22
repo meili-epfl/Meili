@@ -1,6 +1,6 @@
 package com.github.epfl.meili.map
 
-import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.poi.PointOfInterest
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 

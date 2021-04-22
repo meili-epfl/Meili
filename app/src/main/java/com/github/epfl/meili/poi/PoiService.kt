@@ -5,9 +5,6 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
-import com.github.epfl.meili.MainApplication
-import com.github.epfl.meili.R
-import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.util.CustomMath
 import com.github.epfl.meili.util.HttpRequestQueue
 import com.google.android.gms.maps.model.LatLng
@@ -25,15 +22,25 @@ open class PoiService {
     open fun requestPois(latLng: LatLng?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((VolleyError) -> Unit)?) {
 
         if (latLng != null && onSuccess != null && onError != null) {
-            val apiKey = MainApplication.applicationContext().getString(R.string.google_api_key)
-            val query = "location=${latLng.latitude},${latLng.longitude}&radius=$MAX_COVERAGE_RADIUS&type=point_of_interest&key=$apiKey"
-            queryGooglePlacesAPI(query, onSuccess, onError)
+            val typeOfObjects = "node"
+
+            /*bounding box: lowest_lat, lowest_lng, highest_lat, highest_long*/
+            val bbox = "(" + (latLng.latitude - LAT_MARGIN) + "," + (latLng.longitude - LNG_MARGIN) + "," +
+                    (latLng.latitude + LAT_MARGIN) + "," + (latLng.longitude + LNG_MARGIN) + ")"
+
+            val filter = "[historic=monument]"
+
+            val resultTypeJSON = "[out:json];"
+
+            val overpass_query = resultTypeJSON + typeOfObjects + bbox + filter + ";out;"
+
+            queryOverpassAPI(overpass_query, onSuccess, onError)
         }
     }
 
-    fun queryGooglePlacesAPI(query: String, onSuccess: (List<PointOfInterest>) -> Unit, onError: (VolleyError) -> Unit) {
+    fun queryOverpassAPI(overpass_query: String, onSuccess: (List<PointOfInterest>) -> Unit, onError: (VolleyError) -> Unit) {
 
-        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, GOOGLE_PLACES_URL + query,
+        val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, OVERPASS_URL + overpass_query,
                 null, customOnSuccessFrom(onSuccess), onError)
 
         queue.add(jsonObjectRequest)
@@ -41,12 +48,10 @@ open class PoiService {
 
     fun customOnSuccessFrom(onSuccess: (List<PointOfInterest>) -> Unit): (JSONObject) -> Unit {
         return { response ->
-            if (response["status"] == "OK") {
-                val placesResponse = Gson().fromJson(response.toString(), GooglePlacesResponse::class.java)
-                Log.d("POI Service", response.toString())
-                Log.d("POI Service", placesResponse.getCustomPois().toString())
-                onSuccess(placesResponse.getCustomPois())
-            }
+            val overpassResponse = Gson().fromJson<OverpassResponse>(response.toString(), OverpassResponse::class.java)
+
+            Log.d("POI Service", response.toString() + overpassResponse.getCustomPois().toString())
+            onSuccess(overpassResponse.getCustomPois())
         }
     }
 
@@ -72,19 +77,20 @@ open class PoiService {
     }
 
     companion object {
-        private const val GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
-        private const val MAX_COVERAGE_RADIUS = 3000
+        private const val LAT_MARGIN = 0.125
+        private const val LNG_MARGIN = 0.125
+        private const val OVERPASS_URL = "https://overpass-api.de/api/interpreter?data="
     }
 }
 
-data class GooglePlacesResponse(
-        @SerializedName("results")
-        val pointsOfInterest: List<PlacesPointOfInterest> = ArrayList()
+data class OverpassResponse(
+        @SerializedName("elements")
+        val pointsOfInterest: List<OverpassPointOfInterest> = ArrayList()
 ) {
     fun getCustomPois(): List<PointOfInterest> {
         val poiList = ArrayList<PointOfInterest>()
         for (poi in pointsOfInterest) {
-            if (poi.geometry != null && poi.name != null && poi.geometry.latLng != null && poi.uid != null) {
+            if (poi.poiTags != null && poi.poiTags.name != null && poi.uid != null) {
                 poiList.add(poi.toStandardPoi())
             }
         }
@@ -92,42 +98,22 @@ data class GooglePlacesResponse(
     }
 }
 
-//TODO: we could also get some photos from the GooglePlaces API if we want
-data class PlacesPointOfInterest(
-        @SerializedName("geometry")
-        val geometry: PoiGeometry? = null,
-        @SerializedName("place_id")
-        val uid: String? = null,
-        @SerializedName("name")
-        val name: String? = null,
-        @SerializedName("icon")
-        val icon: String? = null,
-        @SerializedName("types")
-        val poiTypes: List<String>? = null,
-        @SerializedName("opening_hours")
-        val openingHours: PoiOpeningHours? = null
+data class OverpassPointOfInterest(
+        @SerializedName("lat")
+        val lat: Double? = null,
+        @SerializedName("lon")
+        val lon: Double? = null,
+        @SerializedName("tags")
+        val poiTags: PoiTag? = null,
+        @SerializedName("id")
+        val uid: String? = null
 ) {
     fun toStandardPoi(): PointOfInterest {
-        if (openingHours != null) {
-            return PointOfInterest(geometry!!.latLng!!.latitude!!, geometry.latLng!!.longitude!!, name!!, uid!!, icon!!, poiTypes!!, openingHours.openNow)
-        }
-        return PointOfInterest(geometry!!.latLng!!.latitude!!, geometry.latLng!!.longitude!!, name!!, uid!!, icon!!, poiTypes!!)
+        return PointOfInterest(lat!!, lon!!, poiTags!!.name!!, uid!!)
     }
 }
 
-data class PoiGeometry(
-        @SerializedName("location")
-        val latLng: PoiLocation? = null
-)
-
-data class PoiLocation(
-        @SerializedName("lat")
-        val latitude: Double? = null,
-        @SerializedName("lng")
-        val longitude: Double? = null
-)
-
-data class PoiOpeningHours(
-        @SerializedName("open_now")
-        val openNow: Boolean? = null
+data class PoiTag(
+        @SerializedName("name")
+        val name: String? = null
 )

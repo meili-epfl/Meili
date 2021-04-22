@@ -33,7 +33,6 @@ object ChatMessageViewModel : ViewModel(),
     }
 
     override fun update(o: Observable?, arg: Any?) {
-        //async
-        _messages.postValue(database.getMessages())
+        _messages.value = database.getMessages()
     }
 }

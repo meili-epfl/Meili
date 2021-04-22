@@ -1,7 +1,5 @@
 package com.github.epfl.meili.forum
 
-import android.content.Intent
-import android.net.Uri
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -16,33 +14,20 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.map.MapActivity
-import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.photo.CameraActivity
-import com.github.epfl.meili.storage.FirebaseStorageService
-import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.StorageTask
-import com.google.firebase.storage.UploadTask
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.contains
 import org.mockito.Mockito.`when`
@@ -56,7 +41,6 @@ class ForumActivityTest {
         private const val TEST_UID = "UID"
         private const val TEST_USERNAME = "AUTHOR"
         private val TEST_POST = Post(TEST_USERNAME, "TITLE", "TEXT")
-        private val TEST_POI_KEY = PointOfInterest(100.0,100.0,"lorem_ipsum1", "lorem_ipsum2")
     }
 
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
@@ -70,25 +54,15 @@ class ForumActivityTest {
 
     private lateinit var database: FirestoreDatabase<Post>
 
-    private val intent = Intent(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext, ForumActivity::class.java)
-            .putExtra(MapActivity.POI_KEY, TEST_POI_KEY)
-
     @get:Rule
-    var rule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(intent)
-
-    @Before
-    fun initIntents() = Intents.init()
-
-    @After
-    fun releaseIntents() = Intents.release()
+    var testRule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(ForumActivity::class.java)
 
     init {
         setupMocks()
-        setupPostActivityMocks()
     }
 
     private fun setupMocks() {
-        `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts")).thenReturn(mockCollection)
+        `when`(mockFirestore.collection("posts")).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
             database = invocation.arguments[0] as FirestoreDatabase<Post>
             mock(ListenerRegistration::class.java)
@@ -107,26 +81,7 @@ class ForumActivityTest {
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
-        FirebaseStorageService.storageProvider = { mock(FirebaseStorage::class.java)}
         Auth.authService = mockAuthenticationService
-    }
-
-    private fun setupPostActivityMocks() {
-        val mockFirebase = mock(FirebaseStorage::class.java)
-        val mockReference = mock(StorageReference::class.java)
-        `when`(mockFirebase.getReference(ArgumentMatchers.anyString())).thenReturn(mockReference)
-
-        val mockUploadTask = mock(UploadTask::class.java)
-        `when`(mockReference.putBytes(any())).thenReturn(mockUploadTask)
-
-        val mockStorageTask = mock(StorageTask::class.java)
-        `when`(mockUploadTask.addOnSuccessListener(any())).thenReturn(mockStorageTask as StorageTask<UploadTask.TaskSnapshot>?)
-
-        val mockTask = mock(Task::class.java)
-        `when`(mockReference.downloadUrl).thenReturn(mockTask as Task<Uri>?)
-        `when`(mockTask.addOnSuccessListener(any())).thenReturn(mockTask)
-
-        FirebaseStorageService.storageProvider = { mockFirebase }
     }
 
     @Test
@@ -205,22 +160,13 @@ class ForumActivityTest {
                 .check(matches(isDisplayed()))
                 .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_POST.title))))
 
+        Intents.init()
         onView(withText(TEST_POST.title)).perform(click())
         Intents.intended(allOf(
                 hasExtra("Post", TEST_POST),
                 hasComponent(PostActivity::class.java.name)
         ))
-    }
-
-    @Test
-    fun useCameraIntentsTest() {
-        mockAuthenticationService.signInIntent()
-        database.onEvent(mockSnapshotBeforeAddition, null)
-
-        onView(withId(R.id.create_post)).perform(click())
-
-        onView(withId(R.id.post_use_camera)).perform(click())
-        Intents.intended(hasComponent(CameraActivity::class.java.name))
+        Intents.release()
     }
     
     private fun textViewContainsText(content: String): Matcher<View?> {

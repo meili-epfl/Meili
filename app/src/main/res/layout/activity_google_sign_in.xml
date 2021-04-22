@@ -8,11 +8,10 @@
 
     <TextView
         android:id="@+id/textFieldSignIn"
-        android:layout_width="wrap_content"
+        android:layout_width="57dp"
         android:layout_height="17dp"
         android:layout_marginTop="240dp"
-        android:layout_marginBottom="100dp"
-        android:text="Sign In to use the map"
+        android:text="Sign In"
         app:layout_constraintBottom_toTopOf="@+id/signInButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,33 +25,8 @@
         android:layout_marginBottom="320dp"
         android:onClick="onGoogleButtonClick"
         android:text="Sign In"
-        android:backgroundTint="@color/pink"
-        android:textColor="@color/brown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/mapButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Open Map View"
-        android:backgroundTint="@color/pink"
-        android:textColor="@color/brown"
-        android:onClick="onMapViewButtonClick"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signInButton" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="173dp"
-        android:layout_height="154dp"
-        app:layout_constraintBottom_toTopOf="@+id/textFieldSignIn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/meili_launcher_foreground" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

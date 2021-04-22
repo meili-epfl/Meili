@@ -4,7 +4,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Assert.assertEquals
+import junit.framework.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
