@@ -34,7 +34,7 @@ class PoiServiceCached : PoiService {
         poiGoogleRetriever = PoiGoogleRetriever()
         mPrefs = MainApplication.applicationContext().getSharedPreferences(SHARED_PREFERENCES_KEY, MODE_PRIVATE)
         gsonObject = Gson()
-        internetConnectionService = InternetConnectionService
+        internetConnectionService = InternetConnectionService()
     }
 
     fun setPoiGoogleRetriever(poiGoogleRetriever: PoiGoogleRetriever) {
@@ -51,37 +51,37 @@ class PoiServiceCached : PoiService {
 
     override fun requestPois(latLng: LatLng?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((VolleyError) -> Unit)?) {
         if (onSuccess != null && onError != null && latLng != null) {
-            // If data saved in object is valid then return it
-            // check if last fetch was more than 1 hour ago, also check if place updated was more than 1km far away
             if (isObjectDataValid(latLng)) {
+                // If data saved in object is valid then return it
+
                 Log.d(TAG, "Getting info from in-object")
                 onSuccess(lastPoiListResponse)
             }
-
-            // first get info from phone then verify the validity
-            // if you don't have internet conection then return what you saved on your phone
             else if (isCacheValid(latLng)) {
+                // If saved data locally is valid then return it
+
                 Log.d(TAG, "Getting info from shared preferences")
                 onSuccess(retrieveCachedPoiResponse())
             }
-
-            // Data saved in the object and on the phone are not valid hence we need to fetch from the API
             else if (internetConnectionService.isConnectedToInternet(MainApplication.applicationContext())) {
+                // Data saved in the object and on the phone are not valid hence we need to fetch from the API
+                // On data received save it in object and locally
+
                 Log.d(TAG, "Getting info from the API")
                 poiGoogleRetriever.requestPoisAPI(latLng, onSuccessSaveResponse(latLng) { onSuccess(it) }, onError)
             } else {
-                // If there is some data available return it even if not valid
+                // If there is no internet connection but some data available then return it even if not valid
                 if (responseTimestamp > 0L) {
                     Log.d(TAG, "Getting old info from in-object")
                     onSuccess(lastPoiListResponse)
                 } else if (retrieveTimeOfResponse() > 0L) {
                     Log.d(TAG, "Getting old info from shared preferences")
                     onSuccess(retrieveCachedPoiResponse())
+                } else {
+                    // Unfortunately there was no way to retrieve POIs
+                    Log.d(TAG, "Not possible to retreive POIs")
+                    onError(VolleyError("No Internet Connection and no cached data"))
                 }
-
-                // Unfortunately there was no way to retrieve POIs
-                Log.d(TAG, "Not possible to retreive POIs")
-                onError(VolleyError("No Internet Connection and no cached data"))
             }
         }
     }
@@ -94,29 +94,41 @@ class PoiServiceCached : PoiService {
     }
 
     fun saveResponse(poiList: List<PointOfInterest>, position: LatLng) {
+        // Save data both in object and in shared preferences
         saveTimeOfResponse()
         savePositionOfResponse(position)
 
+        // Save data in shared preferences
         val prefsEditor = mPrefs.edit()
         val jsonPoiList = gsonObject.toJson(poiList, poiList::class.java)
         prefsEditor.putString(POI_LIST_KEY, jsonPoiList)
         prefsEditor.apply()
+
+        // Save data in object
+        lastPoiListResponse = poiList
     }
 
     fun saveTimeOfResponse() {
         val tsLong = System.currentTimeMillis() / 1000
 
+        // Save data in shared preferences
         val prefsEditor = mPrefs.edit()
-
         prefsEditor.putLong(TIMESTAMP_KEY, tsLong)
         prefsEditor.apply()
+
+        // Save data in object
+        responseTimestamp = tsLong
     }
 
     fun savePositionOfResponse(latLng: LatLng) {
+        // Save data in shared preferences
         val prefsEditor = mPrefs.edit()
         val jsonPoiList = gsonObject.toJson(latLng, LatLng::class.java)
         prefsEditor.putString(POSITION_KEY, jsonPoiList)
         prefsEditor.apply()
+
+        // Save data in object
+        responsePosition = latLng
     }
 
     fun retrieveCachedPoiResponse(): List<PointOfInterest> {
@@ -135,6 +147,12 @@ class PoiServiceCached : PoiService {
         return gsonObject.fromJson(json, LatLng::class.java)
     }
 
+    /**
+     * Data is considered valid if it was retrieved less than 1 hour ago and the new request comes
+     * from less than 1km far away from the last data
+     *
+     * @return whether the data saved in shared preferences is valid or not
+     */
     fun isCacheValid(currentPosition: LatLng): Boolean {
         val currentTimestamp = System.currentTimeMillis() / 1000
         val cachedTimestamp = retrieveTimeOfResponse()
@@ -146,6 +164,12 @@ class PoiServiceCached : PoiService {
         return CustomMath.distanceOnSphere(cachedPosition, currentPosition) < CACHE_DISTANCE_LIMIT
     }
 
+    /**
+     * Data is considered valid if it was retrieved less than 1 hour ago and the new request comes
+     * from less than 1km far away from the last data
+     *
+     * @return whether the data in the object is valid or not
+     */
     fun isObjectDataValid(currentPosition: LatLng): Boolean {
         val currentTimestamp = System.currentTimeMillis() / 1000
 

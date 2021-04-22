@@ -19,7 +19,7 @@ class InternetConnectionServiceTest {
         Mockito.`when`(mockConnectivityManager.activeNetworkInfo).thenReturn(mockActiveNetwork)
         val mockContext = Mockito.mock(Context::class.java)
         Mockito.`when`(mockContext.getSystemService(Mockito.anyString())).thenReturn(mockConnectivityManager)
-        assertEquals(InternetConnectionService.isConnectedToInternet(mockContext), true)
+        assertEquals(InternetConnectionService().isConnectedToInternet(mockContext), true)
     }
 
     @Test
@@ -30,6 +30,6 @@ class InternetConnectionServiceTest {
         Mockito.`when`(mockConnectivityManager.activeNetworkInfo).thenReturn(mockActiveNetwork)
         val mockContext = Mockito.mock(Context::class.java)
         Mockito.`when`(mockContext.getSystemService(Mockito.anyString())).thenReturn(mockConnectivityManager)
-        assertEquals(InternetConnectionService.isConnectedToInternet(mockContext), false)
+        assertEquals(InternetConnectionService().isConnectedToInternet(mockContext), false)
     }
 }
