@@ -2,6 +2,7 @@ package com.github.epfl.meili.poi
 
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.util.Log
 import com.android.volley.VolleyError
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.models.PointOfInterest
@@ -47,21 +48,35 @@ class PoiServiceCached : PoiService {
             // If data saved in object is valid then return it
             // check if last fetch was more than 1 hour ago, also check if place updated was more than 1km far away
             if (isObjectDataValid(latLng)) {
+                Log.d(TAG, "Getting info from in-object")
                 onSuccess(lastPoiListResponse)
             }
 
             // first get info from phone then verify the validity
             // if you don't have internet conection then return what you saved on your phone
-            if (isCacheValid(latLng)) {
+            else if (isCacheValid(latLng)) {
+                Log.d(TAG, "Getting info from shared preferences")
                 onSuccess(retrieveCachedPoiResponse())
             }
 
             // Data saved in the object and on the phone are not valid hence we need to fetch from the API
-            if (internetConnectionService.isConnectedToInternet()) {
-                poiGoogleRetriever.requestPois(latLng, onSuccessSaveResponse(latLng) { onSuccess(it) }, onError)
+            else if (internetConnectionService.isConnectedToInternet()) {
+                Log.d(TAG, "Getting info from the API")
+                poiGoogleRetriever.requestPoisAPI(latLng, onSuccessSaveResponse(latLng) { onSuccess(it) }, onError)
             } else {
+                // If there is some data available return it even if not valid
+                if(responseTimestamp > 0L){
+                    Log.d(TAG, "Getting old info from in-object")
+                    onSuccess(lastPoiListResponse)
+                }else if (retrieveTimeOfResponse() > 0L){
+                    Log.d(TAG, "Getting old info from shared preferences")
+                    onSuccess(retrieveCachedPoiResponse())
+                }
+
                 // Unfortunately there was no way to retrieve POIs
-                onError(VolleyError())
+                Log.d(TAG, "Not possible to retreive POIs")
+                onError(VolleyError("No Internet Connection and no cached data"))
+
             }
         }
     }
@@ -99,6 +114,7 @@ class PoiServiceCached : PoiService {
         prefsEditor.apply()
     }
 
+    //TODO: function below is not working
     fun retrieveCachedPoiResponse(): List<PointOfInterest> {
         val json = mPrefs.getString(POI_LIST_KEY, "")
         var poiList: List<PointOfInterest> = ArrayList()
@@ -140,7 +156,8 @@ class PoiServiceCached : PoiService {
         const val POI_LIST_KEY = "POI-List"
         const val TIMESTAMP_KEY = "timestamp"
         const val POSITION_KEY = "position"
-        const val CACHE_TIME_LIMIT = 0L //todo: put around 1 hour
-        const val CACHE_DISTANCE_LIMIT = 1000 //todo check meters
+        const val CACHE_TIME_LIMIT = 60*60 // 1 hour in seconds
+        const val CACHE_DISTANCE_LIMIT = 1000 // 1 km
+        const val TAG = "PoiServiceCached"
     }
 }

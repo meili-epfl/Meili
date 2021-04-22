@@ -21,7 +21,7 @@ open class PoiGoogleRetriever {
         queue = newQueue
     }
 
-    open fun requestPois(latLng: LatLng?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((VolleyError) -> Unit)?) {
+    open fun requestPoisAPI(latLng: LatLng?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((VolleyError) -> Unit)?) {
 
         if (latLng != null && onSuccess != null && onError != null) {
             val apiKey = MainApplication.applicationContext().getString(R.string.google_api_key)
@@ -42,8 +42,8 @@ open class PoiGoogleRetriever {
         return { response ->
             if (response["status"] == "OK") {
                 val placesResponse = Gson().fromJson(response.toString(), GooglePlacesResponse::class.java)
-                Log.d("POI Service", response.toString())
-                Log.d("POI Service", placesResponse.getCustomPois().toString())
+                Log.d(TAG, response.toString())
+                Log.d(TAG, placesResponse.getCustomPois().toString())
                 onSuccess(placesResponse.getCustomPois())
             }
         }
@@ -52,6 +52,7 @@ open class PoiGoogleRetriever {
     companion object {
         private const val GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
         private const val MAX_COVERAGE_RADIUS = 3000
+        private const val TAG = "PoiGoogleRetriever"
     }
 }
 
