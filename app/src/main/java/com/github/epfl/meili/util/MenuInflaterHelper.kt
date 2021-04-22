@@ -33,13 +33,13 @@ object MenuInflaterHelper {
     private fun getIntentFromMenuItem(activity: Activity, item: MenuItem, poi: PointOfInterest): Intent{
 
         val launchedActivity: AppCompatActivity = when (item?.itemId) {
-            R.id.menu_reviews_from_forum, R.id.menu_reviews_from_chat -> {
+            R.id.menu_reviews -> {
                 ReviewsActivity()
             }
-            R.id.menu_chat_from_forum, R.id.menu_chat_from_review -> {
+            R.id.menu_chat -> {
                 ChatLogActivity()
             }
-            R.id.menu_forum_from_chat, R.id.menu_forum_from_review -> {
+            R.id.menu_forum -> {
                 ForumActivity()
             }
             else -> {
