@@ -26,9 +26,9 @@ class PoiServiceCached : PoiService {
     private var gsonObject: Gson
 
     // In-Object cached values
-    private var lastPoiListResponse: List<PointOfInterest> = ArrayList()
-    private var responseTimestamp: Long = 0L
-    private var responsePosition: LatLng = LatLng(0.0, 0.0)
+    var lastPoiListResponse: List<PointOfInterest> = ArrayList()
+    var responseTimestamp: Long = 0L
+    var responsePosition: LatLng = LatLng(0.0, 0.0)
 
     init {
         poiGoogleRetriever = PoiGoogleRetriever()
