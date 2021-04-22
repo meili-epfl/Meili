@@ -34,4 +34,10 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:textSize="24sp" />
+
+    <ImageView
+        android:id="@+id/post_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 </LinearLayout>

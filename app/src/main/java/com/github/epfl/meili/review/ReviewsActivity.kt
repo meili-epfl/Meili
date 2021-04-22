@@ -1,6 +1,9 @@
 package com.github.epfl.meili.review
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.messages.ChatLogActivity
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
@@ -48,7 +55,7 @@ class ReviewsActivity : AppCompatActivity() {
         listReviewsView = findViewById(R.id.list_reviews)
         editReviewView = findViewById(R.id.edit_review)
 
-        val poiKey = intent.getStringExtra("POI_KEY")!!
+        val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
         showListReviewsView()
         initReviewEditView()
         initRecyclerView()
@@ -113,7 +120,7 @@ class ReviewsActivity : AppCompatActivity() {
         @Suppress("UNCHECKED_CAST")
         viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
-        viewModel.setDatabase(FirestoreDatabase(poiKey, Review::class.java))
+        viewModel.setDatabase(FirestoreDatabase("review/$poiKey/reviews", Review::class.java))
         viewModel.getElements().observe(this, { map ->
             reviewsMapListener(map)
         })
@@ -164,5 +171,34 @@ class ReviewsActivity : AppCompatActivity() {
     private fun showListReviewsView() {
         listReviewsView.visibility = View.VISIBLE
         editReviewView.visibility = View.GONE
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        //Inflate menu to enable adding chat and review buttons on the top
+        menuInflater.inflate(R.menu.nav_review_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // get the POI
+        val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!
+        //Now that the buttons are added at the top control what each menu buttons does
+        val intent: Intent = when (item.itemId) {
+            R.id.menu_chat_from_review -> {
+                Intent(this, ChatLogActivity::class.java)
+                    .putExtra(MapActivity.POI_KEY, poi)
+            }
+            R.id.menu_forum_from_review-> {
+                Intent(this, ForumActivity::class.java)
+                    .putExtra(MapActivity.POI_KEY, poi)
+            }
+            else -> {
+                Intent(this, ReviewsActivity::class.java)
+            }
+        }
+        //clear the older intents so that the back button works correctly
+        //intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        return super.onOptionsItemSelected(item)
     }
 }
