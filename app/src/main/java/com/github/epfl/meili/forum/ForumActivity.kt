@@ -19,17 +19,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
-import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
-import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
-import com.github.epfl.meili.review.ReviewsActivity
 import com.github.epfl.meili.storage.FirebaseStorageService
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.MenuInflaterHelper
@@ -226,7 +223,7 @@ class ForumActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        MenuInflaterHelper.onOptionsItemSelectedHelpoer(this, item, intent)
+        MenuInflaterHelper.onOptionsItemSelectedHelper(this, item, intent)
         return super.onOptionsItemSelected(item)
     }
 }

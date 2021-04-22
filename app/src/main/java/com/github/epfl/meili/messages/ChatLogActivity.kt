@@ -12,13 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
-import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.review.ReviewsActivity
 import com.github.epfl.meili.util.DateAuxiliary
 import com.github.epfl.meili.util.MenuInflaterHelper
 import com.xwray.groupie.GroupAdapter
@@ -121,7 +119,7 @@ class ChatLogActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        MenuInflaterHelper.onOptionsItemSelectedHelpoer(this, item, intent)
+        MenuInflaterHelper.onOptionsItemSelectedHelper(this, item, intent)
         return super.onOptionsItemSelected(item)
     }
 }
