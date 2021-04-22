@@ -10,6 +10,8 @@ import com.github.epfl.meili.util.CustomMath
 import com.github.epfl.meili.util.InternetConnectionService
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 
 class PoiServiceCached : PoiService {
@@ -65,10 +67,10 @@ class PoiServiceCached : PoiService {
                 poiGoogleRetriever.requestPoisAPI(latLng, onSuccessSaveResponse(latLng) { onSuccess(it) }, onError)
             } else {
                 // If there is some data available return it even if not valid
-                if(responseTimestamp > 0L){
+                if (responseTimestamp > 0L) {
                     Log.d(TAG, "Getting old info from in-object")
                     onSuccess(lastPoiListResponse)
-                }else if (retrieveTimeOfResponse() > 0L){
+                } else if (retrieveTimeOfResponse() > 0L) {
                     Log.d(TAG, "Getting old info from shared preferences")
                     onSuccess(retrieveCachedPoiResponse())
                 }
@@ -114,11 +116,11 @@ class PoiServiceCached : PoiService {
         prefsEditor.apply()
     }
 
-    //TODO: function below is not working
     fun retrieveCachedPoiResponse(): List<PointOfInterest> {
         val json = mPrefs.getString(POI_LIST_KEY, "")
-        var poiList: List<PointOfInterest> = ArrayList()
-        return gsonObject.fromJson(json, poiList::class.java)
+        val type: Type = object : TypeToken<List<PointOfInterest?>?>() {}.type
+        val arrayItems: List<PointOfInterest> = gsonObject.fromJson(json, type)
+        return arrayItems
     }
 
     fun retrieveTimeOfResponse(): Long {
@@ -156,7 +158,7 @@ class PoiServiceCached : PoiService {
         const val POI_LIST_KEY = "POI-List"
         const val TIMESTAMP_KEY = "timestamp"
         const val POSITION_KEY = "position"
-        const val CACHE_TIME_LIMIT = 60*60 // 1 hour in seconds
+        const val CACHE_TIME_LIMIT = 60 * 60 // 1 hour in seconds
         const val CACHE_DISTANCE_LIMIT = 1000 // 1 km
         const val TAG = "PoiServiceCached"
     }

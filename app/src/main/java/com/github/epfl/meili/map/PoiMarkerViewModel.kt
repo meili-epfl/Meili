@@ -108,7 +108,7 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
         }
     }
 
-    fun addPoiList(list: List<PointOfInterest>) {
+    private fun addPoiList(list: List<PointOfInterest>) {
         var poiMap = mPointsOfInterest.value!!
         var statusMap = mPointsOfInterestStatus.value!!
 
