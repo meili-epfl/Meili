@@ -48,9 +48,15 @@ However, filters took more time to implement than I thought. So I did not have t
 
 ## Yingxuan (Scrum Master)
 
-###TODO
+
 
 
 ## Overall team
 
-###TODO
+This week the team worked on both implementing new features and polishing existed ones. A unified UI is made to group features together and a two-level cache was introduced, photos can be added in forum and a new possibility for login was started as well. Different parts of the code were refactored to be more readable and efficient, the code quality was improved to have a A level maintainbility again.
+
+The time estimation was off for some of us, as there is uncertainty when exploring new features.
+
+There are active interactions between team members during standup meetings and code reviews, so that remarks and clarifications can be made. 
+
+
