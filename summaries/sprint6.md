@@ -2,7 +2,11 @@
 
 ## Ahmed
 
-###TODO
+This week I worked to introduce a new login option for new users that is facebook login and was hit by a new type of task. That is setting up the facebook API to work with our app. This task has proven cumbersome and I haven't taken it into consideration at all.
+
+My time estimates are getting worse again because I am challenging myself to the limit; not by giving myself short time estimates intentionally but by choosing new "types of tasks" every sprint that I might learn from.
+
+I would then use the next week to finish the last 2 week's features.
 
 
 ## Aman 
