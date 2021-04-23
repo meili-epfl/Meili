@@ -56,6 +56,10 @@ open class PoiGoogleRetriever {
     }
 }
 
+/**
+ * The classes below are used to deserialise the JSON object received from the Google Places API
+ * When completed you can call getCustomPois function to receive the List<PointOfInterest>
+ */
 data class GooglePlacesResponse(
         @SerializedName("results")
         val pointsOfInterest: List<PlacesPointOfInterest> = ArrayList()
