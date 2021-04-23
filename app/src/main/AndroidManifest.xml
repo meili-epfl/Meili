@@ -9,6 +9,12 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera.any" />
 
+    <!-- Nearby Connections API -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -17,7 +23,8 @@
         android:roundIcon="@mipmap/meili_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
-        
+        <activity android:name=".nearby.NearbyActivity" />
+
         <!-- Kept to add new features easily and integrate later -->
         <activity android:name=".MainActivity">
         <intent-filter>
