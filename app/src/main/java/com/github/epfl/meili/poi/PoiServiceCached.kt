@@ -37,14 +37,6 @@ class PoiServiceCached : PoiService {
         internetConnectionService = InternetConnectionService()
     }
 
-    fun setPoiGoogleRetriever(poiGoogleRetriever: PoiGoogleRetriever) {
-        this.poiGoogleRetriever = poiGoogleRetriever
-    }
-
-    fun setInternetConnectionServicce(internetConnectionService: InternetConnectionService) {
-        this.internetConnectionService = internetConnectionService
-    }
-
     fun setSharedPreferences(sharedPreferences: SharedPreferences){
         this.mPrefs = sharedPreferences
     }
@@ -86,14 +78,14 @@ class PoiServiceCached : PoiService {
         }
     }
 
-    fun onSuccessSaveResponse(latLng: LatLng, onSuccess: ((List<PointOfInterest>) -> Unit)): ((List<PointOfInterest>) -> Unit)? {
+    private fun onSuccessSaveResponse(latLng: LatLng, onSuccess: ((List<PointOfInterest>) -> Unit)): ((List<PointOfInterest>) -> Unit)? {
         return { response ->
             saveResponse(response, latLng)
             onSuccess(response)
         }
     }
 
-    fun saveResponse(poiList: List<PointOfInterest>, position: LatLng) {
+    private fun saveResponse(poiList: List<PointOfInterest>, position: LatLng) {
         // Save data both in object and in shared preferences
         saveTimeOfResponse()
         savePositionOfResponse(position)
@@ -108,7 +100,7 @@ class PoiServiceCached : PoiService {
         lastPoiListResponse = poiList
     }
 
-    fun saveTimeOfResponse() {
+    private fun saveTimeOfResponse() {
         val tsLong = System.currentTimeMillis() / 1000
 
         // Save data in shared preferences
@@ -120,7 +112,7 @@ class PoiServiceCached : PoiService {
         responseTimestamp = tsLong
     }
 
-    fun savePositionOfResponse(latLng: LatLng) {
+    private fun savePositionOfResponse(latLng: LatLng) {
         // Save data in shared preferences
         val prefsEditor = mPrefs.edit()
         val jsonPoiList = gsonObject.toJson(latLng, LatLng::class.java)
@@ -131,18 +123,17 @@ class PoiServiceCached : PoiService {
         responsePosition = latLng
     }
 
-    fun retrieveCachedPoiResponse(): List<PointOfInterest> {
+    private fun retrieveCachedPoiResponse(): List<PointOfInterest> {
         val json = mPrefs.getString(POI_LIST_KEY, "")
         val type: Type = object : TypeToken<List<PointOfInterest?>?>() {}.type
-        val arrayItems: List<PointOfInterest> = gsonObject.fromJson(json, type)
-        return arrayItems
+        return gsonObject.fromJson(json, type)
     }
 
-    fun retrieveTimeOfResponse(): Long {
+    private fun retrieveTimeOfResponse(): Long {
         return mPrefs.getLong(TIMESTAMP_KEY, 0L)
     }
 
-    fun retrievePositionOfResponse(): LatLng {
+    private fun retrievePositionOfResponse(): LatLng {
         val json = mPrefs.getString(POSITION_KEY, "")
         return gsonObject.fromJson(json, LatLng::class.java)
     }
@@ -153,7 +144,7 @@ class PoiServiceCached : PoiService {
      *
      * @return whether the data saved in shared preferences is valid or not
      */
-    fun isCacheValid(currentPosition: LatLng): Boolean {
+    private fun isCacheValid(currentPosition: LatLng): Boolean {
         val currentTimestamp = System.currentTimeMillis() / 1000
         val cachedTimestamp = retrieveTimeOfResponse()
 
@@ -170,7 +161,7 @@ class PoiServiceCached : PoiService {
      *
      * @return whether the data in the object is valid or not
      */
-    fun isObjectDataValid(currentPosition: LatLng): Boolean {
+    private fun isObjectDataValid(currentPosition: LatLng): Boolean {
         val currentTimestamp = System.currentTimeMillis() / 1000
 
         if (currentTimestamp - responseTimestamp > CACHE_TIME_LIMIT) {
