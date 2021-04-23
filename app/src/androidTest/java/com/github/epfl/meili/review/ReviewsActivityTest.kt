@@ -18,7 +18,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
 import com.google.firebase.firestore.*
 import org.hamcrest.CoreMatchers.not
@@ -28,9 +30,10 @@ import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 
 
 @Suppress("UNCHECKED_CAST")
@@ -38,10 +41,9 @@ import org.mockito.Mockito.`when`
 class ReviewsActivityTest {
 
     companion object {
-        private const val TAG = "ReviewsActivityTest"
-
         private const val TEST_UID = "MrPerfect"
-        private const val TEST_POI_KEY = "poiKey"
+
+        private val TEST_POI_KEY = PointOfInterest(100.0,100.0,"lorem_ipsum1", "lorem_ipsum2")
         private const val TEST_TITLE = "Beach too sandy"
         private const val TEST_SUMMARY = "Water too wet"
 
@@ -56,17 +58,16 @@ class ReviewsActivityTest {
         private const val TEST_EDITED_TITLE = "Looks good to me"
     }
 
-    private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
-    private val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
-    private val mockDocument: DocumentReference = Mockito.mock(DocumentReference::class.java)
-    private val mockListenerRegistration: ListenerRegistration = Mockito.mock(ListenerRegistration::class.java)
+    private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
+    private val mockCollection: CollectionReference = mock(CollectionReference::class.java)
+    private val mockDocument: DocumentReference = mock(DocumentReference::class.java)
 
-    private val mockSnapshotBeforeAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
-    private val mockSnapshotAfterAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
-    private val mockSnapshotAfterEdition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
+    private val mockSnapshotBeforeAddition: QuerySnapshot = mock(QuerySnapshot::class.java)
+    private val mockSnapshotAfterAddition: QuerySnapshot = mock(QuerySnapshot::class.java)
+    private val mockSnapshotAfterEdition: QuerySnapshot = mock(QuerySnapshot::class.java)
 
     private val mockAuthenticationService = MockAuthenticationService()
-    private lateinit var service: FirestoreReviewService
+    private lateinit var database: FirestoreDatabase<Review>
 
     private var testAverageRatingBeforeAddition: Float = 0f
     private var testAverageRatingAfterAddition: Float = 0f
@@ -77,16 +78,14 @@ class ReviewsActivityTest {
     }
 
     private fun setupMocks() {
-        mockAuthenticationService.setMockUid(TEST_UID)
-
-        `when`(mockFirestore.collection(any())).thenReturn(mockCollection)
+        `when`(mockFirestore.collection("review/${TEST_POI_KEY.uid}/reviews")).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
-            (invocation.arguments[0] as FirestoreReviewService).also { service = it }
-            mockListenerRegistration
+            database = invocation.arguments[0] as FirestoreDatabase<Review>
+            mock(ListenerRegistration::class.java)
         }
-        `when`(mockCollection.document(Mockito.matches(TEST_UID))).thenReturn(mockDocument)
+        `when`(mockCollection.document(ArgumentMatchers.matches(TEST_UID))).thenReturn(mockDocument)
 
-        var mockDocumentList = beforeAdditionList()
+        val mockDocumentList = beforeAdditionList()
         `when`(mockSnapshotBeforeAddition.documents).thenReturn(mockDocumentList)
 
         val mockDocumentListAfterAddition = ArrayList(mockDocumentList)
@@ -97,8 +96,10 @@ class ReviewsActivityTest {
         mockDocumentListAfterEdition.add(editedReviewDocumentSnapshot())
         `when`(mockSnapshotAfterEdition.documents).thenReturn(mockDocumentListAfterEdition)
 
+        mockAuthenticationService.setMockUid(TEST_UID)
+
         // Inject dependencies
-        FirestoreReviewService.databaseProvider = { mockFirestore }
+        FirestoreDatabase.databaseProvider = { mockFirestore }
         Auth.authService = mockAuthenticationService
     }
 
@@ -129,7 +130,7 @@ class ReviewsActivityTest {
     }
 
     private fun getMockDocumentSnapshot(id: String, review: Review): DocumentSnapshot {
-        val mockDocumentSnapshot: DocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
+        val mockDocumentSnapshot: DocumentSnapshot = mock(DocumentSnapshot::class.java)
         `when`(mockDocumentSnapshot.id).thenReturn(id)
         `when`(mockDocumentSnapshot.toObject(Review::class.java)).thenReturn(review)
         return mockDocumentSnapshot
@@ -144,7 +145,7 @@ class ReviewsActivityTest {
     @Test
     fun signedOutDisplayTest() {
         mockAuthenticationService.signOut()
-        service.onEvent(mockSnapshotBeforeAddition, null)
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
@@ -158,7 +159,7 @@ class ReviewsActivityTest {
     @Test
     fun signedInDisplayTest() {
         mockAuthenticationService.signInIntent()
-        service.onEvent(mockSnapshotBeforeAddition, null)
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
@@ -172,7 +173,7 @@ class ReviewsActivityTest {
     @Test
     fun signedInCancelAddingTest() {
         mockAuthenticationService.signInIntent()
-        service.onEvent(mockSnapshotBeforeAddition, null)
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())
 
@@ -190,23 +191,23 @@ class ReviewsActivityTest {
     @Test
     fun signedInAddReviewTest() {
         mockAuthenticationService.signInIntent()
-        service.onEvent(mockSnapshotBeforeAddition, null)
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())
 
         onView(withId(R.id.rating_bar)).perform(setRating(ADDED_REVIEW_RATING))
-        onView(withId(R.id.edit_title)).perform(clearText(), typeText(TEST_ADDED_TITLE), closeSoftKeyboard())
-        onView(withId(R.id.edit_summary)).perform(clearText(), typeText(TEST_SUMMARY), closeSoftKeyboard())
+        onView(withId(R.id.review_edit_title)).perform(clearText(), typeText(TEST_ADDED_TITLE), closeSoftKeyboard())
+        onView(withId(R.id.review_edit_summary)).perform(clearText(), typeText(TEST_SUMMARY), closeSoftKeyboard())
 
         onView(withId(R.id.submit_review)).perform(click())
 
         // send reviews map with added review to review service
-        service.onEvent(mockSnapshotAfterAddition, null)
+        database.onEvent(mockSnapshotAfterAddition, null)
 
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.recycler_view))
+        onView(withId(R.id.reviews_recycler_view))
                 .check(matches(isDisplayed()))
                 .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_UID))))
 
@@ -219,27 +220,27 @@ class ReviewsActivityTest {
     @Test
     fun signedInEditReviewTest() {
         mockAuthenticationService.signInIntent()
-        service.onEvent(mockSnapshotAfterAddition, null) // mock user has existing review
+        database.onEvent(mockSnapshotAfterAddition, null) // mock user has existing review
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())
 
         // old review is displayed
-        onView(withId(R.id.edit_title)).check(matches(editTextContainsText(TEST_ADDED_TITLE)))
-        onView(withId(R.id.edit_summary)).check(matches(editTextContainsText(TEST_SUMMARY)))
+        onView(withId(R.id.review_edit_title)).check(matches(editTextContainsText(TEST_ADDED_TITLE)))
+        onView(withId(R.id.review_edit_summary)).check(matches(editTextContainsText(TEST_SUMMARY)))
         onView(withId(R.id.rating_bar)).check(matches(ratingBarHasRating(ADDED_REVIEW_RATING)))
 
         // edit review
         onView(withId(R.id.rating_bar)).perform(setRating(EDITED_REVIEW_RATING))
-        onView(withId(R.id.edit_title)).perform(clearText(), typeText(TEST_EDITED_TITLE), closeSoftKeyboard())
+        onView(withId(R.id.review_edit_title)).perform(clearText(), typeText(TEST_EDITED_TITLE), closeSoftKeyboard())
         onView(withId(R.id.submit_review)).perform(click())
 
         // send reviews map with edited review to review service
-        service.onEvent(mockSnapshotAfterEdition, null)
+        database.onEvent(mockSnapshotAfterEdition, null)
 
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.recycler_view))
+        onView(withId(R.id.reviews_recycler_view))
             .check(matches(isDisplayed()))
             .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_UID))))
 

@@ -85,7 +85,7 @@ class GoogleSignInActivityTest {
             Auth.isLoggedIn.value = true
         }
 
-        onView(withId(R.id.textFieldSignIn)).check(matches(withText(MOCK_NAME)))
+        onView(withId(R.id.textFieldSignIn)).check(matches(withText("Welcome Fake Name!")))
         onView(withId(R.id.signInButton)).check(matches(withText("Sign Out")))
     }
 
@@ -96,7 +96,7 @@ class GoogleSignInActivityTest {
             Auth.isLoggedIn.value = true
         }
 
-        onView(withId(R.id.textFieldSignIn)).check(matches(withText(MOCK_NAME)))
+        onView(withId(R.id.textFieldSignIn)).check(matches(withText("Welcome Fake Name!")))
         onView(withId(R.id.signInButton)).check(matches(withText("Sign Out")))
 
         runOnUiThread {
@@ -104,7 +104,7 @@ class GoogleSignInActivityTest {
             Auth.isLoggedIn.value = false
         }
 
-        onView(withId(R.id.textFieldSignIn)).check(matches(withText("Sign in")))
+        onView(withId(R.id.textFieldSignIn)).check(matches(withText("Sign In to use the map")))
         onView(withId(R.id.signInButton)).check(matches(withText("Sign In")))
     }
 

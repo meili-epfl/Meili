@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 
+
 class PoiFragment(@LayoutRes val layoutId: Int) : Fragment() {
 
     override fun onCreateView(

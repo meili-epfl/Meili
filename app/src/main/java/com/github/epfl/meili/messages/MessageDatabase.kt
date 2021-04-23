@@ -1,6 +1,5 @@
 package com.github.epfl.meili.messages
 
-import androidx.lifecycle.LiveData
 import com.github.epfl.meili.models.ChatMessage
 import java.util.*
 import kotlin.collections.ArrayList

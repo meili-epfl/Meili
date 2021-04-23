@@ -12,13 +12,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class FirebaseAuthenticationService : AuthenticationService {
-    private lateinit var auth: FirebaseAuth
-    private lateinit var googleSignInClient: GoogleSignInClient
+    private var auth: FirebaseAuth
+    private val googleSignInClient: GoogleSignInClient
 
     init {
         val context = MainApplication.applicationContext()
@@ -39,13 +40,17 @@ class FirebaseAuthenticationService : AuthenticationService {
     }
 
     override fun getCurrentUser(): User? {
-        var user = auth.currentUser
+        val user: FirebaseUser? = auth.currentUser
 
-        if (user == null) {
-            return user
+        return if (user == null) {
+            null
+        } else {
+            return User(user.uid, user.displayName!!, user.email!!, " ", null)
         }
 
-        return User(user.uid, user.displayName, user.email, " ", null)
+
+
+
     }
 
     override fun signInIntent(): Intent {
@@ -65,7 +70,7 @@ class FirebaseAuthenticationService : AuthenticationService {
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success")
-                        FirestoreUtil.initCurrentUserIfFirstTime {}
+                        FirestoreUtil.initCurrentUserIfFirstTime {} 
                         onComplete()
                     } else {
                         // If sign in fails, display a message to the user.

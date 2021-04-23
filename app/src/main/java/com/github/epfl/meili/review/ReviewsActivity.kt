@@ -3,20 +3,23 @@ package com.github.epfl.meili.review
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
+import com.github.epfl.meili.util.MeiliViewModel
+import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 
 
-class ReviewsActivity : AppCompatActivity() {
+class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
     companion object {
-        private const val TAG: String = "ReviewsActivity"
         private const val CARD_PADDING: Int = 30
 
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
@@ -25,8 +28,8 @@ class ReviewsActivity : AppCompatActivity() {
 
     private var currentUserReview: Review? = null
 
-    private lateinit var reviewAdapter: ReviewRecyclerAdapter
-    private lateinit var viewModel: ReviewsActivityViewModel
+    private lateinit var recyclerAdapter: ReviewsRecyclerAdapter
+    private lateinit var viewModel: MeiliViewModel<Review>
 
     private lateinit var listReviewsView: View
     private lateinit var editReviewView: View
@@ -47,7 +50,7 @@ class ReviewsActivity : AppCompatActivity() {
         listReviewsView = findViewById(R.id.list_reviews)
         editReviewView = findViewById(R.id.edit_review)
 
-        val poiKey = intent.getStringExtra("POI_KEY")!!
+        val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
         showListReviewsView()
         initReviewEditView()
         initRecyclerView()
@@ -85,7 +88,7 @@ class ReviewsActivity : AppCompatActivity() {
         val title = editTitleView.text.toString()
         val summary = editSummaryView.text.toString()
 
-        viewModel.addReview(Auth.getCurrentUser()!!.uid, Review(rating, title, summary))
+        viewModel.addElement(Auth.getCurrentUser()!!.uid, Review(rating, title, summary))
     }
 
     private fun editReviewButtonListener() {
@@ -99,8 +102,8 @@ class ReviewsActivity : AppCompatActivity() {
 
     private fun initReviewEditView() {
         ratingBar = findViewById(R.id.rating_bar)
-        editTitleView = findViewById(R.id.edit_title)
-        editSummaryView = findViewById(R.id.edit_summary)
+        editTitleView = findViewById(R.id.review_edit_title)
+        editSummaryView = findViewById(R.id.review_edit_summary)
         submitButton = findViewById(R.id.submit_review)
         cancelButton = findViewById(R.id.cancel_review)
     }
@@ -109,13 +112,12 @@ class ReviewsActivity : AppCompatActivity() {
         floatingActionButton = findViewById(R.id.fab_add_edit_review)
         averageRatingView = findViewById(R.id.average_rating)
 
-        viewModel = ViewModelProvider(this).get(ReviewsActivityViewModel::class.java)
+        @Suppress("UNCHECKED_CAST")
+        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
-        viewModel.setReviewService(FirestoreReviewService(poiKey))
-        viewModel.getReviews().observe(this, { map -> reviewsMapListener(map) })
-
-        viewModel.getAverageRating().observe(this, {averageRating ->
-            averageRatingView.text = getString(R.string.average_rating_format).format(averageRating)
+        viewModel.setDatabase(FirestoreDatabase("review/$poiKey/reviews", Review::class.java))
+        viewModel.getElements().observe(this, { map ->
+            reviewsMapListener(map)
         })
     }
 
@@ -131,27 +133,28 @@ class ReviewsActivity : AppCompatActivity() {
             }
         }
 
-        reviewAdapter.submitList(map.toList())
-        reviewAdapter.notifyDataSetChanged()
+        averageRatingView.text = getString(R.string.average_rating_format).format(Review.averageRating(map))
+        recyclerAdapter.submitList(map.toList())
+        recyclerAdapter.notifyDataSetChanged()
     }
 
     private fun initRecyclerView() {
-        reviewAdapter = ReviewRecyclerAdapter()
-        val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
+        recyclerAdapter = ReviewsRecyclerAdapter()
+        val recyclerView: RecyclerView = findViewById(R.id.reviews_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ReviewsActivity)
             addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
-            adapter = reviewAdapter
+            adapter = recyclerAdapter
         }
     }
 
     private fun initLoggedInListener() {
         Auth.isLoggedIn.observe(this, { loggedIn ->
             floatingActionButton.isEnabled = loggedIn
-            if (loggedIn)
-                floatingActionButton.visibility = View.VISIBLE
+            floatingActionButton.visibility = if (loggedIn)
+                View.VISIBLE
             else
-                floatingActionButton.visibility = View.GONE
+                View.GONE
         })
     }
 

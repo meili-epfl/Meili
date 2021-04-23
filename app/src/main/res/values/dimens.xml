@@ -4,7 +4,6 @@
     Because the window insets on round devices are larger than 15dp, this padding only applies
     to square screens.
     -->
-    <dimen name="box_inset_layout_padding">0dp</dimen>
 
     <!--
     This padding applies to both square and round screens. The total padding between the buttons
@@ -12,4 +11,10 @@
     inner_frame_layout_padding (below variable) on round screens.
     -->
     <dimen name="inner_frame_layout_padding">5dp</dimen>
+
+    <dimen name="shutter_button_size">80dp</dimen>
+    <dimen name="shutter_button_margin">60dp</dimen>
+
+    <dimen name="switch_camera_button_size">50dp</dimen>
+
 </resources>
