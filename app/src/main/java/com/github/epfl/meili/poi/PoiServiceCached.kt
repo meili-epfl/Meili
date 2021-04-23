@@ -34,6 +34,14 @@ class PoiServiceCached : PoiService {
         this.mPrefs = sharedPreferences
     }
 
+    fun setPoiGoogleRetriever(poiGoogleRetriever: PoiGoogleRetriever) {
+        this.poiGoogleRetriever = poiGoogleRetriever
+    }
+
+    fun setInternetConnectionServicce(internetConnectionService: InternetConnectionService) {
+        this.internetConnectionService = internetConnectionService
+    }
+
     override fun requestPois(latLng: LatLng?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((VolleyError) -> Unit)?) {
         if (onSuccess != null && onError != null && latLng != null) {
             when {
