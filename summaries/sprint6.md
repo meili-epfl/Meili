@@ -48,8 +48,8 @@ However, filters took more time to implement than I thought. So I did not have t
 
 ## Yingxuan (Scrum Master)
 
-
-
+This week I went back to the profile without MVVM, I did some back and forth with different git operations between commits to have the version I needed. I rebased my code to keep it updated with main, and had problem with libraries cannot be resolved, for Picasso and then Glide. After this I found a bug that I had no idea about how to fix it. 
+My time estimation was bad and I lost confidence in it.
 
 ## Overall team
 
