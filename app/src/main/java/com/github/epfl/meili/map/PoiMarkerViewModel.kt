@@ -51,6 +51,7 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
         setReachablePois()
     }
 
+    //TODO: OnError schedule fetching from PoiService again later
     private fun onError(error: VolleyError) {
         Log.d(TAG, "error getting pois from service", error)
     }
@@ -107,7 +108,7 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
         }
     }
 
-    fun addPoiList(list: List<PointOfInterest>) {
+    private fun addPoiList(list: List<PointOfInterest>) {
         var poiMap = mPointsOfInterest.value!!
         var statusMap = mPointsOfInterestStatus.value!!
 
