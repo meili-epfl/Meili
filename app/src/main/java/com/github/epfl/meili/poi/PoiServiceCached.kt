@@ -16,26 +16,19 @@ import java.lang.reflect.Type
 
 class PoiServiceCached : PoiService {
     // Service for fetching POIs from Google Places API
-    private var poiGoogleRetriever: PoiGoogleRetriever
+    private var poiGoogleRetriever: PoiGoogleRetriever = PoiGoogleRetriever()
 
     // Auxiliary service
-    private var internetConnectionService: InternetConnectionService
+    private var internetConnectionService = InternetConnectionService()
 
     // Object for handling saving data locally on phone
-    private var mPrefs: SharedPreferences
-    private var gsonObject: Gson
+    private var mPrefs = MainApplication.applicationContext().getSharedPreferences(SHARED_PREFERENCES_KEY, MODE_PRIVATE)
+    private var gsonObject = Gson()
 
     // In-Object cached values
     var lastPoiListResponse: List<PointOfInterest> = ArrayList()
     var responseTimestamp: Long = 0L
     var responsePosition: LatLng = LatLng(0.0, 0.0)
-
-    init {
-        poiGoogleRetriever = PoiGoogleRetriever()
-        mPrefs = MainApplication.applicationContext().getSharedPreferences(SHARED_PREFERENCES_KEY, MODE_PRIVATE)
-        gsonObject = Gson()
-        internetConnectionService = InternetConnectionService()
-    }
 
     fun setSharedPreferences(sharedPreferences: SharedPreferences){
         this.mPrefs = sharedPreferences
@@ -43,42 +36,49 @@ class PoiServiceCached : PoiService {
 
     override fun requestPois(latLng: LatLng?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((VolleyError) -> Unit)?) {
         if (onSuccess != null && onError != null && latLng != null) {
-            if (isObjectDataValid(latLng)) {
-                // If data saved in object is valid then return it
+            when {
+                isObjectDataValid(latLng) -> {
+                    // If data saved in object is valid then return it
 
-                Log.d(TAG, "Getting info from in-object")
-                onSuccess(lastPoiListResponse)
-            }
-            else if (isCacheValid(latLng)) {
-                // If saved data locally is valid then return it
-
-                Log.d(TAG, "Getting info from shared preferences")
-                onSuccess(retrieveCachedPoiResponse())
-            }
-            else if (internetConnectionService.isConnectedToInternet(MainApplication.applicationContext())) {
-                // Data saved in the object and on the phone are not valid hence we need to fetch from the API
-                // On data received save it in object and locally
-
-                Log.d(TAG, "Getting info from the API")
-                poiGoogleRetriever.requestPoisAPI(latLng, onSuccessSaveResponse(latLng) { onSuccess(it) }, onError)
-            } else {
-                // If there is no internet connection but some data available then return it even if not valid
-                if (responseTimestamp > 0L) {
-                    Log.d(TAG, "Getting old info from in-object")
+                    Log.d(TAG, "Getting info from in-object")
                     onSuccess(lastPoiListResponse)
-                } else if (retrieveTimeOfResponse() > 0L) {
-                    Log.d(TAG, "Getting old info from shared preferences")
+                }
+                isCacheValid(latLng) -> {
+                    // If saved data locally is valid then return it
+
+                    Log.d(TAG, "Getting info from shared preferences")
                     onSuccess(retrieveCachedPoiResponse())
-                } else {
-                    // Unfortunately there was no way to retrieve POIs
-                    Log.d(TAG, "Not possible to retreive POIs")
-                    onError(VolleyError("No Internet Connection and no cached data"))
+                }
+                internetConnectionService.isConnectedToInternet(MainApplication.applicationContext()) -> {
+                    // Data saved in the object and on the phone are not valid hence we need to fetch from the API
+                    // On data received save it in object and locally
+
+                    Log.d(TAG, "Getting info from the API")
+                    poiGoogleRetriever.requestPoisAPI(latLng, onSuccessSaveResponse(latLng) { onSuccess(it) }, onError)
+                }
+                else -> {
+                    // If there is no internet connection but some data available then return it even if not valid
+                    when {
+                        responseTimestamp > 0L -> {
+                            Log.d(TAG, "Getting old info from in-object")
+                            onSuccess(lastPoiListResponse)
+                        }
+                        retrieveTimeOfResponse() > 0L -> {
+                            Log.d(TAG, "Getting old info from shared preferences")
+                            onSuccess(retrieveCachedPoiResponse())
+                        }
+                        else -> {
+                            // Unfortunately there was no way to retrieve POIs
+                            Log.d(TAG, "Not possible to retreive POIs")
+                            onError(VolleyError("No Internet Connection and no cached data"))
+                        }
+                    }
                 }
             }
         }
     }
 
-    private fun onSuccessSaveResponse(latLng: LatLng, onSuccess: ((List<PointOfInterest>) -> Unit)): ((List<PointOfInterest>) -> Unit)? {
+    private fun onSuccessSaveResponse(latLng: LatLng, onSuccess: ((List<PointOfInterest>) -> Unit)): (List<PointOfInterest>) -> Unit {
         return { response ->
             saveResponse(response, latLng)
             onSuccess(response)
