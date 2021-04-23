@@ -59,7 +59,7 @@ class ReviewMenuButtonsTest {
     fun clickChatMenuButton() {
         onView(
             Matchers.allOf(
-                    withId(R.id.menu_chat_from_review),
+                    withId(R.id.menu_chat),
                     withText("Chat")
             )
         ).perform(click())
@@ -69,7 +69,7 @@ class ReviewMenuButtonsTest {
     fun clickForumMenuButton() {
         onView(
             Matchers.allOf(
-                    withId(R.id.menu_forum_from_review),
+                    withId(R.id.menu_forum),
                     withText("Forum")
                 )
         ).perform(click())

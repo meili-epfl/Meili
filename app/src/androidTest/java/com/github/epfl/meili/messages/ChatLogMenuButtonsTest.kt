@@ -128,7 +128,7 @@ class ChatLogMenuButtonsTest {
 
         onView(
             allOf(
-                withId(R.id.menu_forum_from_chat), withText("Forum"),
+                withId(R.id.menu_forum), withText("Forum"),
             )
         ).perform(click())
     }
@@ -138,7 +138,7 @@ class ChatLogMenuButtonsTest {
 
         onView(
             allOf(
-                withId(R.id.menu_reviews_from_chat), withText("Reviews"),
+                withId(R.id.menu_reviews), withText("Reviews"),
             )
         ).perform(click())
     }
