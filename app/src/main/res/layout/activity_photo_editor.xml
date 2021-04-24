@@ -7,41 +7,49 @@
     android:background="@android:color/darker_gray"
     tools:context=".photo.PhotoEditorActivity">
 
+    <ImageButton
+        android:id="@+id/paint_mode_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="60dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Draw on image"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_menu_edit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ja.burhanrashid52.photoeditor.PhotoEditorView
         android:id="@+id/photoEditorView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <ImageButton
-        android:id="@+id/paint_mode_button"
-        android:layout_width="@dimen/switch_camera_button_size"
-        android:layout_height="0dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginBottom="60dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="Draw on image"
-        android:padding="4dp"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
-
     <com.rtugeek.android.colorseekbar.ColorSeekBar
         android:id="@+id/colorSlider"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="654dp"
+        android:layout_marginBottom="8dp"
         app:barHeight="5dp"
         app:colorSeeds="@array/material_colors"
         app:isVertical="false"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:showAlphaBar="false"
         app:thumbHeight="30dp" />
 
 
-
+    <TextView
+        android:id="@+id/filters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="64dp"
+        android:background="?attr/selectableItemBackground"
+        android:text="Filters"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/paint_mode_button" />
     <!-- Filters window -->
     <RelativeLayout
         android:id="@+id/filters_container"
@@ -49,7 +57,9 @@
         android:layout_height="wrap_content"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/bw"
@@ -122,41 +132,23 @@
             android:textColor="#FFFFFF" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/filters"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="32dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginBottom="64dp"
-        android:background="?attr/selectableItemBackground"
-        android:text="Filters"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Preview window -->
     <RelativeLayout
         android:id="@+id/preview_container"
-        android:layout_width="403dp"
-        android:layout_height="731dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="#D9000000"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/filters"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
         <ImageView
             android:id="@+id/preview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:scaleType="fitStart" />
 
 
@@ -164,11 +156,10 @@
             android:id="@+id/hide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="64dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
             android:background="?attr/selectableItemBackground"
             android:text="Hide preview"
             android:textColor="#FFFFFF" />
@@ -178,38 +169,38 @@
         android:id="@+id/show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_margin="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:background="?attr/selectableItemBackground"
         android:text="Show preview"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <ImageButton
         android:id="@+id/undo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_margin="8dp"
-        android:layout_marginTop="32dp"
-        android:background="?attr/selectableItemBackground"
-        android:text="Undo"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Undo"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_menu_revert"
+        app:layout_constraintEnd_toStartOf="@+id/redo"
         app:layout_constraintTop_toBottomOf="@+id/show" />
 
-    <TextView
+    <ImageButton
         android:id="@+id/redo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_margin="8dp"
-        android:layout_marginTop="32dp"
-        android:background="?attr/selectableItemBackground"
-        android:text="Redo"
-        android:textColor="#FFFFFF"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Redo"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_menu_rotate"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/undo" />
+        app:layout_constraintTop_toBottomOf="@+id/show" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
