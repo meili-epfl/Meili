@@ -3,7 +3,6 @@ package com.github.epfl.meili.review
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,12 +10,15 @@ import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.MeiliViewModel
+import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 
 
-class ReviewsActivity : AppCompatActivity() {
+class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
     companion object {
         private const val CARD_PADDING: Int = 30
 
@@ -48,7 +50,7 @@ class ReviewsActivity : AppCompatActivity() {
         listReviewsView = findViewById(R.id.list_reviews)
         editReviewView = findViewById(R.id.edit_review)
 
-        val poiKey = intent.getStringExtra("POI_KEY")!!
+        val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
         showListReviewsView()
         initReviewEditView()
         initRecyclerView()
@@ -111,9 +113,10 @@ class ReviewsActivity : AppCompatActivity() {
         averageRatingView = findViewById(R.id.average_rating)
 
         @Suppress("UNCHECKED_CAST")
-        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
+        viewModel =
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
-        viewModel.setDatabase(FirestoreDatabase(poiKey, Review::class.java))
+        viewModel.setDatabase(FirestoreDatabase("review/$poiKey/reviews", Review::class.java))
         viewModel.getElements().observe(this, { map ->
             reviewsMapListener(map)
         })
@@ -131,7 +134,8 @@ class ReviewsActivity : AppCompatActivity() {
             }
         }
 
-        averageRatingView.text = getString(R.string.average_rating_format).format(Review.averageRating(map))
+        averageRatingView.text =
+            getString(R.string.average_rating_format).format(Review.averageRating(map))
         recyclerAdapter.submitList(map.toList())
         recyclerAdapter.notifyDataSetChanged()
     }
