@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/darker_gray"
+    android:background="#D9000000"
     tools:context=".photo.PhotoEditorActivity">
 
     <ImageButton
@@ -44,93 +44,68 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="68dp"
         android:background="?attr/selectableItemBackground"
         android:text="Filters"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/paint_mode_button" />
+
     <!-- Filters window -->
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/filters_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/bw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="64dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
             android:background="?attr/selectableItemBackground"
             android:text="None"
+            android:layout_margin="8dp"
             android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/sepia"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="128dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
             android:background="?attr/selectableItemBackground"
             android:text="Sepia"
+            android:layout_margin="8dp"
             android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/saturate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="192dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
             android:background="?attr/selectableItemBackground"
             android:text="Saturate"
+            android:layout_margin="8dp"
             android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/sharpen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="256dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
             android:background="?attr/selectableItemBackground"
             android:text="Sharpen"
+            android:layout_margin="8dp"
             android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/fish_eye"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="320dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
             android:background="?attr/selectableItemBackground"
             android:text="Fish Eye"
+            android:layout_margin="8dp"
             android:textColor="#FFFFFF" />
-    </RelativeLayout>
+    </LinearLayout>
 
 
     <!-- Preview window -->
@@ -183,7 +158,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@android:color/transparent"
+        android:background="?attr/selectableItemBackground"
         android:contentDescription="Undo"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_revert"
@@ -196,7 +171,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@android:color/transparent"
+        android:background="?attr/selectableItemBackground"
         android:contentDescription="Redo"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_rotate"

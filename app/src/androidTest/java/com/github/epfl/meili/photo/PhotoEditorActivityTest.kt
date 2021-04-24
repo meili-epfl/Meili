@@ -1,21 +1,16 @@
 package com.github.epfl.meili.photo
 
 
-import android.view.View
-import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
 import androidx.test.rule.GrantPermissionRule
-import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.R
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,294 +21,129 @@ class PhotoEditorActivityTest {
 
     @Rule
     @JvmField
-    var mActivityTestRule = ActivityScenarioRule(MainActivity::class.java)
+    var mActivityTestRule = ActivityScenarioRule(CameraActivity::class.java)
 
     @Rule
     @JvmField
-    var mGrantPermissionRule =
+    var mGrantPermissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(
             "android.permission.CAMERA"
         )
 
     @Test
-    fun test() {
-        val materialButton = onView(
-            allOf(
-                withId(R.id.launchCameraView), withText("Launch Camera View"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    6
-                ),
-                isDisplayed()
-            )
-        )
-        materialButton.perform(click())
-
+    fun photoEditorActivityTest() {
         val appCompatImageButton = onView(
             allOf(
-                withId(R.id.camera_capture_button), withContentDescription("Take photo"),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.camera_container),
-                        childAtPosition(
-                            withId(android.R.id.content),
-                            0
-                        )
-                    ),
-                    1
-                ),
-                isDisplayed()
+                withId(R.id.camera_capture_button)
             )
         )
+        appCompatImageButton.check(ViewAssertions.matches(isDisplayed()))
         appCompatImageButton.perform(click())
+
+        Thread.sleep(1000)
 
         val materialTextView = onView(
             allOf(
-                withId(R.id.filters), withText("Filters"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    4
-                ),
-                isDisplayed()
+                withId(R.id.show)
             )
         )
+        materialTextView.check(ViewAssertions.matches(isDisplayed()))
         materialTextView.perform(click())
 
         val materialTextView2 = onView(
             allOf(
-                withId(R.id.bw), withText("None"),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.filters_container),
-                        childAtPosition(
-                            withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                            3
-                        )
-                    ),
-                    0
-                ),
-                isDisplayed()
+                withId(R.id.hide)
             )
         )
+        materialTextView2.check(ViewAssertions.matches(isDisplayed()))
         materialTextView2.perform(click())
+
+        val appCompatImageButton2 = onView(
+            allOf(
+                withId(R.id.paint_mode_button)
+            )
+        )
+        appCompatImageButton2.check(ViewAssertions.matches(isDisplayed()))
+        appCompatImageButton2.perform(click())
+
+        val appCompatImageButton3 = onView(
+            allOf(
+                withId(R.id.paint_mode_button)
+            )
+        )
+        appCompatImageButton3.check(ViewAssertions.matches(isDisplayed()))
+        appCompatImageButton3.perform(click())
+
+        val appCompatImageButton4 = onView(
+            allOf(
+                withId(R.id.undo)
+            )
+        )
+        appCompatImageButton4.check(ViewAssertions.matches(isDisplayed()))
+        appCompatImageButton4.perform(click())
+
+        val appCompatImageButton5 = onView(
+            allOf(
+                withId(R.id.redo)
+            )
+        )
+        appCompatImageButton5.check(ViewAssertions.matches(isDisplayed()))
+        appCompatImageButton5.perform(click())
 
         val materialTextView3 = onView(
             allOf(
-                withId(R.id.sepia), withText("Sepia"),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.filters_container),
-                        childAtPosition(
-                            withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                            3
-                        )
-                    ),
-                    1
-                ),
-                isDisplayed()
+                withId(R.id.filters)
             )
         )
+        materialTextView3.check(ViewAssertions.matches(isDisplayed()))
         materialTextView3.perform(click())
 
         val materialTextView4 = onView(
             allOf(
-                withId(R.id.saturate), withText("Saturate"),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.filters_container),
-                        childAtPosition(
-                            withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                            3
-                        )
-                    ),
-                    2
-                ),
-                isDisplayed()
+                withId(R.id.saturate)
             )
         )
+        materialTextView4.check(ViewAssertions.matches(isDisplayed()))
         materialTextView4.perform(click())
 
         val materialTextView5 = onView(
             allOf(
-                withId(R.id.sharpen), withText("Sharpen"),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.filters_container),
-                        childAtPosition(
-                            withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                            3
-                        )
-                    ),
-                    3
-                ),
-                isDisplayed()
+                withId(R.id.sepia)
             )
         )
+        materialTextView5.check(ViewAssertions.matches(isDisplayed()))
         materialTextView5.perform(click())
 
         val materialTextView6 = onView(
             allOf(
-                withId(R.id.fish_eye), withText("Fish Eye"),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.filters_container),
-                        childAtPosition(
-                            withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                            3
-                        )
-                    ),
-                    4
-                ),
-                isDisplayed()
+                withId(R.id.bw)
             )
         )
+        materialTextView6.check(ViewAssertions.matches(isDisplayed()))
         materialTextView6.perform(click())
 
         val materialTextView7 = onView(
             allOf(
-                withId(R.id.undo), withText("Undo"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    7
-                ),
-                isDisplayed()
+                withId(R.id.sharpen)
             )
         )
+        materialTextView7.check(ViewAssertions.matches(isDisplayed()))
         materialTextView7.perform(click())
 
         val materialTextView8 = onView(
             allOf(
-                withId(R.id.filters), withText("Filters"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    4
-                ),
-                isDisplayed()
+                withId(R.id.fish_eye)
             )
         )
+        materialTextView8.check(ViewAssertions.matches(isDisplayed()))
         materialTextView8.perform(click())
-
-        val appCompatImageButton2 = onView(
-            allOf(
-                withId(R.id.paint_mode_button), withContentDescription("Draw on image"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
-        appCompatImageButton2.perform(click())
 
         val materialTextView9 = onView(
             allOf(
-                withId(R.id.undo), withText("Undo"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    7
-                ),
-                isDisplayed()
+                withId(R.id.filters)
             )
         )
+        materialTextView9.check(ViewAssertions.matches(isDisplayed()))
         materialTextView9.perform(click())
-
-        val materialTextView10 = onView(
-            allOf(
-                withId(R.id.redo), withText("Redo"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    8
-                ),
-                isDisplayed()
-            )
-        )
-        materialTextView10.perform(click())
-
-        val appCompatImageButton3 = onView(
-            allOf(
-                withId(R.id.paint_mode_button), withContentDescription("Draw on image"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
-        appCompatImageButton3.perform(click())
-
-        val materialTextView11 = onView(
-            allOf(
-                withId(R.id.show), withText("Show preview"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    6
-                ),
-                isDisplayed()
-            )
-        )
-        materialTextView11.perform(click())
-
-        val materialTextView12 = onView(
-            allOf(
-                withId(R.id.hide), withText("Hide preview"),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.preview_container),
-                        childAtPosition(
-                            withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                            5
-                        )
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
-        materialTextView12.perform(click())
-    }
-
-    private fun childAtPosition(
-        parentMatcher: Matcher<View>, position: Int
-    ): Matcher<View> {
-
-        return object : TypeSafeMatcher<View>() {
-            override fun describeTo(description: Description) {
-                description.appendText("Child at position $position in parent ")
-                parentMatcher.describeTo(description)
-            }
-
-            public override fun matchesSafely(view: View): Boolean {
-                val parent = view.parent
-                return parent is ViewGroup && parentMatcher.matches(parent)
-                        && view == parent.getChildAt(position)
-            }
-        }
     }
 }

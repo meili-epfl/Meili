@@ -16,7 +16,6 @@ class PhotoEditorActivity : AppCompatActivity() {
     private lateinit var uri: Uri
     private lateinit var photoEditor: PhotoEditor
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPhotoEditorBinding.inflate(layoutInflater)
@@ -43,7 +42,6 @@ class PhotoEditorActivity : AppCompatActivity() {
         binding.redo.setOnClickListener { photoEditor.redo() }
     }
 
-    /** Callback function for show preview button */
     private fun showPreview() {
         binding.previewContainer.visibility = View.VISIBLE
         binding.photoEditorView.visibility = View.GONE
@@ -55,7 +53,6 @@ class PhotoEditorActivity : AppCompatActivity() {
         stopDrawing()
     }
 
-    /** Callback function for hide preview button */
     private fun hidePreview() {
         binding.previewContainer.visibility = View.GONE
         binding.photoEditorView.visibility = View.VISIBLE
@@ -79,7 +76,6 @@ class PhotoEditorActivity : AppCompatActivity() {
         binding.colorSlider.visibility = View.GONE
     }
 
-    /** Callback function for paint mode */
     private fun toggleDrawing() {
         if (!photoEditor.brushDrawableMode)
             startDrawing()
@@ -98,7 +94,6 @@ class PhotoEditorActivity : AppCompatActivity() {
         binding.filtersContainer.visibility = View.GONE
     }
 
-    /** Callback function for filters mode */
     private fun toggleFilters() {
         if (!binding.filtersContainer.isVisible)
             startFilters()
