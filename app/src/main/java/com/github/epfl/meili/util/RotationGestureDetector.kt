@@ -38,7 +38,7 @@ class RotationGestureDetector(listener: OnRotationGestureListener, imageView: Im
     /** Computes correct indices and positions based on the touch event */
     fun onTouchEvent(event: MotionEvent): Boolean {
 
-        if (!rotatable) {
+        if (rotatable) {
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> { // First touch
                     ptrID1 = event.getPointerId(event.actionIndex) // first finger down's pointer
@@ -86,7 +86,7 @@ class RotationGestureDetector(listener: OnRotationGestureListener, imageView: Im
 
         // Only call imageView's onTouch if 1 finger motion
         var success = true
-        if (rotatable) {
+        if (!rotatable) {
             success = imageView.onTouchEvent(event)
         }
 

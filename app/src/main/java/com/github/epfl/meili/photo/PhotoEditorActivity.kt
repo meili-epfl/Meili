@@ -1,21 +1,26 @@
 package com.github.epfl.meili.photo
 
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
 import com.github.epfl.meili.R
 import com.github.epfl.meili.databinding.ActivityPhotoEditorBinding
+import com.github.epfl.meili.util.RotationGestureDetector
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import ja.burhanrashid52.photoeditor.PhotoFilter
 
 
-class PhotoEditorActivity : AppCompatActivity() {
+class PhotoEditorActivity : AppCompatActivity(), RotationGestureDetector.OnRotationGestureListener {
     private lateinit var binding: ActivityPhotoEditorBinding
     private lateinit var uri: Uri
     private lateinit var photoEditor: PhotoEditor
+    private lateinit var rotationGestureDetector : RotationGestureDetector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +31,6 @@ class PhotoEditorActivity : AppCompatActivity() {
         binding.photoEditorView.source.setImageURI(uri)
 
         photoEditor = PhotoEditor.Builder(this, binding.photoEditorView).build()
-        stopDrawing()
 
         binding.show.setOnClickListener { showPreview() }
         binding.hide.setOnClickListener { hidePreview() }
@@ -50,13 +54,22 @@ class PhotoEditorActivity : AppCompatActivity() {
             binding.photoEditorView.source.setImageURI(uri) // Set imageView to new cropped image
             stopCrop() // Go back to main screen
         }
+
+        // Make paintImageView listen to rotation events
+        rotationGestureDetector = RotationGestureDetector(this, binding.photoEditorView.source)
+        binding.photoEditorView.source.setOnTouchListener { _, event ->
+            rotationGestureDetector.onTouchEvent(event)
+        }
+
+        // reset visibilities
+        stopDrawing()
     }
 
     private fun showPreview() {
         binding.previewContainer.visibility = View.VISIBLE
         binding.photoEditorView.visibility = View.GONE
         binding.show.visibility = View.GONE
-        binding.preview.setImageURI(uri)
+        binding.preview.setImageBitmap(getRotatedBitmap())
         binding.paintModeButton.visibility = View.GONE
         binding.cropModeButton.visibility = View.GONE
         binding.undo.visibility = View.GONE
@@ -78,6 +91,7 @@ class PhotoEditorActivity : AppCompatActivity() {
     private fun startDrawing() {
         stopFilters()
         stopCrop()
+        rotationGestureDetector.rotatable = false
         photoEditor.setBrushDrawingMode(true)
         binding.paintModeButton.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
         binding.colorSlider.visibility = View.VISIBLE
@@ -85,6 +99,7 @@ class PhotoEditorActivity : AppCompatActivity() {
 
     private fun stopDrawing() {
         photoEditor.setBrushDrawingMode(false)
+        rotationGestureDetector.rotatable = true
         binding.paintModeButton.setBackgroundColor(0)
         binding.colorSlider.visibility = View.GONE
     }
@@ -99,11 +114,13 @@ class PhotoEditorActivity : AppCompatActivity() {
     private fun startFilters() {
         stopDrawing()
         stopCrop()
+        rotationGestureDetector.rotatable = false
         binding.filters.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
         binding.filtersContainer.visibility = View.VISIBLE
     }
 
     private fun stopFilters() {
+        rotationGestureDetector.rotatable = true
         binding.filters.setBackgroundColor(0)
         binding.filtersContainer.visibility = View.GONE
     }
@@ -120,12 +137,12 @@ class PhotoEditorActivity : AppCompatActivity() {
         stopFilters()
         binding.cropContainer.visibility = View.VISIBLE
 
-        val bitmap = (binding.photoEditorView.source.drawable as BitmapDrawable).bitmap
-        binding.cropImageView.setImageBitmap(bitmap)
+        binding.cropImageView.setImageBitmap(getRotatedBitmap())
     }
 
     private fun stopCrop() {
         binding.cropContainer.visibility = View.GONE
+        binding.photoEditorView.source.rotation = 0f
     }
 
     private fun toggleCrop() {
@@ -147,5 +164,15 @@ class PhotoEditorActivity : AppCompatActivity() {
         binding.cropImageView.saveCroppedImageAsync(uri)
     }
 
+    /** Callback function for RotationGestureDetector.OnRotationGestureListener
+     * Rotates crop image when two finger rotation motion */
+    override fun onRotation(angle: Float) {
+        binding.photoEditorView.source.rotation += angle
+    }
 
+    private fun getRotatedBitmap(): Bitmap {
+        val original = binding.photoEditorView.source.drawToBitmap()
+        val matrix = Matrix().apply { postRotate(binding.photoEditorView.source.rotation) }
+        return Bitmap.createBitmap(original, 0, 0, original.width, original.height, matrix, true)
+    }
 }
