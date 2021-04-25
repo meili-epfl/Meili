@@ -1,5 +1,6 @@
 package com.github.epfl.meili.photo
 
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -31,6 +32,7 @@ class PhotoEditorActivity : AppCompatActivity() {
         binding.hide.setOnClickListener { hidePreview() }
         binding.paintModeButton.setOnClickListener { toggleDrawing() }
         binding.filters.setOnClickListener { toggleFilters() }
+        binding.cropModeButton.setOnClickListener { toggleCrop() }
         binding.colorSlider.setOnColorChangeListener { _, _, _ -> changeDrawingColor() }
 
         binding.bw.setOnClickListener { photoEditor.setFilterEffect(PhotoFilter.NONE) }
@@ -40,6 +42,14 @@ class PhotoEditorActivity : AppCompatActivity() {
         binding.saturate.setOnClickListener { photoEditor.setFilterEffect(PhotoFilter.SATURATE) }
         binding.undo.setOnClickListener { photoEditor.undo() }
         binding.redo.setOnClickListener { photoEditor.redo() }
+        binding.crop.setOnClickListener { cropImage() }
+
+        // Setup callback for when an image is cropped
+        binding.cropImageView.setOnCropImageCompleteListener { _, _ ->
+            binding.photoEditorView.source.setImageDrawable(null) // required hack to update image using same uri
+            binding.photoEditorView.source.setImageURI(uri) // Set imageView to new cropped image
+            stopCrop() // Go back to main screen
+        }
     }
 
     private fun showPreview() {
@@ -48,6 +58,7 @@ class PhotoEditorActivity : AppCompatActivity() {
         binding.show.visibility = View.GONE
         binding.preview.setImageURI(uri)
         binding.paintModeButton.visibility = View.GONE
+        binding.cropModeButton.visibility = View.GONE
         binding.undo.visibility = View.GONE
         binding.redo.visibility = View.GONE
         stopDrawing()
@@ -58,6 +69,7 @@ class PhotoEditorActivity : AppCompatActivity() {
         binding.photoEditorView.visibility = View.VISIBLE
         binding.show.visibility = View.VISIBLE
         binding.paintModeButton.visibility = View.VISIBLE
+        binding.cropModeButton.visibility = View.VISIBLE
         binding.undo.visibility = View.VISIBLE
         binding.redo.visibility = View.VISIBLE
         stopDrawing()
@@ -65,6 +77,7 @@ class PhotoEditorActivity : AppCompatActivity() {
 
     private fun startDrawing() {
         stopFilters()
+        stopCrop()
         photoEditor.setBrushDrawingMode(true)
         binding.paintModeButton.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
         binding.colorSlider.visibility = View.VISIBLE
@@ -85,6 +98,7 @@ class PhotoEditorActivity : AppCompatActivity() {
 
     private fun startFilters() {
         stopDrawing()
+        stopCrop()
         binding.filters.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
         binding.filtersContainer.visibility = View.VISIBLE
     }
@@ -101,9 +115,36 @@ class PhotoEditorActivity : AppCompatActivity() {
             stopFilters()
     }
 
+    private fun startCrop() {
+        stopDrawing()
+        stopFilters()
+        binding.cropContainer.visibility = View.VISIBLE
+
+        val bitmap = (binding.photoEditorView.source.drawable as BitmapDrawable).bitmap
+        binding.cropImageView.setImageBitmap(bitmap)
+    }
+
+    private fun stopCrop() {
+        binding.cropContainer.visibility = View.GONE
+    }
+
+    private fun toggleCrop() {
+        if (!binding.cropContainer.isVisible) {
+            startCrop()
+        }
+        else {
+            stopCrop()
+        }
+    }
 
     private fun changeDrawingColor() {
         photoEditor.brushColor = binding.colorSlider.color
+    }
+
+    /** Callback function for crop button */
+    private fun cropImage() {
+        // Async callback to function defined in onCreate()
+        binding.cropImageView.saveCroppedImageAsync(uri)
     }
 
 
