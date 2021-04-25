@@ -16,6 +16,7 @@ import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiService
+import com.github.epfl.meili.poi.PoiServiceCached
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
@@ -77,7 +78,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             locationService.listenToLocationChanges(poiMarkerViewModel)
         }
 
-        poiMarkerViewModel.setPoiService(PoiService())
+        poiMarkerViewModel.setPoiService(PoiServiceCached())
 
         val currentUser = Auth.getCurrentUser()
         if (currentUser != null) {
