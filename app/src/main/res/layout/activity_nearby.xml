@@ -8,24 +8,10 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/find"
+        android:id="@+id/find_my_friend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Find"
-        android:onClick="onNearbyButtonClick"/>
-
-    <Button
-        android:id="@+id/friend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Friend"
-        android:onClick="onNearbyButtonClick"/>
-
-    <Button
-        android:id="@+id/disconnect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Disconnect"
+        android:text="Find My Friend"
         android:onClick="onNearbyButtonClick"/>
 
 </LinearLayout>
