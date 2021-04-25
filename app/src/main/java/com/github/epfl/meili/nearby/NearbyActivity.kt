@@ -9,11 +9,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.User
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
 
+data class Friend (
+        var friendUid: String = ""
+)
 
 class NearbyActivity : AppCompatActivity() {
     companion object {
@@ -21,9 +25,7 @@ class NearbyActivity : AppCompatActivity() {
         private val STRATEGY = Strategy.P2P_CLUSTER
     }
 
-    private fun addFriend(friendUid: String) {
-        TODO()
-    }
+    private fun addFriend(friendUid: String) = database.addElement(friendUid, Friend(friendUid))
 
     private val payloadCallback = object : PayloadCallback() {
         override fun onPayloadReceived(endpointId: String, payload: Payload) {
@@ -52,9 +54,11 @@ class NearbyActivity : AppCompatActivity() {
         }
 
         override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
+            connectionsClient.stopAdvertising()
+            connectionsClient.stopDiscovery()
+            findMyFriendButton.isEnabled = true
             when (result.status.statusCode) {
                 ConnectionsStatusCodes.STATUS_OK -> {
-                    Toast.makeText(applicationContext, "Friendship initiated!", Toast.LENGTH_SHORT).show()
                     val uidPayload = Payload.fromBytes(localUser.uid.toByteArray())
                     connectionsClient.sendPayload(endpointId, uidPayload)
                 }
@@ -62,9 +66,6 @@ class NearbyActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "Friendship aborted!", Toast.LENGTH_SHORT).show()
                 else -> Log.e(TAG, "CODE: ${result.status.statusCode}")
             }
-
-            connectionsClient.stopAdvertising()
-            connectionsClient.stopDiscovery()
         }
 
         override fun onDisconnected(endpointId: String) {}
@@ -92,6 +93,7 @@ class NearbyActivity : AppCompatActivity() {
     }
 
     private lateinit var findMyFriendButton: Button
+    private lateinit var database: FirestoreDatabase<Friend>
     private lateinit var localUser: User
     private lateinit var connectionsClient: ConnectionsClient
 
@@ -104,6 +106,7 @@ class NearbyActivity : AppCompatActivity() {
         }
 
         localUser = Auth.getCurrentUser()!!
+        database = FirestoreDatabase("friends/${localUser.uid}/friends", Friend::class.java)
         findMyFriendButton = findViewById(R.id.find_my_friend)
         connectionsClient = Nearby.getConnectionsClient(this)
     }
@@ -113,6 +116,7 @@ class NearbyActivity : AppCompatActivity() {
             findMyFriendButton -> {
                 startAdvertising()
                 startDiscovery()
+                findMyFriendButton.isEnabled = false
             }
         }
     }
