@@ -3,6 +3,8 @@ package com.github.epfl.meili.map
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -39,11 +41,15 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     fun setPoiService(service: PoiService) {
         this.poiService = service
         if (lastUserLocation != null) {
-            poiService!!.requestPois(
-                    lastUserLocation!!,
-                    { poiList -> onSuccessPoiReceived(poiList) },
-                    { error -> onError(error) })
+            requestPois()
         }
+    }
+
+    private fun requestPois() {
+        poiService!!.requestPois(
+                lastUserLocation!!,
+                { poiList -> onSuccessPoiReceived(poiList) },
+                { error -> onError(error) })
     }
 
     private fun onSuccessPoiReceived(poiList: List<PointOfInterest>) {
@@ -51,9 +57,12 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
         setReachablePois()
     }
 
-    //TODO: OnError schedule fetching from PoiService again later
     private fun onError(error: VolleyError) {
         Log.d(TAG, "error getting pois from service", error)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            requestPois()
+        }, TIME_UNTIL_NEXT_REQUEST)
     }
 
     fun setDatabase(db: Database<PointOfInterest>) {
@@ -75,7 +84,7 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
         setReachablePois()
     }
 
-    fun setReachablePois() {
+    private fun setReachablePois() {
         if (lastUserLocation != null) {
             //set all reachable pois to REACHABLE status
             val reachablePois = poiService!!.getReachablePoi(
@@ -139,10 +148,7 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
             lastUserLocation = newLocation
             if (shouldCallService && poiService != null) {
                 Log.d(TAG, "lastUserLocation" + lastUserLocation)
-                poiService!!.requestPois(
-                        lastUserLocation!!,
-                        { poiList -> onSuccessPoiReceived(poiList) },
-                        { error -> onError(error) })
+                requestPois()
             }
         }
 
@@ -152,6 +158,7 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     companion object {
         const val TAG = "PoiMarkerViewModel"
         const val REACHABLE_DIST = 50.0 //meters
+        const val TIME_UNTIL_NEXT_REQUEST = 1000 * 60 * 5L // 5 minutes in milliseconds
     }
 
     /**
