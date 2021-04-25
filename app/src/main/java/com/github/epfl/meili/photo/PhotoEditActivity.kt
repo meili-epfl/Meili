@@ -1,9 +1,11 @@
 package com.github.epfl.meili.photo
 
 import android.Manifest
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.*
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -99,8 +101,8 @@ class PhotoEditActivity : AppCompatActivity() {
     }
 
     private fun getStoragePermission() {
-        if (BuildConfig.DEBUG && isPermissionGranted()) {
-            error("Assertion failed")
+        if (isPermissionGranted() && BuildConfig.DEBUG) {
+            error("Failed assertion")
         }
         ActivityCompat.requestPermissions(
             this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -110,9 +112,9 @@ class PhotoEditActivity : AppCompatActivity() {
 
     private fun isPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
-            this.applicationContext,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
+            applicationContext,
+            WRITE_EXTERNAL_STORAGE
+        ) == PERMISSION_GRANTED
     }
 
 

@@ -48,7 +48,7 @@ class CameraActivity : AppCompatActivity() {
 
     private val launchPhotoEditActivity =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
+            if (result.data != null && result.resultCode == RESULT_OK && result.data!!.data != null) {
                 val intent = Intent()
                 intent.data = result.data!!.data!!
                 setResult(RESULT_OK, intent)
