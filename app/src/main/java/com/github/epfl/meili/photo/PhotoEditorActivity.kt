@@ -2,10 +2,11 @@ package com.github.epfl.meili.photo
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.TableRow
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
@@ -20,7 +21,7 @@ class PhotoEditorActivity : AppCompatActivity(), RotationGestureDetector.OnRotat
     private lateinit var binding: ActivityPhotoEditorBinding
     private lateinit var uri: Uri
     private lateinit var photoEditor: PhotoEditor
-    private lateinit var rotationGestureDetector : RotationGestureDetector
+    private lateinit var rotationGestureDetector: RotationGestureDetector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +39,7 @@ class PhotoEditorActivity : AppCompatActivity(), RotationGestureDetector.OnRotat
         binding.filters.setOnClickListener { toggleFilters() }
         binding.cropModeButton.setOnClickListener { toggleCrop() }
         binding.colorSlider.setOnColorChangeListener { _, _, _ -> changeDrawingColor() }
+        binding.emojis.setOnClickListener { toggleEmojis() }
 
         binding.bw.setOnClickListener { photoEditor.setFilterEffect(PhotoFilter.NONE) }
         binding.sepia.setOnClickListener { photoEditor.setFilterEffect(PhotoFilter.SEPIA) }
@@ -61,7 +63,7 @@ class PhotoEditorActivity : AppCompatActivity(), RotationGestureDetector.OnRotat
             rotationGestureDetector.onTouchEvent(event)
         }
 
-        // reset visibilities
+        makeEmojiTable()
         stopDrawing()
     }
 
@@ -148,10 +150,13 @@ class PhotoEditorActivity : AppCompatActivity(), RotationGestureDetector.OnRotat
     private fun toggleCrop() {
         if (!binding.cropContainer.isVisible) {
             startCrop()
-        }
-        else {
+        } else {
             stopCrop()
         }
+    }
+
+    private fun toggleEmojis() {
+        binding.emojiContainer.visibility = View.VISIBLE
     }
 
     private fun changeDrawingColor() {
@@ -174,5 +179,32 @@ class PhotoEditorActivity : AppCompatActivity(), RotationGestureDetector.OnRotat
         val original = binding.photoEditorView.source.drawToBitmap()
         val matrix = Matrix().apply { postRotate(binding.photoEditorView.source.rotation) }
         return Bitmap.createBitmap(original, 0, 0, original.width, original.height, matrix, true)
+    }
+
+    private fun makeEmojiTable() {
+        val emojis = PhotoEditor.getEmojis(this)
+        var curRow = TableRow(this)
+
+        for (i in 0 until emojis.size) {
+            // Make new row every 6 emojis
+            if (i % 6 == 0 && i != 0) {
+                binding.emojiTable.addView(curRow)
+                curRow = TableRow(this)
+            }
+
+            // Make textView
+            val textView = TextView(this)
+            textView.textSize = 50f
+            textView.text = emojis[i]
+            textView.setOnClickListener { addEmoji(emojis[i]) }
+
+            // Add emoji to current row
+            curRow.addView(textView)
+        }
+    }
+
+    private fun addEmoji(emoji: String) {
+        binding.emojiContainer.visibility = View.GONE
+        photoEditor.addEmoji(emoji)
     }
 }
