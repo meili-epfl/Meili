@@ -9,6 +9,7 @@ import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.nearby.NearbyActivity
 import com.github.epfl.meili.poi.PoiActivity
 import com.github.epfl.meili.review.ReviewsActivity
 
@@ -36,6 +37,8 @@ class MainActivity : AppCompatActivity() {
                 .putExtra("POI_KEY", POI)
             R.id.launchForumView -> Intent(this, ForumActivity::class.java)
                 .putExtra("POI_KEY", PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2"))
+            R.id.launchNearby -> Intent(this, NearbyActivity::class.java)
+                    .putExtra("POI_KEY", PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2"))
             else -> Intent(this, MainActivity::class.java)
         }
         startActivity(intent)

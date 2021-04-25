@@ -8,13 +8,6 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/advertise"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Broadcast"
-        android:onClick="onNearbyButtonClick"/>
-
-    <Button
         android:id="@+id/find"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
