@@ -129,5 +129,14 @@ class PhotoEditActivityTest {
         )
         materialTextView9.check(ViewAssertions.matches(isDisplayed()))
         materialTextView9.perform(click())
+
+
+        val fab = onView(
+            allOf(
+                withId(R.id.fab)
+            )
+        )
+        fab.check(ViewAssertions.matches(isDisplayed()))
+        fab.perform(click())
     }
 }
