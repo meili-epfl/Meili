@@ -19,8 +19,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.github.epfl.meili.R
-import com.github.epfl.meili.forum.ForumActivity
-import com.github.epfl.meili.map.MapActivity
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -191,6 +189,7 @@ class CameraActivity : AppCompatActivity() {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val intent = Intent(applicationContext, PhotoEditActivity::class.java)
                     intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
+                    intent.setFlags(intent.getFlags() or Intent.FLAG_ACTIVITY_NO_HISTORY)
                     launchPhotoEditActivity.launch(intent)
                 }
             }
