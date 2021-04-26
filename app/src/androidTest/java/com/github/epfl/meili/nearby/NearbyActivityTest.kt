@@ -3,13 +3,12 @@ package com.github.epfl.meili.nearby
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
-import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiSelector
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
@@ -29,6 +28,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+
 
 @RunWith(AndroidJUnit4::class)
 class NearbyActivityTest {
@@ -97,11 +97,7 @@ class NearbyActivityTest {
             connectionLifecycleCallback.onConnectionInitiated(MOCK_ENDPOINT_ID, ConnectionInfo(MOCK_FRIEND_USERNAME, "", false))
         }
 
-        val device = UiDevice.getInstance(getInstrumentation())
-        val acceptButton = device.findObject(UiSelector().textContains("Accept"))
-        if (acceptButton.exists()) {
-            acceptButton.click()
-        }
+        onView(withText("Accept")).inRoot(isDialog()).perform(click())
 
         runOnUiThread {
             connectionLifecycleCallback.onConnectionResult(MOCK_ENDPOINT_ID, ConnectionResolution(Status(ConnectionsStatusCodes.STATUS_OK)))
