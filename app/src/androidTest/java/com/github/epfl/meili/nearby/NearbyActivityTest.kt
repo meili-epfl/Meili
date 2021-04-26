@@ -38,7 +38,6 @@ class NearbyActivityTest {
         private const val MOCK_USERNAME = "Meili User"
         private const val MOCK_FRIEND_USERNAME = "Friendly User"
         private const val MOCK_FRIEND_UID = "Friendly UID"
-
         private const val MOCK_ENDPOINT_ID = "ENDPOINT_ID"
     }
 

@@ -1,22 +1,19 @@
 package com.github.epfl.meili.map
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
-import com.github.epfl.meili.poi.PoiService
 import com.github.epfl.meili.poi.PoiServiceCached
+import com.github.epfl.meili.util.LocationPermissionService.requestLocationPermission
+import com.github.epfl.meili.util.LocationPermissionService.isLocationPermissionGranted
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
@@ -33,7 +30,6 @@ import com.google.maps.android.clustering.ClusterManager
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     companion object {
         private const val DEFAULT_ZOOM = 15
-        private const val REQUEST_CODE: Int = 1
         const val POI_KEY = "POI_KEY"
     }
 
@@ -73,7 +69,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun setUpClusterer() {
-        if (isPermissionGranted()) {
+        if (isLocationPermissionGranted(this)) {
             val locationService = LocationService()
             locationService.listenToLocationChanges(poiMarkerViewModel)
         }
@@ -119,23 +115,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun addItems(map: Map<String, PoiMarkerViewModel.PointOfInterestStatus>) {
         val newMap = HashMap<PoiItem, PoiMarkerViewModel.PointOfInterestStatus>()
         for (entry in map.entries) {
-            val poiItem: PoiItem
-            if (poiItems.containsKey(entry.key)) {
-                poiItem = poiItems[entry.key]!!
+            val poiItem = if (poiItems.containsKey(entry.key)) {
+                poiItems[entry.key]!!
             } else {
-                poiItem = PoiItem(poiMarkerViewModel.mPointsOfInterest.value?.get(entry.key)!!)
+                PoiItem(poiMarkerViewModel.mPointsOfInterest.value?.get(entry.key)!!)
             }
-            newMap.put(poiItem, entry.value)
+            newMap[poiItem] = entry.value
         }
 
         clusterRenderer.renderClusterItems(newMap)
-    }
-
-    private fun isPermissionGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            this.applicationContext,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
@@ -146,7 +134,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         updateMapUI()
 
-        if (isPermissionGranted()) {
+        if (isLocationPermissionGranted(this)) {
             val locationService = LocationService()
             locationService.listenToLocationChanges(poiMarkerViewModel)
         }
@@ -158,28 +146,18 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         updateMapUI()
 
-        if (isPermissionGranted()) {
+        if (isLocationPermissionGranted(this)) {
             getDeviceLocationAndSetCameraPosition()
         } else {
-            getLocationPermission()
+            requestLocationPermission(this)
         }
 
         setUpClusterer()
     }
 
-    private fun getLocationPermission() {
-        if (BuildConfig.DEBUG && isPermissionGranted()) {
-            error("Assertion failed")
-        }
-        ActivityCompat.requestPermissions(
-            this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            REQUEST_CODE
-        )
-    }
-
     @SuppressLint("MissingPermission")
     private fun updateMapUI() {
-        if (isPermissionGranted()) {
+        if (isLocationPermissionGranted(this)) {
             map.isMyLocationEnabled = true
             this.map.uiSettings?.isMyLocationButtonEnabled = true
         } else {
@@ -191,7 +169,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     @SuppressLint("MissingPermission")
     private fun getDeviceLocationAndSetCameraPosition() {
-        if (BuildConfig.DEBUG && !isPermissionGranted()) {
+        if (BuildConfig.DEBUG && !isLocationPermissionGranted(this)) {
             error("Assertion failed")
         }
         this.fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->

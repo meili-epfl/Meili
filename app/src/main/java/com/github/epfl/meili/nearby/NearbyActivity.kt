@@ -14,6 +14,8 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.util.LocationPermissionService.requestLocationPermission
+import com.github.epfl.meili.util.LocationPermissionService.isLocationPermissionGranted
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
 
@@ -21,6 +23,7 @@ class NearbyActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "NearbyActivity"
         private val STRATEGY = Strategy.P2P_CLUSTER
+
         var getConnectionsClient: (Activity) -> ConnectionsClient = { a -> Nearby.getConnectionsClient(a) }
     }
 
@@ -88,7 +91,10 @@ class NearbyActivity : AppCompatActivity() {
     private fun startDiscovery() {
         val discoveryOptions = DiscoveryOptions.Builder().setStrategy(STRATEGY).build()
         connectionsClient.startDiscovery(packageName, endpointDiscoveryCallback, discoveryOptions)
-                .addOnFailureListener { Toast.makeText(applicationContext, "Error finding friend", Toast.LENGTH_SHORT).show() }
+                .addOnFailureListener {
+                    Toast.makeText(applicationContext, "Error finding friend", Toast.LENGTH_SHORT).show()
+                    Log.e(TAG, it.toString())
+                }
     }
 
     private lateinit var findMyFriendButton: Button
@@ -104,9 +110,15 @@ class NearbyActivity : AppCompatActivity() {
             error("Assertion failed")
         }
 
+        findMyFriendButton = findViewById(R.id.find_my_friend)
+
+        if (!isLocationPermissionGranted(this)) {
+            findMyFriendButton.isEnabled = false
+            requestLocationPermission(this)
+        }
+
         localUser = Auth.getCurrentUser()!!
         database = FirestoreDatabase("friends/${localUser.uid}/friends", Friend::class.java)
-        findMyFriendButton = findViewById(R.id.find_my_friend)
         connectionsClient = getConnectionsClient(this)
     }
 
@@ -117,6 +129,24 @@ class NearbyActivity : AppCompatActivity() {
                 startDiscovery()
                 findMyFriendButton.isEnabled = false
             }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+            requestCode: Int,
+            permissions: Array<String>,
+            grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (!isLocationPermissionGranted(this)) {
+            Toast.makeText(
+                    applicationContext,
+                    "Location permission is required for this feature",
+                    Toast.LENGTH_SHORT
+            ).show()
+            finish()
+        } else {
+            findMyFriendButton.isEnabled = true
         }
     }
 }
