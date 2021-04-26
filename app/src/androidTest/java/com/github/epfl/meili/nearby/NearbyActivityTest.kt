@@ -7,6 +7,9 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiSelector
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
@@ -94,8 +97,11 @@ class NearbyActivityTest {
             connectionLifecycleCallback.onConnectionInitiated(MOCK_ENDPOINT_ID, ConnectionInfo(MOCK_FRIEND_USERNAME, "", false))
         }
 
-        // check alert dialog box and click on accept
-        onView(withText("Accept")).perform(click())
+        val device = UiDevice.getInstance(getInstrumentation())
+        val acceptButton = device.findObject(UiSelector().textContains("Accept"))
+        if (acceptButton.exists()) {
+            acceptButton.click()
+        }
 
         runOnUiThread {
             connectionLifecycleCallback.onConnectionResult(MOCK_ENDPOINT_ID, ConnectionResolution(Status(ConnectionsStatusCodes.STATUS_OK)))
