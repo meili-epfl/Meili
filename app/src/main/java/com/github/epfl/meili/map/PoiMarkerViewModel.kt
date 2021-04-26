@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.android.volley.VolleyError
 import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiService
@@ -52,7 +51,7 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     }
 
     //TODO: OnError schedule fetching from PoiService again later
-    private fun onError(error: VolleyError) {
+    private fun onError(error: Error) {
         Log.d(TAG, "error getting pois from service", error)
     }
 

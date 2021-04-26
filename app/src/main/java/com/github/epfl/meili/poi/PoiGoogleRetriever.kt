@@ -7,6 +7,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
+import com.github.epfl.meili.cache.ResponseFetcher
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.util.HttpRequestQueue
 import com.google.android.gms.maps.model.LatLng
@@ -14,14 +15,20 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import org.json.JSONObject
 
-open class PoiGoogleRetriever {
+open class PoiGoogleRetriever: ResponseFetcher<List<PointOfInterest>> {
     private var queue: RequestQueue = HttpRequestQueue.getQueue()
 
     fun setQueue(newQueue: RequestQueue) {
         queue = newQueue
     }
 
-    open fun requestPoisAPI(latLng: LatLng?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((VolleyError) -> Unit)?) {
+    override fun fetchResponse(arg: Any, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: (Error) -> Unit) {
+        val position = arg as LatLng
+
+        requestPoisAPI(position, onSuccess, onError)
+    }
+
+    open fun requestPoisAPI(latLng: LatLng?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((Error) -> Unit)?) {
 
         if (latLng != null && onSuccess != null && onError != null) {
             val apiKey = MainApplication.applicationContext().getString(R.string.google_api_key)
@@ -30,10 +37,10 @@ open class PoiGoogleRetriever {
         }
     }
 
-    fun queryGooglePlacesAPI(query: String, onSuccess: (List<PointOfInterest>) -> Unit, onError: (VolleyError) -> Unit) {
+    fun queryGooglePlacesAPI(query: String, onSuccess: (List<PointOfInterest>) -> Unit, onError: (Error) -> Unit) {
 
         val jsonObjectRequest = JsonObjectRequest(Request.Method.GET, GOOGLE_PLACES_URL + query,
-                null, customOnSuccessFrom(onSuccess), onError)
+                null, customOnSuccessFrom(onSuccess), customOnErrorFrom(onError))
 
         queue.add(jsonObjectRequest)
     }
@@ -49,11 +56,18 @@ open class PoiGoogleRetriever {
         }
     }
 
+    fun customOnErrorFrom(onError: ((Error) -> Unit)): (VolleyError)->Unit{
+        return { error ->
+            onError(Error(error.message))
+        }
+    }
+
     companion object {
         private const val GOOGLE_PLACES_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
         private const val MAX_COVERAGE_RADIUS = 3000
         private const val TAG = "PoiGoogleRetriever"
     }
+
 }
 
 /**
