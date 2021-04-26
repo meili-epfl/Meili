@@ -1,5 +1,6 @@
 package com.github.epfl.meili.nearby
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,18 +12,16 @@ import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.User
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
-
-data class Friend (
-        var friendUid: String = ""
-)
 
 class NearbyActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "NearbyActivity"
         private val STRATEGY = Strategy.P2P_CLUSTER
+        var getConnectionsClient: (Activity) -> ConnectionsClient = { a -> Nearby.getConnectionsClient(a) }
     }
 
     private fun addFriend(friendUid: String) = database.addElement(friendUid, Friend(friendUid))
@@ -108,7 +107,7 @@ class NearbyActivity : AppCompatActivity() {
         localUser = Auth.getCurrentUser()!!
         database = FirestoreDatabase("friends/${localUser.uid}/friends", Friend::class.java)
         findMyFriendButton = findViewById(R.id.find_my_friend)
-        connectionsClient = Nearby.getConnectionsClient(this)
+        connectionsClient = getConnectionsClient(this)
     }
 
     fun onNearbyButtonClick(view: View) {
