@@ -1,17 +1,29 @@
 package com.github.epfl.meili.map
 
+import android.R
 import android.location.Location
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.withDecorView
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
+import com.android.volley.VolleyError
 import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiService
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.*
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.not
 import org.junit.Assert.assertEquals
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
+
 
 @Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
@@ -34,6 +46,9 @@ class PoiMarkerViewModelTest {
         Mockito.`when`(mockLocation.longitude).thenReturn(testPosition.longitude)
         Mockito.`when`(mockLocation.latitude).thenReturn(testPosition.latitude)
     }
+
+    @get: Rule
+    var testRule = ActivityScenarioRule(MapActivity::class.java)
 
     @Test
     fun poisReceivedFromServiceAddedProperlyBeforeLocation() {
@@ -80,6 +95,44 @@ class PoiMarkerViewModelTest {
         }
     }
 
+    @Test
+    fun onRepeatedErrorsDisplayErrorMessage(){
+        val mockPoiService = Mockito.mock(PoiService::class.java)
+        val expectedPoiMap = HashMap<String, PointOfInterest>()
+        val expectedStatusMap = HashMap<String, PoiMarkerViewModel.PointOfInterestStatus>()
+        expectedPoiMap[poi1.uid] = poi1
+        expectedPoiMap[poi2.uid] = poi2
+
+        expectedStatusMap[poi1.uid] = PoiMarkerViewModel.PointOfInterestStatus.VISITED
+        expectedStatusMap[poi2.uid] = PoiMarkerViewModel.PointOfInterestStatus.VISIBLE
+
+        val databaseMap = HashMap<String, PointOfInterest>()
+        databaseMap[poi1.uid] = poi1
+
+        val mockDatabase = Mockito.mock(Database::class.java)
+        Mockito.`when`(mockDatabase.elements).thenReturn(databaseMap)
+
+        Mockito.`when`(
+                mockPoiService.requestPois(
+                        Mockito.any(LatLng::class.java),
+                        Mockito.any(),
+                        Mockito.any()
+                )
+        )
+                .then {
+                    val onError = it.arguments[2] as ((VolleyError) -> Unit)
+                    onError(VolleyError("test error"))
+                    return@then null
+                }
+
+        UiThreadStatement.runOnUiThread {
+            service.setPoiService(mockPoiService)
+
+            service.setDatabase(mockDatabase as Database<PointOfInterest>)
+
+            service.onLocationChanged(mockLocation)
+        }
+    }
 
     @Test
     fun setPoiVisitedAddsPoi() {

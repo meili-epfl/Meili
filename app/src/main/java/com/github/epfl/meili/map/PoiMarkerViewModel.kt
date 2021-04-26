@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.volley.VolleyError
+import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiService
@@ -26,6 +28,8 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     private var database: Database<PointOfInterest>? = null
     private var poiService: PoiService? = null
     private var lastUserLocation: LatLng? = null
+
+    private var nbCurrentRequests = 0
 
     val mPointsOfInterest: MutableLiveData<Map<String, PointOfInterest>> =
             MutableLiveData(HashMap())
@@ -53,6 +57,7 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     }
 
     private fun onSuccessPoiReceived(poiList: List<PointOfInterest>) {
+        nbCurrentRequests = 0
         addPoiList(poiList)
         setReachablePois()
     }
@@ -60,9 +65,13 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     private fun onError(error: VolleyError) {
         Log.d(TAG, "error getting pois from service", error)
 
-        Handler(Looper.getMainLooper()).postDelayed({
+        nbCurrentRequests+=1
+
+        if (nbCurrentRequests >= MAX_NUM_REQUESTS){
+            Toast.makeText( MainApplication.applicationContext(), "An error occured while fetching POIs", Toast.LENGTH_LONG).show()
+        }else{
             requestPois()
-        }, TIME_UNTIL_NEXT_REQUEST)
+        }
     }
 
     fun setDatabase(db: Database<PointOfInterest>) {
@@ -158,7 +167,7 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
     companion object {
         const val TAG = "PoiMarkerViewModel"
         const val REACHABLE_DIST = 50.0 //meters
-        const val TIME_UNTIL_NEXT_REQUEST = 1000 * 60 * 5L // 5 minutes in milliseconds
+        const val MAX_NUM_REQUESTS = 2
     }
 
     /**
