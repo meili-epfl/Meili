@@ -199,18 +199,21 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
     private fun startCrop() {
         stopDrawing()
         stopFilters()
-        binding.cropContainer.visibility = View.VISIBLE
-
+        binding.cropButtonsContainer.visibility = View.VISIBLE
+        binding.cropImageContainer.visibility = View.VISIBLE
+        binding.cropModeButton.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
         binding.cropImageView.setImageBitmap(getRotatedBitmap())
     }
 
     private fun stopCrop() {
-        binding.cropContainer.visibility = View.GONE
+        binding.cropButtonsContainer.visibility = View.GONE
+        binding.cropImageContainer.visibility = View.GONE
         binding.photoEditorView.source.rotation = 0f
+        binding.cropModeButton.setBackgroundColor(0)
     }
 
     private fun toggleCrop() {
-        if (!binding.cropContainer.isVisible) {
+        if (!binding.cropImageContainer.isVisible) {
             startCrop()
         } else {
             stopCrop()
