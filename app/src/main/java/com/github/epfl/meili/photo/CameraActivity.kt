@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -103,14 +104,18 @@ class CameraActivity : AppCompatActivity() {
                         }
 
                         override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                            //val intent = Intent(applicationContext, PhotoEditActivity::class.java)
-                            //intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
-                            //launchPhotoEditActivity.launch(intent)
+                            val intent = Intent(applicationContext, PhotoEditActivity::class.java)
+                            intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
+                            launchPhotoEditActivity.launch(intent)
                         }
                     })
             }
         }
 
+        setupSwitchCameraButton()
+    }
+
+    private fun setupSwitchCameraButton() {
         // Setup for button used to switch cameras
         switchCameraButton.let {
 
@@ -128,7 +133,6 @@ class CameraActivity : AppCompatActivity() {
                 buildCamera()
             }
         }
-
     }
 
     private fun setUpCamera() {
