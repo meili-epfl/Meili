@@ -82,13 +82,7 @@ class CameraActivity : AppCompatActivity() {
             imageCapture?.let { imageCapture ->
 
                 // Create time-stamped output file to hold the image
-                val photoFile = File(
-                    outputDirectory,
-                    SimpleDateFormat(
-                        FILENAME_FORMAT,
-                        Locale.US
-                    ).format(System.currentTimeMillis()) + ".jpg"
-                )
+                val photoFile = getFile()
 
                 // Create output options object which contains file + metadata
                 val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile)
@@ -114,6 +108,14 @@ class CameraActivity : AppCompatActivity() {
 
         setupSwitchCameraButton()
     }
+
+    private fun getFile() = File(
+        outputDirectory,
+        SimpleDateFormat(
+            FILENAME_FORMAT,
+            Locale.US
+        ).format(System.currentTimeMillis()) + ".jpg"
+    )
 
     private fun setupSwitchCameraButton() {
         // Setup for button used to switch cameras
