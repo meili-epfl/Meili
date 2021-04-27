@@ -5,6 +5,8 @@ import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +21,7 @@ import androidx.core.view.isVisible
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.databinding.ActivityPhotoEditBinding
+import com.github.epfl.meili.util.RotationGestureDetector
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
 import ja.burhanrashid52.photoeditor.PhotoFilter
@@ -27,10 +30,11 @@ import java.io.File
 /**
  * An activity which is launched after a photo has been taken by the camera activity. It lets the user edit the photo by drawing, adding filters, etc.
  */
-class PhotoEditActivity : AppCompatActivity() {
+class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotationGestureListener {
     private lateinit var binding: ActivityPhotoEditBinding
     private lateinit var uri: Uri
     private lateinit var photoEditor: PhotoEditor
+    private lateinit var rotationGestureDetector: RotationGestureDetector
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +46,6 @@ class PhotoEditActivity : AppCompatActivity() {
         binding.photoEditorView.source.setImageURI(uri)
 
         photoEditor = PhotoEditor.Builder(this, binding.photoEditorView).build()
-        stopDrawing() // default
 
         binding.undo.setOnClickListener { photoEditor.undo() }
         binding.redo.setOnClickListener { photoEditor.redo() }
@@ -66,11 +69,11 @@ class PhotoEditActivity : AppCompatActivity() {
         }
         setFabListener()
 
-        // Emoji handling
+        // Handle emojis
         binding.emojis.setOnClickListener { showEmojiTable() }
         makeEmojiTable()
 
-        // Cropping
+        // Handle cropping
         binding.cropModeButton.setOnClickListener { toggleCrop() }
         binding.crop.setOnClickListener { cropImage() }
         binding.cropImageView.setOnCropImageCompleteListener { _, _ ->
@@ -78,6 +81,14 @@ class PhotoEditActivity : AppCompatActivity() {
             binding.photoEditorView.source.setImageURI(uri) // Set imageView to new cropped image
             stopCrop() // Go back to main screen
         }
+
+        // Handle rotations
+        rotationGestureDetector = RotationGestureDetector(this, binding.photoEditorView.source)
+        binding.photoEditorView.source.setOnTouchListener { _, event ->
+            rotationGestureDetector.onTouchEvent(event)
+        }
+
+        stopDrawing() // default
     }
 
     override fun onRequestPermissionsResult(
@@ -135,6 +146,7 @@ class PhotoEditActivity : AppCompatActivity() {
     private fun startDrawing() {
         stopFilters()
         stopCrop()
+        rotationGestureDetector.rotatable = false
         photoEditor.setBrushDrawingMode(true)
         binding.paintModeButton.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
         binding.colorSlider.visibility = View.VISIBLE
@@ -142,6 +154,7 @@ class PhotoEditActivity : AppCompatActivity() {
 
     private fun stopDrawing() {
         photoEditor.setBrushDrawingMode(false)
+        rotationGestureDetector.rotatable = true
         binding.paintModeButton.setBackgroundColor(0)
         binding.colorSlider.visibility = View.GONE
     }
@@ -156,11 +169,13 @@ class PhotoEditActivity : AppCompatActivity() {
     private fun startFilters() {
         stopDrawing()
         stopCrop()
+        rotationGestureDetector.rotatable = false
         binding.filters.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
         binding.filtersContainer.visibility = View.VISIBLE
     }
 
     private fun stopFilters() {
+        rotationGestureDetector.rotatable = true
         binding.filters.setBackgroundColor(0)
         binding.filtersContainer.visibility = View.GONE
     }
@@ -186,7 +201,7 @@ class PhotoEditActivity : AppCompatActivity() {
         stopFilters()
         binding.cropContainer.visibility = View.VISIBLE
 
-        binding.cropImageView.setImageBitmap(binding.photoEditorView.source.drawToBitmap())
+        binding.cropImageView.setImageBitmap(getRotatedBitmap())
     }
 
     private fun stopCrop() {
@@ -232,6 +247,16 @@ class PhotoEditActivity : AppCompatActivity() {
     private fun cropImage() {
         // Async callback to function defined in onCreate()
         binding.cropImageView.saveCroppedImageAsync(uri)
+    }
+
+    override fun onRotation(angle: Float) {
+        binding.photoEditorView.source.rotation += angle
+    }
+
+    private fun getRotatedBitmap(): Bitmap {
+        val original = binding.photoEditorView.source.drawToBitmap()
+        val matrix = Matrix().apply { postRotate(binding.photoEditorView.source.rotation) }
+        return Bitmap.createBitmap(original, 0, 0, original.width, original.height, matrix, true)
     }
 
     companion object {
