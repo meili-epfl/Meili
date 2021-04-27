@@ -208,7 +208,6 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
     private fun stopCrop() {
         binding.cropButtonsContainer.visibility = View.GONE
         binding.cropImageContainer.visibility = View.GONE
-        binding.photoEditorView.source.rotation = 0f
         binding.cropModeButton.setBackgroundColor(0)
     }
 
@@ -259,6 +258,7 @@ class PhotoEditActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
     private fun getRotatedBitmap(): Bitmap {
         val original = binding.photoEditorView.source.drawToBitmap()
         val matrix = Matrix().apply { postRotate(binding.photoEditorView.source.rotation) }
+        binding.photoEditorView.source.rotation = 0f
         return Bitmap.createBitmap(original, 0, 0, original.width, original.height, matrix, true)
     }
 
