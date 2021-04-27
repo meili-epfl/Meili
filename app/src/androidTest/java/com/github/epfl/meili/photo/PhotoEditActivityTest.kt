@@ -31,7 +31,7 @@ class PhotoEditActivityTest {
         )
 
     @Test
-    fun photoEditorActivityTest() {
+    fun photoEditActivityTest() {
         val appCompatImageButton = onView(
             allOf(
                 withId(R.id.camera_capture_button)
@@ -49,14 +49,10 @@ class PhotoEditActivityTest {
         )
         appCompatImageButton2.check(ViewAssertions.matches(isDisplayed()))
         appCompatImageButton2.perform(click())
+        Thread.sleep(1000)
 
-        val appCompatImageButton3 = onView(
-            allOf(
-                withId(R.id.paint_mode_button)
-            )
-        )
-        appCompatImageButton3.check(ViewAssertions.matches(isDisplayed()))
-        appCompatImageButton3.perform(click())
+        appCompatImageButton2.perform(click())
+        Thread.sleep(1000)
 
         val appCompatImageButton4 = onView(
             allOf(
@@ -65,6 +61,7 @@ class PhotoEditActivityTest {
         )
         appCompatImageButton4.check(ViewAssertions.matches(isDisplayed()))
         appCompatImageButton4.perform(click())
+        Thread.sleep(1000)
 
         val appCompatImageButton5 = onView(
             allOf(
@@ -73,6 +70,7 @@ class PhotoEditActivityTest {
         )
         appCompatImageButton5.check(ViewAssertions.matches(isDisplayed()))
         appCompatImageButton5.perform(click())
+        Thread.sleep(1000)
 
         val materialTextView3 = onView(
             allOf(
@@ -81,6 +79,7 @@ class PhotoEditActivityTest {
         )
         materialTextView3.check(ViewAssertions.matches(isDisplayed()))
         materialTextView3.perform(click())
+        Thread.sleep(1000)
 
         val materialTextView4 = onView(
             allOf(
@@ -89,6 +88,7 @@ class PhotoEditActivityTest {
         )
         materialTextView4.check(ViewAssertions.matches(isDisplayed()))
         materialTextView4.perform(click())
+        Thread.sleep(1000)
 
         val materialTextView5 = onView(
             allOf(
@@ -97,6 +97,7 @@ class PhotoEditActivityTest {
         )
         materialTextView5.check(ViewAssertions.matches(isDisplayed()))
         materialTextView5.perform(click())
+        Thread.sleep(1000)
 
         val materialTextView6 = onView(
             allOf(
@@ -105,6 +106,7 @@ class PhotoEditActivityTest {
         )
         materialTextView6.check(ViewAssertions.matches(isDisplayed()))
         materialTextView6.perform(click())
+        Thread.sleep(1000)
 
         val materialTextView7 = onView(
             allOf(
@@ -113,6 +115,7 @@ class PhotoEditActivityTest {
         )
         materialTextView7.check(ViewAssertions.matches(isDisplayed()))
         materialTextView7.perform(click())
+        Thread.sleep(1000)
 
         val materialTextView8 = onView(
             allOf(
@@ -121,6 +124,7 @@ class PhotoEditActivityTest {
         )
         materialTextView8.check(ViewAssertions.matches(isDisplayed()))
         materialTextView8.perform(click())
+        Thread.sleep(1000)
 
         val materialTextView9 = onView(
             allOf(
@@ -129,6 +133,7 @@ class PhotoEditActivityTest {
         )
         materialTextView9.check(ViewAssertions.matches(isDisplayed()))
         materialTextView9.perform(click())
+        Thread.sleep(1000)
 
 
         val fab = onView(
