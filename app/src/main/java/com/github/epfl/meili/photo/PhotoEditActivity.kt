@@ -9,6 +9,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.TableRow
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -63,6 +65,8 @@ class PhotoEditActivity : AppCompatActivity() {
         }
         setFabListener()
 
+        binding.emojis.setOnClickListener { showEmojiTable() }
+        makeEmojiTable()
     }
 
     override fun onRequestPermissionsResult(
@@ -155,9 +159,40 @@ class PhotoEditActivity : AppCompatActivity() {
             stopFilters()
     }
 
+    private fun showEmojiTable() {
+        binding.emojiContainer.visibility = View.VISIBLE
+    }
+
 
     private fun changeDrawingColor() {
         photoEditor.brushColor = binding.colorSlider.color
+    }
+
+    private fun makeEmojiTable() {
+        val emojis = PhotoEditor.getEmojis(this)
+        var curRow = TableRow(this)
+
+        for (i in 0 until emojis.size) {
+            // Make new row every 6 emojis
+            if (i % 6 == 0 && i != 0) {
+                binding.emojiTable.addView(curRow)
+                curRow = TableRow(this)
+            }
+
+            // Make textView
+            val textView = TextView(this)
+            textView.textSize = 50f
+            textView.text = emojis[i]
+            textView.setOnClickListener { addEmoji(emojis[i]) }
+
+            // Add emoji to current row
+            curRow.addView(textView)
+        }
+    }
+
+    private fun addEmoji(emoji: String) {
+        binding.emojiContainer.visibility = View.GONE
+        photoEditor.addEmoji(emoji)
     }
 
     companion object {
