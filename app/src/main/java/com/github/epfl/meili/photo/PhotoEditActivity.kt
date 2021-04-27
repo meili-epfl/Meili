@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
@@ -65,8 +66,18 @@ class PhotoEditActivity : AppCompatActivity() {
         }
         setFabListener()
 
+        // Emoji handling
         binding.emojis.setOnClickListener { showEmojiTable() }
         makeEmojiTable()
+
+        // Cropping
+        binding.cropModeButton.setOnClickListener { toggleCrop() }
+        binding.crop.setOnClickListener { cropImage() }
+        binding.cropImageView.setOnCropImageCompleteListener { _, _ ->
+            binding.photoEditorView.source.setImageDrawable(null) // required hack to update image using same uri
+            binding.photoEditorView.source.setImageURI(uri) // Set imageView to new cropped image
+            stopCrop() // Go back to main screen
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -123,6 +134,7 @@ class PhotoEditActivity : AppCompatActivity() {
 
     private fun startDrawing() {
         stopFilters()
+        stopCrop()
         photoEditor.setBrushDrawingMode(true)
         binding.paintModeButton.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
         binding.colorSlider.visibility = View.VISIBLE
@@ -143,6 +155,7 @@ class PhotoEditActivity : AppCompatActivity() {
 
     private fun startFilters() {
         stopDrawing()
+        stopCrop()
         binding.filters.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
         binding.filtersContainer.visibility = View.VISIBLE
     }
@@ -166,6 +179,27 @@ class PhotoEditActivity : AppCompatActivity() {
 
     private fun changeDrawingColor() {
         photoEditor.brushColor = binding.colorSlider.color
+    }
+
+    private fun startCrop() {
+        stopDrawing()
+        stopFilters()
+        binding.cropContainer.visibility = View.VISIBLE
+
+        binding.cropImageView.setImageBitmap(binding.photoEditorView.source.drawToBitmap())
+    }
+
+    private fun stopCrop() {
+        binding.cropContainer.visibility = View.GONE
+        binding.photoEditorView.source.rotation = 0f
+    }
+
+    private fun toggleCrop() {
+        if (!binding.cropContainer.isVisible) {
+            startCrop()
+        } else {
+            stopCrop()
+        }
     }
 
     private fun makeEmojiTable() {
@@ -193,6 +227,11 @@ class PhotoEditActivity : AppCompatActivity() {
     private fun addEmoji(emoji: String) {
         binding.emojiContainer.visibility = View.GONE
         photoEditor.addEmoji(emoji)
+    }
+
+    private fun cropImage() {
+        // Async callback to function defined in onCreate()
+        binding.cropImageView.saveCroppedImageAsync(uri)
     }
 
     companion object {
