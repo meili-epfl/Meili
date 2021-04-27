@@ -3,7 +3,6 @@ package com.github.epfl.meili.util
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
-import com.github.epfl.meili.MainApplication
 
 open class InternetConnectionService {
     open fun isConnectedToInternet(context: Context): Boolean {

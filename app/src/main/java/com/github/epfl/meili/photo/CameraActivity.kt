@@ -259,6 +259,7 @@ class CameraActivity : AppCompatActivity() {
 
     private fun hasFrontCamera(): Boolean {
         return cameraProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
+
     }
 
 
