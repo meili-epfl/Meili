@@ -22,8 +22,13 @@
 
     <ja.burhanrashid52.photoeditor.PhotoEditorView
         android:id="@+id/photoEditorView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="121dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/undo" />
 
     <com.rtugeek.android.colorseekbar.ColorSeekBar
         android:id="@+id/colorSlider"
@@ -65,45 +70,45 @@
             android:id="@+id/bw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
             android:text="None"
-            android:layout_margin="8dp"
             android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/sepia"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
             android:text="Sepia"
-            android:layout_margin="8dp"
             android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/saturate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
             android:text="Saturate"
-            android:layout_margin="8dp"
             android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/sharpen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
             android:text="Sharpen"
-            android:layout_margin="8dp"
             android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/fish_eye"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
             android:text="Fish Eye"
-            android:layout_margin="8dp"
             android:textColor="#FFFFFF" />
     </LinearLayout>
 
@@ -112,10 +117,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="12dp"
         android:background="?attr/selectableItemBackground"
         android:contentDescription="Undo"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_revert"
+        app:layout_constraintBottom_toTopOf="@+id/photoEditorView"
         app:layout_constraintEnd_toStartOf="@+id/redo"
         app:layout_constraintTop_toTopOf="parent" />
 
