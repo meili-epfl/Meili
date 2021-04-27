@@ -152,56 +152,6 @@
         app:srcCompat="@drawable/quantum_ic_arrow_back_grey600_24" />
 
     <TextView
-        android:id="@+id/crop_mode_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="68dp"
-        android:background="?attr/selectableItemBackground"
-        android:text="Crop"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/filters" />
-
-    <!-- Cropper window -->
-    <RelativeLayout
-        android:id="@+id/crop_image_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="121dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/undo">
-
-        <com.theartofdev.edmodo.cropper.CropImageView
-            android:id="@+id/crop_image_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </RelativeLayout>
-
-    <!-- Cropping buttons window -->
-    <LinearLayout
-        android:id="@+id/crop_buttons_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/crop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:background="?attr/selectableItemBackground"
-            android:text="Crop"
-            android:textColor="#FFFFFF" />
-    </LinearLayout>
-
-    <TextView
         android:id="@+id/emojis"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -211,7 +161,7 @@
         android:text="Emojis"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/crop_mode_button" />
+        app:layout_constraintStart_toEndOf="@+id/filters" />
 
     <ScrollView
         android:id="@+id/emoji_container"

@@ -11,6 +11,7 @@
     <uses-feature android:name="android.hardware.camera.any" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -19,8 +20,8 @@
         android:roundIcon="@mipmap/meili_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
-        <activity android:name=".photo.PhotoEditActivity"></activity>
-        <!-- Kept to add new features easily and integrate later -->
+        <activity android:name=".photo.PhotoCropActivity"></activity>
+        <activity android:name=".photo.PhotoEditActivity" /> <!-- Kept to add new features easily and integrate later -->
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

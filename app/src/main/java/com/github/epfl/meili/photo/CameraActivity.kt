@@ -44,7 +44,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraButton: ImageButton
     private lateinit var previewView: PreviewView
 
-    private val launchPhotoEditActivity =
+    private val launchPhotoCropActivity =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.data != null && result.resultCode == RESULT_OK && result.data!!.data != null) {
                 val intent = Intent()
@@ -187,10 +187,10 @@ class CameraActivity : AppCompatActivity() {
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val intent = Intent(applicationContext, PhotoEditActivity::class.java)
+                    val intent = Intent(applicationContext, PhotoCropActivity::class.java)
                     intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
                     intent.setFlags(intent.getFlags() or Intent.FLAG_ACTIVITY_NO_HISTORY)
-                    launchPhotoEditActivity.launch(intent)
+                    launchPhotoCropActivity.launch(intent)
                 }
             }
         )

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D9000000"
+    tools:context=".photo.PhotoCropActivity">
+
+    <ImageView
+        android:id="@+id/photo_edit_image_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="121dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/crop_mode_button"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/effects"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="48dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_outline_auto_awesome_30" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/crop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="48dp"
+        android:visibility="invisible"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_outline_crop_free_24" />
+
+    <!-- Cropper window -->
+    <RelativeLayout
+        android:id="@+id/crop_image_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="121dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/crop_mode_button">
+
+        <com.theartofdev.edmodo.cropper.CropImageView
+            android:id="@+id/crop_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/crop_mode_button"
+        android:layout_width="57dp"
+        android:layout_height="57dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginTop="46dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Draw on image"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_menu_crop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageButton
+        android:id="@+id/rotate_90"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="48dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Draw on image"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_menu_rotate"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/crop_mode_button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
