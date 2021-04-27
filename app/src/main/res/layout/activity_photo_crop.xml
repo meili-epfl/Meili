@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/crop_mode_button"/>
+        app:layout_constraintTop_toBottomOf="@+id/crop_mode_button" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/effects"
@@ -35,9 +35,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="48dp"
         android:layout_marginBottom="48dp"
-        android:visibility="invisible"
         android:clickable="true"
         android:focusable="true"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_outline_crop_free_24" />
@@ -63,26 +63,26 @@
         android:id="@+id/crop_mode_button"
         android:layout_width="57dp"
         android:layout_height="57dp"
-        android:layout_marginEnd="48dp"
         android:layout_marginTop="46dp"
+        android:layout_marginEnd="48dp"
         android:background="@android:color/transparent"
         android:contentDescription="Draw on image"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_crop"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/rotate_90"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="48dp"
+        android:layout_marginEnd="8dp"
         android:background="@android:color/transparent"
         android:contentDescription="Draw on image"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_rotate"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/crop_mode_button" />
+        app:layout_constraintEnd_toStartOf="@+id/crop_mode_button"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

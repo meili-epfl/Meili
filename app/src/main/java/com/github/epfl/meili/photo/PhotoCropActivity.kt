@@ -1,10 +1,13 @@
 package com.github.epfl.meili.photo
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
@@ -16,6 +19,16 @@ class PhotoCropActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
     private lateinit var binding: ActivityPhotoCropBinding
     private lateinit var uri: Uri
     private lateinit var rotationGestureDetector: RotationGestureDetector
+
+    private val launchPhotoEditActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.data != null && result.resultCode == RESULT_OK && result.data!!.data != null) {
+                val intent = Intent()
+                intent.data = result.data!!.data!!
+                setResult(RESULT_OK, intent)
+                finish()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +53,10 @@ class PhotoCropActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         binding.photoEditImageView.setOnTouchListener { _, event ->
             rotationGestureDetector.onTouchEvent(event)
         }
+        binding.rotate90.setOnClickListener { onRotation(90f) }
+
+        // Handle going to effects activity
+        binding.effects.setOnClickListener { launchEffects() }
 
     }
 
@@ -82,5 +99,13 @@ class PhotoCropActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         val matrix = Matrix().apply { postRotate(binding.photoEditImageView.rotation) }
         binding.photoEditImageView.rotation = 0f
         return Bitmap.createBitmap(original, 0, 0, original.width, original.height, matrix, true)
+    }
+
+    private fun launchEffects() {
+        val intent = Intent(applicationContext, PhotoEditActivity::class.java)
+        intent.putExtra(CameraActivity.URI_KEY, uri)
+        intent.setFlags(intent.getFlags() or Intent.FLAG_ACTIVITY_NO_HISTORY)
+        launchPhotoEditActivity.launch(intent)
+        finish()
     }
 }
