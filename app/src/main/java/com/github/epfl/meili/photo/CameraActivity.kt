@@ -39,9 +39,11 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var outputDirectory: File // directory where photos get saved
 
     private lateinit var cameraButton: ImageButton
+    private lateinit var switchCameraButton: ImageButton
     private lateinit var previewView: PreviewView
 
-    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK
+    private var lensFacing: Int =
+        CameraSelector.LENS_FACING_BACK // which direction is the camera facing
 
     private val launchPhotoEditActivity =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -59,33 +61,23 @@ class CameraActivity : AppCompatActivity() {
 
         outputDirectory = getOutputDirectory()
 
+        cameraButton = findViewById(R.id.camera_capture_button)
+        switchCameraButton = findViewById(R.id.camera_switch_button)
         previewView = findViewById(R.id.camera_preview)
 
-        // Wait for the views to be properly laid out
         previewView.post {
-
-            // Build UI controls
-            updateCameraUi()
-
-            // Set up the camera and its use cases
+            initializeUiControls()
             startCameraIfPermitted()
         }
-
-        cameraButton = findViewById(R.id.camera_capture_button)
-
         previewView.setOnTouchListener(getPreviewTouchListener())
 
         makePhotosHaveOrientation()
 
     }
 
-    /** Method used to re-draw the camera UI controls, called every time configuration changes. */
-    private fun updateCameraUi() {
+    private fun initializeUiControls() {
+        cameraButton.setOnClickListener {
 
-        // Listener for button used to capture photo
-        findViewById<ImageButton>(R.id.camera_capture_button).setOnClickListener {
-
-            // Get a stable reference of the modifiable image capture use case
             imageCapture?.let { imageCapture ->
 
                 // Create time-stamped output file to hold the image
@@ -120,26 +112,25 @@ class CameraActivity : AppCompatActivity() {
         }
 
         // Setup for button used to switch cameras
-        findViewById<ImageButton>(R.id.camera_switch_button).let {
+        switchCameraButton.let {
 
             // Disable the button until the camera is set up
             it.isEnabled = false
 
             // Listener for button used to switch cameras. Only called if the button is enabled
             it.setOnClickListener {
-                lensFacing = if (CameraSelector.LENS_FACING_FRONT == lensFacing) {
+                lensFacing = if (lensFacing == CameraSelector.LENS_FACING_FRONT)
                     CameraSelector.LENS_FACING_BACK
-                } else {
+                else
                     CameraSelector.LENS_FACING_FRONT
-                }
+
                 // Re-bind use cases to update selected camera
-                bindCameraUseCases()
+                buildCamera()
             }
         }
 
     }
 
-    /** Initialize CameraX, and prepare to bind the camera use cases  */
     private fun setUpCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener({
@@ -149,46 +140,38 @@ class CameraActivity : AppCompatActivity() {
             lensFacing = when {
                 hasBackCamera() -> CameraSelector.LENS_FACING_BACK
                 hasFrontCamera() -> CameraSelector.LENS_FACING_FRONT
-                else -> throw IllegalStateException("Back and front camera are unavailable")
+                else -> throw IllegalStateException("No cameras available")
             }
 
-            // Enable or disable switching between cameras
+            // Decide if camera switching should be enabled
             updateCameraSwitchButton()
 
-            // Build and bind the camera use cases
-            bindCameraUseCases()
+            buildCamera()
         }, ContextCompat.getMainExecutor(this))
     }
 
-    /** Declare and bind preview, capture and analysis use cases */
-    private fun bindCameraUseCases() {
-        val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
-
-        // Preview
-        preview = Preview.Builder().build()
-
-        // ImageCapture
+    private fun buildCamera() {
         imageCapture = ImageCapture.Builder()
             .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
             .build()
 
-        // Must unbind the use-cases before rebinding them
         cameraProvider.unbindAll()
 
+        preview = Preview.Builder().build()
+
+        val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
+
         try {
-            // A variable number of use-cases can be passed here -
-            // camera provides access to CameraControl & CameraInfo
             camera = cameraProvider.bindToLifecycle(
                 this, cameraSelector, preview, imageCapture
             )
 
-            // Attach the viewfinder's surface provider to preview use case
             preview.setSurfaceProvider(
                 previewView
                     .surfaceProvider
             )
         } catch (exc: Exception) {
-            Log.e(TAG, "Use case binding failed", exc)
+            Log.e(TAG, "Cannot setup camera", exc)
         }
     }
 
@@ -261,22 +244,19 @@ class CameraActivity : AppCompatActivity() {
     }
 
 
-    /** Enabled or disabled a button to switch cameras depending on the available cameras */
+    /** Only enable button to switch cameras if both the cameras are available */
     private fun updateCameraSwitchButton() {
-        val switchCamerasButton = findViewById<ImageButton>(R.id.camera_switch_button)
         try {
-            switchCamerasButton.isEnabled = hasBackCamera() && hasFrontCamera()
+            switchCameraButton.isEnabled = hasBackCamera() && hasFrontCamera()
         } catch (exception: CameraInfoUnavailableException) {
-            switchCamerasButton.isEnabled = false
+            switchCameraButton.isEnabled = false
         }
     }
 
-    /** Returns true if the device has an available back camera. False otherwise */
     private fun hasBackCamera(): Boolean {
         return cameraProvider.hasCamera(CameraSelector.DEFAULT_BACK_CAMERA)
     }
 
-    /** Returns true if the device has an available front camera. False otherwise */
     private fun hasFrontCamera(): Boolean {
         return cameraProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
     }
