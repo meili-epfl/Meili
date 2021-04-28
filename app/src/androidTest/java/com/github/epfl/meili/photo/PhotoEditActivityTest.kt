@@ -27,7 +27,7 @@ class PhotoEditActivityTest {
     @Before
     fun gotoPhotoEdit() {
         onView(withId(R.id.camera_capture_button)).perform(click())
-        Thread.sleep(1000)
+        Thread.sleep(1500)
     }
 
     @Test
@@ -55,5 +55,10 @@ class PhotoEditActivityTest {
         onView(withId(R.id.sepia)).perform(click())
         onView(withId(R.id.saturate)).perform(click())
         onView(withId(R.id.filters)).perform(click())
+    }
+
+    @Test
+    fun fabClick() {
+        onView(withId(R.id.fab)).perform(click())
     }
 }
