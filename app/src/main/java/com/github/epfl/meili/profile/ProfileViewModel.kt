@@ -28,7 +28,7 @@ class ProfileViewModel: ViewModel() {
         FirestoreDocumentService.getDocument("users/$uid").addOnSuccessListener {
             mUser.value = it.toObject(User::class.java)
             FirebaseStorageService.getDownloadUrl(
-                    "avatars/$uid",
+                    "images/avatars/$uid",
                     { uri -> loadImageIntoRequestCreator(uri)},
                     { /* do nothing in case of failure */ }
             )
@@ -42,7 +42,7 @@ class ProfileViewModel: ViewModel() {
         mUser.value = user
         FirestoreDocumentService.setDocument("users/$uid", user)
         if (bitmap != null) {
-            ImageUtility.compressAndUploadToFirebase("avatars/$uid", bitmap!!)
+            ImageUtility.compressAndUploadToFirebase("images/avatars/$uid", bitmap!!)
         }
     }
 

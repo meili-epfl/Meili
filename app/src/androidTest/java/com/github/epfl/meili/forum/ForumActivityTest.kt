@@ -187,7 +187,7 @@ class ForumActivityTest {
         database.onEvent(mockSnapshotAfterAddition, null)
 
         onView(withId(R.id.list_posts)).check(matches(isDisplayed()))
-        onView(withId(R.id.edit_post)).check(matches(CoreMatchers.not(isDisplayed())))
+        onView(withId(R.id.edit_post)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.forum_recycler_view))
                 .check(matches(isDisplayed()))

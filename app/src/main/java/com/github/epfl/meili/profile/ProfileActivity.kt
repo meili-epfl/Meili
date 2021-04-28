@@ -52,7 +52,7 @@ class ProfileActivity : AppCompatActivity() {
         viewModel.getRequestCreator().observe(this) { it.into(photoView) }
     }
 
-    fun onClick(view: View) {
+    fun onProfileButtonClick(view: View) {
         when (view) {
             photoView -> launchGallery.launch("image/*")
             saveButton -> saveProfile()
