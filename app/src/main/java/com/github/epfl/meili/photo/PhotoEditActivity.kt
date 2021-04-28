@@ -16,10 +16,12 @@ import androidx.core.view.isVisible
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.databinding.ActivityPhotoEditBinding
+import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
 import ja.burhanrashid52.photoeditor.PhotoFilter
 import java.io.File
+
 
 /**
  * An activity which is launched after a photo has been taken by the camera activity. It lets the user edit the photo by drawing, adding filters, etc.
@@ -57,6 +59,11 @@ class PhotoEditActivity : AppCompatActivity() {
         binding.fishEye.setOnClickListener { photoEditor.setFilterEffect(PhotoFilter.FISH_EYE) }
         binding.saturate.setOnClickListener { photoEditor.setFilterEffect(PhotoFilter.SATURATE) }
 
+        // text
+        binding.tvText.setOnClickListener { toggleText() }
+       // PhotoEditor.setOnPhotoEditorListener(object : OnPhotoEditorListener {
+       //     override fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int) {}
+       // })
 
         if (!isPermissionGranted()) {
             getStoragePermission() // photo will get stored on phone once it is done being edited
@@ -116,6 +123,19 @@ class PhotoEditActivity : AppCompatActivity() {
         ) == PERMISSION_GRANTED
     }
 
+    private fun toggleText(){
+        if(!binding.etText.isVisible){
+            stopFilters()
+            binding.etText.visibility = View.VISIBLE
+            binding.colorSlider.visibility = View.VISIBLE
+            binding.tvText.setOnClickListener { photoEditor.addText(binding.etText.toString(), binding.colorSlider.color) }
+        }
+        else{
+            binding.colorSlider.visibility = View.GONE
+            binding.etText.visibility = View.GONE
+        }
+    }
+
 
     private fun startDrawing() {
         stopFilters()
@@ -154,6 +174,7 @@ class PhotoEditActivity : AppCompatActivity() {
         else
             stopFilters()
     }
+
 
 
     private fun changeDrawingColor() {
