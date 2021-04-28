@@ -13,6 +13,7 @@ import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
 import com.github.epfl.meili.R
 import com.github.epfl.meili.databinding.ActivityPhotoCropBinding
+import com.github.epfl.meili.photo.CameraActivity.Companion.URI_KEY
 import com.github.epfl.meili.util.RotationGestureDetector
 
 class PhotoCropActivity : AppCompatActivity(), RotationGestureDetector.OnRotationGestureListener {
@@ -36,7 +37,7 @@ class PhotoCropActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         setContentView(binding.root)
 
         // display image which was received from camera
-        uri = intent.getParcelableExtra(CameraActivity.URI_KEY)!!
+        uri = intent.getParcelableExtra(URI_KEY)!!
         binding.photoEditImageView.setImageURI(uri)
 
         // Handle cropping
@@ -103,9 +104,8 @@ class PhotoCropActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
 
     private fun launchEffects() {
         val intent = Intent(applicationContext, PhotoEditActivity::class.java)
-        intent.putExtra(CameraActivity.URI_KEY, uri)
+        intent.putExtra(URI_KEY, uri)
         intent.setFlags(intent.getFlags() or Intent.FLAG_ACTIVITY_NO_HISTORY)
         launchPhotoEditActivity.launch(intent)
-        finish()
     }
 }
