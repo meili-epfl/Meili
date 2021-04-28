@@ -27,6 +27,7 @@
         android:layout_marginBottom="121dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/undo" />
 
@@ -76,7 +77,7 @@
         android:layout_width="256dp"
         android:layout_height="44dp"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="32dp"
         android:hint="Enter your text"
         android:inputType="textShortMessage"
         android:visibility="invisible"

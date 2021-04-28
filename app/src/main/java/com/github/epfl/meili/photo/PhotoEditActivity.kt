@@ -20,6 +20,7 @@ import ja.burhanrashid52.photoeditor.OnPhotoEditorListener
 import ja.burhanrashid52.photoeditor.PhotoEditor
 import ja.burhanrashid52.photoeditor.PhotoEditor.OnSaveListener
 import ja.burhanrashid52.photoeditor.PhotoFilter
+import ja.burhanrashid52.photoeditor.ViewType
 import java.io.File
 
 
@@ -61,9 +62,26 @@ class PhotoEditActivity : AppCompatActivity() {
 
         // text
         binding.tvText.setOnClickListener { toggleText() }
-       // PhotoEditor.setOnPhotoEditorListener(object : OnPhotoEditorListener {
-       //     override fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int) {}
-       // })
+        photoEditor.setOnPhotoEditorListener( object: OnPhotoEditorListener {
+            override fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int) {
+                photoEditor.editText(rootView, binding.etText.text.toString(), binding.colorSlider.color);
+            }
+            override fun onAddViewListener(p0: ViewType?, p1: Int) {
+               // TODO("Not yet implemented")
+            }
+
+            override fun onRemoveViewListener(p0: ViewType?, p1: Int) {
+               // TODO("Not yet implemented")
+            }
+
+            override fun onStartViewChangeListener(p0: ViewType?) {
+
+            }
+
+            override fun onStopViewChangeListener(p0: ViewType?) {
+                //TODO("Not yet implemented")
+            }
+        })
 
         if (!isPermissionGranted()) {
             getStoragePermission() // photo will get stored on phone once it is done being edited
@@ -126,9 +144,11 @@ class PhotoEditActivity : AppCompatActivity() {
     private fun toggleText(){
         if(!binding.etText.isVisible){
             stopFilters()
+            stopDrawing()
             binding.etText.visibility = View.VISIBLE
             binding.colorSlider.visibility = View.VISIBLE
-            binding.tvText.setOnClickListener { photoEditor.addText(binding.etText.toString(), binding.colorSlider.color) }
+
+            binding.tvText.setOnClickListener { photoEditor.addText(binding.etText.text.toString(), binding.colorSlider.color) }
         }
         else{
             binding.colorSlider.visibility = View.GONE
