@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationListener
@@ -15,21 +14,12 @@ import android.provider.Settings
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.epfl.meili.BuildConfig
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.location.LocationSettingsStatusCodes
 
-
-/**
- * This service is supposing that permissions have already being granted before using it
- *
- * It's role is to provide location updates to the location listener passed as parameter in listenToLocationChanges function
- */
 object LocationService {
     private const val REQUEST_CODE = 10100
+    var getLocationManager: (Context?) -> LocationManager = { context ->
+        context!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    }
 
     fun isLocationPermissionGranted(activity: Activity): Boolean {
         return ContextCompat.checkSelfPermission(
@@ -47,12 +37,12 @@ object LocationService {
     }
 
     @SuppressLint("MissingPermission")
-    fun listenToLocationChanges(locationManager: LocationManager, locationListener: LocationListener) {
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0F, locationListener)
+    fun listenToLocationChanges(context: Context?, locationListener: LocationListener) {
+        getLocationManager(context).requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0F, locationListener)
     }
 
-    fun isLocationEnabled(context: Context): Boolean {
-        val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    fun isLocationEnabled(context: Context?): Boolean {
+        val lm = getLocationManager(context)
         return lm.isProviderEnabled(LocationManager.GPS_PROVIDER) &&
                 lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }

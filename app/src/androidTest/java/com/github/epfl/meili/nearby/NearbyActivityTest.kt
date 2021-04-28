@@ -1,10 +1,10 @@
 package com.github.epfl.meili.nearby
 
+import android.location.LocationManager
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -12,6 +12,7 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiT
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.nearby.connection.*
@@ -24,8 +25,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.eq
+import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
@@ -47,8 +47,15 @@ class NearbyActivityTest {
     private val payloadCallbackCaptor = ArgumentCaptor.forClass(PayloadCallback::class.java)
 
     init {
+        setupLocationMocks()
         setupNearbyMocks()
         setupFirestoreMocks()
+    }
+
+    private fun setupLocationMocks() {
+        val mockLocationManager = mock(LocationManager::class.java)
+        `when`(mockLocationManager.isProviderEnabled(anyString())).thenReturn(true)
+        LocationService.getLocationManager = { mockLocationManager }
     }
 
     private fun setupFirestoreMocks() {

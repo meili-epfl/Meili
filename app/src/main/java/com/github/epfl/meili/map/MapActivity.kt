@@ -71,13 +71,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment?.getMapAsync(this)
     }
 
-    private fun listenToLocationChanges() {
-        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        LocationService.listenToLocationChanges(locationManager, poiMarkerViewModel)
-    }
-
     private fun setUpClusterer() {
-        listenToLocationChanges()
+        LocationService.listenToLocationChanges(applicationContext, poiMarkerViewModel)
         poiMarkerViewModel.setPoiService(PoiServiceCached())
 
         val currentUser = Auth.getCurrentUser()
@@ -139,7 +134,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         updateMapUI()
 
         if (isLocationPermissionGranted(this)) {
-            listenToLocationChanges()
+            LocationService.listenToLocationChanges(applicationContext, poiMarkerViewModel)
         }
     }
 
