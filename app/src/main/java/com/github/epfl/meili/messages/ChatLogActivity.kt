@@ -3,28 +3,24 @@ package com.github.epfl.meili.messages
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
-import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.review.ReviewsActivity
 import com.github.epfl.meili.util.DateAuxiliary
+import com.github.epfl.meili.util.MenuActivity
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 
-class ChatLogActivity : AppCompatActivity() {
+class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
     companion object {
         private const val TAG: String = "ChatLogActivity"
@@ -34,7 +30,7 @@ class ChatLogActivity : AppCompatActivity() {
 
     private var currentUser: User? = null
     private lateinit var groupId: String
-    private var messsageSet = HashSet<ChatMessage>()
+    private var messageSet = HashSet<ChatMessage>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +86,7 @@ class ChatLogActivity : AppCompatActivity() {
     private fun listenForMessages() {
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
-            val newMessages = list.minus(messsageSet)
+            val newMessages = list.minus(messageSet)
 
             newMessages.forEach { message ->
                 Log.d(TAG, "loading message: ${message.text}")
@@ -98,7 +94,7 @@ class ChatLogActivity : AppCompatActivity() {
                 adapter.add(ChatItem(message, message.fromId == currentUser!!.uid))
             }
 
-            messsageSet.addAll(newMessages)
+            messageSet.addAll(newMessages)
 
             //scroll down
             val lastItemPos = adapter.itemCount - 1
@@ -114,43 +110,15 @@ class ChatLogActivity : AppCompatActivity() {
         Auth.onActivityResult(this, requestCode, resultCode, data)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        //Inflate menu to enable adding chat and review buttons on the top
-        menuInflater.inflate(R.menu.nav_chat_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // get the POI
-        val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!
-        //Now that the buttons are added at the top control what each menu buttons does
-        val intent: Intent = when (item?.itemId) {
-            R.id.menu_reviews_from_chat -> {
-                Intent(this, ReviewsActivity::class.java)
-                    .putExtra(MapActivity.POI_KEY, poi)
-            }
-            R.id.menu_forum_from_chat-> {
-                Intent(this, ForumActivity::class.java)
-                    .putExtra(MapActivity.POI_KEY, poi)
-            }
-            else -> {
-                Intent(this, ChatLogActivity::class.java)
-            }
-        }
-        //clear the older intents so that the back button works correctly
-        //intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
-        return super.onOptionsItemSelected(item)
-    }
 }
 
 class ChatItem(private val message: ChatMessage, private val isChatMessageFromCurrentUser: Boolean) :
     Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
-        if (isChatMessageFromCurrentUser) {
-            return R.layout.chat_from_me_row
+        return if (isChatMessageFromCurrentUser) {
+            R.layout.chat_from_me_row
         } else {
-            return R.layout.chat_from_other_row
+            R.layout.chat_from_other_row
         }
     }
 
@@ -167,6 +135,4 @@ class ChatItem(private val message: ChatMessage, private val isChatMessageFromCu
                 message.fromName
         }
     }
-
-
 }
