@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.storage.FirebaseStorageService
+import com.github.epfl.meili.database.FirebaseStorageService
 import com.squareup.picasso.Picasso
 
 class PostActivity : AppCompatActivity() {

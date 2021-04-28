@@ -28,7 +28,7 @@ object FirestoreTool {
             if (!documentSnapshot.exists()) {
                 val newUser = User(
                     FirebaseAuth.getInstance().currentUser?.displayName ?: "",
-                    "", "", "", null
+                    "", "", ""
                 )
                 currentUserDocRef.set(newUser).addOnSuccessListener {
                     onComplete()

@@ -45,12 +45,8 @@ class FirebaseAuthenticationService : AuthenticationService {
         return if (user == null) {
             null
         } else {
-            return User(user.uid, user.displayName!!, user.email!!, " ", null)
+            return User(user.uid, user.displayName!!, user.email!!, " ")
         }
-
-
-
-
     }
 
     override fun signInIntent(): Intent {
