@@ -146,18 +146,30 @@ class PhotoEditActivity : AppCompatActivity() {
             stopFilters()
             stopDrawing()
             binding.etText.visibility = View.VISIBLE
+            binding.buttonAddText.visibility= View.VISIBLE
+            binding.etText.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
+            binding.tvText.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
             binding.colorSlider.visibility = View.VISIBLE
 
-            binding.tvText.setOnClickListener { photoEditor.addText(binding.etText.text.toString(), binding.colorSlider.color) }
+            binding.buttonAddText.setOnClickListener {
+                photoEditor.addText(binding.etText.text.toString(), binding.colorSlider.color)
+            }
         }
         else{
-            binding.colorSlider.visibility = View.GONE
-            binding.etText.visibility = View.GONE
+            stopText()
         }
+    }
+
+    private fun stopText(){
+        binding.colorSlider.visibility = View.GONE
+        binding.etText.visibility = View.GONE
+        binding.buttonAddText.visibility= View.GONE
+        binding.tvText.setBackgroundColor(0)
     }
 
 
     private fun startDrawing() {
+        stopText()
         stopFilters()
         photoEditor.setBrushDrawingMode(true)
         binding.paintModeButton.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
@@ -179,6 +191,7 @@ class PhotoEditActivity : AppCompatActivity() {
 
     private fun startFilters() {
         stopDrawing()
+        stopText()
         binding.filters.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
         binding.filtersContainer.visibility = View.VISIBLE
     }
