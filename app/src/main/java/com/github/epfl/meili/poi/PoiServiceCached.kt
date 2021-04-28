@@ -16,7 +16,7 @@ class PoiServiceCached : PoiService, CacheService<List<PointOfInterest>>(SHARED_
 
     // In-Object cached values
     var responsePosition: LatLng = LatLng(0.0, 0.0)
-    var currentRequestedPosition: LatLng = LatLng(0.0,0.0)
+    private var currentRequestedPosition: LatLng = LatLng(0.0,0.0)
 
 
     override fun requestPois(latLng: LatLng?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((Error) -> Unit)?) {
@@ -33,6 +33,7 @@ class PoiServiceCached : PoiService, CacheService<List<PointOfInterest>>(SHARED_
     private fun onSuccessSaveResponse(latLng: LatLng, onSuccess: ((List<PointOfInterest>) -> Unit)): (List<PointOfInterest>) -> Unit {
         return { response ->
             savePositionOfResponse(latLng)
+            super.saveResponse(response)
             onSuccess(response)
         }
     }

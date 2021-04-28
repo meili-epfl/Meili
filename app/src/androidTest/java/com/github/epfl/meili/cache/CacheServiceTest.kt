@@ -12,9 +12,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.mockito.Mockito
 import java.lang.reflect.Type
 
@@ -90,7 +92,7 @@ class CacheServiceTest {
             Assert.assertEquals(testPoiList, it)
         }
 
-        service.getResponse(LatLng(0.0, 0.0), customOnSuccess, { assert(false) })
+        service.getResponse(testPosition, customOnSuccess, { assert(false) })
     }
 
     @Test

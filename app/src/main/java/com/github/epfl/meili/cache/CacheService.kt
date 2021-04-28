@@ -55,7 +55,7 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
                     // On data received save it in object and locally
 
                     Log.d(TAG, "Getting info from the API")
-                    fetcher.fetchResponse(arg, onSuccessSaveResponse() { onSuccess(it) }, onError)
+                    fetcher.fetchResponse(arg, onSuccessSaveResponse { onSuccess(it) }, onError)
                 }
                 else -> {
                     // If there is no internet connection but some data available then return it even if not valid

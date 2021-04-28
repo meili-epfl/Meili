@@ -18,9 +18,11 @@ import org.mockito.Mockito.mock
 @RunWith(AndroidJUnit4::class)
 class PoiServiceCachedTest {
     private val service: PoiServiceCached = PoiServiceCached()
-    private var mockInternetConnectionService: InternetConnectionService = mock(InternetConnectionService::class.java)
+    private var mockInternetConnectionService: InternetConnectionService =
+        mock(InternetConnectionService::class.java)
     private var mockSharedPreferences: SharedPreferences = mock(SharedPreferences::class.java)
-    private var mockSharedPreferencesEditor: SharedPreferences.Editor = mock(SharedPreferences.Editor::class.java)
+    private var mockSharedPreferencesEditor: SharedPreferences.Editor =
+        mock(SharedPreferences.Editor::class.java)
     private val mockPoiGoogleRetriever: PoiGoogleRetriever = mock(PoiGoogleRetriever::class.java)
 
     private val testPoiList = ArrayList<PointOfInterest>()
@@ -33,7 +35,12 @@ class PoiServiceCachedTest {
         testPoiList.add(poi1)
         testPoiList.add(poi2)
 
-        `when`(mockSharedPreferencesEditor.putLong(Mockito.anyString(), Mockito.anyLong())).thenReturn(null)
+        `when`(
+            mockSharedPreferencesEditor.putLong(
+                Mockito.anyString(),
+                Mockito.anyLong()
+            )
+        ).thenReturn(null)
         `when`(mockSharedPreferences.edit()).thenReturn(mockSharedPreferencesEditor)
     }
 
@@ -43,7 +50,9 @@ class PoiServiceCachedTest {
     }
 
     private fun initPreferencesWithData(timestamp: Long) {
-        `when`(mockSharedPreferences.getLong(Mockito.anyString(), Mockito.anyLong())).thenReturn(timestamp)
+        `when`(mockSharedPreferences.getLong(Mockito.anyString(), Mockito.anyLong())).thenReturn(
+            timestamp
+        )
         `when`(mockSharedPreferences.getString(Mockito.anyString(), Mockito.anyString())).then {
             val key = it.arguments[0] as String
             if (key == PoiServiceCached.POSITION_KEY) {
@@ -57,11 +66,14 @@ class PoiServiceCachedTest {
     }
 
     private fun setInternetConnection(status: Boolean) {
-        `when`(mockInternetConnectionService.isConnectedToInternet(MainApplication.applicationContext())).thenReturn(status)
+        `when`(mockInternetConnectionService.isConnectedToInternet(MainApplication.applicationContext())).thenReturn(
+            status
+        )
         service.setInternetConnectionServicce(mockInternetConnectionService)
     }
+
     @Test
-    fun test(){
+    fun test() {
         assert(true)
     }
 
@@ -72,7 +84,13 @@ class PoiServiceCachedTest {
 
         initEmptyPreferences()
 
-        `when`(mockPoiGoogleRetriever.requestPoisAPI(Mockito.any(), Mockito.any(), Mockito.any())).then {
+        `when`(
+            mockPoiGoogleRetriever.requestPoisAPI(
+                Mockito.any(),
+                Mockito.any(),
+                Mockito.any()
+            )
+        ).then {
             val onSuccess = it.arguments[1] as ((List<PointOfInterest>) -> Unit)
             onSuccess(testPoiList)
         }
@@ -94,12 +112,11 @@ class PoiServiceCachedTest {
         service.requestPois(LatLng(0.0, 0.0), { assert(false) }, { assert(true) })
     }
 
-    //TODO: test below is failing
     @Test
     fun requestPoisWhenObjectDataIsValid() {
         service.lastResponse = testPoiList
         service.responseTimestamp = System.currentTimeMillis() / 1000
-        service.responsePosition = LatLng(0.0,0.0)
+        service.responsePosition = LatLng(0.0, 0.0)
 
         val customOnSuccess: (List<PointOfInterest>) -> Unit = {
             assertEquals(testPoiList, it)
@@ -107,8 +124,6 @@ class PoiServiceCachedTest {
 
         service.requestPois(LatLng(0.0, 0.0), customOnSuccess, { assert(false) })
     }
-
-
 
     @Test
     fun requestPoisWhenCachedDataIsValid() {
@@ -148,4 +163,15 @@ class PoiServiceCachedTest {
         service.requestPois(testPosition, customOnSuccess, { assert(false) })
     }
 
+    @Test
+    fun getResponseTest() {
+        setInternetConnection(false)
+        initPreferencesWithData(1L)
+
+        val customOnSuccess: (List<PointOfInterest>) -> Unit = {
+            assertEquals(testPoiList, it)
+        }
+
+        service.getResponse(testPosition, customOnSuccess, { assert(false) })
+    }
 }
