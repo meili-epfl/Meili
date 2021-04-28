@@ -1,86 +1,68 @@
 package com.github.epfl.meili.profile
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
-import com.github.epfl.meili.tool.FirestoreTool
-import com.github.epfl.meili.tool.StorageTool
+import com.github.epfl.meili.models.User
+import com.github.epfl.meili.photo.PhotoService
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import java.io.ByteArrayOutputStream
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 
 class ProfileActivity : AppCompatActivity() {
 
-    private val RC_SELECT_IMAGE = 2
-    private lateinit var selectedImageBytes: ByteArray
-    private var pictureJustChanged = false
+    private val launchGallery =  registerForActivityResult(ActivityResultContracts.GetContent()) { viewModel.loadImage(it) }
+
+    private lateinit var photoView: CircleImageView
+    private lateinit var nameView: EditText
+    private lateinit var bioView: EditText
+    private lateinit var saveButton: Button
+
+    private lateinit var executor: ExecutorService
+
+    private lateinit var viewModel: ProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-            val nimaPhoto =  findViewById<CircleImageView>(R.id.profilePhoto)
-            nimaPhoto.setOnClickListener {
-                val intent = Intent().apply {
-                    type = "image/*"
-                    action = Intent.ACTION_GET_CONTENT
-                    putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
-                }
-                startActivityForResult(Intent.createChooser(intent, "Select Image"), RC_SELECT_IMAGE)
-            }
+        executor = Executors.newSingleThreadExecutor()
 
-            val nimaName = findViewById<TextView>(R.id.tvName)
-            val nimaDes = findViewById<TextView>(R.id.tvDescription)
-            findViewById<Button>(R.id.btnModifyProfile).setOnClickListener {
-                if (::selectedImageBytes.isInitialized)
-                    StorageTool.uploadProfilePhoto(selectedImageBytes) { imagePath ->
-                        FirestoreTool.updateCurrentUser(nimaName.text.toString(),
-                            nimaDes.text.toString(), imagePath)
-                    }
-                else
-                    FirestoreTool.updateCurrentUser(nimaName.text.toString(),
-                        nimaDes.text.toString(), null)
-            }
+        photoView = findViewById(R.id.photo)
+        nameView = findViewById(R.id.name)
+        bioView = findViewById(R.id.bio)
+        saveButton = findViewById(R.id.save)
+
+        setupViewModel()
+    }
+
+    private fun setupViewModel() {
+        viewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+        viewModel.getUser().observe(this) { user ->
+            nameView.setText(user.username)
+            bioView.setText(user.bio)
         }
 
+        viewModel.getRequestCreator().observe(this) { it.into(photoView) }
+    }
 
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SELECT_IMAGE && resultCode == Activity.RESULT_OK &&
-            data != null && data.data != null) {
-            val selectedImagePath = data.data
-            val selectedImageBmp = MediaStore.Images.Media
-                .getBitmap(contentResolver, selectedImagePath)
-
-            val outputStream = ByteArrayOutputStream()
-            val nimaPhoto = findViewById<CircleImageView>(R.id.profilePhoto) as ImageView
-            selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
-            selectedImageBytes = outputStream.toByteArray()
-            nimaPhoto.setImageBitmap(selectedImageBmp)
-            pictureJustChanged = true
+    fun onClick(view: View) {
+        when (view) {
+            photoView -> launchGallery.launch("image/*")
+            saveButton -> saveProfile()
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        FirestoreTool.getCurrentUser { user ->
-            findViewById<EditText>(R.id.tvName).setText(user.username)
-            findViewById<EditText>(R.id.tvDescription).setText(user.bio)
-            val nimaPhoto = findViewById<CircleImageView>(R.id.profilePhoto) as ImageView
-                if (!pictureJustChanged && user.profilePicturePath != null)
-                    Picasso.get().load(Uri.parse(TODO())).into(nimaPhoto)
-            }
-        }
+    private fun saveProfile() {
+
+    }
 }
