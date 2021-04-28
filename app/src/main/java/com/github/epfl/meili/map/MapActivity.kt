@@ -1,10 +1,8 @@
 package com.github.epfl.meili.map
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.BuildConfig

@@ -10,8 +10,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ImageButton
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider

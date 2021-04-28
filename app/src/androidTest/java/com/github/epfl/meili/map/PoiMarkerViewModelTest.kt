@@ -1,12 +1,6 @@
 package com.github.epfl.meili.map
 
-import android.R
 import android.location.Location
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.RootMatchers.withDecorView
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
@@ -16,8 +10,6 @@ import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiService
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.*
-import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.not
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
