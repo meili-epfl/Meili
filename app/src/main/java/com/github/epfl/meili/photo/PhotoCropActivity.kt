@@ -6,8 +6,6 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
@@ -20,16 +18,6 @@ class PhotoCropActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
     private lateinit var binding: ActivityPhotoCropBinding
     private lateinit var uri: Uri
     private lateinit var rotationGestureDetector: RotationGestureDetector
-
-    private val launchPhotoEditActivity =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.data != null && result.resultCode == RESULT_OK && result.data!!.data != null) {
-                val intent = Intent()
-                intent.data = result.data!!.data!!
-                setResult(RESULT_OK, intent)
-                finish()
-            }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,9 +91,10 @@ class PhotoCropActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
     }
 
     private fun launchEffects() {
-        val intent = Intent(applicationContext, PhotoEditActivity::class.java)
+        val intent = Intent(this, PhotoEditActivity::class.java)
         intent.putExtra(URI_KEY, uri)
-        intent.setFlags(intent.getFlags() or Intent.FLAG_ACTIVITY_NO_HISTORY)
-        launchPhotoEditActivity.launch(intent)
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
+        startActivity(intent)
+        finish()
     }
 }
