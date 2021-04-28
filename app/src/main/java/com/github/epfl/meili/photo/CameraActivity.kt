@@ -42,18 +42,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var switchCameraButton: ImageButton
     private lateinit var previewView: PreviewView
 
-    private var lensFacing: Int =
-        CameraSelector.LENS_FACING_BACK // which direction is the camera facing
-
-    private val launchPhotoEditActivity =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.data != null && result.resultCode == RESULT_OK && result.data!!.data != null) {
-                val intent = Intent()
-                intent.data = result.data!!.data!!
-                setResult(RESULT_OK, intent)
-                finish()
-            }
-        }
+    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK // which direction is the camera facing
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,7 +89,7 @@ class CameraActivity : AppCompatActivity() {
                             val intent = Intent(applicationContext, PhotoEditActivity::class.java)
                             intent.flags = intent.flags or FLAG_ACTIVITY_FORWARD_RESULT
                             intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
-                            launchPhotoEditActivity.launch(intent)
+                            startActivity(intent)
                         }
                     })
             }
