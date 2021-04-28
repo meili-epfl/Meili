@@ -251,7 +251,7 @@ class CameraActivity : AppCompatActivity() {
 
 
     /** Only enable button to switch cameras if both the cameras are available */
-    private fun updateCameraSwitchButton() {
+    private fun updateSwitchCameraButton() {
         try {
             switchCameraButton.isEnabled = hasBackCamera() && hasFrontCamera()
         } catch (exception: CameraInfoUnavailableException) {
