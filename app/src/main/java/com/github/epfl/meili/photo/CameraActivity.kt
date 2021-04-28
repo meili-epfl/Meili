@@ -150,7 +150,7 @@ class CameraActivity : AppCompatActivity() {
             }
 
             // Decide if camera switching should be enabled
-            updateCameraSwitchButton()
+            updateSwitchCameraButton()
 
             buildCamera()
         }, ContextCompat.getMainExecutor(this))
