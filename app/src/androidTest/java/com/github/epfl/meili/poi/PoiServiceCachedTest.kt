@@ -60,6 +60,10 @@ class PoiServiceCachedTest {
         `when`(mockInternetConnectionService.isConnectedToInternet(MainApplication.applicationContext())).thenReturn(status)
         service.setInternetConnectionServicce(mockInternetConnectionService)
     }
+    @Test
+    fun test(){
+        assert(true)
+    }
 
 
     @Test
@@ -90,10 +94,12 @@ class PoiServiceCachedTest {
         service.requestPois(LatLng(0.0, 0.0), { assert(false) }, { assert(true) })
     }
 
+    //TODO: test below is failing
     @Test
     fun requestPoisWhenObjectDataIsValid() {
         service.lastResponse = testPoiList
         service.responseTimestamp = System.currentTimeMillis() / 1000
+        service.responsePosition = LatLng(0.0,0.0)
 
         val customOnSuccess: (List<PointOfInterest>) -> Unit = {
             assertEquals(testPoiList, it)
@@ -101,6 +107,8 @@ class PoiServiceCachedTest {
 
         service.requestPois(LatLng(0.0, 0.0), customOnSuccess, { assert(false) })
     }
+
+
 
     @Test
     fun requestPoisWhenCachedDataIsValid() {
@@ -139,4 +147,5 @@ class PoiServiceCachedTest {
 
         service.requestPois(testPosition, customOnSuccess, { assert(false) })
     }
+
 }

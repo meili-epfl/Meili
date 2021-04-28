@@ -38,7 +38,7 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
     open fun getResponse(arg: Any?, onSuccess: ((T) -> Unit)?, onError: ((Error) -> Unit)?) {
         if (onSuccess != null && onError != null) {
             when {
-                isCacheValid(responseTimestamp) -> {
+                isObjectDataValid() -> {
                     // If data saved in object is valid then return it
 
                     Log.d(TAG, "Getting info from in-object")
