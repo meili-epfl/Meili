@@ -3,6 +3,7 @@ package com.github.epfl.meili.photo
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_FORWARD_RESULT
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -43,16 +44,6 @@ class CameraActivity : AppCompatActivity() {
 
     private lateinit var cameraButton: ImageButton
     private lateinit var previewView: PreviewView
-
-    private val launchPhotoEditActivity =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.data != null && result.resultCode == RESULT_OK && result.data!!.data != null) {
-                val intent = Intent()
-                intent.data = result.data!!.data!!
-                setResult(RESULT_OK, intent)
-                finish()
-            }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -188,9 +179,9 @@ class CameraActivity : AppCompatActivity() {
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val intent = Intent(applicationContext, PhotoEditActivity::class.java)
+                    intent.flags = intent.flags or FLAG_ACTIVITY_FORWARD_RESULT
                     intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
-                    intent.setFlags(intent.getFlags() or Intent.FLAG_ACTIVITY_NO_HISTORY)
-                    launchPhotoEditActivity.launch(intent)
+                    startActivity(intent)
                 }
             }
         )

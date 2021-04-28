@@ -27,7 +27,6 @@
         android:theme="@style/Theme.Meili">
 
         <activity android:name=".nearby.NearbyActivity" />
-        <activity android:name=".photo.PhotoEditActivity"></activity>
         <!-- Kept to add new features easily and integrate later -->
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -54,11 +53,15 @@
         </activity>
         <activity
             android:name=".photo.CameraActivity"
-            android:parentActivityName=".forum.ForumActivity">
+            android:parentActivityName=".forum.ForumActivity"
+            android:noHistory="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".forum.ForumActivity" />
-        </activity> <!-- POI features: forum, chat & review system -->
+        </activity>
+        <activity android:name=".photo.PhotoEditActivity" />
+
+        <!-- POI features: forum, chat & review system -->
         <activity
             android:name=".messages.ChatLogActivity"
             android:parentActivityName=".map.MapActivity">
