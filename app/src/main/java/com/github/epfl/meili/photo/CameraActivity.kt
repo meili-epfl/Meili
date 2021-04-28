@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ImageButton
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -28,6 +30,7 @@ class CameraActivity : AppCompatActivity() {
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val PRESS_DELAY = 200L
         private const val TAG = "CameraActivity"
+        const val URI_KEY = "URI_KEY"
     }
 
     private var imageCapture: ImageCapture? = null // is null when camera hasn't started
@@ -40,6 +43,16 @@ class CameraActivity : AppCompatActivity() {
 
     private lateinit var cameraButton: ImageButton
     private lateinit var previewView: PreviewView
+
+    private val launchPhotoEditActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.data != null && result.resultCode == RESULT_OK && result.data!!.data != null) {
+                val intent = Intent()
+                intent.data = result.data!!.data!!
+                setResult(RESULT_OK, intent)
+                finish()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -154,11 +167,15 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun takePhoto() {
-        if (imageCapture == null) { return }
+        if (imageCapture == null) {
+            return
+        }
 
         // Create time-stamped output file to hold the image
-        val photoFile = File(outputDirectory,
-                SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".jpg")
+        val photoFile = File(
+            outputDirectory,
+            SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".jpg"
+        )
 
         // Set up behaviour for when a photo is taken
         imageCapture!!.takePicture(
@@ -170,10 +187,10 @@ class CameraActivity : AppCompatActivity() {
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val intent = Intent()
-                    intent.data = Uri.fromFile(photoFile)
-                    setResult(RESULT_OK, intent)
-                    finish()
+                    val intent = Intent(applicationContext, PhotoEditActivity::class.java)
+                    intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
+                    intent.setFlags(intent.getFlags() or Intent.FLAG_ACTIVITY_NO_HISTORY)
+                    launchPhotoEditActivity.launch(intent)
                 }
             }
         )
