@@ -14,8 +14,10 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.util.LocationPermissionService.requestLocationPermission
-import com.github.epfl.meili.util.LocationPermissionService.isLocationPermissionGranted
+import com.github.epfl.meili.util.LocationService.isLocationEnabled
+import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
+import com.github.epfl.meili.util.LocationService.requestLocation
+import com.github.epfl.meili.util.LocationService.requestLocationPermission
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
 
@@ -23,18 +25,26 @@ class NearbyActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "NearbyActivity"
         private val STRATEGY = Strategy.P2P_CLUSTER
+        private const val ACK = "ACK"
 
         var getConnectionsClient: (Activity) -> ConnectionsClient = { a -> Nearby.getConnectionsClient(a) }
     }
 
-    private fun addFriend(friendUid: String) = database.addElement(friendUid, Friend(friendUid))
+    private lateinit var findMyFriendButton: Button
+    private lateinit var database: FirestoreDatabase<Friend>
+    private lateinit var localUser: User
+    private lateinit var connectionsClient: ConnectionsClient
 
     private val payloadCallback = object : PayloadCallback() {
         override fun onPayloadReceived(endpointId: String, payload: Payload) {
-            val friendUid: String = payload.asBytes()!!.decodeToString()
-            addFriend(friendUid)
-            Toast.makeText(applicationContext, "Friendship successful!", Toast.LENGTH_SHORT).show()
-            connectionsClient.disconnectFromEndpoint(endpointId)
+            when (val payloadString = payload.asBytes()!!.decodeToString()) {
+                ACK -> connectionsClient.disconnectFromEndpoint(endpointId)
+                else -> {
+                    database.addElement(payloadString, Friend(payloadString))
+                    Toast.makeText(applicationContext, "Friendship successful!", Toast.LENGTH_SHORT).show()
+                    connectionsClient.sendPayload(endpointId, Payload.fromBytes(ACK.toByteArray()))
+                }
+            }
         }
 
         override fun onPayloadTransferUpdate(endpointId: String, update: PayloadTransferUpdate) {}
@@ -81,27 +91,6 @@ class NearbyActivity : AppCompatActivity() {
         override fun onEndpointLost(endpointId: String) {}
     }
 
-    private fun startAdvertising() {
-        val advertisingOptions = AdvertisingOptions.Builder().setStrategy(STRATEGY).build()
-        connectionsClient.startAdvertising(localUser.username, packageName, connectionLifecycleCallback, advertisingOptions)
-                .addOnSuccessListener { Toast.makeText(applicationContext, "Looking for your friend!", Toast.LENGTH_SHORT).show() }
-                .addOnFailureListener { Toast.makeText(applicationContext, "Error finding friend", Toast.LENGTH_SHORT).show() }
-    }
-
-    private fun startDiscovery() {
-        val discoveryOptions = DiscoveryOptions.Builder().setStrategy(STRATEGY).build()
-        connectionsClient.startDiscovery(packageName, endpointDiscoveryCallback, discoveryOptions)
-                .addOnFailureListener {
-                    Toast.makeText(applicationContext, "Error finding friend", Toast.LENGTH_SHORT).show()
-                    Log.e(TAG, it.toString())
-                }
-    }
-
-    private lateinit var findMyFriendButton: Button
-    private lateinit var database: FirestoreDatabase<Friend>
-    private lateinit var localUser: User
-    private lateinit var connectionsClient: ConnectionsClient
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nearby)
@@ -115,6 +104,9 @@ class NearbyActivity : AppCompatActivity() {
         if (!isLocationPermissionGranted(this)) {
             findMyFriendButton.isEnabled = false
             requestLocationPermission(this)
+        } else if (!isLocationEnabled(applicationContext)) {
+            findMyFriendButton.isEnabled = false
+            requestLocation(applicationContext) { findMyFriendButton.isEnabled = true }
         }
 
         localUser = Auth.getCurrentUser()!!
@@ -141,12 +133,32 @@ class NearbyActivity : AppCompatActivity() {
         if (!isLocationPermissionGranted(this)) {
             Toast.makeText(
                     applicationContext,
-                    "Location permission is required for this feature",
+                    "Location is required for this feature",
                     Toast.LENGTH_SHORT
             ).show()
             finish()
         } else {
-            findMyFriendButton.isEnabled = true
+            if (!isLocationEnabled(applicationContext)) {
+                requestLocation(applicationContext) { findMyFriendButton.isEnabled = true }
+            } else {
+                findMyFriendButton.isEnabled = true
+            }
         }
+    }
+
+    private fun startAdvertising() {
+        val advertisingOptions = AdvertisingOptions.Builder().setStrategy(STRATEGY).build()
+        connectionsClient.startAdvertising(localUser.username, packageName, connectionLifecycleCallback, advertisingOptions)
+                .addOnSuccessListener { Toast.makeText(applicationContext, "Looking for your friend!", Toast.LENGTH_SHORT).show() }
+                .addOnFailureListener { Toast.makeText(applicationContext, "Error finding friend", Toast.LENGTH_SHORT).show() }
+    }
+
+    private fun startDiscovery() {
+        val discoveryOptions = DiscoveryOptions.Builder().setStrategy(STRATEGY).build()
+        connectionsClient.startDiscovery(packageName, endpointDiscoveryCallback, discoveryOptions)
+                .addOnFailureListener {
+                    Toast.makeText(applicationContext, "Error finding friend", Toast.LENGTH_SHORT).show()
+                    Log.e(TAG, it.toString())
+                }
     }
 }

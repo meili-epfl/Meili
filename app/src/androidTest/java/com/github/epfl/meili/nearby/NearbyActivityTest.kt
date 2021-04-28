@@ -39,6 +39,7 @@ class NearbyActivityTest {
         private const val MOCK_FRIEND_USERNAME = "Friendly User"
         private const val MOCK_FRIEND_UID = "Friendly UID"
         private const val MOCK_ENDPOINT_ID = "ENDPOINT_ID"
+        private const val ACK = "ACK"
     }
 
     private val connectionLifecycleCallbackCaptor = ArgumentCaptor.forClass(ConnectionLifecycleCallback::class.java)
@@ -105,9 +106,11 @@ class NearbyActivityTest {
         onView(withId(R.id.find_my_friend)).check(matches(isEnabled()))
 
         val uidPayload = Payload.fromBytes(MOCK_FRIEND_UID.toByteArray())
+        val ackPayload = Payload.fromBytes(ACK.toByteArray())
 
         runOnUiThread {
             payloadCallbackCaptor.value.onPayloadReceived(MOCK_ENDPOINT_ID, uidPayload)
+            payloadCallbackCaptor.value.onPayloadReceived(MOCK_FRIEND_UID, ackPayload)
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.github.epfl.meili.map
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.BuildConfig
@@ -12,8 +14,9 @@ import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiServiceCached
-import com.github.epfl.meili.util.LocationPermissionService.requestLocationPermission
-import com.github.epfl.meili.util.LocationPermissionService.isLocationPermissionGranted
+import com.github.epfl.meili.util.LocationService
+import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
+import com.github.epfl.meili.util.LocationService.requestLocationPermission
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
@@ -68,12 +71,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment?.getMapAsync(this)
     }
 
-    private fun setUpClusterer() {
-        if (isLocationPermissionGranted(this)) {
-            val locationService = LocationService()
-            locationService.listenToLocationChanges(poiMarkerViewModel)
-        }
+    private fun listenToLocationChanges() {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        LocationService.listenToLocationChanges(locationManager, poiMarkerViewModel)
+    }
 
+    private fun setUpClusterer() {
+        listenToLocationChanges()
         poiMarkerViewModel.setPoiService(PoiServiceCached())
 
         val currentUser = Auth.getCurrentUser()
@@ -135,8 +139,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         updateMapUI()
 
         if (isLocationPermissionGranted(this)) {
-            val locationService = LocationService()
-            locationService.listenToLocationChanges(poiMarkerViewModel)
+            listenToLocationChanges()
         }
     }
 
