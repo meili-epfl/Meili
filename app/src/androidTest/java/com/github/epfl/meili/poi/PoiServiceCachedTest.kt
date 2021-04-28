@@ -17,11 +17,11 @@ import org.mockito.Mockito.mock
 
 @RunWith(AndroidJUnit4::class)
 class PoiServiceCachedTest {
-    val service: PoiServiceCached = PoiServiceCached()
-    var mockInternetConnectionService: InternetConnectionService = mock(InternetConnectionService::class.java)
-    var mockSharedPreferences: SharedPreferences = mock(SharedPreferences::class.java)
-    var mockSharedPreferencesEditor: SharedPreferences.Editor = mock(SharedPreferences.Editor::class.java)
-    val mockPoiGoogleRetriever: PoiGoogleRetriever = mock(PoiGoogleRetriever::class.java)
+    private val service: PoiServiceCached = PoiServiceCached()
+    private var mockInternetConnectionService: InternetConnectionService = mock(InternetConnectionService::class.java)
+    private var mockSharedPreferences: SharedPreferences = mock(SharedPreferences::class.java)
+    private var mockSharedPreferencesEditor: SharedPreferences.Editor = mock(SharedPreferences.Editor::class.java)
+    private val mockPoiGoogleRetriever: PoiGoogleRetriever = mock(PoiGoogleRetriever::class.java)
 
     private val testPoiList = ArrayList<PointOfInterest>()
     private val poi1 = PointOfInterest(41.075000, 1.130870, "place1", "place1")
@@ -73,7 +73,7 @@ class PoiServiceCachedTest {
             onSuccess(testPoiList)
         }
 
-        service.setPoiGoogleRetriever(mockPoiGoogleRetriever)
+        service.setResponseFetcher(mockPoiGoogleRetriever)
 
         val customOnSuccess: (List<PointOfInterest>) -> Unit = {
             assertEquals(testPoiList, it)
@@ -92,7 +92,7 @@ class PoiServiceCachedTest {
 
     @Test
     fun requestPoisWhenObjectDataIsValid() {
-        service.lastPoiListResponse = testPoiList
+        service.lastResponse = testPoiList
         service.responseTimestamp = System.currentTimeMillis() / 1000
 
         val customOnSuccess: (List<PointOfInterest>) -> Unit = {
@@ -118,7 +118,7 @@ class PoiServiceCachedTest {
         setInternetConnection(false)
         initEmptyPreferences()
 
-        service.lastPoiListResponse = testPoiList
+        service.lastResponse = testPoiList
         service.responseTimestamp = 1L
 
         val customOnSuccess: (List<PointOfInterest>) -> Unit = {

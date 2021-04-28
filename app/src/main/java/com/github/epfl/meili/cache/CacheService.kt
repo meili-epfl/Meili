@@ -35,7 +35,7 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
         this.internetConnectionService = internetConnectionService
     }
 
-    fun getResponse(arg: Any, onSuccess: ((T) -> Unit)?, onError: ((Error) -> Unit)?) {
+    open fun getResponse(arg: Any?, onSuccess: ((T) -> Unit)?, onError: ((Error) -> Unit)?) {
         if (onSuccess != null && onError != null) {
             when {
                 isCacheValid(responseTimestamp) -> {

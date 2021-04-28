@@ -1,6 +1,5 @@
 package com.github.epfl.meili.poi
 
-import com.github.epfl.meili.cache.ResponseFetcher
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.util.CustomMath
 import com.google.android.gms.maps.model.LatLng

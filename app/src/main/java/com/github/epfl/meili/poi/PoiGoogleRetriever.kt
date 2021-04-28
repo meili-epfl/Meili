@@ -22,7 +22,7 @@ open class PoiGoogleRetriever: ResponseFetcher<List<PointOfInterest>> {
         queue = newQueue
     }
 
-    override fun fetchResponse(arg: Any, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: (Error) -> Unit) {
+    override fun fetchResponse(arg: Any?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: (Error) -> Unit) {
         val position = arg as LatLng
 
         requestPoisAPI(position, onSuccess, onError)

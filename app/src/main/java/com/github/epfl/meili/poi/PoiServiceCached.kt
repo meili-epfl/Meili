@@ -26,13 +26,16 @@ class PoiServiceCached : PoiService, CacheService<List<PointOfInterest>>(SHARED_
         }
     }
 
+    override fun getResponse(arg: Any?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((Error) -> Unit)?) {
+        requestPois(arg as LatLng, onSuccess, onError)
+    }
+
     private fun onSuccessSaveResponse(latLng: LatLng, onSuccess: ((List<PointOfInterest>) -> Unit)): (List<PointOfInterest>) -> Unit {
         return { response ->
             savePositionOfResponse(latLng)
             onSuccess(response)
         }
     }
-
 
     private fun savePositionOfResponse(latLng: LatLng) {
         // Save data in shared preferences
