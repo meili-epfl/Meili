@@ -100,13 +100,14 @@ class NearbyActivity : AppCompatActivity() {
         }
 
         findMyFriendButton = findViewById(R.id.find_my_friend)
+        findMyFriendButton.isEnabled = false
 
         if (!isLocationPermissionGranted(this)) {
-            findMyFriendButton.isEnabled = false
             requestLocationPermission(this)
         } else if (!isLocationEnabled(applicationContext)) {
-            findMyFriendButton.isEnabled = false
-            requestLocation(applicationContext) { findMyFriendButton.isEnabled = true }
+            requestLocation(this, { recreate() }, { finish() })
+        } else {
+            findMyFriendButton.isEnabled = true
         }
 
         localUser = Auth.getCurrentUser()!!
@@ -139,9 +140,9 @@ class NearbyActivity : AppCompatActivity() {
             finish()
         } else {
             if (!isLocationEnabled(applicationContext)) {
-                requestLocation(applicationContext) { findMyFriendButton.isEnabled = true }
+                requestLocation(this, { recreate() }, { finish() })
             } else {
-                findMyFriendButton.isEnabled = true
+                recreate()
             }
         }
     }
@@ -160,5 +161,11 @@ class NearbyActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "Error finding friend", Toast.LENGTH_SHORT).show()
                     Log.e(TAG, it.toString())
                 }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        connectionsClient.stopDiscovery()
+        connectionsClient.stopAdvertising()
     }
 }

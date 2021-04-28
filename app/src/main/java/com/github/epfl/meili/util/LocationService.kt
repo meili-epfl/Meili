@@ -47,7 +47,7 @@ object LocationService {
                 lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
-    fun requestLocation(context: Context, positiveListener: () -> Unit) {
+    fun requestLocation(context: Context, positiveListener: () -> Unit, negativeListener: () -> Unit) {
         if (BuildConfig.DEBUG && isLocationEnabled(context)) {
             error("Assertion failed")
         }
@@ -57,7 +57,7 @@ object LocationService {
                     context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                     positiveListener()
                 }
-                .setNegativeButton(R.string.cancel) { _, _ -> }
+                .setNegativeButton(R.string.cancel) { _, _ -> negativeListener() }
                 .show()
     }
 }

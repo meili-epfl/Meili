@@ -27,7 +27,7 @@ class PhotoEditActivityTest {
     @Before
     fun gotoPhotoEdit() {
         onView(withId(R.id.camera_capture_button)).perform(click())
-        Thread.sleep(500)
+        Thread.sleep(1000)
     }
 
     @Test
