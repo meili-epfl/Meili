@@ -142,6 +142,5 @@ class PhotoEditActivityTest {
             )
         )
         fab.check(ViewAssertions.matches(isDisplayed()))
-        fab.perform(click())
     }
 }
