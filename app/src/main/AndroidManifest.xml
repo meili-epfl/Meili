@@ -7,8 +7,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera.any" />
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -17,28 +19,23 @@
         android:roundIcon="@mipmap/meili_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
-        
+        <activity android:name=".photo.PhotoEditActivity"></activity>
         <!-- Kept to add new features easily and integrate later -->
         <activity android:name=".MainActivity">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-        </activity>
-
-        <!-- Activities in order of appearance -->
-
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity> <!-- Activities in order of appearance -->
         <!-- Sign in screen first and automatically goto map in case the user is signed in -->
         <activity
             android:name=".home.GoogleSignInActivity"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
-        </activity>
-
-        <!-- Map -->
+        </activity> <!-- Map -->
         <activity
             android:name=".map.MapActivity"
             android:label="@string/title_activity_map"
@@ -47,41 +44,34 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".home.GoogleSignInActivity" />
         </activity>
-
         <activity
             android:name=".photo.CameraActivity"
             android:parentActivityName=".forum.ForumActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".forum.ForumActivity" />
-        </activity>
-
-        <!-- POI features: forum, chat & review system -->
+        </activity> <!-- POI features: forum, chat & review system -->
         <activity
             android:name=".messages.ChatLogActivity"
-            android:parentActivityName=".map.MapActivity" >
+            android:parentActivityName=".map.MapActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".map.MapActivity" />
         </activity>
-
         <activity
             android:name=".forum.ForumActivity"
-            android:parentActivityName=".map.MapActivity" >
+            android:parentActivityName=".map.MapActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".map.MapActivity" />
         </activity>
-
         <activity
             android:name=".review.ReviewsActivity"
-            android:parentActivityName=".map.MapActivity" >
+            android:parentActivityName=".map.MapActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".map.MapActivity" />
-        </activity>
-
-        <!-- Secondary Activities -->
+        </activity> <!-- Secondary Activities -->
         <activity
             android:name=".poi.PoiActivity"
             android:parentActivityName=".map.MapActivity">
@@ -93,7 +83,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
 
 
         <activity android:name=".profile.ProfileActivity">
