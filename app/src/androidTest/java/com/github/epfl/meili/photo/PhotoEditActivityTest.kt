@@ -56,9 +56,4 @@ class PhotoEditActivityTest {
         onView(withId(R.id.saturate)).perform(click())
         onView(withId(R.id.filters)).perform(click())
     }
-
-    @Test
-    fun fabClick() {
-        onView(withId(R.id.fab)).perform(click())
-    }
 }

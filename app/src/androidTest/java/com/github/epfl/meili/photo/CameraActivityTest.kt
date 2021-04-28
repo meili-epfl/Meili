@@ -68,8 +68,8 @@ class CameraActivityTest {
 
     @Test
     fun takePhotoWithVolumeDownTest() {
-        val mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        mDevice.pressKeyCode(KeyEvent.KEYCODE_VOLUME_DOWN)
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+                .pressKeyCode(KeyEvent.KEYCODE_VOLUME_DOWN)
     }
 
     @Test
