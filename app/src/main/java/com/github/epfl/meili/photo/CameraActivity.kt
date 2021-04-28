@@ -16,7 +16,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
 import com.github.epfl.meili.R
 import java.io.File
 import java.text.SimpleDateFormat
@@ -35,29 +34,151 @@ class CameraActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null // is null when camera hasn't started
     private lateinit var cameraProvider: ProcessCameraProvider
     private lateinit var preview: Preview
-    private lateinit var cameraSelector: CameraSelector
     private lateinit var camera: Camera
 
     private lateinit var outputDirectory: File // directory where photos get saved
 
     private lateinit var cameraButton: ImageButton
+    private lateinit var switchCameraButton: ImageButton
     private lateinit var previewView: PreviewView
+
+    private var lensFacing: Int =
+        CameraSelector.LENS_FACING_BACK // which direction is the camera facing
+
+    private val launchPhotoEditActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.data != null && result.resultCode == RESULT_OK && result.data!!.data != null) {
+                val intent = Intent()
+                intent.data = result.data!!.data!!
+                setResult(RESULT_OK, intent)
+                finish()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
-        startCameraIfPermitted()
+        outputDirectory = getOutputDirectory()
 
         cameraButton = findViewById(R.id.camera_capture_button)
-        cameraButton.setOnClickListener { takePhoto() }
-
+        switchCameraButton = findViewById(R.id.camera_switch_button)
         previewView = findViewById(R.id.camera_preview)
+
+        previewView.post {
+            initializeUiControls()
+            startCameraIfPermitted()
+        }
         previewView.setOnTouchListener(getPreviewTouchListener())
 
         makePhotosHaveOrientation()
 
-        outputDirectory = getOutputDirectory()
+    }
+
+    private fun initializeUiControls() {
+        cameraButton.setOnClickListener {
+
+            imageCapture?.let { imageCapture ->
+
+                // Create time-stamped output file to hold the image
+                val photoFile = getFile()
+
+                // Create output options object which contains file + metadata
+                val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile)
+                    .build()
+
+                // Setup image capture listener which is triggered after photo has been taken
+                imageCapture.takePicture(
+                    outputOptions,
+                    ContextCompat.getMainExecutor(this),
+                    object : ImageCapture.OnImageSavedCallback {
+                        override fun onError(exc: ImageCaptureException) {
+                            Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                        }
+
+                        override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                            val intent = Intent(applicationContext, PhotoEditActivity::class.java)
+                            intent.flags = intent.flags or FLAG_ACTIVITY_FORWARD_RESULT
+                            intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
+                            launchPhotoEditActivity.launch(intent)
+                        }
+                    })
+            }
+        }
+
+        setupSwitchCameraButton()
+    }
+
+    private fun getFile() = File(
+        outputDirectory,
+        SimpleDateFormat(
+            FILENAME_FORMAT,
+            Locale.US
+        ).format(System.currentTimeMillis()) + ".jpg"
+    )
+
+    private fun setupSwitchCameraButton() {
+        // Setup for button used to switch cameras
+        switchCameraButton.let {
+
+            // Disable the button until the camera is set up
+            it.isEnabled = false
+
+            // Listener for button used to switch cameras. Only called if the button is enabled
+            it.setOnClickListener {
+                lensFacing = if (lensFacing == CameraSelector.LENS_FACING_FRONT)
+                    CameraSelector.LENS_FACING_BACK
+                else
+                    CameraSelector.LENS_FACING_FRONT
+
+                // Re-bind use cases to update selected camera
+                buildCamera()
+            }
+        }
+    }
+
+    private fun setUpCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+        cameraProviderFuture.addListener({
+            cameraProvider = cameraProviderFuture.get() // Guaranteed to exist
+
+            // Select lensFacing depending on the available cameras
+            lensFacing = when {
+                hasBackCamera() -> CameraSelector.LENS_FACING_BACK
+                hasFrontCamera() -> CameraSelector.LENS_FACING_FRONT
+                else -> throw IllegalStateException("No cameras available")
+            }
+
+            // Decide if camera switching should be enabled
+            updateSwitchCameraButton()
+
+            buildCamera()
+        }, ContextCompat.getMainExecutor(this))
+    }
+
+    private fun buildCamera() {
+        imageCapture = ImageCapture.Builder()
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+            .build()
+
+        cameraProvider.unbindAll()
+
+        preview = Preview.Builder().build()
+
+        val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
+
+        try {
+            camera = cameraProvider.bindToLifecycle(
+                this, cameraSelector, preview, imageCapture
+            )
+
+            preview.setSurfaceProvider(
+                previewView
+                    .surfaceProvider
+            )
+        } catch (exc: Exception) {
+            Log.e(TAG, "Cannot setup camera", exc)
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -68,7 +189,7 @@ class CameraActivity : AppCompatActivity() {
         // Checks if the request code is the same as the one sent to the device
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (allPermissionsGranted()) {
-                startCamera() // When authorized, start the camera
+                setUpCamera() // When authorized, start the camera
             } else {
                 finish()
             }
@@ -128,67 +249,29 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
-        cameraProviderFuture.addListener({
-            cameraProvider = cameraProviderFuture.get() // Guaranteed to exist
-
-            preview = Preview.Builder().build()
-
-            imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .build()
-
-            cameraSelector = CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                .build()
-
-            val previewView = findViewById<PreviewView>(R.id.camera_preview)
-            preview.setSurfaceProvider(previewView.surfaceProvider)
-
-            // Attach the lifecycle of the camera to the activity's lifecycle
-            camera = cameraProvider.bindToLifecycle(
-                this as LifecycleOwner, cameraSelector, preview, imageCapture
-            )
-
-        }, ContextCompat.getMainExecutor(this))
-    }
-
-    private fun takePhoto() {
-        if (imageCapture == null) {
-            return
+    /** Only enable button to switch cameras if both the cameras are available */
+    private fun updateSwitchCameraButton() {
+        try {
+            switchCameraButton.isEnabled = hasBackCamera() && hasFrontCamera()
+        } catch (exception: CameraInfoUnavailableException) {
+            switchCameraButton.isEnabled = false
         }
-
-        // Create time-stamped output file to hold the image
-        val photoFile = File(
-            outputDirectory,
-            SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".jpg"
-        )
-
-        // Set up behaviour for when a photo is taken
-        imageCapture!!.takePicture(
-            ImageCapture.OutputFileOptions.Builder(photoFile).build(),
-            ContextCompat.getMainExecutor(this),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                }
-
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val intent = Intent(applicationContext, PhotoEditActivity::class.java)
-                    intent.flags = intent.flags or FLAG_ACTIVITY_FORWARD_RESULT
-                    intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
-                    startActivity(intent)
-                }
-            }
-        )
     }
+
+    private fun hasBackCamera(): Boolean {
+        return cameraProvider.hasCamera(CameraSelector.DEFAULT_BACK_CAMERA)
+    }
+
+    private fun hasFrontCamera(): Boolean {
+        return cameraProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
+    }
+
 
     /** Checks if device has access to start the camera, if not, ask the user for permission */
     private fun startCameraIfPermitted() {
         if (allPermissionsGranted()) {
-            startCamera()
+            setUpCamera()
         } else {
             ActivityCompat.requestPermissions(
                 this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
