@@ -1,7 +1,5 @@
 package com.github.epfl.meili.profile
 
-//import com.github.epfl.meili.GlideApp
-
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
@@ -14,8 +12,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.github.epfl.meili.R
-import com.github.epfl.meili.tool.FirestoreUtil
-import com.github.epfl.meili.tool.StorageUtil
+import com.github.epfl.meili.tool.FirestoreTool
+import com.github.epfl.meili.tool.StorageTool
 //import kotlinx.android.synthetic.main.activity_modify_profile.*
 //import kotlinx.android.synthetic.main.activity_profile.*
 //import kotlinx.android.synthetic.main.activity_profile.profilePhoto
@@ -46,12 +44,12 @@ class ProfileActivity : AppCompatActivity() {
             val nimaDes = findViewById<TextView>(R.id.tvDescription)
             findViewById<Button>(R.id.btnModifyProfile).setOnClickListener {
                 if (::selectedImageBytes.isInitialized)
-                    StorageUtil.uploadProfilePhoto(selectedImageBytes) { imagePath ->
-                        FirestoreUtil.updateCurrentUser(nimaName.text.toString(),
+                    StorageTool.uploadProfilePhoto(selectedImageBytes) { imagePath ->
+                        FirestoreTool.updateCurrentUser(nimaName.text.toString(),
                             nimaDes.text.toString(), imagePath)
                     }
                 else
-                    FirestoreUtil.updateCurrentUser(nimaName.text.toString(),
+                    FirestoreTool.updateCurrentUser(nimaName.text.toString(),
                         nimaDes.text.toString(), null)
             }
         }
@@ -81,13 +79,13 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        FirestoreUtil.getCurrentUser { user ->
+        FirestoreTool.getCurrentUser { user ->
             findViewById<EditText>(R.id.tvName).setText(user.username)
             findViewById<EditText>(R.id.tvDescription).setText(user.bio)
             val nimaPhoto = findViewById<de.hdodenhof.circleimageview.CircleImageView>(R.id.profilePhoto) as ImageView
                 if (!pictureJustChanged && user.profilePicturePath != null)
                     Glide.with(this)
-                        .load(StorageUtil.pathToReference(user.profilePicturePath))
+                        .load(StorageTool.pathToReference(user.profilePicturePath))
                         //.placeholder(R.drawable.ic_account_circle_black_24dp)
                         .into(nimaPhoto)
             }

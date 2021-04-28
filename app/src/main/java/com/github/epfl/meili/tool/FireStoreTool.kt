@@ -1,20 +1,17 @@
 package com.github.epfl.meili.tool
 
 
-import android.content.Context
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
-import com.github.epfl.meili.*
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.models.User.Companion.toUser
 
 //import com.recyclerview.item.PersonItem
 
 
-object FirestoreUtil {
+object FirestoreTool {
     private val firestoreInstance: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
 
     private val currentUserDocRef: DocumentReference

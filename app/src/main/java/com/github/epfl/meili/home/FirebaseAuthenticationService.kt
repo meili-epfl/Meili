@@ -5,8 +5,8 @@ import android.content.Intent
 import android.util.Log
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
-import com.github.epfl.meili.tool.FirestoreUtil
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.tool.FirestoreTool
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -70,7 +70,7 @@ class FirebaseAuthenticationService : AuthenticationService {
                     if (task.isSuccessful) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success")
-                        FirestoreUtil.initCurrentUserIfFirstTime {} 
+                        FirestoreTool.initCurrentUserIfFirstTime {}
                         onComplete()
                     } else {
                         // If sign in fails, display a message to the user.

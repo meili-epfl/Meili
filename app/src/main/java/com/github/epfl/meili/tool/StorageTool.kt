@@ -6,7 +6,7 @@ import com.google.firebase.storage.StorageReference
 import java.util.*
 
 
-object StorageUtil {
+object StorageTool {
     private val storageInstance: FirebaseStorage by lazy { FirebaseStorage.getInstance() }
 
     private val currentUserRef: StorageReference
