@@ -187,7 +187,7 @@ class CameraActivity : AppCompatActivity() {
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val intent = Intent(applicationContext, PhotoEditActivity::class.java)
+                    val intent = Intent(applicationContext, PhotoCropActivity::class.java)
                     intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
                     intent.setFlags(intent.getFlags() or Intent.FLAG_ACTIVITY_NO_HISTORY)
                     launchPhotoCropActivity.launch(intent)
