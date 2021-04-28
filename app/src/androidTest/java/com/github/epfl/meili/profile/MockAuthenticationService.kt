@@ -1,4 +1,4 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.profile
 
 import android.app.Activity
 import android.content.Intent
@@ -7,7 +7,6 @@ import com.github.epfl.meili.home.AuthenticationService
 import com.github.epfl.meili.models.User
 
 class MockAuthenticationService : AuthenticationService {
-
     private var mockUid: String = "1234"
     private var username: String = "username"
     private var signedIn: Boolean = false
