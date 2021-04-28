@@ -122,8 +122,7 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
     }
 
     /**
-     * Data is considered valid if it was retrieved less than 1 hour ago and the new request comes
-     * from less than 1km far away from the last data
+     * Data is considered valid if it was retrieved less than 1 hour ago
      *
      * @return whether the data saved in shared preferences is valid or not
      */
@@ -132,8 +131,7 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
     }
 
     /**
-     * Data is considered valid if it was retrieved less than 1 hour ago and the new request comes
-     * from less than 1km far away from the last data
+     * Data is considered valid if it was retrieved less than 1 hour ago
      *
      * @return whether the data in the object is valid or not
      */
