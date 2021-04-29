@@ -9,11 +9,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
-import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.database.FirebaseStorageService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -38,8 +38,7 @@ import org.mockito.Mockito.mock
 class MainActivityTest {
 
     @get:Rule
-    var testRule: ActivityScenarioRule<MainActivity> =
-            ActivityScenarioRule(MainActivity::class.java)
+    var testRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
 
     @Before
     fun setup() {
@@ -73,7 +72,7 @@ class MainActivityTest {
         UiThreadStatement.runOnUiThread {
             val mockAuth = mock(AuthenticationService::class.java)
 
-            `when`(mockAuth.getCurrentUser()).thenReturn(User("hi", "hi", "hi", " "))
+            `when`(mockAuth.getCurrentUser()).thenReturn(User("hi", "hi", "hi"))
 
             Auth.setAuthenticationService(mockAuth)
         }
@@ -93,7 +92,7 @@ class MainActivityTest {
 
     @Test
     fun clickingOnChatViewButtonShouldLaunchIntent() {
-        assertEquals(Auth.getCurrentUser(), User("hi", "hi", "hi", " "))
+        assertEquals(Auth.getCurrentUser(), User("hi", "hi", "hi"))
         onView(withId(R.id.launchChatView)).perform(click())
 
         Intents.intended(toPackage("com.github.epfl.meili"))
@@ -121,7 +120,6 @@ class MainActivityTest {
 
         Intents.intended(toPackage("com.github.epfl.meili"))
     }
-}
 
     @Test
     fun clickingOnNearbyShouldLaunchIntent() {
@@ -141,3 +139,4 @@ class MainActivityTest {
 //        pressBack()
 //        onView(withId(R.id.launchSignInView)).check(matches(isClickable())).perform(click())
 //    }
+}

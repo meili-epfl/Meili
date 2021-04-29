@@ -1,11 +1,13 @@
 package com.github.epfl.meili.profile
 
+import android.net.Uri
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDocumentService
@@ -18,10 +20,14 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.StorageTask
+import com.google.firebase.storage.UploadTask
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
@@ -36,16 +42,20 @@ class ProfileActivityTest {
 
         private const val TEST_USERNAME = "Basic User"
         private const val TEST_BIO = "I love travelling!"
+        private val TEST_USER = User(MOCK_UID, TEST_USERNAME, "", TEST_BIO)
     }
 
     @get:Rule
     var testRule = ActivityScenarioRule(ProfileActivity::class.java)
 
-    private val listenerCaptor = ArgumentCaptor.forClass(OnSuccessListener::class.java)
-    private lateinit var mockDocumentSnapshot: DocumentSnapshot
+    private val listenerCaptor: ArgumentCaptor<OnSuccessListener<DocumentSnapshot>> =
+            ArgumentCaptor.forClass(OnSuccessListener::class.java) as ArgumentCaptor<OnSuccessListener<DocumentSnapshot>>
+    private lateinit var mockDocumentSnapshot1: DocumentSnapshot
+    private lateinit var mockDocumentSnapshot2: DocumentSnapshot
 
     init {
         setupMocks()
+        setupStorageMocks()
     }
 
     private fun setupMocks() {
@@ -56,34 +66,59 @@ class ProfileActivityTest {
         val mockTask = mock(Task::class.java)
         `when`(mockDocument.get()).thenReturn(mockTask as Task<DocumentSnapshot>?)
 
-//        `when`(mockTask.addOnSuccessListener(any())).thenReturn(mockTask)
+        `when`(mockTask.addOnSuccessListener(listenerCaptor.capture())).thenReturn(mockTask)
 
-        mockDocumentSnapshot = mock(DocumentSnapshot::class.java)
-        `when`(mockDocumentSnapshot.toObject(User::class.java)).thenReturn(MOCK_USER)
+        mockDocumentSnapshot1 = mock(DocumentSnapshot::class.java)
+        `when`(mockDocumentSnapshot1.exists()).thenReturn(true)
+        `when`(mockDocumentSnapshot1.toObject(User::class.java)).thenReturn(MOCK_USER)
+
+        mockDocumentSnapshot2 = mock(DocumentSnapshot::class.java)
+        `when`(mockDocumentSnapshot2.exists()).thenReturn(true)
+        `when`(mockDocumentSnapshot2.toObject(User::class.java)).thenReturn(TEST_USER)
 
         val mockAuthenticationService = MockAuthenticationService()
         mockAuthenticationService.setMockUid(MOCK_UID)
         mockAuthenticationService.setUsername(MOCK_USERNAME)
 
         FirestoreDocumentService.databaseProvider = { mockFirestore }
-        FirebaseStorageService.storageProvider = { mock(FirebaseStorage::class.java)}
         Auth.authService = mockAuthenticationService
         mockAuthenticationService.signInIntent()
     }
 
+    private fun setupStorageMocks() {
+        val mockFirebase = mock(FirebaseStorage::class.java)
+        val mockReference = mock(StorageReference::class.java)
+        `when`(mockFirebase.getReference(ArgumentMatchers.anyString())).thenReturn(mockReference)
+
+        val mockUploadTask = mock(UploadTask::class.java)
+        `when`(mockReference.putBytes(ArgumentMatchers.any())).thenReturn(mockUploadTask)
+
+        val mockStorageTask = mock(StorageTask::class.java)
+        `when`(mockUploadTask.addOnSuccessListener(ArgumentMatchers.any())).thenReturn(mockStorageTask as StorageTask<UploadTask.TaskSnapshot>?)
+
+        val mockTask = mock(Task::class.java)
+        `when`(mockReference.downloadUrl).thenReturn(mockTask as Task<Uri>?)
+        `when`(mockTask.addOnSuccessListener(ArgumentMatchers.any())).thenReturn(mockTask)
+
+        FirebaseStorageService.storageProvider = { mockFirebase }
+    }
+
     @Test
     fun profileEditSaveTest() {
+        runOnUiThread {
+            listenerCaptor.value!!.onSuccess(mockDocumentSnapshot1)
+        }
         onView(withId(R.id.name)).check(matches(withText(MOCK_USERNAME)))
-        onView(withId(R.id.bio)).check(matches(withText("")))
+        onView(withId(R.id.bio)).check(matches(withText(MOCK_BIO)))
         onView(withId(R.id.photo)).check(matches(isDisplayed()))
 
         onView(withId(R.id.name)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
         onView(withId(R.id.bio)).perform(clearText(), typeText(TEST_BIO), closeSoftKeyboard())
         onView(withId(R.id.save)).perform(click())
 
-//        runOnUiThread {
-//            (listenerCaptor.value!! as OnSuccessListener<DocumentSnapshot>).onSuccess(mockDocumentSnapshot)
-//        }
+        runOnUiThread {
+            listenerCaptor.value!!.onSuccess(mockDocumentSnapshot2)
+        }
 
         onView(withId(R.id.name)).check(matches(withText(TEST_USERNAME)))
         onView(withId(R.id.bio)).check(matches(withText(TEST_BIO)))
