@@ -6,6 +6,7 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
@@ -51,6 +52,8 @@ class PhotoCropActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         // Handle going to effects activity
         binding.effects.setOnClickListener { launchEffects() }
 
+        // Notify user of the two finger rotation feature
+        Toast.makeText(applicationContext, "You can rotate using two fingers !", Toast.LENGTH_SHORT).show()
     }
 
     /** Handles which view is visible and sets up the cropping tool */
