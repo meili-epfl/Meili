@@ -32,7 +32,11 @@ Next week, I want to improve the speed at which I write code, because sometimes 
 
 ## Yingxuan
 
-TODO
+This week I tried to debug the profile and to test it, but was still stuck. Fortunately Aman helped me with this feature and thanks to his work, it is merged into main. For the other task, I implemented a photo editing feature that allows to add text on photos, I also added test about it and updated the UI to make it coherent with other photo editing tools. I spent some extra time to fulfill the criteria of code climate in order to pass its check. 
+
+I spent more time than estimated but with the effort of myself and my teammates we were able to deliver the tasks. This encourages me to continue and to improve my performance for the coming week.
+
+
 
 ## Overall team
 
