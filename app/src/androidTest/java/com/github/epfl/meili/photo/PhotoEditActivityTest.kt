@@ -27,6 +27,7 @@ class PhotoEditActivityTest {
 
     @Before
     fun gotoPhotoEdit() {
+        Thread.sleep(1500)  // Camera is slow to start and sometimes fails tests
         onView(withId(R.id.camera_capture_button)).perform(click())
         Thread.sleep(1500)
         onView(withId(R.id.effects)).perform(click())

@@ -25,6 +25,7 @@ class PhotoCropActivityTest {
 
     @Before
     fun gotoPhotoCrop() {
+        Thread.sleep(1500)  // Camera is slow to start and sometimes fails tests
         onView(withId(R.id.camera_capture_button)).perform(click())
         Thread.sleep(1500)
     }
