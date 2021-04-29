@@ -11,7 +11,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_weight="4"
         android:onClick="onProfileButtonClick"
-        android:src="@drawable/sample" />
+        android:src="@mipmap/meili_launcher"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
