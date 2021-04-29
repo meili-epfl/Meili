@@ -15,6 +15,7 @@
         android:layout_marginBottom="60dp"
         android:background="@android:color/transparent"
         android:contentDescription="Draw on image"
+        android:onClick="onPhotoEditClick"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_edit"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -54,18 +55,20 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="68dp"
         android:background="?attr/selectableItemBackground"
+        android:onClick="onPhotoEditClick"
         android:text="Filters"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/paint_mode_button" />
 
     <TextView
-        android:id="@+id/tv_text"
+        android:id="@+id/text_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="68dp"
         android:background="?attr/selectableItemBackground"
+        android:onClick="onPhotoEditClick"
         android:text="Text"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -209,7 +212,7 @@
         android:text="Emojis"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_text" />
+        app:layout_constraintStart_toEndOf="@+id/text_button" />
 
     <ScrollView
         android:id="@+id/emoji_container"
