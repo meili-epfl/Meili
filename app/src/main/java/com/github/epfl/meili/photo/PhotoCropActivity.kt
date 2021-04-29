@@ -20,6 +20,10 @@ import java.io.IOException
 /** This activity handles rotations and cropping of the image, after having used the camera, and
  * before applying any effects */
 class PhotoCropActivity : AppCompatActivity(), RotationGestureDetector.OnRotationGestureListener {
+    companion object {
+        private const val COMPRESSION_QUALITY = 100 // 0 (max compression) to 100 (loss-less compression)
+    }
+
     private lateinit var binding: ActivityPhotoCropBinding
     private lateinit var uri: Uri
     private lateinit var rotationGestureDetector: RotationGestureDetector
@@ -113,8 +117,7 @@ class PhotoCropActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         // Save rotated image into uri
         try {
             FileOutputStream(uri.path).use { out ->
-                getRotatedBitmap().compress(Bitmap.CompressFormat.PNG, 100, out)
-                // This compression format (PNG) is lossless, quality (100) is ignored
+                getRotatedBitmap().compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY, out)
             }
         } catch (e: IOException) {
             e.printStackTrace()

@@ -179,14 +179,14 @@ class PhotoEditActivity : AppCompatActivity() {
         // Make a new textView for each emoji and arrange in grid
         for (i in 0 until emojis.size) {
             // Make new row every 6 emojis
-            if (i % 6 == 0 && i != 0) {
+            if (i % NUM_EMOJIS_PER_ROW == 0 && i != 0) {
                 binding.emojiTable.addView(curRow)
                 curRow = TableRow(this)
             }
 
             // Make textView
             val textView = TextView(this)
-            textView.textSize = 50f
+            textView.textSize = EMOJI_SIZE
             textView.text = emojis[i]
             textView.setOnClickListener { addEmoji(emojis[i]) } // When emoji is clicked, add itself to the photoEditor
 
@@ -203,5 +203,7 @@ class PhotoEditActivity : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_CODE: Int = 1
+        private const val NUM_EMOJIS_PER_ROW = 6
+        private const val EMOJI_SIZE = 50f
     }
 }
