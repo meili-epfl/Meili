@@ -59,35 +59,17 @@ class PhotoEditActivity : AppCompatActivity() {
         binding.sharpen.setOnClickListener { photoEditor.setFilterEffect(PhotoFilter.SHARPEN) }
         binding.fishEye.setOnClickListener { photoEditor.setFilterEffect(PhotoFilter.FISH_EYE) }
         binding.saturate.setOnClickListener { photoEditor.setFilterEffect(PhotoFilter.SATURATE) }
-
         // text
         binding.tvText.setOnClickListener { toggleText() }
+        //enable text editing
         photoEditor.setOnPhotoEditorListener( object: OnPhotoEditorListener {
-            override fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int) {
-                photoEditor.editText(rootView, binding.etText.text.toString(), binding.colorSlider.color);
-            }
-            override fun onAddViewListener(p0: ViewType?, p1: Int) {
-               // TODO("Not yet implemented")
-            }
+            override fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int) { photoEditor.editText(rootView, binding.etText.text.toString(), binding.colorSlider.color); }
+            override fun onAddViewListener(p0: ViewType?, p1: Int) {} override fun onRemoveViewListener(p0: ViewType?, p1: Int) {}
+            override fun onStartViewChangeListener(p0: ViewType?) {} override fun onStopViewChangeListener(p0: ViewType?) {} })
 
-            override fun onRemoveViewListener(p0: ViewType?, p1: Int) {
-               // TODO("Not yet implemented")
-            }
-
-            override fun onStartViewChangeListener(p0: ViewType?) {
-
-            }
-
-            override fun onStopViewChangeListener(p0: ViewType?) {
-                //TODO("Not yet implemented")
-            }
-        })
-
-        if (!isPermissionGranted()) {
-            getStoragePermission() // photo will get stored on phone once it is done being edited
-        }
-        setFabListener()
-    }
+        // photo will get stored on phone once it is done being edited
+        if (!isPermissionGranted()) { getStoragePermission() }
+        setFabListener() }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -166,15 +148,6 @@ class PhotoEditActivity : AppCompatActivity() {
         binding.tvText.setBackgroundColor(0)
     }
 
-
-    private fun startDrawing() {
-        stopText()
-        stopFilters()
-        photoEditor.setBrushDrawingMode(true)
-        binding.paintModeButton.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
-        binding.colorSlider.visibility = View.VISIBLE
-    }
-
     private fun stopDrawing() {
         photoEditor.setBrushDrawingMode(false)
         binding.paintModeButton.setBackgroundColor(0)
@@ -182,8 +155,14 @@ class PhotoEditActivity : AppCompatActivity() {
     }
 
     private fun toggleDrawing() {
-        if (!photoEditor.brushDrawableMode)
-            startDrawing()
+        //start drawing, function combined because only 20 functions allowed by code climate
+        if (!photoEditor.brushDrawableMode) {
+            stopText()
+            stopFilters()
+            photoEditor.setBrushDrawingMode(true)
+            binding.paintModeButton.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
+            binding.colorSlider.visibility = View.VISIBLE
+        }
         else
             stopDrawing()
     }
