@@ -44,7 +44,7 @@ class FirebaseAuthenticationService : AuthenticationService {
         return if (user == null) {
             null
         } else {
-            User(user.uid, user.displayName!!, user.email!!)
+            return User(user.uid, user.displayName!!, user.email!!, " ")
         }
     }
 

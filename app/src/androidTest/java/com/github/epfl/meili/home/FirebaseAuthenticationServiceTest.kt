@@ -70,7 +70,7 @@ class FirebaseAuthenticationServiceTest {
 
     @Test
     fun getCurrentUserPresentTest(){
-        val user = User("fake_id", "fake_name", "fake_email")
+        val user = User("fake_id", "fake_name", "fake_email", " ")
         val mockAuth = mock(FirebaseAuth::class.java)
         val mockUser = mock(FirebaseUser::class.java)
         `when`(mockUser.uid).thenReturn(user.uid)
