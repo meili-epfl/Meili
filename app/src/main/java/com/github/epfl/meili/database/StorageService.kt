@@ -1,4 +1,4 @@
-package com.github.epfl.meili.storage
+package com.github.epfl.meili.database
 
 import android.net.Uri
 

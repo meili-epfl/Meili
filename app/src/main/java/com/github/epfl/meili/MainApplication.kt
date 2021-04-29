@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 
 class MainApplication : Application() {
+
     init {
         instance = this
     }
@@ -12,6 +13,7 @@ class MainApplication : Application() {
         private var instance: MainApplication? = null
 
         fun applicationContext(): Context {
+
             return instance!!.applicationContext
         }
     }
