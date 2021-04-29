@@ -70,8 +70,7 @@ class PhotoEditActivity : AppCompatActivity() {
         if (!isPermissionGranted()) { getStoragePermission() }
         setFabListener()
 
-        // Handle emojis
-        /** Show scrollable emoji table */
+        // Handle emojis, show scrollable emoji table
         binding.emojis.setOnClickListener { binding.emojiContainer.visibility = View.VISIBLE }
         makeEmojiTable()
     // default
@@ -192,9 +191,6 @@ class PhotoEditActivity : AppCompatActivity() {
             stopFilters()
     }
 
-    //private fun changeDrawingColor() {
-    //    photoEditor.brushColor = binding.colorSlider.color
-    //}
 
     /** Creates all textView in the emoji table */
     private fun makeEmojiTable() {
