@@ -86,7 +86,7 @@ class CameraActivity : AppCompatActivity() {
                         }
 
                         override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                            val intent = Intent(applicationContext, PhotoEditActivity::class.java)
+                            val intent = Intent(applicationContext, PhotoCropActivity::class.java)
                             intent.flags = intent.flags or FLAG_ACTIVITY_FORWARD_RESULT
                             intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
                             startActivity(intent)

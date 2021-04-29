@@ -19,6 +19,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments clearPackageData: 'true'
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -101,6 +102,8 @@ dependencies {
     implementation "androidx.camera:camera-lifecycle:1.1.0-alpha04"
     implementation "androidx.camera:camera-view:1.0.0-alpha24"
     implementation "androidx.camera:camera-extensions:1.0.0-alpha24"
+
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0-alpha05'
 }
