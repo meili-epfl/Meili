@@ -3,13 +3,10 @@ package com.github.epfl.meili.map
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.android.volley.VolleyError
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.models.PointOfInterest
@@ -62,14 +59,14 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
         setReachablePois()
     }
 
-    private fun onError(error: VolleyError) {
+    private fun onError(error: Error) {
         Log.d(TAG, "error getting pois from service", error)
 
-        nbCurrentRequests+=1
+        nbCurrentRequests += 1
 
-        if (nbCurrentRequests >= MAX_NUM_REQUESTS){
-            Toast.makeText( MainApplication.applicationContext(), "An error occured while fetching POIs", Toast.LENGTH_LONG).show()
-        }else{
+        if (nbCurrentRequests >= MAX_NUM_REQUESTS) {
+            Toast.makeText(MainApplication.applicationContext(), "An error occured while fetching POIs", Toast.LENGTH_LONG).show()
+        } else {
             requestPois()
         }
     }
