@@ -3,14 +3,13 @@ package com.github.epfl.meili.photo
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_FORWARD_RESULT
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ImageButton
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -43,18 +42,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var switchCameraButton: ImageButton
     private lateinit var previewView: PreviewView
 
-    private var lensFacing: Int =
-        CameraSelector.LENS_FACING_BACK // which direction is the camera facing
-
-    private val launchPhotoEditActivity =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.data != null && result.resultCode == RESULT_OK && result.data!!.data != null) {
-                val intent = Intent()
-                intent.data = result.data!!.data!!
-                setResult(RESULT_OK, intent)
-                finish()
-            }
-        }
+    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK // which direction is the camera facing
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,8 +87,9 @@ class CameraActivity : AppCompatActivity() {
 
                         override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                             val intent = Intent(applicationContext, PhotoEditActivity::class.java)
+                            intent.flags = intent.flags or FLAG_ACTIVITY_FORWARD_RESULT
                             intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
-                            launchPhotoEditActivity.launch(intent)
+                            startActivity(intent)
                         }
                     })
             }
@@ -265,7 +254,6 @@ class CameraActivity : AppCompatActivity() {
 
     private fun hasFrontCamera(): Boolean {
         return cameraProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)
-
     }
 
 

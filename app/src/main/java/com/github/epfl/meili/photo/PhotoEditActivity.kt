@@ -62,7 +62,6 @@ class PhotoEditActivity : AppCompatActivity() {
             getStoragePermission() // photo will get stored on phone once it is done being edited
         }
         setFabListener()
-
     }
 
     override fun onRequestPermissionsResult(
