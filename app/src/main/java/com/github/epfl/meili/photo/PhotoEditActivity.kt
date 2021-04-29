@@ -49,7 +49,7 @@ class PhotoEditActivity : AppCompatActivity() {
 
         // drawing on photo
         binding.paintModeButton.setOnClickListener { toggleDrawing() }
-        binding.colorSlider.setOnColorChangeListener { _, _, _ -> changeDrawingColor() }
+        binding.colorSlider.setOnColorChangeListener { _, _, _ -> photoEditor.brushColor = binding.colorSlider.color }//changeDrawingColor
 
 
         binding.filters.setOnClickListener { toggleFilters() }
@@ -71,7 +71,8 @@ class PhotoEditActivity : AppCompatActivity() {
         setFabListener()
 
         // Handle emojis
-        binding.emojis.setOnClickListener { showEmojiTable() }
+        /** Show scrollable emoji table */
+        binding.emojis.setOnClickListener { binding.emojiContainer.visibility = View.VISIBLE }
         makeEmojiTable()
     // default
         stopDrawing()  }
@@ -173,12 +174,6 @@ class PhotoEditActivity : AppCompatActivity() {
             stopDrawing()
     }
 
-    private fun startFilters() {
-        stopDrawing()
-        stopText()
-        binding.filters.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
-        binding.filtersContainer.visibility = View.VISIBLE
-    }
 
     private fun stopFilters() {
         binding.filters.setBackgroundColor(0)
@@ -186,22 +181,20 @@ class PhotoEditActivity : AppCompatActivity() {
     }
 
     private fun toggleFilters() {
-        if (!binding.filtersContainer.isVisible)
-            startFilters()
+        if (!binding.filtersContainer.isVisible) {
+            //start filters
+            stopDrawing()
+            stopText()
+            binding.filters.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
+            binding.filtersContainer.visibility = View.VISIBLE
+        }
         else
             stopFilters()
     }
 
-    /** Show scrollable emoji table */
-    private fun showEmojiTable() {
-        binding.emojiContainer.visibility = View.VISIBLE
-    }
-
-
-
-    private fun changeDrawingColor() {
-        photoEditor.brushColor = binding.colorSlider.color
-    }
+    //private fun changeDrawingColor() {
+    //    photoEditor.brushColor = binding.colorSlider.color
+    //}
 
     /** Creates all textView in the emoji table */
     private fun makeEmojiTable() {
