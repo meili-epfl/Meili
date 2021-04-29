@@ -4,6 +4,7 @@ package com.github.epfl.meili.photo
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.rule.GrantPermissionRule
 import com.github.epfl.meili.R
@@ -26,7 +27,10 @@ class PhotoEditActivityTest {
 
     @Before
     fun gotoPhotoEdit() {
+        Thread.sleep(1500)  // Camera is slow to start and sometimes fails tests
         onView(withId(R.id.camera_capture_button)).perform(click())
+        Thread.sleep(1500)
+        onView(withId(R.id.effects)).perform(click())
         Thread.sleep(1500)
     }
 
@@ -67,5 +71,11 @@ class PhotoEditActivityTest {
     @Test
     fun fabClick() {
         onView(withId(R.id.fab)).perform(click())
+    }
+
+    @Test
+    fun emojisClick() {
+        onView(withId(R.id.emojis)).perform(click())
+        onView(withText("\uD83D\uDE04")).perform(click())
     }
 }
