@@ -161,6 +161,7 @@ class PhotoEditActivity : AppCompatActivity() {
             stopFilters()
     }
 
+    /** Show scrollable emoji table */
     private fun showEmojiTable() {
         binding.emojiContainer.visibility = View.VISIBLE
     }
@@ -170,10 +171,12 @@ class PhotoEditActivity : AppCompatActivity() {
         photoEditor.brushColor = binding.colorSlider.color
     }
 
+    /** Creates all textView in the emoji table */
     private fun makeEmojiTable() {
-        val emojis = PhotoEditor.getEmojis(this)
+        val emojis = PhotoEditor.getEmojis(this) // list of emojis (emojis are strings)
         var curRow = TableRow(this)
 
+        // Make a new textView for each emoji and arrange in grid
         for (i in 0 until emojis.size) {
             // Make new row every 6 emojis
             if (i % 6 == 0 && i != 0) {
@@ -185,13 +188,14 @@ class PhotoEditActivity : AppCompatActivity() {
             val textView = TextView(this)
             textView.textSize = 50f
             textView.text = emojis[i]
-            textView.setOnClickListener { addEmoji(emojis[i]) }
+            textView.setOnClickListener { addEmoji(emojis[i]) } // When emoji is clicked, add itself to the photoEditor
 
             // Add emoji to current row
             curRow.addView(textView)
         }
     }
 
+    /** Add the passed emoji to the photoEditor, and hide emoji table */
     private fun addEmoji(emoji: String) {
         binding.emojiContainer.visibility = View.GONE
         photoEditor.addEmoji(emoji)
