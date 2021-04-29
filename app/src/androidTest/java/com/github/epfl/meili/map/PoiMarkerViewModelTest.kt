@@ -4,7 +4,6 @@ import android.location.Location
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
-import com.android.volley.VolleyError
 import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiService
@@ -88,7 +87,7 @@ class PoiMarkerViewModelTest {
     }
 
     @Test
-    fun onRepeatedErrorsDisplayErrorMessage(){
+    fun onRepeatedErrorsDisplayErrorMessage() {
         val mockPoiService = Mockito.mock(PoiService::class.java)
         val expectedPoiMap = HashMap<String, PointOfInterest>()
         val expectedStatusMap = HashMap<String, PoiMarkerViewModel.PointOfInterestStatus>()
@@ -112,8 +111,8 @@ class PoiMarkerViewModelTest {
                 )
         )
                 .then {
-                    val onError = it.arguments[2] as ((VolleyError) -> Unit)
-                    onError(VolleyError("test error"))
+                    val onError = it.arguments[2] as ((Error) -> Unit)
+                    onError(Error("test error"))
                     return@then null
                 }
 
