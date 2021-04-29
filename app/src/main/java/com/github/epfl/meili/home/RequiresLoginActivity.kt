@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.profile.ProfileActivity
 
-open abstract class RequiresLoginActivity : AppCompatActivity() {
+abstract class RequiresLoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_requires_login)
