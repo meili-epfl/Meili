@@ -130,7 +130,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         viewModel.addElement(postId, Post(user.username, title, text))
 
         if (bitmap != null) {
-            executor.execute { compressAndUploadToFirebase("forum/$postId", bitmap!!) }
+            executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }
         }
 
         showListPostsView()

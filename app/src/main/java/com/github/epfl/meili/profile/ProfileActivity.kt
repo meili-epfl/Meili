@@ -42,8 +42,8 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
-        viewModel.setUid(Auth.getCurrentUser()!!.uid)
+        viewModel = ViewModelProvider(this, ProfileViewModelFactory(Auth.getCurrentUser()!!))
+                            .get(ProfileViewModel::class.java)
         viewModel.getUser().observe(this) { user ->
             nameView.setText(user.username)
             bioView.setText(user.bio)

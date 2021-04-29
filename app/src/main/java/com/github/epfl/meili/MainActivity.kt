@@ -39,28 +39,11 @@ class MainActivity : AppCompatActivity() {
                 .putExtra("POI_KEY", POI)
             R.id.launchForumView -> Intent(this, ForumActivity::class.java)
                 .putExtra("POI_KEY", PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2"))
-
-
-            R.id.profile_button -> {
-                if (FirebaseAuth.getInstance().currentUser == null) {
-                    Intent(this, GoogleSignInActivity::class.java)
-                } else {
-
-                    Intent(this, ProfileActivity::class.java)
-
-                }
-            }
-
-
+            R.id.profile_button -> Intent(this, ProfileActivity::class.java)
             else -> {
                 Intent(this, MainActivity::class.java)
             }
-
-
-
         }
         startActivity(intent)
-
     }
-
 }

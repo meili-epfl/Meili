@@ -34,7 +34,8 @@ class ProfileActivityTest {
     companion object {
         private const val MOCK_UID = "UID"
         private const val MOCK_USERNAME = "Meili User"
-        private val MOCK_USER = User(MOCK_UID, MOCK_USERNAME, "", "Hey There!")
+        private const val MOCK_BIO = "Hey There!"
+        private val MOCK_USER = User(MOCK_UID, MOCK_USERNAME, "", MOCK_BIO)
 
         private const val TEST_USERNAME = "Basic User"
         private const val TEST_BIO = "I love travelling!"
@@ -58,9 +59,7 @@ class ProfileActivityTest {
         val mockTask = mock(Task::class.java)
         `when`(mockDocument.get()).thenReturn(mockTask as Task<DocumentSnapshot>?)
 
-        `when`(mockTask.addOnSuccessListener(
-                listenerCaptor.capture() as OnSuccessListener<in DocumentSnapshot>)
-        ).thenReturn(mockTask)
+//        `when`(mockTask.addOnSuccessListener(any())).thenReturn(mockTask)
 
         mockDocumentSnapshot = mock(DocumentSnapshot::class.java)
         `when`(mockDocumentSnapshot.toObject(User::class.java)).thenReturn(MOCK_USER)
@@ -85,9 +84,9 @@ class ProfileActivityTest {
         onView(withId(R.id.bio)).perform(clearText(), typeText(TEST_BIO), closeSoftKeyboard())
         onView(withId(R.id.save)).perform(click())
 
-        runOnUiThread {
-            (listenerCaptor.value!! as OnSuccessListener<DocumentSnapshot>).onSuccess(mockDocumentSnapshot)
-        }
+//        runOnUiThread {
+//            (listenerCaptor.value!! as OnSuccessListener<DocumentSnapshot>).onSuccess(mockDocumentSnapshot)
+//        }
 
         onView(withId(R.id.name)).check(matches(withText(TEST_USERNAME)))
         onView(withId(R.id.bio)).check(matches(withText(TEST_BIO)))

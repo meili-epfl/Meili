@@ -39,7 +39,7 @@ class PostActivity : AppCompatActivity() {
         textView.text = post.text
 
         FirebaseStorageService.getDownloadUrl(
-                "forum/$postId",
+                "images/forum/$postId",
                 { uri -> getDownloadUrlCallback(uri)},
                 { exception ->
                     Log.e(TAG,"Image not found", exception)

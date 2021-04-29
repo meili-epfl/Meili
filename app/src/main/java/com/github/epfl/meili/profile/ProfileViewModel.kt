@@ -3,6 +3,7 @@ package com.github.epfl.meili.profile
 import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,25 +14,24 @@ import com.github.epfl.meili.util.ImageUtility
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 
-class ProfileViewModel: ViewModel() {
+class ProfileViewModel(user: User): ViewModel() {
     private val mUser: MutableLiveData<User> = MutableLiveData()
     private val mRequestCreator: MutableLiveData<RequestCreator> = MutableLiveData()
     private var bitmap: Bitmap? = null
 
-    private lateinit var uid: String
-
-    fun setUid(uid: String) {
-        this.uid = uid
-    }
+    private fun uid() = mUser.value!!.uid
 
     init {
-        FirestoreDocumentService.getDocument("users/$uid").addOnSuccessListener {
-            mUser.value = it.toObject(User::class.java)
-            FirebaseStorageService.getDownloadUrl(
-                    "images/avatars/$uid",
-                    { uri -> loadImageIntoRequestCreator(uri)},
-                    { /* do nothing in case of failure */ }
-            )
+        mUser.value = user
+        FirestoreDocumentService.getDocument("users/${uid()}").addOnSuccessListener {
+            if (it.exists()) {
+                mUser.value = it.toObject(User::class.java)
+                FirebaseStorageService.getDownloadUrl(
+                        "images/avatars/${uid()}",
+                        { uri -> loadImageIntoRequestCreator(uri) },
+                        { /* do nothing in case of failure */ }
+                )
+            }
         }
     }
 
@@ -40,9 +40,9 @@ class ProfileViewModel: ViewModel() {
 
     fun updateProfile(user: User) {
         mUser.value = user
-        FirestoreDocumentService.setDocument("users/$uid", user)
+        FirestoreDocumentService.setDocument("users/${uid()}", user)
         if (bitmap != null) {
-            ImageUtility.compressAndUploadToFirebase("images/avatars/$uid", bitmap!!)
+            ImageUtility.compressAndUploadToFirebase("images/avatars/${uid()}", bitmap!!)
         }
     }
 
