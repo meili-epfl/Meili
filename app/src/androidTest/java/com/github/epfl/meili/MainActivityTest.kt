@@ -123,6 +123,13 @@ class MainActivityTest {
     }
 }
 
+    @Test
+    fun clickingOnNearbyShouldLaunchIntent() {
+        onView(withId(R.id.launchNearby)).perform(click())
+
+        Intents.intended(toPackage("com.github.epfl.meili"))
+    }
+
 //    @Test
 //    fun testNavigation() {
 //        PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")

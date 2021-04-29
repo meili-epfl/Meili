@@ -9,9 +9,9 @@ import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
 
 import com.github.epfl.meili.profile.ProfileActivity
-import com.google.firebase.auth.FirebaseAuth
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.nearby.NearbyActivity
 import com.github.epfl.meili.poi.PoiActivity
 import com.github.epfl.meili.review.ReviewsActivity
 
@@ -31,19 +31,14 @@ class MainActivity : AppCompatActivity() {
         val intent: Intent = when (view.id) {
             R.id.launchSignInView -> Intent(this, GoogleSignInActivity::class.java)
             R.id.launchChatView -> Intent(this, ChatLogActivity::class.java)
-                .putExtra("POI_KEY", PointOfInterest(100.0, 100.0, "tour-eiffel1", "tour-eiffel2"))
             R.id.launchMapView -> Intent(this, MapActivity::class.java)
             R.id.launchReviewView -> Intent(this, ReviewsActivity::class.java)
-                .putExtra("POI_KEY", PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2"))
             R.id.launchPoiView -> Intent(this, PoiActivity::class.java)
-                .putExtra("POI_KEY", POI)
             R.id.launchForumView -> Intent(this, ForumActivity::class.java)
-                .putExtra("POI_KEY", PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2"))
-            R.id.profile_button -> Intent(this, ProfileActivity::class.java)
-            else -> {
-                Intent(this, MainActivity::class.java)
-            }
-        }
+            R.id.launchProfileView -> Intent(this, ProfileActivity::class.java)
+            R.id.launchNearby -> Intent(this, NearbyActivity::class.java)
+            else -> Intent(this, MainActivity::class.java)
+        }.putExtra("POI_KEY", POI)
         startActivity(intent)
     }
 }

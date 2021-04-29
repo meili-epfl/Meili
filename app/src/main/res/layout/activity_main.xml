@@ -23,7 +23,7 @@
         android:text="Launch Map View" />
 
     <Button
-        android:id="@+id/profile_button"
+        android:id="@+id/launchProfileView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClick"
@@ -67,4 +67,12 @@
         android:layout_below="@id/launchForumView"
         android:text="Launch POI Info View"/>
 
+    <Button
+        android:id="@+id/launchNearby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/launchPoiView"
+        android:text="Launch Nearby"/>
 </RelativeLayout>

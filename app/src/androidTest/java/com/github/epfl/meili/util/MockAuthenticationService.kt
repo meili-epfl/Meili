@@ -1,4 +1,4 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.util
 
 import android.app.Activity
 import android.content.Intent

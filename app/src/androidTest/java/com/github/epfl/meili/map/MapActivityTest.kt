@@ -1,5 +1,6 @@
 package com.github.epfl.meili.map
 
+import android.location.LocationManager
 import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
@@ -11,6 +12,7 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObjectNotFoundException
 import androidx.test.uiautomator.UiSelector
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.util.LocationService
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -44,6 +46,7 @@ class MapActivityTest {
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { mock(ListenerRegistration::class.java) }
 
         FirestoreDatabase.databaseProvider = { mockFirestore }
+        LocationService.getLocationManager = { mock(LocationManager::class.java) }
     }
 
     @Throws(UiObjectNotFoundException::class)

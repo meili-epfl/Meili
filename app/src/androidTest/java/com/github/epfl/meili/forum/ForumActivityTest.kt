@@ -24,7 +24,8 @@ import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.photo.CameraActivity
-import com.github.epfl.meili.database.FirebaseStorageService
+import com.github.epfl.meili.storage.FirebaseStorageService
+import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
 import com.google.firebase.storage.FirebaseStorage
