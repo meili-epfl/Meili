@@ -12,7 +12,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.storage.FirebaseStorageService
+import com.github.epfl.meili.database.FirebaseStorageService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference

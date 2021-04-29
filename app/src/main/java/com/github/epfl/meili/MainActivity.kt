@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
+
+import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.nearby.NearbyActivity
@@ -33,6 +35,7 @@ class MainActivity : AppCompatActivity() {
             R.id.launchReviewView -> Intent(this, ReviewsActivity::class.java)
             R.id.launchPoiView -> Intent(this, PoiActivity::class.java)
             R.id.launchForumView -> Intent(this, ForumActivity::class.java)
+            R.id.launchProfileView -> Intent(this, ProfileActivity::class.java)
             R.id.launchNearby -> Intent(this, NearbyActivity::class.java)
             else -> Intent(this, MainActivity::class.java)
         }.putExtra("POI_KEY", POI)

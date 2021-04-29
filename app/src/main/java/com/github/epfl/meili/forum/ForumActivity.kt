@@ -1,13 +1,9 @@
 package com.github.epfl.meili.forum
 
-import android.content.ContentResolver
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResult
@@ -24,11 +20,11 @@ import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
-import com.github.epfl.meili.storage.FirebaseStorageService
+import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
+import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.TopSpacingItemDecoration
-import java.io.ByteArrayOutputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -36,7 +32,6 @@ import java.util.concurrent.Executors
 class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     companion object {
         private const val CARD_PADDING: Int = 30
-        private const val COMPRESSION_QUALITY = 75 // 0 (max compression) to 100 (loss-less compression)
     }
 
     private lateinit var recyclerAdapter: ForumRecyclerAdapter
@@ -55,10 +50,10 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     private val launchCameraActivity =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
-                loadImage(result.data!!.data!!, contentResolver)
+                loadImage(result.data!!.data!!)
             }
         }
-    private val launchGallery =  registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it, contentResolver) }
+    private val launchGallery =  registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it) }
     private lateinit var useCameraButton: ImageView
     private lateinit var useGalleryButton: ImageView
     private lateinit var displayImageView: ImageView
@@ -135,7 +130,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         viewModel.addElement(postId, Post(user.username, title, text))
 
         if (bitmap != null) {
-            compressAndUpload("forum/$postId")
+            executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }
         }
 
         showListPostsView()
@@ -182,34 +177,14 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         editPostView.visibility = View.GONE
     }
 
-    private fun loadImage(filePath: Uri, contentResolver: ContentResolver) {
+    private fun loadImage(filePath: Uri) {
         executor.execute {
-            val bitmap: Bitmap = if (Build.VERSION.SDK_INT < 28) {
-                MediaStore.Images.Media.getBitmap(contentResolver, filePath) // deprecated for SDK_INT >= 28
-            } else {
-                ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, filePath))
-            }
+            val bitmap = getBitmapFromFilePath(contentResolver, filePath)
 
             runOnUiThread {
                 this.bitmap = bitmap
                 displayImageView.setImageBitmap(bitmap)
             }
-        }
-    }
-
-    private fun compressBitmap(bitmap: Bitmap): ByteArray {
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, stream)
-        return stream.toByteArray()
-    }
-
-    private fun compressAndUpload(remotePath: String) {
-        if (BuildConfig.DEBUG && bitmap == null) {
-            error("Assertion failed")
-        }
-
-        executor.execute {
-            FirebaseStorageService.uploadBytes(remotePath, compressBitmap(bitmap!!))
         }
     }
 }

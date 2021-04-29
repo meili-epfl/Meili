@@ -7,9 +7,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class User(
-    val uid: String,
-    val username: String,
-    val email: String
+    var uid: String = "",
+    var username: String = "",
+    var email: String = "",
+    var bio: String = ""
 ) : Parcelable {
 
     /** Creates an instances of User from other objects */
@@ -22,7 +23,8 @@ data class User(
                 val uid = getString("uid")!!
                 val username = getString("username")!!
                 val email = getString("email")!!
-                User(uid, username, email)
+                val bio= getString("bio")!!
+                User(uid, username, email, bio)
             } catch (e: Exception) {
                 Log.e(TAG, "Error converting to User")
                 null // Return null if error occurs
