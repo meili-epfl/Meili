@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:onClick="onClick"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/launchSignInView"
+        android:layout_below="@id/launchMapView"
         android:text="Launch Profile View" />
 
     <Button
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:onClick="onClick"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/launchMapView"
+        android:layout_below="@id/launchProfileView"
         android:text="Launch Chatting view"/>
 
     <Button
