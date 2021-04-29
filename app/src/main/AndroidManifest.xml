@@ -85,15 +85,14 @@
             android:value="@string/google_maps_key" />
 
 
-        <activity android:name=".profile.ProfileActivity">
+        <activity
+            android:name=".profile.ProfileActivity"
             android:parentActivityName=".MainActivity">
         </activity>
 
-
-
-        <activity android:name=".forum.PostActivity"
-            android:parentActivityName=".forum.ForumActivity"/>
-
+        <activity
+            android:name=".forum.PostActivity"
+            android:parentActivityName=".forum.ForumActivity" />
     </application>
 
 </manifest>
