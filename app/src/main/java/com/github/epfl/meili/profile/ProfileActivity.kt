@@ -5,18 +5,17 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.home.RequiresLoginActivity
 import de.hdodenhof.circleimageview.CircleImageView
 
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : RequiresLoginActivity() {
 
-    private val launchGallery =  registerForActivityResult(ActivityResultContracts.GetContent())
-                                    { viewModel.loadLocalImage(contentResolver, it) }
+    private val launchGallery = registerForActivityResult(ActivityResultContracts.GetContent())
+    { viewModel.loadLocalImage(contentResolver, it) }
 
     private lateinit var photoView: CircleImageView
     private lateinit var nameView: EditText
@@ -29,21 +28,15 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        if (BuildConfig.DEBUG && !(Auth.isLoggedIn.value!!)) {
-            error("Assertion failed")
-        }
-
         photoView = findViewById(R.id.photo)
         nameView = findViewById(R.id.name)
         bioView = findViewById(R.id.bio)
         saveButton = findViewById(R.id.save)
-
-        setupViewModel()
     }
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(Auth.getCurrentUser()!!))
-                            .get(ProfileViewModel::class.java)
+                .get(ProfileViewModel::class.java)
         viewModel.getUser().observe(this) { user ->
             nameView.setText(user.username)
             bioView.setText(user.bio)
@@ -64,5 +57,19 @@ class ProfileActivity : AppCompatActivity() {
         user.username = nameView.text.toString()
         user.bio = bioView.text.toString()
         viewModel.updateProfile(user)
+    }
+
+    override fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
+        if (isLoggedIn) {
+            setupViewModel()
+            supportActionBar?.title = ""
+        } else {
+            supportActionBar?.title = "Not Signed In"
+            Auth.signIn(this)
+        }
+    }
+
+    companion object {
+        const val TAG = "ProfileActivity"
     }
 }

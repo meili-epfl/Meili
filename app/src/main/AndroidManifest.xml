@@ -9,14 +9,13 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera.any" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <!-- Nearby Connections API -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- Nearby Connections API -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-  
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -25,9 +24,8 @@
         android:roundIcon="@mipmap/meili_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
-
-        <activity android:name=".nearby.NearbyActivity" />
-        <!-- Kept to add new features easily and integrate later -->
+        <activity android:name=".home.RequiresLoginActivity"/>
+        <activity android:name=".nearby.NearbyActivity" /> <!-- Kept to add new features easily and integrate later -->
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,15 +51,13 @@
         </activity>
         <activity
             android:name=".photo.CameraActivity"
-            android:parentActivityName=".forum.ForumActivity"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:parentActivityName=".forum.ForumActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".forum.ForumActivity" />
         </activity>
-        <activity android:name=".photo.PhotoEditActivity" />
-
-        <!-- POI features: forum, chat & review system -->
+        <activity android:name=".photo.PhotoEditActivity" /> <!-- POI features: forum, chat & review system -->
         <activity
             android:name=".messages.ChatLogActivity"
             android:parentActivityName=".map.MapActivity">
@@ -95,12 +91,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-
         <activity
             android:name=".profile.ProfileActivity"
-            android:parentActivityName=".MainActivity">
-        </activity>
-
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".forum.PostActivity"
             android:parentActivityName=".forum.ForumActivity" />
