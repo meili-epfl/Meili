@@ -56,7 +56,7 @@ class ChatLogActivityAndroidTest {
                     val mockAuth = Mockito.mock(AuthenticationService::class.java)
 
                     Mockito.`when`(mockAuth.getCurrentUser())
-                        .thenReturn(User("fake_uid", "fake_name", "fake_email", " ", null))
+                        .thenReturn(User("fake_uid", "fake_name", "fake_email", " "))
 
                     Mockito.`when`(mockAuth.signInIntent()).thenReturn(intent)
                     Auth.setAuthenticationService(mockAuth)

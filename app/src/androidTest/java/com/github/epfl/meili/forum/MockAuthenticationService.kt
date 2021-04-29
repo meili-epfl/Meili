@@ -22,7 +22,7 @@ class MockAuthenticationService : AuthenticationService {
 
     override fun getCurrentUser(): User? {
         return if (signedIn) {
-            User(mockUid, username, "", " ", null)
+            User(mockUid, username, "", " ")
         } else {
             null
         }
