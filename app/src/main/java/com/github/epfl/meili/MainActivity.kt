@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             R.id.launchPoiView -> Intent(this, PoiActivity::class.java)
                 .putExtra("POI_KEY", POI)
             R.id.launchForumView -> Intent(this, ForumActivity::class.java)
-                .putExtra("POI_KEY", PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2"))
+                .putExtra("POI_KEY", PointOfInterest(100.0, 100.0, "lorem_ipsum1", "upvoteforum"))
             else -> Intent(this, MainActivity::class.java)
         }
         startActivity(intent)

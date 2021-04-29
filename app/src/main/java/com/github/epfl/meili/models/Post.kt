@@ -8,7 +8,8 @@ data class Post(
     var author: String = "",
     var title: String = "",
     var text: String = "",
-    var upvoteCount:Int = 0
+    var upvoters: ArrayList<String> = arrayListOf(),
+    var downvoters: ArrayList<String> = arrayListOf()
 ) : Parcelable {
     companion object {
         const val TAG = "Post"

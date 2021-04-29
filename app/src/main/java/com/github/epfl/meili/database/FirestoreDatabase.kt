@@ -27,6 +27,7 @@ class FirestoreDatabase<T: Any>(path: String, private val ofClass: Class<T>) : D
         ref.document(key).set(element!!)
     }
 
+
     override fun onDestroy() {
         registration.remove()
     }

@@ -8,15 +8,18 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
@@ -27,6 +30,7 @@ import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.storage.FirebaseStorageService
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.MenuActivity
+import com.github.epfl.meili.util.PostViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.ExecutorService
@@ -38,10 +42,12 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         private const val CARD_PADDING: Int = 30
         private const val COMPRESSION_QUALITY =
             75 // 0 (max compression) to 100 (loss-less compression)
+        private const val TAG = "ForumActivity"
     }
 
     private lateinit var recyclerAdapter: ForumRecyclerAdapter
     private lateinit var viewModel: MeiliViewModel<Post>
+    private lateinit var postViewModel : PostViewModel
 
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView
@@ -52,7 +58,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     private lateinit var submitButton: Button
     private lateinit var cancelButton: Button
 
-    private lateinit var upvoteConstraintLayout: ConstraintLayout
+    //private lateinit var upvoteConstraintLayout: ConstraintLayout
     private lateinit var upvoteButton: ImageButton
     private lateinit var downvoteButton: ImageButton
     private lateinit var upvoteText: TextView
@@ -84,8 +90,8 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
 
         val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
         initViews()
-        initRecyclerView()
         initViewModel(poiKey)
+        initRecyclerView()
         initLoggedInListener()
 
         showListPostsView()
@@ -110,6 +116,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.onDestroy()
+        postViewModel.onDestroy()
         executor.shutdown()
     }
 
@@ -124,9 +131,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         }
     }
 
-    fun onUpvoteButtonClick(view: View) {}
 
-    fun onDownvoteButtonClick(view: View) {}
 
     private fun openPost(view: View) {
         val postId: String = (view as TextView).text.toString()
@@ -166,10 +171,13 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
             recyclerAdapter.submitList(map.toList())
             recyclerAdapter.notifyDataSetChanged()
         })
+
+        postViewModel = ViewModelProvider(this).get(PostViewModel::class.java)
+        postViewModel.setDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts", Post::class.java))
     }
 
     private fun initRecyclerView() {
-        recyclerAdapter = ForumRecyclerAdapter()
+        recyclerAdapter = ForumRecyclerAdapter(postViewModel)
         val recyclerView: RecyclerView = findViewById(R.id.forum_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ForumActivity)
@@ -180,16 +188,18 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
 
     private fun initLoggedInListener() {
         Auth.isLoggedIn.observe(this, { loggedIn ->
+            //If the user is logged in he can create a new post
             createPostButton.isEnabled = loggedIn
             createPostButton.visibility = if (loggedIn)
                 View.VISIBLE
             else
                 View.GONE
-            upvoteConstraintLayout.isEnabled = loggedIn
-            upvoteConstraintLayout.visibility = if (loggedIn)
-                View.VISIBLE
-            else
-                View.GONE
+
+            //and upvote/downvote
+            if(loggedIn){
+                recyclerAdapter.submitUserInfo(Auth.getCurrentUser()!!.uid)
+                recyclerAdapter.notifyDataSetChanged()
+            }
         })
     }
 
