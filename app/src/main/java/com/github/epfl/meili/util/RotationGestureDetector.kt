@@ -1,9 +1,7 @@
 package com.github.epfl.meili.util
 
-import android.util.Log
 import android.view.MotionEvent
 import android.widget.ImageView
-import androidx.core.view.MotionEventCompat
 import kotlin.math.atan2
 
 // Reference used : https://stackoverflow.com/questions/10682019/android-two-finger-rotation
@@ -34,38 +32,17 @@ class RotationGestureDetector(listener: OnRotationGestureListener, imageView: Im
         fun onRotation(angle: Float)
     }
 
-    /** Callback for touch event */
-    fun onTouchEvent(event: MotionEvent): Boolean {
-        return handleEvent(event) // This is to please codeClimate (max 25 lines in onTouchEvent)
-    }
-
     /** Computes correct indices and positions based on the touch event */
-    private fun handleEvent(event: MotionEvent): Boolean {
+    fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> { // First touch
                 ptrID1 = event.getPointerId(event.actionIndex) // first finger down's pointer
             }
             MotionEvent.ACTION_POINTER_DOWN -> { // Second touch
-                ptrID2 =
-                    event.getPointerId(event.actionIndex) // second finger down's pointer ID
-
-                x1 = event.getX(event.findPointerIndex(ptrID1))
-                y1 = event.getY(event.findPointerIndex(ptrID1))
-                x2 = event.getX(event.findPointerIndex(ptrID2))
-                y2 = event.getY(event.findPointerIndex(ptrID2))
+                handleActionPointerDown(event)
             }
             MotionEvent.ACTION_MOVE -> { // Either finger moves
-                if (ptrID1 != INVALID_PTR_ID && ptrID2 != INVALID_PTR_ID) {
-                    // Get new positions
-                    val newx1 = event.getX(event.findPointerIndex(ptrID1))
-                    val newy1 = event.getY(event.findPointerIndex(ptrID1))
-                    val newx2 = event.getX(event.findPointerIndex(ptrID2))
-                    val newy2 = event.getY(event.findPointerIndex(ptrID2))
-
-                    // compute angle and notify listener
-                    angle = angleBetweenLines(newx1, newy1, newx2, newy2)
-                    listener.onRotation(angle)
-                }
+                handleActionMove(event)
             }
             MotionEvent.ACTION_UP -> { // First finger lifted
                 ptrID1 = INVALID_PTR_ID
@@ -80,6 +57,30 @@ class RotationGestureDetector(listener: OnRotationGestureListener, imageView: Im
         }
 
         return true
+    }
+
+    private fun handleActionPointerDown(event: MotionEvent) {
+        ptrID2 =
+            event.getPointerId(event.actionIndex) // second finger down's pointer ID
+
+        x1 = event.getX(event.findPointerIndex(ptrID1))
+        y1 = event.getY(event.findPointerIndex(ptrID1))
+        x2 = event.getX(event.findPointerIndex(ptrID2))
+        y2 = event.getY(event.findPointerIndex(ptrID2))
+    }
+
+    private fun handleActionMove(event: MotionEvent) {
+        if (ptrID1 != INVALID_PTR_ID && ptrID2 != INVALID_PTR_ID) {
+            // Get new positions
+            val newx1 = event.getX(event.findPointerIndex(ptrID1))
+            val newy1 = event.getY(event.findPointerIndex(ptrID1))
+            val newx2 = event.getX(event.findPointerIndex(ptrID2))
+            val newy2 = event.getY(event.findPointerIndex(ptrID2))
+
+            // compute angle and notify listener
+            angle = angleBetweenLines(newx1, newy1, newx2, newy2)
+            listener.onRotation(angle)
+        }
     }
 
     /** Compute angle between lines formed by previous positions and new positions */
