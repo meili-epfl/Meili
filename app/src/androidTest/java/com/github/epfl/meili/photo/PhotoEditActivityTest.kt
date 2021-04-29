@@ -63,9 +63,9 @@ class PhotoEditActivityTest {
 
     @Test
     fun addTextClick(){
-        onView(withId(R.id.`@+id/text_button`)).perform(click())
+        onView(withId(R.id.text_button)).perform(click())
         onView(withId(R.id.button_addText)).perform(click())
-        onView(withId(R.id.`@+id/text_button`)).perform(click())
+        onView(withId(R.id.text_button)).perform(click())
     }
 
     @Test
