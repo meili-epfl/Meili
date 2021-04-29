@@ -58,6 +58,13 @@ class PhotoEditActivityTest {
     }
 
     @Test
+    fun addTextClick(){
+        onView(withId(R.id.tv_text)).perform(click())
+        onView(withId(R.id.button_addText)).perform(click())
+        onView(withId(R.id.tv_text)).perform(click())
+    }
+
+    @Test
     fun fabClick() {
         onView(withId(R.id.fab)).perform(click())
     }
