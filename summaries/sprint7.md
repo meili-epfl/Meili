@@ -20,7 +20,11 @@ TODO
 
 ## Thomas
 
-TODO
+This week I finished the filters feature and I improved the photo editing UI. I also added the possibility to switch between the front and back camera in the camera activity.
+
+Compared to last week, I was able to merge all the features that I has planned this week. I was less greedy and better in my time estimates.
+
+Next week, I want to improve the speed at which I write code, because sometimes I go in wrong directions when trying to implement a feature, which makes me lose time. So I have to plan better and be better at sensing when the way that I am trying to implement a feature is not the right one.
 
 ## Yingxuan
 
