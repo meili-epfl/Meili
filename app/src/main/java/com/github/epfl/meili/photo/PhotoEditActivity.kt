@@ -9,6 +9,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.TableRow
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -39,7 +41,6 @@ class PhotoEditActivity : AppCompatActivity() {
         binding.photoEditorView.source.setImageURI(uri)
 
         photoEditor = PhotoEditor.Builder(this, binding.photoEditorView).build()
-        stopDrawing() // default
 
         binding.undo.setOnClickListener { photoEditor.undo() }
         binding.redo.setOnClickListener { photoEditor.redo() }
@@ -62,6 +63,12 @@ class PhotoEditActivity : AppCompatActivity() {
             getStoragePermission() // photo will get stored on phone once it is done being edited
         }
         setFabListener()
+
+        // Handle emojis
+        binding.emojis.setOnClickListener { showEmojiTable() }
+        makeEmojiTable()
+
+        stopDrawing() // default
     }
 
     override fun onRequestPermissionsResult(
@@ -154,12 +161,49 @@ class PhotoEditActivity : AppCompatActivity() {
             stopFilters()
     }
 
+    /** Show scrollable emoji table */
+    private fun showEmojiTable() {
+        binding.emojiContainer.visibility = View.VISIBLE
+    }
+
 
     private fun changeDrawingColor() {
         photoEditor.brushColor = binding.colorSlider.color
     }
 
+    /** Creates all textView in the emoji table */
+    private fun makeEmojiTable() {
+        val emojis = PhotoEditor.getEmojis(this) // list of emojis (emojis are strings)
+        var curRow = TableRow(this)
+
+        // Make a new textView for each emoji and arrange in grid
+        for (i in 0 until emojis.size) {
+            // Make new row every 6 emojis
+            if (i % NUM_EMOJIS_PER_ROW == 0 && i != 0) {
+                binding.emojiTable.addView(curRow)
+                curRow = TableRow(this)
+            }
+
+            // Make textView
+            val textView = TextView(this)
+            textView.textSize = EMOJI_SIZE
+            textView.text = emojis[i]
+            textView.setOnClickListener { addEmoji(emojis[i]) } // When emoji is clicked, add itself to the photoEditor
+
+            // Add emoji to current row
+            curRow.addView(textView)
+        }
+    }
+
+    /** Add the passed emoji to the photoEditor, and hide emoji table */
+    private fun addEmoji(emoji: String) {
+        binding.emojiContainer.visibility = View.GONE
+        photoEditor.addEmoji(emoji)
+    }
+
     companion object {
         private const val REQUEST_CODE: Int = 1
+        private const val NUM_EMOJIS_PER_ROW = 6
+        private const val EMOJI_SIZE = 50f
     }
 }
