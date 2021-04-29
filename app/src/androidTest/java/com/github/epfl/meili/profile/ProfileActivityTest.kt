@@ -1,6 +1,7 @@
 package com.github.epfl.meili.profile
 
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -34,6 +35,9 @@ class ProfileActivityTest {
         private const val MOCK_UID = "UID"
         private const val MOCK_USERNAME = "Meili User"
         private val MOCK_USER = User(MOCK_UID, MOCK_USERNAME, "", "Hey There!")
+
+        private const val TEST_USERNAME = "Basic User"
+        private const val TEST_BIO = "I love travelling!"
     }
 
     @get:Rule
@@ -77,10 +81,15 @@ class ProfileActivityTest {
         onView(withId(R.id.bio)).check(matches(withText("")))
         onView(withId(R.id.photo)).check(matches(isDisplayed()))
 
-        TODO("edit profile and submit")
+        onView(withId(R.id.name)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
+        onView(withId(R.id.bio)).perform(clearText(), typeText(TEST_BIO), closeSoftKeyboard())
+        onView(withId(R.id.save)).perform(click())
 
         runOnUiThread {
             (listenerCaptor.value!! as OnSuccessListener<DocumentSnapshot>).onSuccess(mockDocumentSnapshot)
         }
+
+        onView(withId(R.id.name)).check(matches(withText(TEST_USERNAME)))
+        onView(withId(R.id.bio)).check(matches(withText(TEST_BIO)))
     }
 }
