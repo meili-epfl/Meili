@@ -93,9 +93,9 @@ class ForumActivityTest {
         `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts")).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
             try {
-                database = invocation.arguments[0] as FirestoreDatabase<Post>
-            }catch (e: ClassCastException){
                 atomicDatabase = invocation.arguments[0] as AtomicPostFirestoreDatabase
+            }catch (e: ClassCastException){
+                database = invocation.arguments[0] as FirestoreDatabase<Post>
             }
             mock(ListenerRegistration::class.java)
         }
