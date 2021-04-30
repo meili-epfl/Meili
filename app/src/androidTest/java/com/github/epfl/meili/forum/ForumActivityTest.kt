@@ -220,6 +220,16 @@ class ForumActivityTest {
     }
 
     @Test
+    fun clickUpvoteDownvoteButtonsTest(){
+        mockAuthenticationService.signInIntent()
+        database.onEvent(mockSnapshotAfterAddition, null)
+
+        onView(withId(R.id.upvote_button)).perform(click())
+        onView(withId(R.id.downovte_button)).perform(click())
+
+    }
+
+    @Test
     fun useCameraIntentsTest() {
         mockAuthenticationService.signInIntent()
         database.onEvent(mockSnapshotBeforeAddition, null)
