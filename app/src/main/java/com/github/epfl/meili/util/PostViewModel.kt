@@ -19,9 +19,9 @@ class PostViewModel: ViewModel(), Observer {
         database.addObserver(this)
     }
 
-    fun upvote(key: String, uid: String) = database.upvote(key,uid)
+    fun upvote(key: String, uid: String) = database.updownvote(key,uid, true)
 
-    fun downvote(key: String, uid: String) = database.downvote(key,uid)
+    fun downvote(key: String, uid: String) = database.updownvote(key,uid, false)
 
     fun getElements(): LiveData<Map<String, Post>> = mElements
 

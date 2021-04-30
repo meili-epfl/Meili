@@ -68,27 +68,30 @@ class ForumRecyclerAdapter(postViewModel: PostViewModel) : RecyclerView.Adapter<
             upvoteButton.visibility = visibility
             downvoteButton.visibility = visibility
             if(userId != null){
-                if(post.upvoters.contains(userId)){
-                    upvoteButton.setImageResource(R.mipmap.upvote_filled_foreground)
-                    downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
-                }else if(post.downvoters.contains(userId)){
-                    upvoteButton.setImageResource(R.mipmap.upvote_empty_foreground)
-                    downvoteButton.setImageResource(R.mipmap.downvote_filled_foreground)
-                }else{
-                    upvoteButton.setImageResource(R.mipmap.upvote_empty_foreground)
-                    downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
-                }
-                upvoteButton.setOnClickListener {
-                    postViewModel.upvote(pair.first, userId)
-                    Log.d(TAG, "Upvote"+post.author)
-                }
-                downvoteButton.setOnClickListener{
-                    postViewModel.downvote(pair.first, userId)
-                    Log.d(TAG, "Downvote"+post.author)
-                }
+                setupButtons(post.upvoters, post.downvoters, userId, pair.first)
             }
             upvoteCount.text = (post.upvoters.size - post.downvoters.size).toString()
 
         }
+
+        private fun setupButtons(upvoters: ArrayList<String>, downvoters: ArrayList<String>, userId: String, postId: String){
+            if(upvoters.contains(userId)){
+                upvoteButton.setImageResource(R.mipmap.upvote_filled_foreground)
+                downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
+            }else if(downvoters.contains(userId)){
+                upvoteButton.setImageResource(R.mipmap.upvote_empty_foreground)
+                downvoteButton.setImageResource(R.mipmap.downvote_filled_foreground)
+            }else{
+                upvoteButton.setImageResource(R.mipmap.upvote_empty_foreground)
+                downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
+            }
+            upvoteButton.setOnClickListener {
+                postViewModel.upvote(postId, userId)
+            }
+            downvoteButton.setOnClickListener{
+                postViewModel.downvote(postId, userId)
+            }
+        }
+
     }
 }
