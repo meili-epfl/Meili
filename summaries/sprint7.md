@@ -2,7 +2,11 @@
 
 ## Ahmed
 
-TODO
+This week I finished the upvoting/downvoting feature of the forum. I had to use the transactions to assure the atomicity of upvotes/downvotes. I also ended up storing the list of all upvoters/downvoters in order to ensure no person can up/downvote twice.
+
+Originally, I was supposed to finish this feature and the facebook-sign in. But unfortunately, I only had time to finish this feature since the testing was quite tricky and I had to work with an already existing code-base.
+
+Even though my time estimates were off this week, having two goals for the sprint helped since at least I was able to finsih one of them. I still need to improve in that aspect though.
 
 
 ## Aman (Scrum Master)
