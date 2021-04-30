@@ -103,7 +103,7 @@ class ChatLogMenuButtonsTest {
         ChatMessageViewModel.setMessageDatabase(MockMessageDatabase(MOCK_PATH))
         ChatMessageViewModel.addMessage(fake_message, fake_id, fake_id, 10, fake_name)
         FirestoreDatabase.databaseProvider = { mockFirestore }
-        AtomicPostFirestoreDatabase.databaseProvider = { mockFirestore }
+        //AtomicPostFirestoreDatabase.databaseProvider = { mockFirestore }
     }
 
     @Before

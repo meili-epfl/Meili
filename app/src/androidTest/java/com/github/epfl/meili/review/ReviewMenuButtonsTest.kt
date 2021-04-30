@@ -44,7 +44,7 @@ class ReviewMenuButtonsTest {
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { Mockito.mock(ListenerRegistration::class.java) }
 
         // Inject dependencies
-        AtomicPostFirestoreDatabase.databaseProvider = { mockFirestore }
+        //AtomicPostFirestoreDatabase.databaseProvider = { mockFirestore }
         FirestoreDatabase.databaseProvider = { mockFirestore }
         Auth.authService = MockAuthenticationService()
         Auth.authService.signInIntent()

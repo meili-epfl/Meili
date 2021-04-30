@@ -7,13 +7,6 @@ import com.google.firebase.firestore.*
 class AtomicPostFirestoreDatabase(path: String, ofClass: Class<Post>) :
     FirestoreDatabase<Post>(path, ofClass) {
 
-    companion object {
-        private const val TAG: String = "AtomicFirestoreDatabase"
-
-        private val DEFAULT_DATABASE = { FirebaseFirestore.getInstance() }
-
-        var databaseProvider: () -> FirebaseFirestore = DEFAULT_DATABASE
-    }
 
     override var elements: Map<String, Post> = HashMap()
 

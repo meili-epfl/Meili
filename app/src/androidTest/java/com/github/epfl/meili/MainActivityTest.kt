@@ -53,7 +53,7 @@ class MainActivityTest {
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { mockRegistration }
 
         FirestoreDatabase.databaseProvider = { mockFirestore }
-        AtomicPostFirestoreDatabase.databaseProvider = { mockFirestore }
+        //AtomicPostFirestoreDatabase.databaseProvider = { mockFirestore }
 
         val mockFirebase = mock(FirebaseStorage::class.java)
         val mockReference = mock(StorageReference::class.java)

@@ -113,7 +113,7 @@ class ForumActivityTest {
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
-        AtomicPostFirestoreDatabase.databaseProvider = { mockFirestore }
+        //AtomicPostFirestoreDatabase.databaseProvider = { mockFirestore }
         FirebaseStorageService.storageProvider = { mock(FirebaseStorage::class.java)}
         Auth.authService = mockAuthenticationService
     }
