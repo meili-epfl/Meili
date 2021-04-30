@@ -4,9 +4,11 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.epfl.meili.util.LocationService
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
@@ -22,17 +24,14 @@ class LocationServiceTest {
 
         val mockLocationManager = Mockito.mock(LocationManager::class.java)
         Mockito.`when`(mockLocationManager.requestLocationUpdates(
-                Mockito.any(String::class.java), Mockito.any(Long::class.java),
-                Mockito.anyFloat(), Mockito.any(LocationListener::class.java))
+                anyString(), anyLong(), anyFloat(), Mockito.any(LocationListener::class.java))
         ).then {
             val locListener = it.arguments[3] as LocationListener
             locListener.onLocationChanged(testLocation)
             return@then null
         }
 
-        val locationService = LocationService()
-        locationService.setLocationManager(mockLocationManager)
-
-        locationService.listenToLocationChanges(mockLocationListener)
+        LocationService.getLocationManager = { mockLocationManager }
+        LocationService.listenToLocationChanges(null, mockLocationListener)
     }
 }

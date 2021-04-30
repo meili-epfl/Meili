@@ -15,6 +15,7 @@
         android:layout_marginBottom="60dp"
         android:background="@android:color/transparent"
         android:contentDescription="Draw on image"
+        android:onClick="onPhotoEditClick"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_edit"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,8 +28,11 @@
         android:layout_marginBottom="121dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/undo" />
+        app:layout_constraintTop_toBottomOf="@+id/undo">
+
+    </ja.burhanrashid52.photoeditor.PhotoEditorView>
 
     <com.rtugeek.android.colorseekbar.ColorSeekBar
         android:id="@+id/colorSlider"
@@ -51,12 +55,44 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="68dp"
         android:background="?attr/selectableItemBackground"
+        android:onClick="onPhotoEditClick"
         android:text="Filters"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/paint_mode_button" />
 
+    <TextView
+        android:id="@+id/text_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="68dp"
+        android:background="?attr/selectableItemBackground"
+        android:onClick="onPhotoEditClick"
+        android:text="Text"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/filters" />
+
+
     <!-- Filters window -->
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_addText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="25dp"
+        android:background="?attr/selectableItemBackground"
+        android:text="Add Text"
+        android:textColor="#FFFFFF"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/photoEditorView"
+        app:layout_constraintEnd_toStartOf="@+id/et_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
     <LinearLayout
         android:id="@+id/filters_container"
         android:layout_width="wrap_content"
@@ -143,12 +179,58 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="48dp"
-        android:layout_marginBottom="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="60dp"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/quantum_ic_arrow_back_grey600_24" />
+
+
+    <EditText
+        android:id="@+id/et_text"
+        android:layout_width="256dp"
+        android:layout_height="44dp"
+        android:layout_marginBottom="3dp"
+        android:hint="Enter your text"
+        android:inputType="textShortMessage"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/photoEditorView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/button_addText"
+        tools:layout_editor_absoluteX="59dp" />
+
+
+    <TextView
+        android:id="@+id/emojis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="68dp"
+        android:background="?attr/selectableItemBackground"
+        android:text="Emojis"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/text_button" />
+
+    <ScrollView
+        android:id="@+id/emoji_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:visibility="invisible">
+
+        <TableLayout
+            android:id="@+id/emoji_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

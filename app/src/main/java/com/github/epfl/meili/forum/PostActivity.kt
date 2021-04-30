@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.storage.FirebaseStorageService
+import com.github.epfl.meili.database.FirebaseStorageService
 import com.squareup.picasso.Picasso
 
 class PostActivity : AppCompatActivity() {
@@ -39,7 +39,7 @@ class PostActivity : AppCompatActivity() {
         textView.text = post.text
 
         FirebaseStorageService.getDownloadUrl(
-                "forum/$postId",
+                "images/forum/$postId",
                 { uri -> getDownloadUrlCallback(uri)},
                 { exception ->
                     Log.e(TAG,"Image not found", exception)

@@ -23,6 +23,7 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,6 +37,11 @@ class CameraActivityTest {
 
     @get:Rule
     var mGrantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant("android.permission.CAMERA")
+
+    @Before
+    fun waitForCameraToStart() {
+        Thread.sleep(1500)  // Camera is slow to start and sometimes fails tests
+    }
 
     @Throws(UiObjectNotFoundException::class)
     fun reactToPermission(device: UiDevice, text: String) {
@@ -68,10 +74,8 @@ class CameraActivityTest {
 
     @Test
     fun takePhotoWithVolumeDownTest() {
-        val mDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        Thread.sleep(1000)
-        mDevice.pressKeyCode(KeyEvent.KEYCODE_VOLUME_DOWN)
-        Thread.sleep(1000)
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+                .pressKeyCode(KeyEvent.KEYCODE_VOLUME_DOWN)
     }
 
     @Test

@@ -1,4 +1,4 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.util
 
 import android.app.Activity
 import android.content.Intent
@@ -22,7 +22,7 @@ class MockAuthenticationService : AuthenticationService {
 
     override fun getCurrentUser(): User? {
         return if (signedIn) {
-            User(mockUid, username, "")
+            User(mockUid, username, "", " ")
         } else {
             null
         }

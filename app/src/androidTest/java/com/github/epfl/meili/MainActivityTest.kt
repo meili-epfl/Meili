@@ -14,7 +14,7 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.storage.FirebaseStorageService
+import com.github.epfl.meili.database.FirebaseStorageService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -119,6 +119,13 @@ class MainActivityTest {
     @Test
     fun clickingOnForumViewShouldLaunchIntent() {
         onView(withId(R.id.launchForumView)).perform(click())
+
+        Intents.intended(toPackage("com.github.epfl.meili"))
+    }
+
+    @Test
+    fun clickingOnNearbyShouldLaunchIntent() {
+        onView(withId(R.id.launchNearby)).perform(click())
 
         Intents.intended(toPackage("com.github.epfl.meili"))
     }

@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">Meili</string>
-    <string name="title_activity_map">MapActivity</string>
 
+
+    <string name="activity_google_sign_in">Google Sign In</string>
+    <string name="modify_my_profile">Modify My Profile</string>
+
+    <string name="title_activity_map">MapActivity</string>
     <string name="average_rating_format">%.2f</string>
     <string name="title_hint">Title</string>
     <string name="summary_hint">Summary</string>
