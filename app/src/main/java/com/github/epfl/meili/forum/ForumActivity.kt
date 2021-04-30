@@ -196,7 +196,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
                 View.GONE
 
             //and upvote/downvote
-            if(loggedIn){
+            if(loggedIn && Auth.getCurrentUser() != null){
                 recyclerAdapter.submitUserInfo(Auth.getCurrentUser()!!.uid)
                 recyclerAdapter.notifyDataSetChanged()
             }

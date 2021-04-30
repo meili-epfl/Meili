@@ -69,14 +69,14 @@ class ForumRecyclerAdapter(postViewModel: PostViewModel) : RecyclerView.Adapter<
             downvoteButton.visibility = visibility
             if(userId != null){
                 if(post.upvoters.contains(userId)){
-                    upvoteButton.setImageResource(R.mipmap.upvote_filled)
-                    downvoteButton.setImageResource(R.mipmap.downvote_empty)
+                    upvoteButton.setImageResource(R.mipmap.upvote_filled_foreground)
+                    downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
                 }else if(post.downvoters.contains(userId)){
-                    upvoteButton.setImageResource(R.mipmap.upvote_empty)
-                    downvoteButton.setImageResource(R.mipmap.downvote_filled)
+                    upvoteButton.setImageResource(R.mipmap.upvote_empty_foreground)
+                    downvoteButton.setImageResource(R.mipmap.downvote_filled_foreground)
                 }else{
-                    upvoteButton.setImageResource(R.mipmap.upvote_empty)
-                    downvoteButton.setImageResource(R.mipmap.downvote_empty)
+                    upvoteButton.setImageResource(R.mipmap.upvote_empty_foreground)
+                    downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
                 }
                 upvoteButton.setOnClickListener {
                     postViewModel.upvote(pair.first, userId)

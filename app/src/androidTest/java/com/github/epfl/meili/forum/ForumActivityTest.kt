@@ -18,6 +18,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
@@ -69,6 +70,7 @@ class ForumActivityTest {
     private val mockAuthenticationService = MockAuthenticationService()
 
     private lateinit var database: FirestoreDatabase<Post>
+    private lateinit var atomicDatabase: AtomicPostFirestoreDatabase
 
     private val intent = Intent(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext, ForumActivity::class.java)
             .putExtra(MapActivity.POI_KEY, TEST_POI_KEY)
@@ -90,7 +92,11 @@ class ForumActivityTest {
     private fun setupMocks() {
         `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts")).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
-            database = invocation.arguments[0] as FirestoreDatabase<Post>
+            try {
+                database = invocation.arguments[0] as FirestoreDatabase<Post>
+            }catch (e: ClassCastException){
+                atomicDatabase = invocation.arguments[0] as AtomicPostFirestoreDatabase
+            }
             mock(ListenerRegistration::class.java)
         }
         `when`(mockCollection.document(contains(TEST_UID))).thenReturn(mockDocument)
@@ -107,6 +113,7 @@ class ForumActivityTest {
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
+        AtomicPostFirestoreDatabase.databaseProvider = { mockFirestore }
         FirebaseStorageService.storageProvider = { mock(FirebaseStorage::class.java)}
         Auth.authService = mockAuthenticationService
     }

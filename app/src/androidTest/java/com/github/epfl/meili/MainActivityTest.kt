@@ -9,6 +9,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
+import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
@@ -52,6 +53,7 @@ class MainActivityTest {
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { mockRegistration }
 
         FirestoreDatabase.databaseProvider = { mockFirestore }
+        AtomicPostFirestoreDatabase.databaseProvider = { mockFirestore }
 
         val mockFirebase = mock(FirebaseStorage::class.java)
         val mockReference = mock(StorageReference::class.java)
