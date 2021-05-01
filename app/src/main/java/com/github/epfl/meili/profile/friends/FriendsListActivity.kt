@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumRecyclerAdapter
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Friend
@@ -46,6 +47,8 @@ class FriendsListActivity : AppCompatActivity() {
             Log.d("FriendListActivity", Auth.getCurrentUser()!!.uid)
             @Suppress("UNCHECKED_CAST")
             viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
+
+            viewModel.setDatabase(FirestoreDatabase("friends/"+Auth.getCurrentUser()!!.uid+"/friends", Friend::class.java))
             viewModel.getElements().observe(this){ map ->
                 recyclerAdapter.submitList(map.toList())
                 recyclerAdapter.notifyDataSetChanged()
