@@ -13,6 +13,7 @@ import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.nearby.NearbyActivity
 import com.github.epfl.meili.poi.PoiActivity
+import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.review.ReviewsActivity
 
 
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
             R.id.launchForumView -> Intent(this, ForumActivity::class.java)
             R.id.launchProfileView -> Intent(this, ProfileActivity::class.java)
             R.id.launchNearby -> Intent(this, NearbyActivity::class.java)
+            R.id.launchFriends -> Intent(this, FriendsListActivity::class.java)
             else -> Intent(this, MainActivity::class.java)
         }.putExtra("POI_KEY", POI)
         startActivity(intent)

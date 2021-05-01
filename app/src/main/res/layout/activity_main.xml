@@ -71,8 +71,20 @@
         android:id="@+id/launchNearby"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onClick"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/launchPoiView"
-        android:text="Launch Nearby"/>
+        android:layout_centerInParent="true"
+        android:layout_marginTop="4dp"
+        android:onClick="onClick"
+        android:text="Launch Nearby" />
+
+    <Button
+        android:id="@+id/launchFriends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/launchNearby"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:onClick="onClick"
+        android:text="Launch Friends" />
+
 </RelativeLayout>
