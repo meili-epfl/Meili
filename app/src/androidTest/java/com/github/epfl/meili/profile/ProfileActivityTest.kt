@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -122,5 +124,12 @@ class ProfileActivityTest {
 
         onView(withId(R.id.name)).check(matches(withText(TEST_USERNAME)))
         onView(withId(R.id.bio)).check(matches(withText(TEST_BIO)))
+    }
+
+    @Test
+    fun clickingOnFriendsListShouldLaunchIntent() {
+        onView(withId(R.id.launchFriends)).perform(click())
+
+        Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
     }
 }
