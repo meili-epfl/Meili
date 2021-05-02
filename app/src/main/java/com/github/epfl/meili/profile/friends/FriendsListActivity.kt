@@ -20,7 +20,6 @@ import com.github.epfl.meili.nearby.NearbyActivity
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 
-//TODO: maybe we can refactor and make a general list activity
 class FriendsListActivity : AppCompatActivity() {
     companion object{
         private const val FRIENDS_PADDING: Int = 15
