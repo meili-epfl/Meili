@@ -24,7 +24,11 @@
         android:roundIcon="@mipmap/meili_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
-        <activity android:name=".profile.friends.FriendsListActivity"></activity>
+        <activity android:name=".profile.friends.FriendsListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".profile.ProfileActivity" />
+        </activity>
         <activity
             android:name=".photo.PhotoCropActivity"
             android:noHistory="true" />

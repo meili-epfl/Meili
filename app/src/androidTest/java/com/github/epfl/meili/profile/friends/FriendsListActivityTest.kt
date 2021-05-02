@@ -27,8 +27,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 
-//Todo: add friend list activity to profile and add test there
-//TODO: add test button to nearby activity
 @RunWith(AndroidJUnit4::class)
 class FriendsListActivityTest {
     companion object {

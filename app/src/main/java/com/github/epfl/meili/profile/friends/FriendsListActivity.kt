@@ -32,6 +32,8 @@ class FriendsListActivity : AppCompatActivity() {
 
         initViewModel()
         initRecyclerView()
+
+        supportActionBar?.title = "My Friends"
     }
 
     private fun initViewModel() {
