@@ -25,6 +25,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,6 +60,16 @@ class ProfileActivityTest {
     init {
         setupMocks()
         setupStorageMocks()
+    }
+
+    @Before
+    fun initIntents(){
+        Intents.init()
+    }
+
+    @After
+    fun releaseIntents(){
+        Intents.release()
     }
 
     private fun setupMocks() {
