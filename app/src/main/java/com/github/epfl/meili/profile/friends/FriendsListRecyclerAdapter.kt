@@ -1,11 +1,14 @@
 package com.github.epfl.meili.profile.friends
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
+import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Friend
 
 class FriendsListRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -25,6 +28,13 @@ class FriendsListRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     class FriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        init {
+            itemView.setOnClickListener{
+                val intent = Intent(MainApplication.applicationContext(), ChatLogActivity::class.java)
+                MainApplication.applicationContext().startActivity(intent)
+            }
+        }
+
         private val name: TextView = itemView.findViewById(R.id.friend_name)
 
         fun bind(pair: Pair<String, Friend>) {

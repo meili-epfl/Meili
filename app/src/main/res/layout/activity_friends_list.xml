@@ -17,7 +17,7 @@
         android:id="@+id/add_friend_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onAddFriendButtonClicked"
+        android:onClick="onFriendsListButtonClicked"
         android:text="Add Friend"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -4,15 +4,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
+import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Friend
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.nearby.NearbyActivity
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
@@ -25,6 +29,8 @@ class FriendsListActivity : AppCompatActivity() {
     private lateinit var recyclerAdapter: FriendsListRecyclerAdapter
     private lateinit var viewModel: MeiliViewModel<Friend>
 
+    private lateinit var addFriendsButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_friends_list)
@@ -34,6 +40,8 @@ class FriendsListActivity : AppCompatActivity() {
         initRecyclerView()
 
         supportActionBar?.title = "My Friends"
+
+        initViews()
     }
 
     private fun initViewModel() {
@@ -54,6 +62,10 @@ class FriendsListActivity : AppCompatActivity() {
         }
     }
 
+    private fun initViews(){
+        addFriendsButton = findViewById(R.id.add_friend_button)
+    }
+
     private fun initRecyclerView() {
         recyclerAdapter = FriendsListRecyclerAdapter()
         val recyclerView: RecyclerView = findViewById(R.id.friends_list_recycler_view)
@@ -64,8 +76,21 @@ class FriendsListActivity : AppCompatActivity() {
         }
     }
 
-    fun onAddFriendButtonClicked(view: View) {
+    fun onFriendsListButtonClicked(view: View) {
+        when(view){
+            addFriendsButton -> showAddFriends()
+            else -> openFriendChat("tour-eiffel-1")
+        }
+
+    }
+
+    private fun showAddFriends(){
         val intent = Intent(this, NearbyActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun openFriendChat(friendUid: String){
+        val intent = Intent(this, ChatLogActivity::class .java).putExtra("POI_KEY", PointOfInterest(name=friendUid, uid = friendUid))
         startActivity(intent)
     }
 }
