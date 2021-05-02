@@ -128,6 +128,13 @@ class MainActivityTest {
         Intents.intended(toPackage("com.github.epfl.meili"))
     }
 
+    @Test
+    fun clickingOnFriendsListShouldLaunchIntent() {
+        onView(withId(R.id.launchFriends)).perform(click())
+
+        Intents.intended(toPackage("com.github.epfl.meili"))
+    }
+
 //    @Test
 //    fun testNavigation() {
 //        PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
