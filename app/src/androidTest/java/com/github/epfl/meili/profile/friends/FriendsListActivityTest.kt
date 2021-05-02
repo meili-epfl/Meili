@@ -1,40 +1,21 @@
 package com.github.epfl.meili.profile.friends
 
-import android.content.Intent
-import android.net.Uri
 import android.view.View
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
-import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.forum.ForumActivity
-import com.github.epfl.meili.forum.PostActivity
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.Friend
-import com.github.epfl.meili.models.PointOfInterest
-import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.models.User
-import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.util.MockAuthenticationService
-import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.StorageTask
-import com.google.firebase.storage.UploadTask
-import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -83,7 +64,6 @@ class FriendsListActivityTest {
     private fun setupMocks() {
 
 
-
         val mockDocumentSnapshot: DocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
         Mockito.`when`(mockDocumentSnapshot.id).thenReturn(TEST_FRIEND_UID)
         Mockito.`when`(mockDocumentSnapshot.toObject(Friend::class.java)).thenReturn(TEST_FRIEND)
@@ -107,14 +87,14 @@ class FriendsListActivityTest {
     }
 
     @Test
-    fun uiDisplaysCorrectInfo(){
+    fun uiDisplaysCorrectInfo() {
         database.onEvent(mockSnapshotAfterAddition, null)
 
         Espresso.onView(textViewContainsText(TEST_FRIEND_UID)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     @Test
-    fun onAddFriendButtonLaunchIntent(){
+    fun onAddFriendButtonLaunchIntent() {
         Espresso.onView(ViewMatchers.withId(R.id.add_friend_button)).perform(ViewActions.click())
 
         Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))

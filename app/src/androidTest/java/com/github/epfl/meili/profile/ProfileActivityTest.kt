@@ -128,7 +128,7 @@ class ProfileActivityTest {
 
     @Test
     fun clickingOnFriendsListShouldLaunchIntent() {
-        onView(withId(R.id.launchFriends)).perform(click())
+        onView(withId(R.id.list_friends_button)).perform(click())
 
         Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
     }

@@ -1,5 +1,6 @@
 package com.github.epfl.meili.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.RequiresLoginActivity
+import com.github.epfl.meili.profile.friends.FriendsListActivity
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -21,6 +23,7 @@ class ProfileActivity : RequiresLoginActivity() {
     private lateinit var nameView: EditText
     private lateinit var bioView: EditText
     private lateinit var saveButton: Button
+    private lateinit var seeFriendsButton: Button
 
     private lateinit var viewModel: ProfileViewModel
 
@@ -32,6 +35,7 @@ class ProfileActivity : RequiresLoginActivity() {
         nameView = findViewById(R.id.name)
         bioView = findViewById(R.id.bio)
         saveButton = findViewById(R.id.save)
+        seeFriendsButton = findViewById(R.id.list_friends_button)
     }
 
     private fun setupViewModel() {
@@ -49,7 +53,13 @@ class ProfileActivity : RequiresLoginActivity() {
         when (view) {
             photoView -> launchGallery.launch("image/*")
             saveButton -> saveProfile()
+            seeFriendsButton -> showFriends()
         }
+    }
+
+    private fun showFriends() {
+        val intent = Intent(this, FriendsListActivity::class.java)
+        startActivity(intent)
     }
 
     private fun saveProfile() {
