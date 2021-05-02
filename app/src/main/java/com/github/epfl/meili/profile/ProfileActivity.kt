@@ -44,6 +44,10 @@ class ProfileActivity : RequiresLoginActivity() {
         viewModel.getUser().observe(this) { user ->
             nameView.setText(user.username)
             bioView.setText(user.bio)
+
+            if(nameView.text.isEmpty()){
+                nameView.setText(Auth.getCurrentUser()!!.username)
+            }
         }
 
         viewModel.getRequestCreator().observe(this) { it.into(photoView) }
