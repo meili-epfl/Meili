@@ -37,20 +37,17 @@ class FriendsListActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
-        if (Auth.getCurrentUser() == null) {
-            if (BuildConfig.DEBUG) {
-                error("User not logged in trying to access friends list activity")
-            }
-        } else {
-            Log.d("FriendListActivity", Auth.getCurrentUser()!!.uid)
-            @Suppress("UNCHECKED_CAST")
-            viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
+        if (BuildConfig.DEBUG && Auth.getCurrentUser() == null) {
+            error("User trying to access friends list activity without logging in")
+        }
 
-            viewModel.setDatabase(FirestoreDatabase("friends/" + Auth.getCurrentUser()!!.uid + "/friends", Friend::class.java))
-            viewModel.getElements().observe(this) { map ->
-                recyclerAdapter.submitList(map.toList())
-                recyclerAdapter.notifyDataSetChanged()
-            }
+        @Suppress("UNCHECKED_CAST")
+        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
+
+        viewModel.setDatabase(FirestoreDatabase("friends/" + Auth.getCurrentUser()!!.uid + "/friends", Friend::class.java))
+        viewModel.getElements().observe(this) { map ->
+            recyclerAdapter.submitList(map.toList())
+            recyclerAdapter.notifyDataSetChanged()
         }
     }
 
