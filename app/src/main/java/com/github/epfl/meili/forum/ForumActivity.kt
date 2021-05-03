@@ -4,20 +4,16 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
-import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
@@ -26,9 +22,7 @@ import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
-import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.MenuActivity
-import com.github.epfl.meili.util.PostViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -41,8 +35,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     }
 
     private lateinit var recyclerAdapter: ForumRecyclerAdapter
-    private lateinit var viewModel: MeiliViewModel<Post>
-    private lateinit var postViewModel : PostViewModel
+    private lateinit var viewModel: ForumViewModel
 
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView
@@ -101,7 +94,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.onDestroy()
-        postViewModel.onDestroy()
         executor.shutdown()
     }
 
@@ -149,20 +141,17 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
 
     private fun initViewModel(poiKey: String) {
         @Suppress("UNCHECKED_CAST")
-        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Post>
+        viewModel = ViewModelProvider(this).get(ForumViewModel::class.java)
 
-        viewModel.setDatabase(FirestoreDatabase("forum/$poiKey/posts", Post::class.java))
+        viewModel.initDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts", Post::class.java))
         viewModel.getElements().observe(this, { map ->
             recyclerAdapter.submitList(map.toList())
             recyclerAdapter.notifyDataSetChanged()
         })
-
-        postViewModel = ViewModelProvider(this).get(PostViewModel::class.java)
-        postViewModel.setDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts", Post::class.java))
     }
 
     private fun initRecyclerView() {
-        recyclerAdapter = ForumRecyclerAdapter(postViewModel)
+        recyclerAdapter = ForumRecyclerAdapter(viewModel)
         val recyclerView: RecyclerView = findViewById(R.id.forum_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ForumActivity)

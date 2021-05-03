@@ -6,13 +6,13 @@ import androidx.lifecycle.ViewModel
 import com.github.epfl.meili.database.Database
 import java.util.*
 
-class MeiliViewModel<T>: ViewModel(), Observer {
+open class MeiliViewModel<T>: ViewModel(), Observer {
 
     private val mElements: MutableLiveData<Map<String, T>> = MutableLiveData()
 
-    private lateinit var database: Database<T>
+    protected lateinit var database: Database<T>
 
-    fun setDatabase(database: Database<T>) {
+    fun initDatabase(database: Database<T>) {
         this.database = database
         database.addObserver(this)
     }
