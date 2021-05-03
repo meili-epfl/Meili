@@ -21,9 +21,11 @@ import com.github.epfl.meili.nearby.NearbyActivity
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 
+// TODO: add more information to friend or get it from somewhere else
 class FriendsListActivity : AppCompatActivity() {
     companion object {
         private const val FRIENDS_PADDING: Int = 15
+        const val FRIEND_KEY = "FRIEND_KEY"
     }
 
     private lateinit var recyclerAdapter: FriendsListRecyclerAdapter
@@ -90,7 +92,7 @@ class FriendsListActivity : AppCompatActivity() {
     }
 
     private fun openFriendChat(friendUid: String){
-        val intent = Intent(this, ChatLogActivity::class .java).putExtra("POI_KEY", PointOfInterest(name=friendUid, uid = friendUid))
+        val intent = Intent(this, ChatLogActivity::class .java).putExtra(FRIEND_KEY, Friend(friendUid))
         startActivity(intent)
     }
 }

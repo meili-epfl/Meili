@@ -13,8 +13,10 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.RequiresLoginActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
+import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
 import com.github.epfl.meili.util.DateAuxiliary
 import com.github.epfl.meili.util.MenuActivity
 import com.xwray.groupie.GroupAdapter
@@ -50,19 +52,45 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
         if (isLoggedIn) {
             currentUser = Auth.getCurrentUser()
+
+            //TODO: differentiate between group chat, value received will be POI
+            // And Friend, for which it will be and individual chat
+            // I would keep UI the same, and for the moment just change support action bar
+            // And FirebaseMessageDatabaseAdapter path
+            // TODO: If I have time, don't write name of other before each message if you are in friend chat
+
+
             val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)
-            supportActionBar?.title = poi?.name
+            val friend = intent.getParcelableExtra<Friend>(FRIEND_KEY)
+            val databasePath: String
 
-            groupId = poi?.uid!!
+            if(poi != null){
 
-            Log.d(TAG, "the poi is ${poi.name} and has id ${poi.uid}")
-            ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter("POI/${poi.uid}"))
+                supportActionBar?.title = poi.name
+                //TODO: change name to something more general (also for friend chat) as toUid
+                groupId = poi.uid
+
+                Log.d(TAG, "Starting chat group at ${poi.name} and has id ${poi.uid}")
+
+                databasePath = "POI/${poi.uid}"
+            }else{
+                supportActionBar?.title = friend?.friendUid
+                //TODO: change name to something more general (also for friend chat) as toUid
+                groupId = friend?.friendUid!!
+
+                Log.d(TAG, "Starting friend chat with ${friend?.friendUid}")
+
+                databasePath = "POI/${friend?.friendUid}" //TODO: set some database structure where you can find the messages (maybe sort uids and concatenate)
+            }
+
+            ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter(databasePath))
 
             listenForMessages()
 
             findViewById<Button>(R.id.button_chat_log).setOnClickListener {
                 performSendMessage()
             }
+
         } else {
             currentUser = null
             supportActionBar?.title = "Not Signed In"
