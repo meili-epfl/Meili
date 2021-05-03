@@ -37,6 +37,7 @@ import java.util.concurrent.Executors
 class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     companion object {
         private const val CARD_PADDING: Int = 30
+
     }
 
     private lateinit var recyclerAdapter: ForumRecyclerAdapter
@@ -51,11 +52,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     private lateinit var editTextVIew: EditText
     private lateinit var submitButton: Button
     private lateinit var cancelButton: Button
-
-    //private lateinit var upvoteConstraintLayout: ConstraintLayout
-    private lateinit var upvoteButton: ImageButton
-    private lateinit var downvoteButton: ImageButton
-    private lateinit var upvoteText: TextView
 
     // image choice and upload
     private val launchCameraActivity =
