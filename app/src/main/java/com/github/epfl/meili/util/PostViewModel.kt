@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
-import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.models.Post
 import java.util.*
 
@@ -19,9 +18,9 @@ class PostViewModel: ViewModel(), Observer {
         database.addObserver(this)
     }
 
-    fun upvote(key: String, uid: String) = database.updownvote(key,uid, true)
+    fun upvote(key: String, uid: String) = database.upDownVote(key,uid, true)
 
-    fun downvote(key: String, uid: String) = database.updownvote(key,uid, false)
+    fun downvote(key: String, uid: String) = database.upDownVote(key,uid, false)
 
     fun getElements(): LiveData<Map<String, Post>> = mElements
 

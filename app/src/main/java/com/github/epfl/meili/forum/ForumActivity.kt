@@ -4,13 +4,10 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -162,7 +159,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         })
 
         postViewModel = ViewModelProvider(this).get(PostViewModel::class.java)
-        postViewModel.setDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts", Post::class.java))
+        postViewModel.setDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts"))
     }
 
     private fun initRecyclerView() {

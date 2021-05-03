@@ -9,7 +9,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.epfl.meili.R
-import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.messages.ChatMessageViewModel
@@ -44,7 +43,6 @@ class ReviewMenuButtonsTest {
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { Mockito.mock(ListenerRegistration::class.java) }
 
         // Inject dependencies
-        //AtomicPostFirestoreDatabase.databaseProvider = { mockFirestore }
         FirestoreDatabase.databaseProvider = { mockFirestore }
         Auth.authService = MockAuthenticationService()
         Auth.authService.signInIntent()
