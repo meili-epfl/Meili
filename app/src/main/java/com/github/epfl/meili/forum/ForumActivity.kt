@@ -143,7 +143,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         @Suppress("UNCHECKED_CAST")
         viewModel = ViewModelProvider(this).get(ForumViewModel::class.java)
 
-        viewModel.initDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts", Post::class.java))
+        viewModel.initDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts"))
         viewModel.getElements().observe(this, { map ->
             recyclerAdapter.submitList(map.toList())
             recyclerAdapter.notifyDataSetChanged()

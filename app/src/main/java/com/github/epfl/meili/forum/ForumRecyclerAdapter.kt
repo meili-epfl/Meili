@@ -5,19 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
 
-class ForumRecyclerAdapter(forumViewModel: ForumViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    companion object {
-        private const val TAG = "ForumRecyclerAdapter"
-    }
-
+class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var items: List<Pair<String, Post>> = ArrayList()
     private var userId: String? = null
-    private val forumViewModel: ForumViewModel = forumViewModel
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             PostViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false), forumViewModel)
@@ -35,18 +29,15 @@ class ForumRecyclerAdapter(forumViewModel: ForumViewModel) : RecyclerView.Adapte
         userId = uid
     }
 
-    class PostViewHolder(itemView: View, forumViewModel: ForumViewModel) : RecyclerView.ViewHolder(itemView) {
+    class PostViewHolder(itemView: View, private val forumViewModel: ForumViewModel) : RecyclerView.ViewHolder(itemView) {
         private val author: TextView = itemView.findViewById(R.id.post_author)
         private val title: TextView = itemView.findViewById(R.id.post_title)
         private val postId: TextView = itemView.findViewById(R.id.post_id)
         private val upvoteButton: ImageButton = itemView.findViewById(R.id.upvote_button)
         private val downvoteButton: ImageButton = itemView.findViewById(R.id.downovte_button)
         private val upvoteCount: TextView = itemView.findViewById(R.id.upvote_count)
-        private val upvoteConstraintLayout: ConstraintLayout = itemView.findViewById(R.id.upvote_ConstraintLayout)
-        private val postViewModel = forumViewModel
 
         fun bind(pair: Pair<String, Post>, userId: String?) {
-
             postId.text = pair.first
 
             val post = pair.second
@@ -65,27 +56,25 @@ class ForumRecyclerAdapter(forumViewModel: ForumViewModel) : RecyclerView.Adapte
                 setupButtons(post.upvoters, post.downvoters, userId, pair.first)
             }
             upvoteCount.text = (post.upvoters.size - post.downvoters.size).toString()
-
         }
 
         private fun setupButtons(upvoters: ArrayList<String>, downvoters: ArrayList<String>, userId: String, postId: String){
-            if(upvoters.contains(userId)){
-                upvoteButton.setImageResource(R.mipmap.upvote_filled_foreground)
-                downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
-            }else if(downvoters.contains(userId)){
-                upvoteButton.setImageResource(R.mipmap.upvote_empty_foreground)
-                downvoteButton.setImageResource(R.mipmap.downvote_filled_foreground)
-            }else{
-                upvoteButton.setImageResource(R.mipmap.upvote_empty_foreground)
-                downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
+            when {
+                upvoters.contains(userId) -> {
+                    upvoteButton.setImageResource(R.mipmap.upvote_filled_foreground)
+                    downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
+                }
+                downvoters.contains(userId) -> {
+                    upvoteButton.setImageResource(R.mipmap.upvote_empty_foreground)
+                    downvoteButton.setImageResource(R.mipmap.downvote_filled_foreground)
+                }
+                else -> {
+                    upvoteButton.setImageResource(R.mipmap.upvote_empty_foreground)
+                    downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
+                }
             }
-            upvoteButton.setOnClickListener {
-                postViewModel.upvote(postId, userId)
-            }
-            downvoteButton.setOnClickListener{
-                postViewModel.downvote(postId, userId)
-            }
+            upvoteButton.setOnClickListener { forumViewModel.upvote(postId, userId) }
+            downvoteButton.setOnClickListener{ forumViewModel.downvote(postId, userId) }
         }
-
     }
 }
