@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:onClick="onClick"
         android:layout_centerHorizontal="true"
+        android:theme="@style/Theme.Meili"
         android:text="Launch Sign In View" />
 
     <Button
