@@ -14,6 +14,7 @@ import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import com.squareup.picasso.Picasso
@@ -27,8 +28,8 @@ class PostActivity : AppCompatActivity() {
         private const val COMMENTS_PADDING: Int = 40
     }
 
-    private lateinit var recyclerAdapter: ForumRecyclerAdapter
-    private lateinit var viewModel: ForumViewModel
+    private lateinit var recyclerAdapter: CommentsRecyclerAdapter
+    private lateinit var viewModel: MeiliViewModel<Comment>
 
     private lateinit var imageView: ImageView
     private lateinit var postId: String
@@ -38,7 +39,8 @@ class PostActivity : AppCompatActivity() {
         setContentView(R.layout.activity_post)
 
         val post: Post = intent.getParcelableExtra(Post.TAG)!!
-        postId = intent.getStringExtra(POST_ID)!!
+        //postId = intent.getStringExtra(POST_ID)!!
+        postId = "OP7VVymi3ZOfTr0akvMnh5HEa2a21619719341995"
 
         val authorView: TextView = findViewById(R.id.post_author)
         val titleView: TextView = findViewById(R.id.post_title)
@@ -58,7 +60,7 @@ class PostActivity : AppCompatActivity() {
                 }
         )
 
-        initViewModel("ChIJAAAAAAAAAAARg4pb6XR5bo0")
+        initViewModel("comments")
         initRecyclerView()
     }
 
@@ -68,9 +70,9 @@ class PostActivity : AppCompatActivity() {
 
     private fun initViewModel(poiKey: String) {
         @Suppress("UNCHECKED_CAST")
-        viewModel = ViewModelProvider(this).get(ForumViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
 
-        viewModel.initDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts"))
+        viewModel.initDatabase(FirestoreDatabase("forum/$poiKey/posts/$postId/comments", Comment::class.java))
         viewModel.getElements().observe(this, { map ->
             recyclerAdapter.submitList(map.toList())
             recyclerAdapter.notifyDataSetChanged()
@@ -78,7 +80,7 @@ class PostActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        recyclerAdapter = ForumRecyclerAdapter(viewModel)
+        recyclerAdapter = CommentsRecyclerAdapter(viewModel)
         val recyclerView: RecyclerView = findViewById(R.id.comments_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@PostActivity)
