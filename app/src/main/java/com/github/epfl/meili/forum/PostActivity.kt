@@ -6,9 +6,15 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.database.FirebaseStorageService
+import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.util.MeiliViewModel
+import com.github.epfl.meili.util.TopSpacingItemDecoration
 import com.squareup.picasso.Picasso
 
 class PostActivity : AppCompatActivity() {
@@ -17,7 +23,11 @@ class PostActivity : AppCompatActivity() {
         private const val TAG = "PostActivity"
         private val DEFAULT_URI = Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
         const val POST_ID = "Post_ID"
+        private const val COMMENTS_PADDING: Int = 20
     }
+
+    private lateinit var recyclerAdapter: ForumRecyclerAdapter
+    private lateinit var viewModel: MeiliViewModel<Post>
 
     private lateinit var imageView: ImageView
     private lateinit var postId: String
@@ -46,9 +56,33 @@ class PostActivity : AppCompatActivity() {
                     getDownloadUrlCallback(DEFAULT_URI)
                 }
         )
+
+        initRecyclerView()
+        initViewModel("ChIJAAAAAAAAAAARg4pb6XR5bo0")
     }
 
     private fun getDownloadUrlCallback(uri: Uri) {
         Picasso.get().load(uri).into(imageView)
+    }
+
+    private fun initViewModel(poiKey: String) {
+        @Suppress("UNCHECKED_CAST")
+        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Post>
+
+        viewModel.setDatabase(FirestoreDatabase("forum/$poiKey/posts", Post::class.java))
+        viewModel.getElements().observe(this, { map ->
+            recyclerAdapter.submitList(map.toList())
+            recyclerAdapter.notifyDataSetChanged()
+        })
+    }
+
+    private fun initRecyclerView() {
+        recyclerAdapter = ForumRecyclerAdapter()
+        val recyclerView: RecyclerView = findViewById(R.id.comments_recycler_view)
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@PostActivity)
+            addItemDecoration(TopSpacingItemDecoration(COMMENTS_PADDING))
+            adapter = recyclerAdapter
+        }
     }
 }
