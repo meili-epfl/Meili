@@ -3,8 +3,8 @@ package com.github.epfl.meili.forum
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +14,7 @@ import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
@@ -32,6 +33,9 @@ class PostActivity : AppCompatActivity() {
     private lateinit var viewModel: MeiliViewModel<Comment>
 
     private lateinit var imageView: ImageView
+    private lateinit var commentButton: Button
+    private lateinit var addCommentButton : Button
+
     private lateinit var postId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,14 +46,7 @@ class PostActivity : AppCompatActivity() {
         //postId = intent.getStringExtra(POST_ID)!!
         postId = "OP7VVymi3ZOfTr0akvMnh5HEa2a21619719341995"
 
-        val authorView: TextView = findViewById(R.id.post_author)
-        val titleView: TextView = findViewById(R.id.post_title)
-        val textView: TextView = findViewById(R.id.post_text)
-        imageView = findViewById(R.id.post_image)
-
-        authorView.text = post.author
-        titleView.text = post.title
-        textView.text = post.text
+        initViews(post)
 
         FirebaseStorageService.getDownloadUrl(
                 "images/forum/$postId",
@@ -62,10 +59,27 @@ class PostActivity : AppCompatActivity() {
 
         initViewModel("comments")
         initRecyclerView()
+        initLoggedInListener()
     }
 
     private fun getDownloadUrlCallback(uri: Uri) {
         Picasso.get().load(uri).into(imageView)
+    }
+
+    private fun initViews(post: Post) {
+        val authorView: TextView = findViewById(R.id.post_author)
+        val titleView: TextView = findViewById(R.id.post_title)
+        val textView: TextView = findViewById(R.id.post_text)
+        authorView.text = post.author
+        titleView.text = post.title
+        textView.text = post.text
+
+        imageView = findViewById(R.id.post_image)
+
+        commentButton = findViewById(R.id.comment_button)
+        addCommentButton = findViewById(R.id.add_comment)
+        commentButton.setOnClickListener { showEditComment() }
+        addCommentButton.setOnClickListener { addComment() }
     }
 
     private fun initViewModel(poiKey: String) {
@@ -87,5 +101,26 @@ class PostActivity : AppCompatActivity() {
             addItemDecoration(TopSpacingItemDecoration(COMMENTS_PADDING))
             adapter = recyclerAdapter
         }
+    }
+
+    private fun initLoggedInListener() {
+        Auth.isLoggedIn.observe(this, { loggedIn ->
+            val layout: LinearLayout = findViewById(R.id.new_comment_layout)
+            layout.visibility = if (loggedIn)
+                View.VISIBLE
+            else
+                View.INVISIBLE
+        })
+    }
+
+    private fun showEditComment() {
+        commentButton.visibility = View.INVISIBLE
+        val editText: EditText = findViewById(R.id.edit_comment)
+        editText.visibility = View.VISIBLE
+        addCommentButton.visibility = View.VISIBLE
+    }
+
+    private fun addComment() {
+
     }
 }
