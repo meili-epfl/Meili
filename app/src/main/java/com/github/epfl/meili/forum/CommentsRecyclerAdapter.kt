@@ -29,10 +29,6 @@ class CommentsRecyclerAdapter(private val viewModel: MeiliViewModel<Comment>) :
         items = list
     }
 
-    fun submitUserInfo(uid: String) {
-        userId = uid
-    }
-
     class CommentViewHolder(itemView: View, private val viewModel: MeiliViewModel<Comment>) :
         RecyclerView.ViewHolder(itemView) {
         private val author: TextView = itemView.findViewById(R.id.comment_author)

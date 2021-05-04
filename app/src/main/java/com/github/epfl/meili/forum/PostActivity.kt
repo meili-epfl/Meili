@@ -6,16 +6,17 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
-import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Comment
+import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import com.squareup.picasso.Picasso
@@ -26,7 +27,7 @@ class PostActivity : AppCompatActivity() {
         private const val TAG = "PostActivity"
         private val DEFAULT_URI = Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
         const val POST_ID = "Post_ID"
-        private const val COMMENTS_PADDING: Int = 40
+        private const val COMMENTS_PADDING: Int = 20
     }
 
     private lateinit var recyclerAdapter: CommentsRecyclerAdapter
@@ -34,6 +35,7 @@ class PostActivity : AppCompatActivity() {
 
     private lateinit var imageView: ImageView
     private lateinit var commentButton: Button
+    private lateinit var editText: EditText
     private lateinit var addCommentButton : Button
 
     private lateinit var postId: String
@@ -77,8 +79,9 @@ class PostActivity : AppCompatActivity() {
         imageView = findViewById(R.id.post_image)
 
         commentButton = findViewById(R.id.comment_button)
+        editText = findViewById(R.id.edit_comment)
         addCommentButton = findViewById(R.id.add_comment)
-        commentButton.setOnClickListener { showEditComment() }
+        commentButton.setOnClickListener { showEditCommentView() }
         addCommentButton.setOnClickListener { addComment() }
     }
 
@@ -101,6 +104,7 @@ class PostActivity : AppCompatActivity() {
             addItemDecoration(TopSpacingItemDecoration(COMMENTS_PADDING))
             adapter = recyclerAdapter
         }
+        ViewCompat.setNestedScrollingEnabled(recyclerView, false);
     }
 
     private fun initLoggedInListener() {
@@ -113,14 +117,28 @@ class PostActivity : AppCompatActivity() {
         })
     }
 
-    private fun showEditComment() {
+    private fun showEditCommentView() {
         commentButton.visibility = View.INVISIBLE
-        val editText: EditText = findViewById(R.id.edit_comment)
         editText.visibility = View.VISIBLE
         addCommentButton.visibility = View.VISIBLE
     }
 
-    private fun addComment() {
+    private fun hideEditCommentView() {
+        commentButton.visibility = View.VISIBLE
+        editText.visibility = View.INVISIBLE
+        addCommentButton.visibility = View.INVISIBLE
+    }
 
+    private fun addComment() {
+        if (Auth.getCurrentUser() == null) {
+            error("Unconnected user is trying to add comment")
+        }
+        val user: User = Auth.getCurrentUser()!!
+        val commentId = "${user.uid}${System.currentTimeMillis()}"
+        val text = editText.text.toString()
+
+        viewModel.addElement(commentId, Comment(user.username, text))
+
+        hideEditCommentView()
     }
 }
