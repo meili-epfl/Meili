@@ -16,8 +16,6 @@ import org.mockito.Mockito
 @RunWith(AndroidJUnit4::class)
 class AtomicPostFirestoreDatabaseTest {
     private lateinit var db: AtomicPostFirestoreDatabase
-    private val post1 = Post("author1", "title1", "text1")
-    private val post2 = Post("author2", "title2", "text2")
 
     private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
     private val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
@@ -44,12 +42,6 @@ class AtomicPostFirestoreDatabaseTest {
 
     }
 
-    private fun getMockDocumentSnapshot(id: String, poi: PointOfInterest): DocumentSnapshot {
-        val mockDocumentSnapshot: DocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
-        Mockito.`when`(mockDocumentSnapshot.id).thenReturn(id)
-        Mockito.`when`(mockDocumentSnapshot.toObject(PointOfInterest::class.java)).thenReturn(poi)
-        return mockDocumentSnapshot
-    }
 
     @Test
     fun upvoteTest() {
