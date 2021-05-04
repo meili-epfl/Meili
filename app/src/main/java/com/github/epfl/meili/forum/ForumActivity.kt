@@ -31,7 +31,6 @@ import java.util.concurrent.Executors
 class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     companion object {
         private const val CARD_PADDING: Int = 30
-
     }
 
     private lateinit var recyclerAdapter: ForumRecyclerAdapter
@@ -60,15 +59,17 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     private lateinit var executor: ExecutorService
     private var bitmap: Bitmap? = null
 
+    private lateinit var poiKey: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forum)
 
         executor = Executors.newSingleThreadExecutor()
 
-        val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
+        poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
         initViews()
-        initViewModel(poiKey)
+        initViewModel()
         initRecyclerView()
         initLoggedInListener()
 
@@ -115,6 +116,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         val intent: Intent = Intent(this, PostActivity::class.java)
             .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
             .putExtra(PostActivity.POST_ID, postId)
+            .putExtra(MapActivity.POI_KEY, poiKey)
         startActivity(intent)
     }
 
@@ -139,7 +141,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         showListPostsView()
     }
 
-    private fun initViewModel(poiKey: String) {
+    private fun initViewModel() {
         @Suppress("UNCHECKED_CAST")
         viewModel = ViewModelProvider(this).get(ForumViewModel::class.java)
 

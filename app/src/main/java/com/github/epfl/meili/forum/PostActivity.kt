@@ -15,6 +15,7 @@ import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.MeiliViewModel
@@ -39,14 +40,15 @@ class PostActivity : AppCompatActivity() {
     private lateinit var addCommentButton : Button
 
     private lateinit var postId: String
+    private lateinit var poiKey: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
 
         val post: Post = intent.getParcelableExtra(Post.TAG)!!
-        //postId = intent.getStringExtra(POST_ID)!!
-        postId = "OP7VVymi3ZOfTr0akvMnh5HEa2a21619719341995"
+        postId = intent.getStringExtra(POST_ID)!!
+        poiKey = intent.getStringExtra(MapActivity.POI_KEY)!!
 
         initViews(post)
 
@@ -59,7 +61,7 @@ class PostActivity : AppCompatActivity() {
                 }
         )
 
-        initViewModel("comments")
+        initViewModel()
         initRecyclerView()
         initLoggedInListener()
     }
@@ -85,7 +87,7 @@ class PostActivity : AppCompatActivity() {
         addCommentButton.setOnClickListener { addComment() }
     }
 
-    private fun initViewModel(poiKey: String) {
+    private fun initViewModel() {
         @Suppress("UNCHECKED_CAST")
         viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
 
