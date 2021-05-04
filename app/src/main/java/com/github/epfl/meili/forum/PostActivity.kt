@@ -123,6 +123,8 @@ class PostActivity : AppCompatActivity() {
         commentButton.visibility = View.INVISIBLE
         editText.visibility = View.VISIBLE
         addCommentButton.visibility = View.VISIBLE
+
+        editText.text.clear()
     }
 
     private fun hideEditCommentView() {
