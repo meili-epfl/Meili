@@ -61,8 +61,6 @@ class FriendsListActivityTest {
     }
 
     private fun setupMocks() {
-
-
         val mockDocumentSnapshot: DocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
         Mockito.`when`(mockDocumentSnapshot.id).thenReturn(TEST_FRIEND_UID)
         Mockito.`when`(mockDocumentSnapshot.toObject(Friend::class.java)).thenReturn(TEST_FRIEND)
