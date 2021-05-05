@@ -7,6 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.VisitedPointOfInterest
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class PoiHistoryRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var items: List<Pair<String, VisitedPointOfInterest>> = ArrayList()
@@ -30,7 +33,7 @@ class PoiHistoryRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
         fun bind(pair: Pair<String, VisitedPointOfInterest>) {
             val poi = pair.second
             poiName.text = poi.poi?.name
-            visitedDate.text = poi.dateVisited.toString()
+            visitedDate.text = SimpleDateFormat("dd/MM/yyyy", Locale.US).format(poi.dateVisited!!)
         }
     }
 }

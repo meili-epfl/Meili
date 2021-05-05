@@ -12,6 +12,7 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.VisitedPointOfInterest
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
+import java.util.*
 
 
 class PoiHistoryActivity : AppCompatActivity() {
@@ -55,7 +56,9 @@ class PoiHistoryActivity : AppCompatActivity() {
     }
 
     private fun poiHistoryMapListener(map: Map<String, VisitedPointOfInterest>) {
-        recyclerAdapter.submitList(map.toList())
+        val list = map.toList()
+            .sortedWith { o1, o2 -> o2.second.dateVisited!!.compareTo(o1.second.dateVisited) }
+        recyclerAdapter.submitList(list)
         recyclerAdapter.notifyDataSetChanged()
     }
 
