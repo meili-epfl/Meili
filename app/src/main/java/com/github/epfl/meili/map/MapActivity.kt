@@ -132,6 +132,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         updateMapUI()
 
         if (isLocationPermissionGranted(this)) {
+            getDeviceLocationAndSetCameraPosition()
+            setUpClusterer()
             LocationService.listenToLocationChanges(applicationContext, poiMarkerViewModel)
         }
     }
@@ -143,7 +145,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         updateMapUI()
 
         if (isLocationPermissionGranted(this)) {
-            getDeviceLocationAndSetCameraPosition() //TODO: these two functions should be recalled after requesting location permission and being granted
+            getDeviceLocationAndSetCameraPosition()
 
             setUpClusterer()
         } else {
