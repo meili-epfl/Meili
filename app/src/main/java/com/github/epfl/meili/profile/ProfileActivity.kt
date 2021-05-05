@@ -7,11 +7,11 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
-import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
+import com.github.epfl.meili.util.NavigableActivity
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -66,6 +66,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             saveButton -> saveProfile()
             seeFriendsButton -> showFriends()
             signOutButton -> {
+                Auth.isLoggedIn.removeObservers(this)
                 Auth.signOut()
                 startActivity(Intent(this, MapActivity::class.java))
             }

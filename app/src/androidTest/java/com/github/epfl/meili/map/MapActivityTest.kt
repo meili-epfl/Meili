@@ -5,26 +5,31 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObjectNotFoundException
 import androidx.test.uiautomator.UiSelector
+import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.util.LocationService
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.storage.FirebaseStorage
 import com.schibsted.spain.barista.interaction.PermissionGranter
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
-import org.junit.FixMethodOrder
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import org.mockito.ArgumentMatchers.any
@@ -46,7 +51,18 @@ class MapActivityTest {
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { mock(ListenerRegistration::class.java) }
 
         FirestoreDatabase.databaseProvider = { mockFirestore }
+        FirebaseStorageService.storageProvider = { mock(FirebaseStorage::class.java) }
         LocationService.getLocationManager = { mock(LocationManager::class.java) }
+    }
+
+    @Before
+    fun initIntents() {
+        Intents.init()
+    }
+
+    @After
+    fun releaseIntents() {
+        Intents.release()
     }
 
     @Throws(UiObjectNotFoundException::class)
@@ -69,7 +85,7 @@ class MapActivityTest {
 */
 
     @Test
-    fun b_locationButtonClickableAfterPermissionGrant() {
+    fun locationButtonClickableAfterPermissionGrant() {
         PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
         val imageView = onView(
                 allOf(
@@ -86,6 +102,19 @@ class MapActivityTest {
         )
         imageView.perform(click())
     }
+
+    @Test
+    fun goToProfileTest() {
+        onView(withId(R.id.profile)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(ProfileActivity::class.qualifiedName))
+    }
+
+//    @Test
+//    fun goToFeedTest() {
+//        onView(withId(R.id.feed)).perform(click())
+//        // TODO replace by FeedActivity when FeedActivity is created
+//        Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
+//    }
 
     private fun childAtPosition(
             parentMatcher: Matcher<View>, position: Int

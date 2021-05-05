@@ -1,5 +1,6 @@
 package com.github.epfl.meili.profile
 
+import android.location.LocationManager
 import android.net.Uri
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -17,6 +18,7 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.friends.FriendsListActivity
+import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
@@ -62,6 +64,7 @@ class ProfileActivityTest {
     init {
         setupMocks()
         setupStorageMocks()
+        LocationService.getLocationManager = { mock(LocationManager::class.java) }
     }
 
     @Before
@@ -151,4 +154,17 @@ class ProfileActivityTest {
         onView(withId(R.id.sign_out)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(MapActivity::class.qualifiedName))
     }
+
+    @Test
+    fun goToMapTest() {
+        onView(withId(R.id.map)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(MapActivity::class.qualifiedName))
+    }
+
+//    @Test
+//    fun goToFeedTest() {
+//        onView(withId(R.id.feed)).perform(click())
+//        // TODO replace by FeedActivity when FeedActivity is created
+//        Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
+//    }
 }
