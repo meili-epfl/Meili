@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
-import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.models.VisitedPointOfInterest
 
 class PoiHistoryRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var items: List<Pair<String, PointOfInterest>> = ArrayList()
+    private var items: List<Pair<String, VisitedPointOfInterest>> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         PoiViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.poi, parent, false))
@@ -19,16 +19,18 @@ class PoiHistoryRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(
 
     override fun getItemCount() = items.size
 
-    fun submitList(list: List<Pair<String, PointOfInterest>>) {
+    fun submitList(list: List<Pair<String, VisitedPointOfInterest>>) {
         items = list
     }
 
     class PoiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val poiName: TextView = itemView.findViewById(R.id.poi_name)
+        private val visitedDate: TextView = itemView.findViewById(R.id.visited_date)
 
-        fun bind(pair: Pair<String, PointOfInterest>) {
+        fun bind(pair: Pair<String, VisitedPointOfInterest>) {
             val poi = pair.second
-            poiName.text = poi.name
+            poiName.text = poi.poi?.name
+            visitedDate.text = poi.dateVisited.toString()
         }
     }
 }

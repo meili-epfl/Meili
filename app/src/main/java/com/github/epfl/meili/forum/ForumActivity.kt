@@ -19,6 +19,7 @@ import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.models.VisitedPointOfInterest
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
@@ -135,8 +136,8 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         val userKey = user.uid
         FirestoreDatabase( // add to poi history
             "poi-history/$userKey/poi-history",
-            PointOfInterest::class.java
-        ).addElement(poi.uid, poi)
+            VisitedPointOfInterest::class.java
+        ).addElement(poi.uid, VisitedPointOfInterest(poi))
 
         if (bitmap != null) {
             executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }

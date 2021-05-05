@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.models.VisitedPointOfInterest
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 
@@ -20,11 +20,13 @@ class PoiHistoryActivity : AppCompatActivity() {
     }
 
     private lateinit var recyclerAdapter: PoiHistoryRecyclerAdapter
-    private lateinit var viewModel: MeiliViewModel<PointOfInterest>
+    private lateinit var viewModel: MeiliViewModel<VisitedPointOfInterest>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_poi_history)
+
+        title = "POI History"
 
         val userKey = Auth.getCurrentUser()!!.uid
         initRecyclerView()
@@ -39,12 +41,12 @@ class PoiHistoryActivity : AppCompatActivity() {
     private fun initViewModel(userKey: String) {
         @Suppress("UNCHECKED_CAST")
         viewModel =
-            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<PointOfInterest>
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<VisitedPointOfInterest>
 
         viewModel.setDatabase(
             FirestoreDatabase(
                 "poi-history/$userKey/poi-history",
-                PointOfInterest::class.java
+                VisitedPointOfInterest::class.java
             )
         )
         viewModel.getElements().observe(this, { map ->
@@ -52,7 +54,7 @@ class PoiHistoryActivity : AppCompatActivity() {
         })
     }
 
-    private fun poiHistoryMapListener(map: Map<String, PointOfInterest>) {
+    private fun poiHistoryMapListener(map: Map<String, VisitedPointOfInterest>) {
         recyclerAdapter.submitList(map.toList())
         recyclerAdapter.notifyDataSetChanged()
     }

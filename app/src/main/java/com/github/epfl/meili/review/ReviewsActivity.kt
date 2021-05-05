@@ -13,6 +13,7 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
+import com.github.epfl.meili.models.VisitedPointOfInterest
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.TopSpacingItemDecoration
@@ -96,8 +97,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
 
         FirestoreDatabase( // add to poi history
             "poi-history/$userKey/poi-history",
-            PointOfInterest::class.java
-        ).addElement(poi.uid, poi)
+            VisitedPointOfInterest::class.java
+        ).addElement(poi.uid, VisitedPointOfInterest(poi))
     }
 
     private fun editReviewButtonListener() {

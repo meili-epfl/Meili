@@ -16,6 +16,7 @@ import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.models.VisitedPointOfInterest
 import com.github.epfl.meili.util.DateAuxiliary
 import com.github.epfl.meili.util.MenuActivity
 import com.xwray.groupie.GroupAdapter
@@ -91,8 +92,8 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         val userKey = currentUser!!.uid
         FirestoreDatabase( // add to poi history
             "poi-history/$userKey/poi-history",
-            PointOfInterest::class.java
-        ).addElement(poi.uid, poi)
+            VisitedPointOfInterest::class.java
+        ).addElement(poi.uid, VisitedPointOfInterest(poi))
     }
 
     private fun listenForMessages() {
