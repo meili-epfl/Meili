@@ -13,7 +13,9 @@ import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.review.ReviewsActivity
 
+
 open class MenuActivity(private val menuRes: Int): AppCompatActivity() {
+    private var showMenu = true
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         this.menuInflater.inflate(menuRes, menu)
         return super.onCreateOptionsMenu(menu)
@@ -24,6 +26,18 @@ open class MenuActivity(private val menuRes: Int): AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        var item = menu.findItem(R.id.menu_reviews)
+        if(item!=null){
+            item.isVisible = showMenu
+        }
+        item = menu.findItem(R.id.menu_forum)
+        if(item != null){
+            item.isVisible = showMenu
+        }
+
+        return super.onPrepareOptionsMenu(menu)
+    }
     private fun getIntentFromMenuItem(activity: Activity, item: MenuItem): Intent{
         val launchedActivityClass = when (item.itemId) {
             R.id.menu_reviews -> ReviewsActivity::class.java
@@ -32,6 +46,13 @@ open class MenuActivity(private val menuRes: Int): AppCompatActivity() {
             else -> MainActivity::class.java
         }
         return Intent(activity, launchedActivityClass)
-                .putExtra(MapActivity.POI_KEY, intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY))
+                .putExtra(
+                    MapActivity.POI_KEY, intent.getParcelableExtra<PointOfInterest>(
+                        MapActivity.POI_KEY
+                    )
+                )
+    }
+    protected fun setShowMenu(showMenu: Boolean){
+        this.showMenu = showMenu
     }
 }

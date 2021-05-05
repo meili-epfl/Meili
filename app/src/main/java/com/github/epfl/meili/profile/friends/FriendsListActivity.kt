@@ -5,23 +5,21 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
-import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Friend
-import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.nearby.NearbyActivity
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 
-// TODO: add more information to friend or get it from somewhere else
 class FriendsListActivity : AppCompatActivity() {
     companion object {
         private const val FRIENDS_PADDING: Int = 15
@@ -64,7 +62,7 @@ class FriendsListActivity : AppCompatActivity() {
         }
     }
 
-    private fun initViews(){
+    private fun initViews() {
         addFriendsButton = findViewById(R.id.add_friend_button)
     }
 
@@ -79,20 +77,21 @@ class FriendsListActivity : AppCompatActivity() {
     }
 
     fun onFriendsListButtonClicked(view: View) {
-        when(view){
+        when (view) {
             addFriendsButton -> showAddFriends()
-            else -> openFriendChat("tour-eiffel-1")
+            else -> openFriendChat((view as TextView).text as String)
+
         }
 
     }
 
-    private fun showAddFriends(){
+    private fun showAddFriends() {
         val intent = Intent(this, NearbyActivity::class.java)
         startActivity(intent)
     }
 
-    private fun openFriendChat(friendUid: String){
-        val intent = Intent(this, ChatLogActivity::class .java).putExtra(FRIEND_KEY, Friend(friendUid))
+    private fun openFriendChat(friendUid: String) {
+        val intent = Intent(this, ChatLogActivity::class.java).putExtra(FRIEND_KEY, Friend(friendUid))
         startActivity(intent)
     }
 }

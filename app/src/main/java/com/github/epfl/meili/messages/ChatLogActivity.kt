@@ -3,14 +3,17 @@ package com.github.epfl.meili.messages
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
+import android.view.View
+import android.view.View.GONE
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.view.menu.MenuView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.home.RequiresLoginActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.Friend
@@ -32,8 +35,9 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
     private var currentUser: User? = null
-    private lateinit var groupId: String
+    private lateinit var chatId: String
     private var messageSet = HashSet<ChatMessage>()
+    private var isGroupChat = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,23 +68,29 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
             val friend = intent.getParcelableExtra<Friend>(FRIEND_KEY)
             val databasePath: String
 
-            if(poi != null){
+            if (poi != null) {
 
                 supportActionBar?.title = poi.name
-                //TODO: change name to something more general (also for friend chat) as toUid
-                groupId = poi.uid
+                chatId = poi.uid
+                isGroupChat = true
 
                 Log.d(TAG, "Starting chat group at ${poi.name} and has id ${poi.uid}")
 
-                databasePath = "POI/${poi.uid}"
-            }else{
+                databasePath = "POI/${chatId}"
+            } else {
                 supportActionBar?.title = friend?.friendUid
-                //TODO: change name to something more general (also for friend chat) as toUid
-                groupId = friend?.friendUid!!
+                val friendUid: String = friend?.friendUid!!
+                val currentUid: String = currentUser!!.uid
+
+                //TODO: explain
+                chatId =
+                    if (friendUid < currentUid) "$friendUid;$currentUid" else "$currentUid;$friendUid"
+                isGroupChat = false
 
                 Log.d(TAG, "Starting friend chat with ${friend?.friendUid}")
 
-                databasePath = "POI/${friend?.friendUid}" //TODO: set some database structure where you can find the messages (maybe sort uids and concatenate)
+                hideMenuButtons()
+                databasePath = "FriendChat/${chatId}"
             }
 
             ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter(databasePath))
@@ -98,6 +108,11 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         }
     }
 
+    private fun hideMenuButtons() {
+        setShowMenu(false)
+        invalidateOptionsMenu()
+    }
+
 
     private fun performSendMessage() {
         val text = findViewById<EditText>(R.id.edit_text_chat_log).text.toString()
@@ -106,7 +121,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         ChatMessageViewModel.addMessage(
             text,
             currentUser!!.uid,
-            groupId,
+            chatId,
             System.currentTimeMillis() / 1000,
             currentUser!!.username
         )
@@ -141,7 +156,10 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
 }
 
-class ChatItem(private val message: ChatMessage, private val isChatMessageFromCurrentUser: Boolean) :
+class ChatItem(
+    private val message: ChatMessage,
+    private val isChatMessageFromCurrentUser: Boolean
+) :
     Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
         return if (isChatMessageFromCurrentUser) {
