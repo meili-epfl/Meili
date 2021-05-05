@@ -17,11 +17,13 @@ import androidx.test.uiautomator.UiSelector
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.database.FirestoreDocumentService
+import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.util.LocationService
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
+import com.github.epfl.meili.util.MockAuthenticationService
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.*
 import com.google.firebase.storage.FirebaseStorage
 import com.schibsted.spain.barista.interaction.PermissionGranter
 import org.hamcrest.Description
@@ -45,12 +47,25 @@ class MapActivityTest {
     var testRule = ActivityScenarioRule(MapActivity::class.java)
 
     init {
+        setupMocks()
+    }
+
+    private fun setupMocks() {
         val mockFirestore = mock(FirebaseFirestore::class.java)
         val mockCollection = mock(CollectionReference::class.java)
         `when`(mockFirestore.collection(any())).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { mock(ListenerRegistration::class.java) }
 
+        val mockDocument = mock(DocumentReference::class.java)
+        `when`(mockFirestore.document(any())).thenReturn(mockDocument)
+        `when`(mockDocument.get()).thenReturn(mock(Task::class.java) as Task<DocumentSnapshot>)
+
+        val mockAuthenticationService = MockAuthenticationService()
+        mockAuthenticationService.signInIntent()
+        Auth.authService = mockAuthenticationService
+
         FirestoreDatabase.databaseProvider = { mockFirestore }
+        FirestoreDocumentService.databaseProvider = { mockFirestore }
         FirebaseStorageService.storageProvider = { mock(FirebaseStorage::class.java) }
         LocationService.getLocationManager = { mock(LocationManager::class.java) }
     }

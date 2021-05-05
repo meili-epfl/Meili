@@ -34,10 +34,6 @@ class FirebaseAuthenticationService : AuthenticationService {
 
     }
 
-    fun setAuth(authService: FirebaseAuth) {
-        auth = authService
-    }
-
     override fun getCurrentUser(): User? {
         val user: FirebaseUser? = auth.currentUser
 
@@ -58,7 +54,7 @@ class FirebaseAuthenticationService : AuthenticationService {
         googleSignInClient.signOut()
     }
 
-    fun firebaseAuthWithGoogle(activity: Activity, idToken: String, onComplete: () -> Unit) {
+    private fun firebaseAuthWithGoogle(activity: Activity, idToken: String, onComplete: () -> Unit) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(activity) { task ->
