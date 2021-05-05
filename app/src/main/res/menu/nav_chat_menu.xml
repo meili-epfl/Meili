@@ -7,4 +7,7 @@
     <item android:id="@+id/menu_reviews"
         android:title="Reviews"
         app:showAsAction="ifRoom"/>
+    <item android:id="@+id/menu_poi_history"
+        android:title="Poi History"
+        app:showAsAction="ifRoom"/>
 </menu>

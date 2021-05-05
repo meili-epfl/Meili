@@ -60,13 +60,16 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     private lateinit var executor: ExecutorService
     private var bitmap: Bitmap? = null
 
+    private lateinit var poi: PointOfInterest
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_forum)
 
         executor = Executors.newSingleThreadExecutor()
 
-        val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
+        poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
+        val poiKey = poi.uid
         initViews()
         initRecyclerView()
         initViewModel(poiKey)
@@ -128,6 +131,12 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         val text = editTextVIew.text.toString()
 
         viewModel.addElement(postId, Post(user.username, title, text))
+
+        val userKey = user.uid
+        FirestoreDatabase( // add to poi history
+            "poi-history/$userKey/poi-history",
+            PointOfInterest::class.java
+        ).addElement(poi.uid, poi)
 
         if (bitmap != null) {
             executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }

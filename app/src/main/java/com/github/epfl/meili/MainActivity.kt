@@ -13,6 +13,7 @@ import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.nearby.NearbyActivity
 import com.github.epfl.meili.poi.PoiActivity
+import com.github.epfl.meili.profile.PoiHistoryActivity
 import com.github.epfl.meili.review.ReviewsActivity
 
 

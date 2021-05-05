@@ -1,5 +1,6 @@
 package com.github.epfl.meili.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -20,6 +21,7 @@ class ProfileActivity : RequiresLoginActivity() {
     private lateinit var photoView: CircleImageView
     private lateinit var nameView: EditText
     private lateinit var bioView: EditText
+    private lateinit var historyButton: Button
     private lateinit var saveButton: Button
 
     private lateinit var viewModel: ProfileViewModel
@@ -32,6 +34,7 @@ class ProfileActivity : RequiresLoginActivity() {
         nameView = findViewById(R.id.name)
         bioView = findViewById(R.id.bio)
         saveButton = findViewById(R.id.save)
+        historyButton = findViewById(R.id.history)
     }
 
     private fun setupViewModel() {
@@ -49,6 +52,7 @@ class ProfileActivity : RequiresLoginActivity() {
         when (view) {
             photoView -> launchGallery.launch("image/*")
             saveButton -> saveProfile()
+            historyButton -> startActivity(Intent(this, PoiHistoryActivity::class.java))
         }
     }
 

@@ -43,6 +43,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
     private lateinit var submitButton: Button
     private lateinit var cancelButton: Button
 
+    private lateinit var poi: PointOfInterest
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reviews)
@@ -50,7 +52,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         listReviewsView = findViewById(R.id.list_reviews)
         editReviewView = findViewById(R.id.edit_review)
 
-        val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
+        poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
+        val poiKey = poi.uid
         showListReviewsView()
         initReviewEditView()
         initRecyclerView()
@@ -88,7 +91,13 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         val title = editTitleView.text.toString()
         val summary = editSummaryView.text.toString()
 
-        viewModel.addElement(Auth.getCurrentUser()!!.uid, Review(rating, title, summary))
+        val userKey = Auth.getCurrentUser()!!.uid
+        viewModel.addElement(userKey, Review(rating, title, summary))
+
+        FirestoreDatabase( // add to poi history
+            "poi-history/$userKey/poi-history",
+            PointOfInterest::class.java
+        ).addElement(poi.uid, poi)
     }
 
     private fun editReviewButtonListener() {
@@ -113,7 +122,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         averageRatingView = findViewById(R.id.average_rating)
 
         @Suppress("UNCHECKED_CAST")
-        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
+        viewModel =
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
         viewModel.setDatabase(FirestoreDatabase("review/$poiKey/reviews", Review::class.java))
         viewModel.getElements().observe(this, { map ->
@@ -133,7 +143,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
             }
         }
 
-        averageRatingView.text = getString(R.string.average_rating_format).format(Review.averageRating(map))
+        averageRatingView.text =
+            getString(R.string.average_rating_format).format(Review.averageRating(map))
         recyclerAdapter.submitList(map.toList())
         recyclerAdapter.notifyDataSetChanged()
     }

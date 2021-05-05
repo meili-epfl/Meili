@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.RequiresLoginActivity
 import com.github.epfl.meili.map.MapActivity
@@ -32,10 +33,14 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     private var currentUser: User? = null
     private lateinit var groupId: String
     private var messageSet = HashSet<ChatMessage>()
+    private lateinit var poi: PointOfInterest
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
+
+        poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
 
         findViewById<RecyclerView>(R.id.recycleview_chat_log).adapter = adapter
 
@@ -50,10 +55,10 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
         if (isLoggedIn) {
             currentUser = Auth.getCurrentUser()
-            val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)
-            supportActionBar?.title = poi?.name
 
-            groupId = poi?.uid!!
+            supportActionBar?.title = poi.name
+
+            groupId = poi.uid
 
             Log.d(TAG, "the poi is ${poi.name} and has id ${poi.uid}")
             ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter("POI/${poi.uid}"))
@@ -82,6 +87,12 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
             System.currentTimeMillis() / 1000,
             currentUser!!.username
         )
+
+        val userKey = currentUser!!.uid
+        FirestoreDatabase( // add to poi history
+            "poi-history/$userKey/poi-history",
+            PointOfInterest::class.java
+        ).addElement(poi.uid, poi)
     }
 
     private fun listenForMessages() {
