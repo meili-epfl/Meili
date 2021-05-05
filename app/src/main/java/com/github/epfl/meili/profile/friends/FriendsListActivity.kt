@@ -20,6 +20,8 @@ import com.github.epfl.meili.util.TopSpacingItemDecoration
 class FriendsListActivity : AppCompatActivity() {
     companion object {
         private const val FRIENDS_PADDING: Int = 15
+        private const val TAG: String = "FriendListActivity"
+        private const val TITLE: String = "My Friends"     
     }
 
     private lateinit var recyclerAdapter: FriendsListRecyclerAdapter
