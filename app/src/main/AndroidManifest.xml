@@ -26,7 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
         <activity
-            android:name=".NavigableActivity"
+            android:name=".util.NavigableActivity"
             tools:ignore="Instantiatable" />
         <activity
             android:name=".profile.friends.FriendsListActivity"

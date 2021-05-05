@@ -2,7 +2,6 @@ package com.github.epfl.meili.util
 
 
 import android.os.SystemClock
-import android.view.MotionEvent
 import android.view.MotionEvent.*
 import android.widget.ImageView
 import org.junit.Before
@@ -20,7 +19,7 @@ class RotationGestureDetectorTest {
 
     @Before
     fun setup() {
-        gestureDetector = RotationGestureDetector(mockListener, mockImageView)
+        gestureDetector = RotationGestureDetector(mockListener)
     }
 
     @Test

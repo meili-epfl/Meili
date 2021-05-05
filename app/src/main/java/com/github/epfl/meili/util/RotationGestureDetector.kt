@@ -1,16 +1,15 @@
 package com.github.epfl.meili.util
 
 import android.view.MotionEvent
-import android.widget.ImageView
 import kotlin.math.atan2
 
 // Reference used : https://stackoverflow.com/questions/10682019/android-two-finger-rotation
 /** Detects two finger rotation motions */
-class RotationGestureDetector(listener: OnRotationGestureListener, imageView: ImageView) {
+class RotationGestureDetector(// Object which can be rotated using two fingers
+    private val listener: OnRotationGestureListener
+) {
 
     private val TAG = "RotationGestureDetector"
-
-    private val imageView = imageView
 
     // Initial finger position values
     private var x1 = 0f
@@ -22,8 +21,6 @@ class RotationGestureDetector(listener: OnRotationGestureListener, imageView: Im
     private val INVALID_PTR_ID = -1
     private var ptrID1 = INVALID_PTR_ID
     private var ptrID2 = INVALID_PTR_ID
-
-    private val listener = listener // Object which can be rotated using two fingers
 
     private var angle = 0f // rotation angle detected
 

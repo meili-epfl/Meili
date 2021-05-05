@@ -1,8 +1,9 @@
-package com.github.epfl.meili
+package com.github.epfl.meili.util
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.github.epfl.meili.R
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest

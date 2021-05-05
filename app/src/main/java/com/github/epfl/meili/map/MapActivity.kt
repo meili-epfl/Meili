@@ -5,7 +5,7 @@ import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import com.github.epfl.meili.BuildConfig
-import com.github.epfl.meili.NavigableActivity
+import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
