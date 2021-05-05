@@ -2,7 +2,6 @@ package com.github.epfl.meili.profile.friends
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +20,7 @@ class FriendsListActivity : AppCompatActivity() {
     companion object {
         private const val FRIENDS_PADDING: Int = 15
         private const val TAG: String = "FriendListActivity"
-        private const val TITLE: String = "My Friends"     
+        private const val TITLE: String = "My Friends"
     }
 
     private lateinit var recyclerAdapter: FriendsListRecyclerAdapter
@@ -35,21 +34,24 @@ class FriendsListActivity : AppCompatActivity() {
         initViewModel()
         initRecyclerView()
 
-        supportActionBar?.title = "My Friends"
+        supportActionBar?.title = TITLE
     }
 
     private fun initViewModel() {
-        if (BuildConfig.DEBUG && Auth.getCurrentUser() == null) {
-            error("User trying to access friends list activity without logging in")
-        }
+        if (Auth.getCurrentUser() == null) {
+            if (BuildConfig.DEBUG) {
+                error("$TAG: User trying to access friends list activity without logging in")
+            }
+        } else {
 
-        @Suppress("UNCHECKED_CAST")
-        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
+            @Suppress("UNCHECKED_CAST")
+            viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
 
-        viewModel.setDatabase(FirestoreDatabase("friends/" + Auth.getCurrentUser()!!.uid + "/friends", Friend::class.java))
-        viewModel.getElements().observe(this) { map ->
-            recyclerAdapter.submitList(map.toList())
-            recyclerAdapter.notifyDataSetChanged()
+            viewModel.setDatabase(FirestoreDatabase("friends/" + Auth.getCurrentUser()!!.uid + "/friends", Friend::class.java))
+            viewModel.getElements().observe(this) { map ->
+                recyclerAdapter.submitList(map.toList())
+                recyclerAdapter.notifyDataSetChanged()
+            }
         }
     }
 
