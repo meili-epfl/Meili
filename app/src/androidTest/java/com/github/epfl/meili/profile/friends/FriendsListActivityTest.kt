@@ -1,9 +1,10 @@
 package com.github.epfl.meili.profile.friends
 
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -92,8 +93,21 @@ class FriendsListActivityTest {
     }
 
     @Test
+    fun friendChatIsDisplayedCorrectly() {
+        database.onEvent(mockSnapshotAfterAddition, null)
+
+        Espresso.onView(textViewContainsText(TEST_FRIEND_UID)).perform(click())
+
+        Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
+
+        Espresso.onView(textViewContainsText(TEST_FRIEND_UID)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+        Espresso.onView(buttonViewContainsText("Send")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+
+    @Test
     fun onAddFriendButtonLaunchIntent() {
-        Espresso.onView(ViewMatchers.withId(R.id.add_friend_button)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.add_friend_button)).perform(click())
 
         Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
     }
@@ -107,6 +121,21 @@ class FriendsListActivityTest {
             override fun matchesSafely(item: View?): Boolean {
                 when (item) {
                     is TextView -> return item.text == content
+                }
+                return false
+            }
+        }
+    }
+
+    private fun buttonViewContainsText(content: String): Matcher<View?> {
+        return object : TypeSafeMatcher<View?>() {
+            override fun describeTo(description: Description) {
+                description.appendText("A ButtonView with the text: $content")
+            }
+
+            override fun matchesSafely(item: View?): Boolean {
+                when (item) {
+                    is Button -> return item.text == content
                 }
                 return false
             }
