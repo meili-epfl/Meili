@@ -8,12 +8,10 @@ import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.profile.ProfileActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-open class NavigableActivity(private val activityLayout: Int = R.layout.activity_map,
-                             private val activityId: Int = R.id.map
-) : AppCompatActivity() {
+open class NavigableActivity(private val layout: Int, private val activityId: Int) : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(activityLayout)
+        setContentView(layout)
 
         val navigation: BottomNavigationView = findViewById(R.id.navigation)!!
         navigation.selectedItemId = activityId

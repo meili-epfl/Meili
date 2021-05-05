@@ -2,6 +2,7 @@ package com.github.epfl.meili
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.forum.ForumActivity
@@ -13,13 +14,17 @@ import com.github.epfl.meili.nearby.NearbyActivity
 import com.github.epfl.meili.poi.PoiActivity
 import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.review.ReviewsActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
-class MainActivity : NavigableActivity(R.layout.activity_main, R.id.map) {
+class MainActivity : AppCompatActivity() {
 
     companion object {
         private val POI = PointOfInterest(10.0, 10.0, "art_brut","ChIJAAAAAAAAAAARg4pb6XR5bo0")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onCreate(savedInstanceState, persistentState)
+        setContentView(R.layout.activity_main)
     }
 
     fun onClick(view: View) {

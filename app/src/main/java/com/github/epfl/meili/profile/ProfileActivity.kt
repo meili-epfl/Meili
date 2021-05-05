@@ -1,19 +1,19 @@
 package com.github.epfl.meili.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
+import com.github.epfl.meili.NavigableActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.home.RequiresLoginActivity
 import de.hdodenhof.circleimageview.CircleImageView
 
 
-class ProfileActivity : RequiresLoginActivity() {
-
+class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profile) {
     private val launchGallery = registerForActivityResult(ActivityResultContracts.GetContent())
     { viewModel.loadLocalImage(contentResolver, it) }
 
@@ -26,12 +26,17 @@ class ProfileActivity : RequiresLoginActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
 
         photoView = findViewById(R.id.photo)
         nameView = findViewById(R.id.name)
         bioView = findViewById(R.id.bio)
         saveButton = findViewById(R.id.save)
+
+        Auth.isLoggedIn.observe(this) {
+            verifyAndUpdateUserIsLoggedIn(it)
+        }
+
+        verifyAndUpdateUserIsLoggedIn(Auth.isLoggedIn.value!!)
     }
 
     private fun setupViewModel() {
@@ -59,7 +64,12 @@ class ProfileActivity : RequiresLoginActivity() {
         viewModel.updateProfile(user)
     }
 
-    override fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Auth.onActivityResult(this, requestCode, resultCode, data)
+    }
+
+    private fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
         if (isLoggedIn) {
             setupViewModel()
             supportActionBar?.title = ""
@@ -67,9 +77,5 @@ class ProfileActivity : RequiresLoginActivity() {
             supportActionBar?.title = "Not Signed In"
             Auth.signIn(this)
         }
-    }
-
-    companion object {
-        const val TAG = "ProfileActivity"
     }
 }
