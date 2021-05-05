@@ -37,8 +37,10 @@ class FriendsListRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         private val name: TextView = itemView.findViewById(R.id.friend_name)
 
+        // TODO: fetch and display Friend's info from Firestore: users/{friend.uid}
         fun bind(pair: Pair<String, Friend>) {
-            name.text = pair.first
+            val friend = pair.second
+            name.text = friend.uid
         }
     }
 }

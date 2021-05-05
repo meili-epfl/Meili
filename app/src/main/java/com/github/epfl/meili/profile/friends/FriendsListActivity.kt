@@ -2,7 +2,6 @@ package com.github.epfl.meili.profile.friends
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -23,7 +22,8 @@ import com.github.epfl.meili.util.TopSpacingItemDecoration
 class FriendsListActivity : AppCompatActivity() {
     companion object {
         private const val FRIENDS_PADDING: Int = 15
-        const val FRIEND_KEY = "FRIEND_KEY"
+        private const val TAG: String = "FriendListActivity"
+        private const val TITLE: String = "My Friends"
     }
 
     private lateinit var recyclerAdapter: FriendsListRecyclerAdapter
@@ -38,27 +38,24 @@ class FriendsListActivity : AppCompatActivity() {
 
         initViewModel()
         initRecyclerView()
-
-        supportActionBar?.title = "My Friends"
-
         initViews()
+
+        supportActionBar?.title = TITLE
     }
 
     private fun initViewModel() {
-        if (Auth.getCurrentUser() == null) {
-            if (BuildConfig.DEBUG) {
-                error("User not logged in trying to access friends list activity")
-            }
-        } else {
-            Log.d("FriendListActivity", Auth.getCurrentUser()!!.uid)
-            @Suppress("UNCHECKED_CAST")
-            viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
+        if (BuildConfig.DEBUG && Auth.getCurrentUser() == null) {
+            error("$TAG: User trying to access friends list activity without logging in")
+        }
 
-            viewModel.setDatabase(FirestoreDatabase("friends/" + Auth.getCurrentUser()!!.uid + "/friends", Friend::class.java))
-            viewModel.getElements().observe(this) { map ->
-                recyclerAdapter.submitList(map.toList())
-                recyclerAdapter.notifyDataSetChanged()
-            }
+        @Suppress("UNCHECKED_CAST")
+        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
+
+        viewModel.setDatabase(FirestoreDatabase("friends/" + Auth.getCurrentUser()!!.uid + "/friends", Friend::class.java))
+        viewModel.getElements().observe(this) { map ->
+            recyclerAdapter.submitList(map.toList())
+            recyclerAdapter.notifyDataSetChanged()
+
         }
     }
 
