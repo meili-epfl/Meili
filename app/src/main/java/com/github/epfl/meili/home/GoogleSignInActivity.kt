@@ -15,18 +15,9 @@ class GoogleSignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_google_sign_in)
 
-        Auth.setAuthenticationService(FirebaseAuthenticationService())
-
         Auth.isLoggedIn.observe(this, {
             updateUI()
         })
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        updateUI()
     }
 
     fun onMapViewButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
@@ -36,18 +27,10 @@ class GoogleSignInActivity : AppCompatActivity() {
 
     fun onGoogleButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
         if (Auth.getCurrentUser() != null) {
-            signOut()
+            Auth.signOut()
         } else {
-            signIn()
+            Auth.signIn(this)
         }
-    }
-
-    private fun signIn() {
-        Auth.signIn(this)
-    }
-
-    private fun signOut() {
-        Auth.signOut()
     }
 
     private fun updateUI() {
@@ -66,11 +49,5 @@ class GoogleSignInActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.textFieldSignIn).text = message
         findViewById<Button>(R.id.signInButton).text = buttonMessage
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        Auth.onActivityResult(this, requestCode, resultCode, data)
     }
 }

@@ -1,4 +1,4 @@
-package com.github.epfl.meili.nearby
+package com.github.epfl.meili.profile.friends
 
 import android.app.Activity
 import android.os.Bundle

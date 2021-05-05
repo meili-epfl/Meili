@@ -1,6 +1,7 @@
 package com.github.epfl.meili.profile
 
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.NavigableActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -23,6 +25,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var bioView: EditText
     private lateinit var saveButton: Button
     private lateinit var seeFriendsButton: Button
+    private lateinit var signOutButton: Button
 
     private lateinit var viewModel: ProfileViewModel
 
@@ -34,6 +37,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         bioView = findViewById(R.id.bio)
         saveButton = findViewById(R.id.save)
         seeFriendsButton = findViewById(R.id.list_friends_button)
+        signOutButton = findViewById(R.id.sign_out)
 
         Auth.isLoggedIn.observe(this) {
             verifyAndUpdateUserIsLoggedIn(it)
@@ -62,6 +66,10 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             photoView -> launchGallery.launch("image/*")
             saveButton -> saveProfile()
             seeFriendsButton -> showFriends()
+            signOutButton -> {
+                Auth.signOut()
+                startActivity(Intent(this, MapActivity::class.java))
+            }
         }
     }
 
@@ -86,8 +94,10 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         if (isLoggedIn) {
             setupViewModel()
             supportActionBar?.title = ""
+            signOutButton.visibility = View.VISIBLE
         } else {
             supportActionBar?.title = "Not Signed In"
+            signOutButton.visibility = View.GONE
             Auth.signIn(this)
         }
     }

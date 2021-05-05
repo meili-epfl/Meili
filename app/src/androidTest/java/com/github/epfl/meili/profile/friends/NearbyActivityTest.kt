@@ -1,4 +1,4 @@
-package com.github.epfl.meili.nearby
+package com.github.epfl.meili.profile.friends
 
 import android.location.LocationManager
 import androidx.test.espresso.Espresso.onView
@@ -62,7 +62,7 @@ class NearbyActivityTest {
         val mockFirestore = mock(FirebaseFirestore::class.java)
         val mockCollection = mock(CollectionReference::class.java)
         val mockDocument = mock(DocumentReference::class.java)
-        `when`(mockFirestore.collection("friends/${MOCK_UID}/friends")).thenReturn(mockCollection)
+        `when`(mockFirestore.collection("friends/$MOCK_UID/friends")).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { mock(ListenerRegistration::class.java) }
         `when`(mockCollection.document(MOCK_FRIEND_UID)).thenReturn(mockDocument)
 
@@ -101,7 +101,9 @@ class NearbyActivityTest {
 
         val connectionLifecycleCallback = connectionLifecycleCallbackCaptor.value
         runOnUiThread {
-            connectionLifecycleCallback.onConnectionInitiated(MOCK_ENDPOINT_ID, ConnectionInfo(MOCK_FRIEND_USERNAME, "", false))
+            connectionLifecycleCallback.onConnectionInitiated(
+                MOCK_ENDPOINT_ID, ConnectionInfo(
+                    MOCK_FRIEND_USERNAME, "", false))
         }
 
         onView(withText("Accept")).inRoot(isDialog()).perform(click())

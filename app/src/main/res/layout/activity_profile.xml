@@ -53,7 +53,7 @@
 
         <EditText
             android:id="@+id/bio"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="77dp"
             android:layout_weight="1"
             android:gravity="center_horizontal" />
@@ -63,19 +63,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
         android:onClick="onProfileButtonClick"
         android:layout_below="@id/bio_container"
         android:layout_centerHorizontal="true"
         android:text="Save My Profile"
-        android:orientation="horizontal"
-        android:layout_gravity="left">
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/list_friends_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
             android:onClick="onProfileButtonClick"
             android:text="My Friends"/>
 
@@ -83,9 +80,17 @@
             android:id="@+id/save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
             android:onClick="onProfileButtonClick"
             android:text="Save My Profile" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sign_out"
+            android:text="Sign Out"
+            android:visibility="gone"
+            android:onClick="onProfileButtonClick"/>
+
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

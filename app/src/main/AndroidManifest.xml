@@ -35,14 +35,9 @@
             android:name=".photo.PhotoCropActivity"
             android:noHistory="true" />
         <activity android:name=".photo.PhotoEditActivity" />
-        <activity android:name=".nearby.NearbyActivity" />
         <activity
-            android:name=".home.GoogleSignInActivity"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity> <!-- Map -->
+            android:name=".profile.friends.NearbyActivity"
+            android:parentActivityName=".profile.friends.FriendsListActivity" />
         <activity
             android:name=".map.MapActivity"
             android:label="@string/title_activity_map">
