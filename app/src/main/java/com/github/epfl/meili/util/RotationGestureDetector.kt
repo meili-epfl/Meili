@@ -9,7 +9,9 @@ class RotationGestureDetector(// Object which can be rotated using two fingers
     private val listener: OnRotationGestureListener
 ) {
 
-    private val TAG = "RotationGestureDetector"
+    companion object {
+        private const val INVALID_PTR_ID = -1
+    }
 
     // Initial finger position values
     private var x1 = 0f
@@ -18,7 +20,6 @@ class RotationGestureDetector(// Object which can be rotated using two fingers
     private var y2 = 0f
 
     // Event pointer IDs for each finger
-    private val INVALID_PTR_ID = -1
     private var ptrID1 = INVALID_PTR_ID
     private var ptrID2 = INVALID_PTR_ID
 
@@ -57,8 +58,7 @@ class RotationGestureDetector(// Object which can be rotated using two fingers
     }
 
     private fun handleActionPointerDown(event: MotionEvent) {
-        ptrID2 =
-            event.getPointerId(event.actionIndex) // second finger down's pointer ID
+        ptrID2 = event.getPointerId(event.actionIndex) // second finger down's pointer ID
 
         x1 = event.getX(event.findPointerIndex(ptrID1))
         y1 = event.getY(event.findPointerIndex(ptrID1))
@@ -93,5 +93,4 @@ class RotationGestureDetector(// Object which can be rotated using two fingers
 
         return newAngle
     }
-
 }

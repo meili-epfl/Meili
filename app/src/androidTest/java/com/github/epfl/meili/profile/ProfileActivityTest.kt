@@ -14,7 +14,9 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDocumentService
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
@@ -141,7 +143,12 @@ class ProfileActivityTest {
     @Test
     fun clickingOnFriendsListShouldLaunchIntent() {
         onView(withId(R.id.list_friends_button)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(FriendsListActivity::class.qualifiedName))
+    }
 
-        Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
+    @Test
+    fun signOutTest() {
+        onView(withId(R.id.sign_out)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(MapActivity::class.qualifiedName))
     }
 }
