@@ -143,12 +143,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         updateMapUI()
 
         if (isLocationPermissionGranted(this)) {
-            getDeviceLocationAndSetCameraPosition()
+            getDeviceLocationAndSetCameraPosition() //TODO: these two functions should be recalled after requesting location permission and being granted
+
+            setUpClusterer()
         } else {
             requestLocationPermission(this)
         }
-
-        setUpClusterer()
     }
 
     @SuppressLint("MissingPermission")
