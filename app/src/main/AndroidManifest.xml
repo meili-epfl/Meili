@@ -29,6 +29,9 @@
             android:name=".NavigableActivity"
             tools:ignore="Instantiatable" />
         <activity
+            android:name=".profile.friends.FriendsListActivity"
+            android:parentActivityName=".profile.ProfileActivity"/>
+        <activity
             android:name=".photo.PhotoCropActivity"
             android:noHistory="true" />
         <activity android:name=".photo.PhotoEditActivity" />

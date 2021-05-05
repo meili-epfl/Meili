@@ -19,7 +19,7 @@ import com.github.epfl.meili.review.ReviewsActivity
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        private val POI = PointOfInterest(10.0, 10.0, "art_brut","ChIJAAAAAAAAAAARg4pb6XR5bo0")
+        private val POI = PointOfInterest(10.0, 10.0, "art_brut", "ChIJAAAAAAAAAAARg4pb6XR5bo0")
     }
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
