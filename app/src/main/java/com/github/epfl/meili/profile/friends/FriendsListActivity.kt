@@ -24,6 +24,7 @@ class FriendsListActivity : AppCompatActivity() {
         private const val FRIENDS_PADDING: Int = 15
         private const val TAG: String = "FriendListActivity"
         private const val TITLE: String = "My Friends"
+        const val FRIEND_KEY = "FRIEND_KEY"
     }
 
     private lateinit var recyclerAdapter: FriendsListRecyclerAdapter

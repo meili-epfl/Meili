@@ -68,8 +68,8 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
                 databasePath = "POI/${chatId}"
             } else {
-                supportActionBar?.title = friend?.friendUid
-                val friendUid: String = friend?.friendUid!!
+                supportActionBar?.title = friend?.uid
+                val friendUid: String = friend?.uid!!
                 val currentUid: String = currentUser!!.uid
 
                 // The friend chat document in the database is saved under the key with value
@@ -79,7 +79,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
                 setGroupChat(false)
 
-                Log.d(TAG, "Starting friend chat with ${friend?.friendUid}")
+                Log.d(TAG, "Starting friend chat with ${friend?.uid}")
 
                 databasePath = "FriendChat/${chatId}"
             }
