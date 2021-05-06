@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GoogleSignInActivity">
+    tools:context=".home.GoogleSignInActivity">
 
     <TextView
         android:id="@+id/textFieldSignIn"
@@ -36,7 +36,7 @@
         android:id="@+id/mapButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Open Map View"
+        android:text="Meili\nLimited Functionality"
         style="@style/Theme.Meili.button"
         android:theme="@style/Theme.Meili.button"
         android:onClick="onMapViewButtonClick"

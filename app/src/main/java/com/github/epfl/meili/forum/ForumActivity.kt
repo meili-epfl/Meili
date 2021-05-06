@@ -109,8 +109,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         }
     }
 
-
-
     private fun openPost(view: View) {
         val postId: String = (view as TextView).text.toString()
         val intent: Intent = Intent(this, PostActivity::class.java)

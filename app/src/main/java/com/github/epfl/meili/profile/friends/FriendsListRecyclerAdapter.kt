@@ -11,12 +11,12 @@ import com.github.epfl.meili.util.MeiliRecyclerAdapter
 
 class FriendsListRecyclerAdapter : MeiliRecyclerAdapter<Friend>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        FriendViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.friend, parent, false)
-        )
+            FriendViewHolder(
+                    LayoutInflater.from(parent.context).inflate(R.layout.friend, parent, false)
+            )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-        (holder as FriendViewHolder).bind(items[position])
+            (holder as FriendViewHolder).bind(items[position])
 
     class FriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val name: TextView = itemView.findViewById(R.id.friend_name)

@@ -58,21 +58,9 @@ class FirebaseAuthenticationService : AuthenticationService {
         googleSignInClient.signOut()
     }
 
-    fun firebaseAuthWithGoogle(activity: Activity, idToken: String, onComplete: () -> Unit) {
+    private fun firebaseAuthWithGoogle(activity: Activity, idToken: String, onComplete: () -> Unit) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(activity) { task ->
-                    if (task.isSuccessful) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithCredential:success")
-                        onComplete()
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithCredential:failure", task.exception)
-                        // ...
-                        onComplete()
-                    }
-                }
+        auth.signInWithCredential(credential).addOnCompleteListener(activity) { onComplete() }
     }
 
     override fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?, onComplete: () -> Unit) {
