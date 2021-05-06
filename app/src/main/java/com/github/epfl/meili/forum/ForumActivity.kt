@@ -192,17 +192,28 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     }
 
     private fun sortPosts(b:Boolean){
-
+        //try to reduce cognitive complexity
+        if(b){
             viewModel.getElements().observe(this, { map ->
                 recyclerAdapter.submitList(map.toSortedMap(Comparator { lhs, rhs ->
                     // -1 - less than or equal, 1 - greater than, all inversed for descending
-                    if(b){
-                    if (map[lhs]!!.timestamp >= map[rhs]!!.timestamp) -1 else  1}
-                    else{if (map[lhs]!!.timestamp <= map[rhs]!!.timestamp) -1 else  1}
+
+                    if (map[lhs]!!.timestamp >= map[rhs]!!.timestamp) -1 else  1
+
+                }).toList()
+                )
+                recyclerAdapter.notifyDataSetChanged()
+            })}
+        else{
+            viewModel.getElements().observe(this, { map ->
+                recyclerAdapter.submitList(map.toSortedMap(Comparator { lhs, rhs ->
+                    if (map[lhs]!!.timestamp <= map[rhs]!!.timestamp) -1 else  1
+
                 }).toList()
                 )
                 recyclerAdapter.notifyDataSetChanged()
             })
+        }
     }
 
 
