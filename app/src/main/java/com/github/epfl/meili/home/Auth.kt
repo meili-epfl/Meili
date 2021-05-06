@@ -11,9 +11,10 @@ object Auth : ViewModel() {
     private const val RC_SIGN_IN = 9001
     var name: String? = null
     var email: String? = null
-    val isLoggedIn = MutableLiveData(false)
+    val isLoggedIn = MutableLiveData<Boolean>(false)
 
     var authService: AuthenticationService = FirebaseAuthenticationService()
+
 
     fun setAuthenticationService(authService: AuthenticationService) {
         this.authService = authService
@@ -27,11 +28,13 @@ object Auth : ViewModel() {
 
     fun signIn(activity: Activity) {
         val signInIntent = authService.signInIntent()
+
         activity.startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
     fun signOut() {
         authService.signOut()
+
         updateUserData()
     }
 

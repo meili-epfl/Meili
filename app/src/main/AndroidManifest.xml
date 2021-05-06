@@ -38,14 +38,21 @@
         <activity
             android:name=".profile.friends.NearbyActivity"
             android:parentActivityName=".profile.friends.FriendsListActivity" />
+
         <activity
-            android:name=".map.MapActivity"
-            android:label="@string/title_activity_map">
+            android:name=".home.GoogleSignInActivity"
+            android:label="Meili">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".map.MapActivity"
+            android:label="@string/title_activity_map"
+            android:parentActivityName=".home.GoogleSignInActivity"
+            />
         <activity
             android:name=".photo.CameraActivity"
             android:noHistory="true"
