@@ -25,10 +25,7 @@
         android:roundIcon="@mipmap/meili_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
-        <activity
-            android:name=".feed.FeedActivity"
-            android:parentActivityName=".home.GoogleSignInActivity"
-            />
+        <activity android:name=".feed.FeedActivity" />
         <activity
             android:name=".util.NavigableActivity"
             tools:ignore="Instantiatable" />
@@ -47,14 +44,12 @@
             android:label="Meili">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".map.MapActivity"
-            android:label="@string/title_activity_map"
-            android:parentActivityName=".home.GoogleSignInActivity" />
+            android:label="@string/title_activity_map" />
         <activity
             android:name=".photo.CameraActivity"
             android:noHistory="true"
@@ -76,9 +71,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".profile.ProfileActivity"
-            android:parentActivityName=".home.GoogleSignInActivity"/>
+        <activity android:name=".profile.ProfileActivity"/>
         <activity
             android:name=".forum.PostActivity"
             android:parentActivityName=".forum.ForumActivity" />
