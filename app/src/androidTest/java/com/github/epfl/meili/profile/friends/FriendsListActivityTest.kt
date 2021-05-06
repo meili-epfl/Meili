@@ -34,13 +34,13 @@ class FriendsListActivityTest {
         private const val TEST_CURRENT_USER_UID = "UID"
         private const val TEST_FRIEND_UID = "FRIEND_UID"
         private val TEST_FRIEND = Friend(TEST_FRIEND_UID)
+        private const val DEFAULT_TEST_MEILI_FRIEND_UID = "OP7VVymi3ZOfTr0akvMnh5HEa2a2"
     }
 
     private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
     private val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
     private val mockDocument: DocumentReference = Mockito.mock(DocumentReference::class.java)
 
-    private val mockSnapshotBeforeAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
     private val mockSnapshotAfterAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
 
     private val mockAuthenticationService = MockAuthenticationService()
@@ -77,6 +77,7 @@ class FriendsListActivityTest {
             database = invocation.arguments[0] as FirestoreDatabase<Friend>
             Mockito.mock(ListenerRegistration::class.java)
         }
+
         Mockito.`when`(mockFirestore.collection(Mockito.anyString())).thenReturn(mockCollection)
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
@@ -108,6 +109,12 @@ class FriendsListActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.add_friend_button)).perform(click())
 
         Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
+    }
+
+    @Test fun whenNoFriendsYouAlwaysHaveMeiliTest(){
+        Mockito.`when`(mockSnapshotAfterAddition.documents).thenReturn(ArrayList())
+
+        database.onEvent(mockSnapshotAfterAddition, null)
     }
 
     private fun textViewContainsText(content: String): Matcher<View?> {

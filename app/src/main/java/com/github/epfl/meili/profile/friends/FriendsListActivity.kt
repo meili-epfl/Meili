@@ -25,6 +25,8 @@ class FriendsListActivity : AppCompatActivity() {
         private const val TAG: String = "FriendListActivity"
         private const val TITLE: String = "My Friends"
         const val FRIEND_KEY = "FRIEND_KEY"
+        private const val DEFAULT_MEILI_FRIEND_UID = "OP7VVymi3ZOfTr0akvMnh5HEa2a2"
+        private const val DEFAULT_MEILI_FRIEND_USERNAME = "Meili"
     }
 
     private lateinit var recyclerAdapter: FriendsListRecyclerAdapter
@@ -54,9 +56,9 @@ class FriendsListActivity : AppCompatActivity() {
 
         viewModel.setDatabase(FirestoreDatabase("friends/" + Auth.getCurrentUser()!!.uid + "/friends", Friend::class.java))
         viewModel.getElements().observe(this) { map ->
+            addDefaultFriend(map)
             recyclerAdapter.submitList(map.toList())
             recyclerAdapter.notifyDataSetChanged()
-
         }
     }
 
@@ -80,7 +82,12 @@ class FriendsListActivity : AppCompatActivity() {
             else -> openFriendChat((view as TextView).text as String)
 
         }
+    }
 
+    private fun addDefaultFriend(friendsMap: Map<String, Friend>) {
+        if (friendsMap.isEmpty()) {
+            viewModel.addElement(DEFAULT_MEILI_FRIEND_UID, Friend(DEFAULT_MEILI_FRIEND_UID))
+        }
     }
 
     private fun showAddFriends() {

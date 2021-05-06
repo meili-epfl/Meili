@@ -2,6 +2,7 @@ package com.github.epfl.meili.map
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -54,6 +55,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map)
+
 
         // Initialize API entry points
         Places.initialize(
@@ -140,7 +142,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+        val mode = resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+        when (mode) {
+            Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))}
+            Configuration.UI_MODE_NIGHT_YES -> {googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_dark))}
+        }
 
         updateMapUI()
 

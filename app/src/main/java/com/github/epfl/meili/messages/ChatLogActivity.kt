@@ -146,6 +146,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         ChatMessageViewModel.messages.observe(this, groupMessageObserver)
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -175,9 +176,7 @@ class ChatItem(
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
                 DateAuxiliary.getDay(date)
 
-        if (!isChatMessageFromCurrentUser && isGroupChat) {
             viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text =
-                    message.fromName
-        }
+                    if (!isChatMessageFromCurrentUser && isGroupChat) message.fromName else ""
     }
 }
