@@ -2,7 +2,11 @@
 
 ## Ahmed (Scrum Master)
 
-## TODO
+This week I finished up the upvote/downvote feature with the help of Aman to do more tests (and increase coverage). As soon as I was finished, I worked on the dark theme mode and also finished this feature. Unfortuately, I didn't have enough time to finish my last feature of the week which was the Facebook login option. I'll have to continue working on it next week.
+
+The time estimations were off this time. But since I had three tasks to implement, I was still able to merge 2/3 features and I will simply continue on the final feature next week along with another feature. So I feel like this failed time estimation didn't do a lot of damage.
+
+In the future, I hope I make better time estimates and have a smoother workflow in collaborative sprint tasks.
 
 ## Aman
 
@@ -39,4 +43,8 @@ I am really happy with the codebase we are building and maintaining since it all
 
 ## Overall team
 
-## TODO
+This week, the team has felt confident that the core features of the app are done. Therefore, we decided to add new extensions to these already existing features (such as filtering posts, personalized friend lists, upvote/downvote + comments on posts, nicer general UI).
+
+People who finish early their tasks got the habbit of helping their colleagues who are in need (especially in tasks they are experienced with).
+
+The stand-up meetings prevail to be more useful day by day. Since with these feature extensions, more creative decisions have to be made and having the entire team aware of these decisions to be made is very useful.
