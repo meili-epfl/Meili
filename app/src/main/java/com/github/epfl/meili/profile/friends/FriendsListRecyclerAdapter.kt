@@ -1,25 +1,22 @@
 package com.github.epfl.meili.profile.friends
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
-import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Friend
 
 class FriendsListRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var items: List<Pair<String, Friend>> = ArrayList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        FriendViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.friend, parent, false)
-        )
+            FriendViewHolder(
+                    LayoutInflater.from(parent.context).inflate(R.layout.friend, parent, false)
+            )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-        (holder as FriendViewHolder).bind(items[position])
+            (holder as FriendViewHolder).bind(items[position])
 
     override fun getItemCount() = items.size
 

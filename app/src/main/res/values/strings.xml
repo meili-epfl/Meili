@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">Meili</string>
-
-
     <string name="activity_google_sign_in">Google Sign In</string>
-
     <string name="title_activity_map">Map</string>
     <string name="average_rating_format">%.2f</string>
     <string name="title_hint">Title</string>
@@ -11,6 +8,4 @@
     <string name="submit_text">Submit</string>
     <string name="cancel_text">Cancel</string>
     <string name="fab_review_content_description">add/edit my review</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
