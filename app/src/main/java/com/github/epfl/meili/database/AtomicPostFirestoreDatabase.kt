@@ -22,7 +22,7 @@ class AtomicPostFirestoreDatabase(path: String) : FirestoreDatabase<Post>(path, 
                 if(otherVoters.contains(uid)) otherVoters.remove(uid)
                 voters.add(uid)
             }
-            //update to new upvoters list
+            //update to new up/downvoters list
             transaction.update(sfDocRef, fieldName, voters)
             transaction.update(sfDocRef, otherFieldName, otherVoters)
         }
