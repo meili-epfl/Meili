@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -23,6 +25,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -56,6 +60,16 @@ class ProfileActivityTest {
     init {
         setupMocks()
         setupStorageMocks()
+    }
+
+    @Before
+    fun initIntents(){
+        Intents.init()
+    }
+
+    @After
+    fun releaseIntents(){
+        Intents.release()
     }
 
     private fun setupMocks() {
@@ -122,5 +136,12 @@ class ProfileActivityTest {
 
         onView(withId(R.id.name)).check(matches(withText(TEST_USERNAME)))
         onView(withId(R.id.bio)).check(matches(withText(TEST_BIO)))
+    }
+
+    @Test
+    fun clickingOnFriendsListShouldLaunchIntent() {
+        onView(withId(R.id.list_friends_button)).perform(click())
+
+        Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
     }
 }

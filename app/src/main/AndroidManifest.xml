@@ -24,15 +24,17 @@
         android:roundIcon="@mipmap/meili_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
-
+        <activity android:name=".profile.friends.FriendsListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".profile.ProfileActivity" />
+        </activity>
         <activity
             android:name=".photo.PhotoCropActivity"
             android:noHistory="true" />
         <activity android:name=".photo.PhotoEditActivity" />
         <activity android:name=".nearby.NearbyActivity" />
-
-        <activity android:name=".home.RequiresLoginActivity"/>
-
+        <activity android:name=".home.RequiresLoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -63,9 +65,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".forum.ForumActivity" />
-        </activity>
-
-        <!-- POI features: forum, chat & review system -->
+        </activity> <!-- POI features: forum, chat & review system -->
         <activity
             android:name=".messages.ChatLogActivity"
             android:parentActivityName=".map.MapActivity">
@@ -101,7 +101,7 @@
 
         <activity
             android:name=".profile.ProfileActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".forum.PostActivity"
             android:parentActivityName=".forum.ForumActivity" />
