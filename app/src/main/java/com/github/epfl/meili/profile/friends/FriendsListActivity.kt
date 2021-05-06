@@ -12,7 +12,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Friend
-import com.github.epfl.meili.nearby.NearbyActivity
+import com.github.epfl.meili.profile.friends.NearbyActivity
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 

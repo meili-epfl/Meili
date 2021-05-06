@@ -43,22 +43,6 @@ class FirebaseAuthenticationServiceTest {
     }
 
     @Test
-    fun firebaseAuthWithGoogleTest() {
-        var fake_id = "1234"
-        Espresso.onView(ViewMatchers.withId(R.id.signInButton))
-            .check(ViewAssertions.matches(ViewMatchers.isClickable())).perform(ViewActions.click())
-
-        testRule!!.scenario.onActivity { activity ->
-
-            fauth.firebaseAuthWithGoogle(activity!!, fake_id) { Auth.updateUserData() }
-
-            assert(!Auth.isLoggedIn.value!!)
-            assert(Auth.name == null)
-            assert(Auth.email == null)
-        }
-    }
-
-    @Test
     fun getCurrentUserNullTest(){
         val mockAuth = mock(FirebaseAuth::class.java)
         `when`(mockAuth.currentUser).thenReturn(null)

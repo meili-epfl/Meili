@@ -12,10 +12,10 @@ class MockAuthenticationService : AuthenticationService {
 
 
     override fun getCurrentUser(): User? {
-        if (mock_name == "null") {
-            return null
+        return if (mock_name == "null") {
+            null
         } else {
-            return User(mock_id, mock_name, mock_email)
+            User(mock_id, mock_name, mock_email)
         }
     }
 
@@ -26,7 +26,7 @@ class MockAuthenticationService : AuthenticationService {
     }
 
     override fun signOut() {
-        // Do nothing
+        mock_name = "null"
     }
 
     override fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?, onComplete: () -> Unit) {

@@ -1,6 +1,7 @@
 package com.github.epfl.meili.database
 
-import java.util.*
+import java.util.Observable
+import java.util.Observer
 import kotlin.collections.HashSet
 
 
@@ -20,7 +21,7 @@ abstract class Database<T>: Observable() {
 
     override fun notifyObservers() {
         super.notifyObservers()
-        observers.forEach {o: Observer -> o.update(this, elements)}
+        observers.forEach { it.update(this, elements) }
     }
 
     abstract fun onDestroy()
