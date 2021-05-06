@@ -27,7 +27,8 @@
         android:theme="@style/Theme.Meili">
         <activity
             android:name=".feed.FeedActivity"
-            android:exported="true" />
+            android:parentActivityName=".home.GoogleSignInActivity"
+            />
         <activity
             android:name=".util.NavigableActivity"
             tools:ignore="Instantiatable" />
@@ -75,7 +76,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".profile.ProfileActivity" />
+        <activity
+            android:name=".profile.ProfileActivity"
+            android:parentActivityName=".home.GoogleSignInActivity"/>
         <activity
             android:name=".forum.PostActivity"
             android:parentActivityName=".forum.ForumActivity" />
