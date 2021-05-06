@@ -28,13 +28,6 @@ class FriendsListRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     class FriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        init {
-            itemView.setOnClickListener{
-                val intent = Intent(MainApplication.applicationContext(), ChatLogActivity::class.java)
-                MainApplication.applicationContext().startActivity(intent)
-            }
-        }
-
         private val name: TextView = itemView.findViewById(R.id.friend_name)
 
         // TODO: fetch and display Friend's info from Firestore: users/{friend.uid}
