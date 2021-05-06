@@ -115,7 +115,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         @Suppress("UNCHECKED_CAST")
         viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
-        viewModel.setDatabase(FirestoreDatabase("review/$poiKey/reviews", Review::class.java))
+        viewModel.initDatabase(FirestoreDatabase("review/$poiKey/reviews", Review::class.java))
         viewModel.getElements().observe(this, { map ->
             reviewsMapListener(map)
         })
