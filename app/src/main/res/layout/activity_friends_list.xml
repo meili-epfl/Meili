@@ -17,13 +17,9 @@
         android:id="@+id/add_friend_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
         android:onClick="onFriendsListButtonClicked"
-=======
-        android:onClick="onAddFriendButtonClicked"
         style="@style/Theme.Meili.button"
         android:theme="@style/Theme.Meili.button"
->>>>>>> 2fce6a360ce8fa3fc53d2019b533d522bf9e0d08
         android:text="Add Friend"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
