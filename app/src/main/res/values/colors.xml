@@ -18,5 +18,10 @@
     <color name="gold">#F6CA83</color>
     <color name="brown">#522A27</color>
     <color name="dark_blue">#023E8A</color>
+    <!-- Dark Mode Palette-->
+    <color name="black_purple">#363b4e</color>
+    <color name="dark_purple">#4f3b78</color>
+    <color name="grey_purple">#927fbf</color>
+    <color name="light_purple">#c4bbf0</color>
 
 </resources>
