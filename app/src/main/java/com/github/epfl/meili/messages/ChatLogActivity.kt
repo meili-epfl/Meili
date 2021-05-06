@@ -175,8 +175,9 @@ class ChatItem(
                 DateAuxiliary.getTime(date)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
                 DateAuxiliary.getDay(date)
-
+        if (!isChatMessageFromCurrentUser) {
             viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text =
-                    if (!isChatMessageFromCurrentUser && isGroupChat) message.fromName else ""
+                    if (isGroupChat) message.fromName else ""
+        }
     }
 }
