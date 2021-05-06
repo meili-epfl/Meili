@@ -111,12 +111,6 @@ class FriendsListActivityTest {
         Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
     }
 
-    @Test fun whenNoFriendsYouAlwaysHaveMeiliTest(){
-        Mockito.`when`(mockSnapshotAfterAddition.documents).thenReturn(ArrayList())
-
-        database.onEvent(mockSnapshotAfterAddition, null)
-    }
-
     private fun textViewContainsText(content: String): Matcher<View?> {
         return object : TypeSafeMatcher<View?>() {
             override fun describeTo(description: Description) {
