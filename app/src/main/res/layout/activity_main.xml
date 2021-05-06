@@ -94,7 +94,6 @@
         android:layout_below="@id/launchPoiView"
         android:layout_centerInParent="true"
         android:layout_marginTop="4dp"
-        android:onClick="onClick"
         android:text="Launch Nearby" />
 
 </RelativeLayout>
