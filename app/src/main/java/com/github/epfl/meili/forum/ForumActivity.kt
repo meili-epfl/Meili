@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
-import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
@@ -22,7 +22,6 @@ import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
-import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import java.util.concurrent.ExecutorService
@@ -32,10 +31,11 @@ import java.util.concurrent.Executors
 class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSelectedListener  {
     companion object {
         private const val CARD_PADDING: Int = 30
+
     }
 
     private lateinit var recyclerAdapter: ForumRecyclerAdapter
-    private lateinit var viewModel: MeiliViewModel<Post>
+    private lateinit var viewModel: ForumViewModel
 
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView
@@ -69,8 +69,8 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
 
         val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
         initViews()
-        initRecyclerView()
         initViewModel(poiKey)
+        initRecyclerView()
         initLoggedInListener()
 
         showListPostsView()
@@ -100,6 +100,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
             filterSpinner.adapter = adapter
         }
         filterSpinner.onItemSelectedListener = this
+
     }
 
     override fun onDestroy() {
@@ -109,7 +110,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     }
 
     fun onForumButtonClick(view: View) {
-        when(view) {
+        when (view) {
             createPostButton -> showEditPostView()
             submitButton -> addPost()
             cancelButton -> showListPostsView()
@@ -122,8 +123,8 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     private fun openPost(view: View) {
         val postId: String = (view as TextView).text.toString()
         val intent: Intent = Intent(this, PostActivity::class.java)
-                .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
-                .putExtra(PostActivity.POST_ID, postId)
+            .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
+            .putExtra(PostActivity.POST_ID, postId)
         startActivity(intent)
     }
 
@@ -152,9 +153,9 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
 
     private fun initViewModel(poiKey: String) {
         @Suppress("UNCHECKED_CAST")
-        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Post>
+        viewModel = ViewModelProvider(this).get(ForumViewModel::class.java)
 
-        viewModel.setDatabase(FirestoreDatabase("forum/$poiKey/posts", Post::class.java))
+        viewModel.initDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts"))
         viewModel.getElements().observe(this, { map ->
             recyclerAdapter.submitList(map.toList())
             recyclerAdapter.notifyDataSetChanged()
@@ -162,7 +163,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     }
 
     private fun initRecyclerView() {
-        recyclerAdapter = ForumRecyclerAdapter()
+        recyclerAdapter = ForumRecyclerAdapter(viewModel)
         val recyclerView: RecyclerView = findViewById(R.id.forum_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ForumActivity)
@@ -173,11 +174,18 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
 
     private fun initLoggedInListener() {
         Auth.isLoggedIn.observe(this, { loggedIn ->
+            //If the user is logged in he can create a new post
             createPostButton.isEnabled = loggedIn
             createPostButton.visibility = if (loggedIn)
                 View.VISIBLE
             else
                 View.GONE
+
+            //and upvote/downvote
+            if(loggedIn && Auth.getCurrentUser() != null){
+                recyclerAdapter.submitUserInfo(Auth.getCurrentUser()!!.uid)
+                recyclerAdapter.notifyDataSetChanged()
+            }
         })
     }
 
@@ -228,6 +236,5 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
-        //TODO("Not yet implemented")
     }
 }
