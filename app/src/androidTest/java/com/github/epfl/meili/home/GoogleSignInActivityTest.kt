@@ -2,6 +2,7 @@ package com.github.epfl.meili.home
 
 import android.app.Instrumentation
 import android.content.Intent
+import android.location.LocationManager
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -13,11 +14,22 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirebaseStorageService
+import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.database.FirestoreDocumentService
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.util.LocationService
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.storage.FirebaseStorage
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito
 
 
 @RunWith(AndroidJUnit4::class)
@@ -28,22 +40,32 @@ class GoogleSignInActivityTest {
         private const val MOCK_NAME = "Fake Name"
     }
 
+    init {
+        setupMapMocks()
+    }
+
+    private fun setupMapMocks() {
+        val mockFirestore = Mockito.mock(FirebaseFirestore::class.java)
+        val mockCollection = Mockito.mock(CollectionReference::class.java)
+        Mockito.`when`(mockFirestore.collection(ArgumentMatchers.any())).thenReturn(mockCollection)
+        Mockito.`when`(mockCollection.addSnapshotListener(ArgumentMatchers.any()))
+            .thenAnswer { Mockito.mock(ListenerRegistration::class.java) }
+
+        FirestoreDatabase.databaseProvider = { mockFirestore }
+        LocationService.getLocationManager = { Mockito.mock(LocationManager::class.java) }
+        mockService = MockAuthenticationService()
+        Auth.authService = mockService
+    }
+
     @get:Rule
     var testRule: ActivityScenarioRule<GoogleSignInActivity> = ActivityScenarioRule(
             GoogleSignInActivity::class.java
     )
 
     @Before
-    fun initiateAuthAndService() {
+    fun signOut() {
         runOnUiThread {
-            //Injecting authentication Service
-            mockService = MockAuthenticationService()
-            Auth.setAuthenticationService(mockService)
-
             Auth.signOut()
-            Auth.isLoggedIn.value = false
-            Auth.email = null
-            Auth.name = null
         }
     }
 
@@ -64,47 +86,19 @@ class GoogleSignInActivityTest {
         Intents.release()
     }
 
-
     @Test
-    fun clickOnButtonShouldSignInIfUserNull() {
-        onView(withId(R.id.signInButton))
-                .check(matches(isClickable())).perform(click())
-
-        //setting name to null makes currentUser return null and button will sign in
-        mockService.mock_name = "null"
-
-        val mockIntent = mockService.signInIntent()
-
-        IntentMatchers.filterEquals(mockIntent)
-    }
-
-    @Test
-    fun whenIsLoggedInValuesAreUpdatedInterfaceShouldBeUpdated() {
+    fun whenIsLoggedInGoesToMap() {
         runOnUiThread {
             Auth.name = MOCK_NAME
             Auth.isLoggedIn.value = true
         }
 
-        onView(withId(R.id.textFieldSignIn)).check(matches(withText("Welcome Fake Name!")))
-        onView(withId(R.id.signInButton)).check(matches(withText("Sign Out")))
+        Intents.intended(IntentMatchers.hasComponent(MapActivity::class.qualifiedName))
     }
 
     @Test
-    fun whenIsLoggedOutValuesAreUpdatedInterfaceShouldBeUpdated() {
-        runOnUiThread {
-            Auth.name = MOCK_NAME
-            Auth.isLoggedIn.value = true
-        }
-
-        onView(withId(R.id.textFieldSignIn)).check(matches(withText("Welcome Fake Name!")))
-        onView(withId(R.id.signInButton)).check(matches(withText("Sign Out")))
-
-        runOnUiThread {
-            Auth.name = null
-            Auth.isLoggedIn.value = false
-        }
-
-        onView(withId(R.id.textFieldSignIn)).check(matches(withText("Sign In to use the map")))
+    fun loggedOutInterfaceTest() {
+        onView(withId(R.id.textFieldSignIn)).check(matches(withText("")))
         onView(withId(R.id.signInButton)).check(matches(withText("Sign In")))
     }
 
