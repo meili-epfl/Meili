@@ -2,5 +2,6 @@
 <resources>
     <string-array name="filters_array">
         <item>Newest Post</item>
+        <item>Oldest Post</item>
     </string-array>
 </resources>

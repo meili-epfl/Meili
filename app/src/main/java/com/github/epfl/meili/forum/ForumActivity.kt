@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
+class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSelectedListener  {
     companion object {
         private const val CARD_PADDING: Int = 30
     }
@@ -45,6 +45,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     private lateinit var editTextVIew: EditText
     private lateinit var submitButton: Button
     private lateinit var cancelButton: Button
+    private lateinit var filterSpinner: Spinner
 
     // image choice and upload
     private val launchCameraActivity =
@@ -88,6 +89,18 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         useCameraButton = findViewById(R.id.post_use_camera)
         useGalleryButton = findViewById(R.id.post_use_gallery)
         displayImageView = findViewById(R.id.post_display_image)
+        filterSpinner = findViewById(R.id.spinner)
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter.createFromResource(this,
+            R.array.filters_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            filterSpinner.adapter = adapter
+        }
+        filterSpinner.onItemSelectedListener = this
     }
 
     override fun onDestroy() {
@@ -127,7 +140,9 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         val title = editTitleView.text.toString()
         val text = editTextVIew.text.toString()
 
-        viewModel.addElement(postId, Post(user.username, title, text))
+        val timeStamp = System.currentTimeMillis() / 1000
+
+        viewModel.addElement(postId, Post(user.username, title, timeStamp, text))
 
         if (bitmap != null) {
             executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }
@@ -177,6 +192,21 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         editPostView.visibility = View.GONE
     }
 
+    private fun sortPosts(b:Boolean){
+
+            viewModel.getElements().observe(this, { map ->
+                recyclerAdapter.submitList(map.toSortedMap(Comparator { lhs, rhs ->
+                    // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                    if(b){
+                    if (map[lhs]!!.timestamp >= map[rhs]!!.timestamp) -1 else  1}
+                    else{if (map[lhs]!!.timestamp <= map[rhs]!!.timestamp) -1 else  1}
+                }).toList()
+                )
+                recyclerAdapter.notifyDataSetChanged()
+            })
+    }
+
+
     private fun loadImage(filePath: Uri) {
         executor.execute {
             val bitmap = getBitmapFromFilePath(contentResolver, filePath)
@@ -186,5 +216,19 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
                 displayImageView.setImageBitmap(bitmap)
             }
         }
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
+        val selectedItem = parent?.getItemAtPosition(pos)
+        if(selectedItem=="Newest Post"){
+            sortPosts(true);
+        }
+        if(selectedItem=="Oldest Post"){
+            sortPosts(false);
+        }
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+        //TODO("Not yet implemented")
     }
 }
