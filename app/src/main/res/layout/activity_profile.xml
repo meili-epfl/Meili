@@ -47,15 +47,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:layout_margin="5dp"
+        android:orientation="horizontal"
+        android:layout_gravity="left">
 
-        <Button
+        
+          <Button
             android:id="@+id/history"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:onClick="onProfileButtonClick"
             android:text="View POI History" />
+          
+          <Button
+            android:id="@+id/list_friends_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:onClick="onProfileButtonClick"
+            android:text="My Friends"/>
+            
 
         <Button
             android:id="@+id/save"
@@ -64,7 +76,5 @@
             android:layout_gravity="end"
             android:onClick="onProfileButtonClick"
             android:text="Save My Profile" />
-
     </LinearLayout>
-
 </LinearLayout>

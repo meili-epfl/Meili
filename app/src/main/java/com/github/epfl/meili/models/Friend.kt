@@ -5,5 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Friend (
-    var friendUid: String = ""
+    var uid: String = ""
 ): Parcelable
