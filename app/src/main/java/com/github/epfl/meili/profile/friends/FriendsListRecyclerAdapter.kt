@@ -11,12 +11,12 @@ import com.github.epfl.meili.models.Friend
 class FriendsListRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var items: List<Pair<String, Friend>> = ArrayList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        FriendViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.friend, parent, false)
-        )
+            FriendViewHolder(
+                    LayoutInflater.from(parent.context).inflate(R.layout.friend, parent, false)
+            )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-        (holder as FriendViewHolder).bind(items[position])
+            (holder as FriendViewHolder).bind(items[position])
 
     override fun getItemCount() = items.size
 

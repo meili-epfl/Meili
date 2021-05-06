@@ -136,6 +136,8 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         updateMapUI()
 
         if (isLocationPermissionGranted(this)) {
+            getDeviceLocationAndSetCameraPosition()
+            setUpClusterer()
             LocationService.listenToLocationChanges(applicationContext, poiMarkerViewModel)
         }
     }
@@ -153,11 +155,11 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
         if (isLocationPermissionGranted(this)) {
             getDeviceLocationAndSetCameraPosition()
+
+            setUpClusterer()
         } else {
             requestLocationPermission(this)
         }
-
-        setUpClusterer()
     }
 
     @SuppressLint("MissingPermission")
