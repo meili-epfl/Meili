@@ -95,7 +95,10 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
             val intent = Intent(this, ForumActivity::class.java)
             intent.putExtra(POI_KEY, it.poi)
 
-            if (poiMarkerViewModel.mPointsOfInterestStatus.value?.get(it.poi) == PoiMarkerViewModel.PointOfInterestStatus.REACHABLE) {
+            val statuses: Map<String, PoiMarkerViewModel.PointOfInterestStatus> =
+                poiMarkerViewModel.mPointsOfInterestStatus.value!!
+
+            if (statuses[it.poi.uid] == PoiMarkerViewModel.PointOfInterestStatus.REACHABLE) {
                 poiMarkerViewModel.setPoiVisited(it.poi)
             }
 

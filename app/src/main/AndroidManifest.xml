@@ -26,11 +26,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
         <activity
+            android:name=".feed.FeedActivity"
+            android:exported="true" />
+        <activity
             android:name=".util.NavigableActivity"
             tools:ignore="Instantiatable" />
         <activity
             android:name=".profile.friends.FriendsListActivity"
-            android:parentActivityName=".profile.ProfileActivity"/>
+            android:parentActivityName=".profile.ProfileActivity" />
         <activity
             android:name=".photo.PhotoCropActivity"
             android:noHistory="true" />
@@ -38,43 +41,41 @@
         <activity
             android:name=".profile.friends.NearbyActivity"
             android:parentActivityName=".profile.friends.FriendsListActivity" />
-
         <activity
             android:name=".home.GoogleSignInActivity"
             android:label="Meili">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".map.MapActivity"
             android:label="@string/title_activity_map"
-            android:parentActivityName=".home.GoogleSignInActivity"
-            />
+            android:parentActivityName=".home.GoogleSignInActivity" />
         <activity
             android:name=".photo.CameraActivity"
             android:noHistory="true"
-            android:parentActivityName=".forum.ForumActivity"/>
+            android:parentActivityName=".forum.ForumActivity" />
         <activity
             android:name=".messages.ChatLogActivity"
-            android:parentActivityName=".map.MapActivity"/>
+            android:parentActivityName=".map.MapActivity" />
         <activity
             android:name=".forum.ForumActivity"
-            android:parentActivityName=".map.MapActivity"/>
+            android:parentActivityName=".map.MapActivity" />
         <activity
             android:name=".review.ReviewsActivity"
-            android:parentActivityName=".map.MapActivity"/>
+            android:parentActivityName=".map.MapActivity" />
         <activity
             android:name=".poi.PoiActivity"
-            android:parentActivityName=".map.MapActivity"/>
+            android:parentActivityName=".map.MapActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".profile.ProfileActivity"/>
+        <activity android:name=".profile.ProfileActivity" />
         <activity
             android:name=".forum.PostActivity"
             android:parentActivityName=".forum.ForumActivity" />

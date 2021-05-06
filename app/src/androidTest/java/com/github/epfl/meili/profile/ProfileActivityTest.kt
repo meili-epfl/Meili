@@ -15,6 +15,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDocumentService
+import com.github.epfl.meili.feed.FeedActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.User
@@ -171,10 +172,9 @@ class ProfileActivityTest {
         Intents.intended(IntentMatchers.hasComponent(MapActivity::class.qualifiedName))
     }
 
-//    @Test
-//    fun goToFeedTest() {
-//        onView(withId(R.id.feed)).perform(click())
-//        // TODO replace by FeedActivity when FeedActivity is created
-//        Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
-//    }
+    @Test
+    fun goToFeedTest() {
+        onView(withId(R.id.feed)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(FeedActivity::class.qualifiedName))
+    }
 }
