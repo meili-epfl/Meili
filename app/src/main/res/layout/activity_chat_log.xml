@@ -22,8 +22,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Send"
-        android:backgroundTint="@color/pink"
-        android:textColor="@color/brown"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GoogleSignInActivity">
+    tools:context=".home.GoogleSignInActivity">
 
     <TextView
         android:id="@+id/textFieldSignIn"
@@ -26,8 +26,8 @@
         android:layout_marginBottom="320dp"
         android:onClick="onGoogleButtonClick"
         android:text="Sign In"
-        android:backgroundTint="@color/pink"
-        android:textColor="@color/brown"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -36,9 +36,9 @@
         android:id="@+id/mapButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Open Map View"
-        android:backgroundTint="@color/pink"
-        android:textColor="@color/brown"
+        android:text="Meili\nLimited Functionality"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
         android:onClick="onMapViewButtonClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

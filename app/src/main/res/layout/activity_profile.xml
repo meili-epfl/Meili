@@ -1,58 +1,118 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".profile.ProfileActivity"
+    >
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/photo"
-        android:layout_width="150dp"
-        android:layout_height="175dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="4"
-        android:onClick="onProfileButtonClick"
-        android:src="@mipmap/meili_launcher"
-        />
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:layout_height="match_parent"
+        android:id="@+id/signed_in">
 
-        <TextView
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:text="Name:" />
-
-        <EditText
-            android:id="@+id/name"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text=""
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/photo"
+            android:layout_width="150dp"
+            android:layout_height="175dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
+            android:onClick="onProfileButtonClick"
+            android:src="@mipmap/meili_launcher"
             />
-    </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:layout_margin="5dp"
-        android:text="About Me:" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:id="@+id/name_container"
+            android:layout_below="@+id/photo">
 
-    <EditText
-        android:id="@+id/bio"
-        android:layout_width="match_parent"
-        android:layout_height="77dp"
-        android:layout_weight="1"
-        android:gravity="center_horizontal" />
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:text="Name:" />
+
+            <EditText
+                android:id="@+id/name"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text=""
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bio_container"
+            android:layout_below="@id/name_container">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="5dp"
+                android:text="About Me:" />
+
+            <EditText
+                android:id="@+id/bio"
+                android:layout_width="0dp"
+                android:layout_height="77dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onProfileButtonClick"
+            android:layout_below="@id/bio_container"
+            android:layout_centerHorizontal="true"
+            android:text="Save My Profile"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/list_friends_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onProfileButtonClick"
+                android:text="My Friends"/>
+
+            <Button
+                android:id="@+id/save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onProfileButtonClick"
+                android:text="Save My Profile" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/sign_out"
+                android:text="Sign Out"
+                android:onClick="onProfileButtonClick"/>
+
+        </LinearLayout>
+    </RelativeLayout>
 
     <Button
-        android:id="@+id/save"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
+        android:id="@+id/sign_in"
+        android:text="Sign In"
         android:onClick="onProfileButtonClick"
-        android:text="Save My Profile" />
+        />
 
-</LinearLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:itemIconTint="@drawable/navigation_selector"
+        app:itemTextColor="@drawable/navigation_selector"
+        app:menu="@menu/navigation_menu" />
+
+</RelativeLayout>

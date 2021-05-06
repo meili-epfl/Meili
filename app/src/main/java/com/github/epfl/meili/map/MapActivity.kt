@@ -2,10 +2,11 @@ package com.github.epfl.meili.map
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.BuildConfig
+import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
@@ -28,7 +29,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.maps.android.clustering.ClusterManager
 
 
-class MapActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapReadyCallback {
     companion object {
         private const val DEFAULT_ZOOM = 15
         const val POI_KEY = "POI_KEY"
@@ -53,7 +54,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_map)
+
 
         // Initialize API entry points
         Places.initialize(
@@ -65,7 +66,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         // Initialize map
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
     }
 
@@ -96,7 +97,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             val intent = Intent(this, ForumActivity::class.java)
             intent.putExtra(POI_KEY, it.poi)
 
-            if (poiMarkerViewModel.mPointsOfInterestStatus.value?.get(it.poi) == PoiMarkerViewModel.PointOfInterestStatus.REACHABLE) {
+            val statuses: Map<String, PoiMarkerViewModel.PointOfInterestStatus> =
+                poiMarkerViewModel.mPointsOfInterestStatus.value!!
+
+            if (statuses[it.poi.uid] == PoiMarkerViewModel.PointOfInterestStatus.REACHABLE) {
                 poiMarkerViewModel.setPoiVisited(it.poi)
             }
 
@@ -138,7 +142,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+        val mode = resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+        when (mode) {
+            Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))}
+            Configuration.UI_MODE_NIGHT_YES -> {googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_dark))}
+        }
 
         updateMapUI()
 

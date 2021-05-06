@@ -8,9 +8,7 @@ open class FirestoreDatabase<T: Any>(path: String, private val ofClass: Class<T>
     companion object {
         private const val TAG: String = "FirestoreDatabase"
 
-        private val DEFAULT_DATABASE = { FirebaseFirestore.getInstance() }
-
-        var databaseProvider: () -> FirebaseFirestore = DEFAULT_DATABASE
+        var databaseProvider: () -> FirebaseFirestore = { FirebaseFirestore.getInstance() }
     }
 
     override var elements: Map<String, T> = HashMap()
