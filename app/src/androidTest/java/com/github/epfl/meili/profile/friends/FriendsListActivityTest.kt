@@ -1,9 +1,10 @@
 package com.github.epfl.meili.profile.friends
 
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -33,13 +34,13 @@ class FriendsListActivityTest {
         private const val TEST_CURRENT_USER_UID = "UID"
         private const val TEST_FRIEND_UID = "FRIEND_UID"
         private val TEST_FRIEND = Friend(TEST_FRIEND_UID)
+        private const val DEFAULT_TEST_MEILI_FRIEND_UID = "OP7VVymi3ZOfTr0akvMnh5HEa2a2"
     }
 
     private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
     private val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
     private val mockDocument: DocumentReference = Mockito.mock(DocumentReference::class.java)
 
-    private val mockSnapshotBeforeAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
     private val mockSnapshotAfterAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
 
     private val mockAuthenticationService = MockAuthenticationService()
@@ -60,8 +61,6 @@ class FriendsListActivityTest {
     }
 
     private fun setupMocks() {
-
-
         val mockDocumentSnapshot: DocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
         Mockito.`when`(mockDocumentSnapshot.id).thenReturn(TEST_FRIEND_UID)
         Mockito.`when`(mockDocumentSnapshot.toObject(Friend::class.java)).thenReturn(TEST_FRIEND)
@@ -78,6 +77,7 @@ class FriendsListActivityTest {
             database = invocation.arguments[0] as FirestoreDatabase<Friend>
             Mockito.mock(ListenerRegistration::class.java)
         }
+
         Mockito.`when`(mockFirestore.collection(Mockito.anyString())).thenReturn(mockCollection)
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
@@ -92,8 +92,21 @@ class FriendsListActivityTest {
     }
 
     @Test
+    fun friendChatIsDisplayedCorrectly() {
+        database.onEvent(mockSnapshotAfterAddition, null)
+
+        Espresso.onView(textViewContainsText(TEST_FRIEND_UID)).perform(click())
+
+        Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
+
+        Espresso.onView(textViewContainsText(TEST_FRIEND_UID)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+        Espresso.onView(buttonViewContainsText("Send")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+
+    @Test
     fun onAddFriendButtonLaunchIntent() {
-        Espresso.onView(ViewMatchers.withId(R.id.add_friend_button)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.add_friend_button)).perform(click())
 
         Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
     }
@@ -107,6 +120,21 @@ class FriendsListActivityTest {
             override fun matchesSafely(item: View?): Boolean {
                 when (item) {
                     is TextView -> return item.text == content
+                }
+                return false
+            }
+        }
+    }
+
+    private fun buttonViewContainsText(content: String): Matcher<View?> {
+        return object : TypeSafeMatcher<View?>() {
+            override fun describeTo(description: Description) {
+                description.appendText("A ButtonView with the text: $content")
+            }
+
+            override fun matchesSafely(item: View?): Boolean {
+                when (item) {
+                    is Button -> return item.text == content
                 }
                 return false
             }

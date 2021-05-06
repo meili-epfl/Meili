@@ -16,6 +16,7 @@ import androidx.test.rule.ActivityTestRule
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.AuthenticationService
+import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
 import org.hamcrest.Description
@@ -39,8 +40,6 @@ class ChatLogActivityAndroidTest {
     private val fake_name = "fake_name_sender"
     private val fake_poi: PointOfInterest =
         PointOfInterest(10.0, 10.0, "fake_poi", "fake_poi")
-    private val MOCK_EMAIL = "moderator2@gmail.com"
-    private val MOCK_PASSWORD = "123123"
 
     @get:Rule
     val mActivityTestRule: ActivityTestRule<ChatLogActivity> =
