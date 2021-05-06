@@ -47,7 +47,7 @@ class PhotoCropActivity : AppCompatActivity(), RotationGestureDetector.OnRotatio
         }
 
         // Handle rotations
-        rotationGestureDetector = RotationGestureDetector(this, binding.photoEditImageView)
+        rotationGestureDetector = RotationGestureDetector(this)
         binding.photoEditImageView.setOnTouchListener { _, event ->
             rotationGestureDetector.onTouchEvent(event)
         }

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.github.epfl.meili.MainActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.map.MapActivity
@@ -43,7 +42,7 @@ open class MenuActivity(private val menuRes: Int): AppCompatActivity() {
             R.id.menu_reviews -> ReviewsActivity::class.java
             R.id.menu_chat -> ChatLogActivity::class.java
             R.id.menu_forum -> ForumActivity::class.java
-            else -> MainActivity::class.java
+            else -> MapActivity::class.java
         }
         return Intent(activity, launchedActivityClass)
                 .putExtra(

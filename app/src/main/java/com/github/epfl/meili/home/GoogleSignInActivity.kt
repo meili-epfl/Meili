@@ -20,13 +20,6 @@ class GoogleSignInActivity : AppCompatActivity() {
         Auth.isLoggedIn.observe(this, {
             updateUI()
         })
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        updateUI()
     }
 
     fun onMapViewButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
@@ -51,17 +44,13 @@ class GoogleSignInActivity : AppCompatActivity() {
     }
 
     private fun updateUI() {
-        var message: String = "Sign In to use the map"
+        var message = ""
         var buttonMessage = "Sign In"
-
-        //disable map button if not signed in
-        val button = findViewById<Button>(R.id.mapButton)
-        button.isEnabled = false
 
         if (Auth.isLoggedIn.value!!) {
             message = "Welcome "+Auth.name!!+"!"
             buttonMessage = "Sign Out"
-            button.isEnabled = true
+            startActivity(Intent(this, MapActivity::class.java))
         }
 
         findViewById<TextView>(R.id.textFieldSignIn).text = message
@@ -70,7 +59,6 @@ class GoogleSignInActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         Auth.onActivityResult(this, requestCode, resultCode, data)
     }
 }

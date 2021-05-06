@@ -1,7 +1,6 @@
 package com.github.epfl.meili.util
 
 import android.Manifest
-import android.R
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
@@ -57,7 +56,7 @@ object LocationService {
                     context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                     positiveListener()
                 }
-                .setNegativeButton(R.string.cancel) { _, _ -> negativeListener() }
+                .setNegativeButton(android.R.string.cancel) { _, _ -> negativeListener() }
                 .show()
     }
 }
