@@ -8,20 +8,24 @@ class AtomicPostFirestoreDatabase(path: String) : FirestoreDatabase<Post>(path, 
         private const val downVoters = "downvoters"
     }
 
-    fun upDownVote(key: String, uid: String, isUpvote: Boolean) {
+    @Suppress("UNCHECKED_CAST")
+    fun upDownVote(key: String, userUid: String, isUpvote: Boolean) {
         val sfDocRef = ref.document(key)
         databaseProvider().runTransaction { transaction ->
             val snapshot = transaction.get(sfDocRef)
             val fieldName: String = if(isUpvote) upVoters else downVoters
             val otherFieldName: String = if(isUpvote) downVoters else upVoters
-            val voters: ArrayList<String> = (snapshot.get(fieldName)!! as ArrayList<String>)
-            val otherVoters: ArrayList<String> = (snapshot.get(otherFieldName)!! as ArrayList<String>)
-            if (voters.contains(uid)) {
-                voters.remove(uid)
+            val voters = ArrayList(snapshot.get(fieldName)!! as List<String>)
+            val otherVoters = ArrayList(snapshot.get(otherFieldName)!! as List<String>)
+            if (voters.contains(userUid)) {
+                voters.remove(userUid)
             } else {
-                if(otherVoters.contains(uid)) otherVoters.remove(uid)
-                voters.add(uid)
+                if (otherVoters.contains(userUid)) {
+                    otherVoters.remove(userUid)
+                }
+                voters.add(userUid)
             }
+
             //update to new up/downvoters list
             transaction.update(sfDocRef, fieldName, voters)
             transaction.update(sfDocRef, otherFieldName, otherVoters)
