@@ -32,12 +32,6 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/comment_id"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="invisible" />
-
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

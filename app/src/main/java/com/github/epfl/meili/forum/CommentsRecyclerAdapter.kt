@@ -27,11 +27,8 @@ class CommentsRecyclerAdapter(private val viewModel: MeiliViewModel<Comment>) :
         RecyclerView.ViewHolder(itemView) {
         private val author: TextView = itemView.findViewById(R.id.comment_author)
         private val text: TextView = itemView.findViewById(R.id.comment_text)
-        private val commentId: TextView = itemView.findViewById(R.id.comment_id)
 
         fun bind(pair: Pair<String, Comment>, userId: String?) {
-            commentId.text = pair.first
-
             val comment = pair.second
             author.text = comment.author
             text.text = comment.text
