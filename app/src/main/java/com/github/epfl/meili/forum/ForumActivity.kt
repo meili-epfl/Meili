@@ -91,8 +91,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         displayImageView = findViewById(R.id.post_display_image)
         filterSpinner = findViewById(R.id.spinner)
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(this,
-            R.array.filters_array,
+        ArrayAdapter.createFromResource(this, R.array.filters_array,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specify the layout to use when the list of choices appears
@@ -196,7 +195,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
 
             viewModel.getElements().observe(this, { map ->
                 recyclerAdapter.submitList(map.toSortedMap(Comparator { lhs, rhs ->
-                    // -1 - less than, 1 - greater than, 0 - equal, all inversed for descending
+                    // -1 - less than or equal, 1 - greater than, all inversed for descending
                     if(b){
                     if (map[lhs]!!.timestamp >= map[rhs]!!.timestamp) -1 else  1}
                     else{if (map[lhs]!!.timestamp <= map[rhs]!!.timestamp) -1 else  1}

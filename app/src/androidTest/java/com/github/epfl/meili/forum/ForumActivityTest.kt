@@ -55,7 +55,7 @@ class ForumActivityTest {
     companion object {
         private const val TEST_UID = "UID"
         private const val TEST_USERNAME = "AUTHOR"
-        private val TEST_POST = Post(TEST_USERNAME, "TITLE", "TEXT")
+        private val TEST_POST = Post(TEST_USERNAME, "TITLE", -1,"TEXT")
         private val TEST_POI_KEY = PointOfInterest(100.0,100.0,"lorem_ipsum1", "lorem_ipsum2")
     }
 
@@ -210,6 +210,13 @@ class ForumActivityTest {
                 hasExtra("Post", TEST_POST),
                 hasComponent(PostActivity::class.java.name)
         ))
+    }
+
+    @Test
+    fun clickOnSortingButtonTest(){
+        mockAuthenticationService.signInIntent()
+        database.onEvent(mockSnapshotBeforeAddition, null)
+        onView(withId(R.id.spinner)).perform(click())
     }
 
     @Test

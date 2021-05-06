@@ -32,7 +32,7 @@ class PostActivityTest {
 
     companion object {
         private const val TEST_ID = "ID"
-        private val TEST_POST = Post("AUTHOR", "TITLE", "TEXT")
+        private val TEST_POST = Post("AUTHOR", "TITLE", -1,"TEXT")
     }
 
     private val intent = Intent(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext, PostActivity::class.java)
