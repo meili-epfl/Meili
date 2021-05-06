@@ -3,15 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Theme.Meili"
     tools:context=".MainActivity">
+
 
     <Button
         android:id="@+id/launchSignInView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClick"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
         android:layout_centerHorizontal="true"
-        android:theme="@style/Theme.Meili"
         android:text="Launch Sign In View" />
 
     <Button
@@ -19,6 +22,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClick"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/launchSignInView"
         android:text="Launch Map View" />
@@ -28,6 +33,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClick"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/launchMapView"
         android:text="Launch Profile View" />
@@ -37,6 +44,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClick"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/launchProfileView"
         android:text="Launch Chatting view"/>
@@ -46,6 +55,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClick"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/launchChatView"
         android:text="Launch Reviews"/>
@@ -55,6 +66,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClick"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/launchReviewView"
         android:text="Launch Forum View"/>
@@ -64,6 +77,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onClick"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/launchForumView"
         android:text="Launch POI Info View"/>
@@ -72,6 +87,10 @@
         android:id="@+id/launchNearby"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onClick"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/launchPoiView"
         android:layout_centerInParent="true"
         android:layout_marginTop="4dp"

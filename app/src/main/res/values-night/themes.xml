@@ -2,16 +2,16 @@
     <!-- Base application theme. -->
     <style name="Theme.Meili" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimary">@color/dark_purple</item>
+        <item name="colorPrimaryVariant">@color/black_purple</item>
+        <item name="colorOnPrimary">@color/black_purple</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">@color/black_purple</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/dark_purple</item>
-        <!-- Making background light blue -->
+        <!-- Background color -->
         <item name="android:windowBackground">@color/black_purple</item>
         <item name="android:colorBackground">@color/black_purple</item>
         <!-- Button Color -->
@@ -19,5 +19,7 @@
         <item name="colorButtonNormal">@color/white_blue</item>
         <item name="android:colorButtonNormal">@color/white_blue</item>
         <item name="android:textColor">@color/white_blue</item>
+        <!-- option menu aciton bar -->
+        <item name="android:itemBackground">@color/pink</item>
     </style>
 </resources>
