@@ -7,7 +7,9 @@ import kotlinx.parcelize.Parcelize
 data class Post(
     var author: String = "",
     var title: String = "",
-    var text: String = ""
+    var text: String = "",
+    var upvoters: ArrayList<String> = arrayListOf(),
+    var downvoters: ArrayList<String> = arrayListOf()
 ) : Parcelable {
     companion object {
         const val TAG = "Post"
