@@ -7,11 +7,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Comment
+import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliViewModel
 
 class CommentsRecyclerAdapter(private val viewModel: MeiliViewModel<Comment>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var items: List<Pair<String, Comment>> = ArrayList()
+    MeiliRecyclerAdapter<Comment>() {
     private var userId: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -22,12 +22,6 @@ class CommentsRecyclerAdapter(private val viewModel: MeiliViewModel<Comment>) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
         (holder as CommentViewHolder).bind(items[position], userId)
-
-    override fun getItemCount() = items.size
-
-    fun submitList(list: List<Pair<String, Comment>>) {
-        items = list
-    }
 
     class CommentViewHolder(itemView: View, private val viewModel: MeiliViewModel<Comment>) :
         RecyclerView.ViewHolder(itemView) {

@@ -8,21 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Review
+import com.github.epfl.meili.util.MeiliRecyclerAdapter
 
-class ReviewsRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var items: List<Pair<String, Review>> = ArrayList()
-
+class ReviewsRecyclerAdapter : MeiliRecyclerAdapter<Review>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             ReviewViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.review, parent, false))
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
             (holder as ReviewViewHolder).bind(items[position])
-
-    override fun getItemCount() = items.size
-
-    fun submitList(list: List<Pair<String, Review>>) {
-        items = list
-    }
 
     class ReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val ratingBar: RatingBar = itemView.findViewById(R.id.review_rating)
