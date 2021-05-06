@@ -13,6 +13,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirebaseStorageService
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDocumentService
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
@@ -22,13 +23,12 @@ import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -36,8 +36,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
+import org.mockito.Mockito.*
 
 @RunWith(AndroidJUnit4::class)
 class ProfileActivityTest {
@@ -63,6 +62,7 @@ class ProfileActivityTest {
 
     init {
         setupMocks()
+        setupMapMocks()
         setupStorageMocks()
         LocationService.getLocationManager = { mock(LocationManager::class.java) }
     }
@@ -102,6 +102,15 @@ class ProfileActivityTest {
         FirestoreDocumentService.databaseProvider = { mockFirestore }
         Auth.authService = mockAuthenticationService
         mockAuthenticationService.signInIntent()
+    }
+
+    private fun setupMapMocks() {
+        val mockFirestore = mock(FirebaseFirestore::class.java)
+        val mockCollection =  mock(CollectionReference::class.java)
+        `when`(mockFirestore.collection(anyString())).thenReturn(mockCollection)
+        `when`(mockCollection.addSnapshotListener(any())).thenAnswer { mock(ListenerRegistration::class.java) }
+
+        FirestoreDatabase.databaseProvider = { mockFirestore }
     }
 
     private fun setupStorageMocks() {
@@ -152,7 +161,8 @@ class ProfileActivityTest {
     @Test
     fun signOutTest() {
         onView(withId(R.id.sign_out)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(MapActivity::class.qualifiedName))
+        onView(withId(R.id.signed_in)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.sign_in)).check(matches(isDisplayed()))
     }
 
     @Test

@@ -42,7 +42,7 @@ object Auth : ViewModel() {
         }
     }
 
-    private fun updateUserData() {
+    fun updateUserData() {
         val user = getCurrentUser()
 
         if (user != null) {

@@ -9,7 +9,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.NavigableActivity
 import de.hdodenhof.circleimageview.CircleImageView
@@ -24,7 +23,10 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var bioView: EditText
     private lateinit var saveButton: Button
     private lateinit var seeFriendsButton: Button
+    private lateinit var signInButton: Button
     private lateinit var signOutButton: Button
+
+    private lateinit var signedInView: View
 
     private lateinit var viewModel: ProfileViewModel
 
@@ -36,18 +38,24 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         bioView = findViewById(R.id.bio)
         saveButton = findViewById(R.id.save)
         seeFriendsButton = findViewById(R.id.list_friends_button)
+        signInButton = findViewById(R.id.sign_in)
         signOutButton = findViewById(R.id.sign_out)
 
+        signedInView = findViewById(R.id.signed_in)
+
         Auth.isLoggedIn.observe(this) {
-            verifyAndUpdateUserIsLoggedIn(it)
+            verifyAndUpdateUserIsLoggedIn()
         }
 
-        verifyAndUpdateUserIsLoggedIn(Auth.isLoggedIn.value!!)
+        if (!Auth.isLoggedIn.value!!) {
+            Auth.signIn(this)
+        }
     }
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(Auth.getCurrentUser()!!))
                 .get(ProfileViewModel::class.java)
+        viewModel.getUser().removeObservers(this)
         viewModel.getUser().observe(this) { user ->
             nameView.setText(user.username)
             bioView.setText(user.bio)
@@ -56,7 +64,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
                 nameView.setText(Auth.getCurrentUser()!!.username)
             }
         }
-
+        viewModel.getRequestCreator().removeObservers(this)
         viewModel.getRequestCreator().observe(this) { it.into(photoView) }
     }
 
@@ -65,11 +73,8 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             photoView -> launchGallery.launch("image/*")
             saveButton -> saveProfile()
             seeFriendsButton -> showFriends()
-            signOutButton -> {
-                Auth.isLoggedIn.removeObservers(this)
-                Auth.signOut()
-                startActivity(Intent(this, MapActivity::class.java))
-            }
+            signInButton -> Auth.signIn(this)
+            signOutButton -> Auth.signOut()
         }
     }
 
@@ -90,15 +95,16 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         Auth.onActivityResult(this, requestCode, resultCode, data)
     }
 
-    private fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
-        if (isLoggedIn) {
+    private fun verifyAndUpdateUserIsLoggedIn() {
+        if (Auth.isLoggedIn.value!!) {
             setupViewModel()
             supportActionBar?.title = ""
-            signOutButton.visibility = View.VISIBLE
+            signedInView.visibility = View.VISIBLE
+            signInButton.visibility = View.GONE
         } else {
             supportActionBar?.title = "Not Signed In"
-            signOutButton.visibility = View.GONE
-            Auth.signIn(this)
+            signedInView.visibility = View.GONE
+            signInButton.visibility = View.VISIBLE
         }
     }
 }
