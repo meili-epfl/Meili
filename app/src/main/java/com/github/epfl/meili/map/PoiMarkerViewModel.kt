@@ -1,10 +1,12 @@
 package com.github.epfl.meili.map
 
+import android.app.Application
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.epfl.meili.MainApplication
@@ -20,7 +22,9 @@ import kotlin.collections.HashMap
  * This list is Personalized for each user and depending on their position and the history of visited POIs
  * each POI will have a different status between VISITED, VISIBLE and REACHABLE
  */
-class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
+open class PoiMarkerViewModel(application: Application) :
+    AndroidViewModel(application), Observer, LocationListener
+{
 
     private var database: Database<PointOfInterest>? = null
     private var poiService: PoiService? = null

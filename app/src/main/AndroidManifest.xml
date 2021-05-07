@@ -25,6 +25,7 @@
         android:roundIcon="@mipmap/meili_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
+
         <activity android:name=".feed.FeedActivity" />
         <activity
             android:name=".util.NavigableActivity"
@@ -44,6 +45,7 @@
             android:label="Meili">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -71,7 +73,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".profile.ProfileActivity"/>
+        <activity android:name=".profile.ProfileActivity" />
         <activity
             android:name=".forum.PostActivity"
             android:parentActivityName=".forum.ForumActivity" />

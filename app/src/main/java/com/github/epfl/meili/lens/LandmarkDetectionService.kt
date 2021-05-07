@@ -1,4 +1,4 @@
-package com.github.epfl.meili
+package com.github.epfl.meili.lens
 
 import android.content.Context
 import android.net.Uri
@@ -8,7 +8,7 @@ import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmarkDetector
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 
-class LandmarkDetectionService {
+object LandmarkDetectionService {
     var landmarkDetector: () -> FirebaseVisionCloudLandmarkDetector =
         { FirebaseVision.getInstance().visionCloudLandmarkDetector }
 

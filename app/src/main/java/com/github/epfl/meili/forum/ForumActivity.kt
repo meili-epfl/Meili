@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResult
@@ -12,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
+import com.github.epfl.meili.lens.LandmarkDetectionService
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.home.Auth
@@ -190,6 +192,16 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     private fun loadImage(filePath: Uri) {
         executor.execute {
             val bitmap = getBitmapFromFilePath(contentResolver, filePath)
+
+            LandmarkDetectionService.detectInImage(applicationContext, filePath)
+                .addOnSuccessListener { landmarks ->
+                    runOnUiThread {
+                        Log.e("landmarks", "${landmarks.map { "${it.landmark} ${it.confidence}"}}")
+                        Toast.makeText(applicationContext, "${landmarks.map { "${it.landmark} ${it.confidence}"}}", Toast.LENGTH_LONG).show()
+                    }
+                }.addOnFailureListener {e ->
+                    Log.e("LANDMARKS", "$e")
+                }
 
             runOnUiThread {
                 this.bitmap = bitmap

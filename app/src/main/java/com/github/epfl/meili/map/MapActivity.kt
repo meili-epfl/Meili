@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
+import android.widget.TextView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.R
@@ -35,6 +36,8 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         const val POI_KEY = "POI_KEY"
     }
 
+    private lateinit var azimuthText: TextView
+
     // API entry points
     private lateinit var placesClient: PlacesClient
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -48,13 +51,17 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
     private lateinit var clusterRenderer: PoiRenderer
 
-    private val poiMarkerViewModel = PoiMarkerViewModel()
+    private lateinit var viewModel: MapActivityViewModel
 
     private val poiItems: HashMap<String, PoiItem> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel = MapActivityViewModel(application)
+
+        azimuthText = findViewById(R.id.azimuth)
+        listenToAzimuth()
 
         // Initialize API entry points
         Places.initialize(
@@ -70,13 +77,19 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         mapFragment?.getMapAsync(this)
     }
 
+    private fun listenToAzimuth() {
+        viewModel.getAzimuth().observe(this) { azimuth ->
+            azimuthText.text = azimuth.toString()
+        }
+    }
+
     private fun setUpClusterer() {
-        LocationService.listenToLocationChanges(applicationContext, poiMarkerViewModel)
-        poiMarkerViewModel.setPoiService(PoiServiceCached())
+        LocationService.listenToLocationChanges(applicationContext, viewModel)
+        viewModel.setPoiService(PoiServiceCached())
 
         val currentUser = Auth.getCurrentUser()
         if (currentUser != null) {
-            poiMarkerViewModel.setDatabase(FirestoreDatabase("users-poi-list/${currentUser.uid}/poi-list", PointOfInterest::class.java))
+            viewModel.setDatabase(FirestoreDatabase("users-poi-list/${currentUser.uid}/poi-list", PointOfInterest::class.java))
         }
 
         // Initialize the manager with the context and the map.
@@ -98,17 +111,17 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
             intent.putExtra(POI_KEY, it.poi)
 
             val statuses: Map<String, PoiMarkerViewModel.PointOfInterestStatus> =
-                poiMarkerViewModel.mPointsOfInterestStatus.value!!
+                viewModel.mPointsOfInterestStatus.value!!
 
             if (statuses[it.poi.uid] == PoiMarkerViewModel.PointOfInterestStatus.REACHABLE) {
-                poiMarkerViewModel.setPoiVisited(it.poi)
+                viewModel.setPoiVisited(it.poi)
             }
 
             startActivity(intent)
             true
         }
 
-        poiMarkerViewModel.mPointsOfInterestStatus.observe(this) {
+        viewModel.mPointsOfInterestStatus.observe(this) {
             addItems(it)
         }
     }
@@ -119,7 +132,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
             val poiItem = if (poiItems.containsKey(entry.key)) {
                 poiItems[entry.key]!!
             } else {
-                PoiItem(poiMarkerViewModel.mPointsOfInterest.value?.get(entry.key)!!)
+                PoiItem(viewModel.mPointsOfInterest.value?.get(entry.key)!!)
             }
             newMap[poiItem] = entry.value
         }
@@ -138,14 +151,13 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         if (isLocationPermissionGranted(this)) {
             getDeviceLocationAndSetCameraPosition()
             setUpClusterer()
-            LocationService.listenToLocationChanges(applicationContext, poiMarkerViewModel)
+            LocationService.listenToLocationChanges(applicationContext, viewModel)
         }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        val mode = resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
-        when (mode) {
+        when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))}
             Configuration.UI_MODE_NIGHT_YES -> {googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_dark))}
