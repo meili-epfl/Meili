@@ -14,11 +14,13 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.SphericalUtil.computeDistanceBetween
 import com.google.maps.android.SphericalUtil.computeHeading
 import kotlin.math.PI
+import kotlin.math.roundToInt
 
 class MapActivityViewModel(application: Application): PoiMarkerViewModel(application) {
     companion object {
-        private const val SENSOR_DELAY = 500_000 // microseconds
-        private const val FIELD_OF_VIEW = 60 // degrees
+        private const val SENSOR_DELAY = 2000_000 // microseconds
+        private const val FIELD_OF_VIEW = 40 // degrees
+        private const val LENS_MAX_DISTANCE: Double = 500.0 // meters
     }
 
     private var sensorManager: SensorManager =
@@ -46,7 +48,7 @@ class MapActivityViewModel(application: Application): PoiMarkerViewModel(applica
         override fun onSensorChanged(event: SensorEvent) {
             floatGeoMagnetic = event.values
             updateOrientation()
-            mPointOfInterest.value = closestPoi(fieldOfViewPOIs())
+            mPOIDist.value = closestPoiAndDistance(fieldOfViewPOIs())
         }
 
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
@@ -60,7 +62,6 @@ class MapActivityViewModel(application: Application): PoiMarkerViewModel(applica
             floatGeoMagnetic
         )
         SensorManager.getOrientation(floatRotationMatrix, floatOrientation)
-        mAzimuth.value = azimuth()
     }
 
     private fun azimuth(): Double = floatOrientation[0] * 180 / PI
@@ -68,10 +69,10 @@ class MapActivityViewModel(application: Application): PoiMarkerViewModel(applica
     // assumes lastUserLocation not null
     private fun getUserLocation() = LatLng(lastUserLocation!!.latitude, lastUserLocation!!.longitude)
 
-    private fun closestPoi(pois: List<PointOfInterest>): PointOfInterest? {
+    private fun closestPoiAndDistance(pois: List<PointOfInterest>): Pair<PointOfInterest, Int>? {
         if (lastUserLocation == null) return null
 
-        var minDist = Double.MAX_VALUE
+        var minDist = LENS_MAX_DISTANCE
         var nearestPoi: PointOfInterest? = null
         val userLocation = getUserLocation()
         for (poi in pois) {
@@ -82,7 +83,8 @@ class MapActivityViewModel(application: Application): PoiMarkerViewModel(applica
             }
         }
 
-        return nearestPoi
+        return if (nearestPoi == null) null
+        else Pair(nearestPoi, minDist.roundToInt())
     }
 
     private fun fieldOfViewPOIs(): List<PointOfInterest> {
@@ -109,14 +111,12 @@ class MapActivityViewModel(application: Application): PoiMarkerViewModel(applica
         return pois
     }
 
-    private val mAzimuth: MutableLiveData<Double> = MutableLiveData()
-    private val mPointOfInterest: MutableLiveData<PointOfInterest> = MutableLiveData()
+    private val mPOIDist: MutableLiveData<Pair<PointOfInterest, Int>> = MutableLiveData()
 
     init {
         sensorManager.registerListener(accelerometerListener, accelerometer, SENSOR_DELAY)
         sensorManager.registerListener(magneticFieldListener, magneticField, SENSOR_DELAY)
     }
 
-    fun getAzimuth(): LiveData<Double> = mAzimuth
-    fun getPointOfInterest(): LiveData<PointOfInterest> = mPointOfInterest
+    fun getPOIDist(): LiveData<Pair<PointOfInterest, Int>> = mPOIDist
 }

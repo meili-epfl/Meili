@@ -7,7 +7,6 @@ import android.location.Location
 import android.os.Bundle
 import android.widget.TextView
 import com.github.epfl.meili.BuildConfig
-import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
@@ -17,6 +16,7 @@ import com.github.epfl.meili.poi.PoiServiceCached
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
 import com.github.epfl.meili.util.LocationService.requestLocationPermission
+import com.github.epfl.meili.util.NavigableActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
@@ -36,7 +36,8 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         const val POI_KEY = "POI_KEY"
     }
 
-    private lateinit var azimuthText: TextView
+    private lateinit var lensPoiNameText: TextView
+    private lateinit var lensPoiDistText: TextView
 
     // API entry points
     private lateinit var placesClient: PlacesClient
@@ -60,8 +61,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
         viewModel = MapActivityViewModel(application)
 
-        azimuthText = findViewById(R.id.azimuth)
-        listenToAzimuth()
+        setupMeiliLens()
 
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
         placesClient = Places.createClient(this)
@@ -72,10 +72,18 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         mapFragment?.getMapAsync(this)
     }
 
-    private fun listenToAzimuth() {
-        viewModel.getPointOfInterest().observe(this) { poi ->
-            if (poi != null)
-                azimuthText.text = poi.name
+    private fun setupMeiliLens() {
+        lensPoiNameText = findViewById(R.id.lens_poi_name)
+        lensPoiDistText = findViewById(R.id.lens_poi_distance)
+
+        viewModel.getPOIDist().observe(this) { poiDist ->
+            if (poiDist != null) {
+                lensPoiNameText.text = poiDist.first.name
+                lensPoiDistText.text = "${poiDist.second} meters away"
+            } else {
+                lensPoiNameText.text = "No Point of Interest found"
+                lensPoiDistText.text = ""
+            }
         }
     }
 
