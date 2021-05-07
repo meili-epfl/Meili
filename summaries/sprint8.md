@@ -10,11 +10,11 @@ In the future, I hope I make better time estimates and have a smoother workflow 
 
 ## Aman
 
-This week I worked on a tabular UI for the application to make the application more attactive. It was fun to work on the UI for a change as I got to learn new things and make UI choices. My time estimate for this feature was more or less accurate. During its implementation, I realized that it would be a good idea to add the ability to sign out in the profile too and went ahead and implemented that, which took me another 2h.
+This week I worked on a tabular UI for the application to make the application more attactive. It was fun to work on the UI for a change as I got to learn new things and make UI choices. My time estimate for this feature was more or less accurate. During its implementation, I realized that we should give the user the ability to sign out from the profile too. So, I completed this feature in another 2h.
 
-With the remaining 2h I had, I helped Ahmed to finish the upvote/downvote feature by testing the Firebase transaction service. Since I already spent 8h on SDP this week, I didn't end up starting the second task I had planned for this sprint.
+Finally, I helped Ahmed finish the upvote/downvote feature by testing the Firebase transaction service which took me another 2h. Since I had already spent 8h on SDP this week, I didn't end up starting the second task I had planned for this sprint.
 
-I'm happy with my work this week as I was manage my time well and be productive despite a heavy workload in other courses.
+I'm happy with my work this week as I managed my time well and was productive despite a heavy workload in other courses.
 
 
 ## Ewan 
