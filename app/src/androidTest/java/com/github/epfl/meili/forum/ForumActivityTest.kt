@@ -23,6 +23,7 @@ import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.photo.CameraActivity
@@ -62,6 +63,7 @@ class ForumActivityTest {
 
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
     private val mockCollection: CollectionReference = mock(CollectionReference::class.java)
+    private val mockComments: CollectionReference = mock(CollectionReference::class.java)
     private val mockDocument: DocumentReference = mock(DocumentReference::class.java)
 
     private val mockSnapshotBeforeAddition: QuerySnapshot = mock(QuerySnapshot::class.java)
@@ -75,6 +77,7 @@ class ForumActivityTest {
     private val mockTransaction = mock(Transaction::class.java)
 
     private lateinit var database: AtomicPostFirestoreDatabase
+    private lateinit var commentsDatabase: FirestoreDatabase<Comment>
 
     private val intent = Intent(
         InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
@@ -118,6 +121,13 @@ class ForumActivityTest {
             mock(ListenerRegistration::class.java)
         }
         `when`(mockCollection.document(contains(TEST_UID))).thenReturn(mockDocument)
+
+        `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts/${TEST_UID}/comments")).thenReturn(mockComments)
+        `when`(mockComments.addSnapshotListener(any())).thenAnswer { invocation ->
+            commentsDatabase = invocation.arguments[0] as FirestoreDatabase<Comment>
+            mock(ListenerRegistration::class.java)
+        }
+        `when`(mockComments.document(contains(TEST_UID))).thenReturn(mockDocument)
 
         `when`(mockSnapshotBeforeAddition.documents).thenReturn(ArrayList<DocumentSnapshot>())
 
