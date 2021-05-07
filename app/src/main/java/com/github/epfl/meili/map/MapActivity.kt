@@ -5,13 +5,20 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.poi.PoiServiceCached
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
@@ -38,6 +45,12 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
     private lateinit var lensPoiNameText: TextView
     private lateinit var lensPoiDistText: TextView
+    private lateinit var lensInfoContainer: View
+
+    private lateinit var lensDismissLandmark: ImageView
+    private lateinit var lensDetectedLandmark: TextView
+    private lateinit var lensDetectedLandmarkContainer: View
+    private lateinit var lensCamera: ImageView
 
     // API entry points
     private lateinit var placesClient: PlacesClient
@@ -61,7 +74,9 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
         viewModel = MapActivityViewModel(application)
 
-        setupMeiliLens()
+        initLensViews()
+        setupLensSensors()
+        setupLensCamera()
 
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
         placesClient = Places.createClient(this)
@@ -72,10 +87,18 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         mapFragment?.getMapAsync(this)
     }
 
-    private fun setupMeiliLens() {
+    private fun initLensViews() {
         lensPoiNameText = findViewById(R.id.lens_poi_name)
         lensPoiDistText = findViewById(R.id.lens_poi_distance)
+        lensInfoContainer = findViewById(R.id.lens_info_container)
 
+        lensDismissLandmark = findViewById(R.id.lens_dismiss_landmark)
+        lensDetectedLandmark = findViewById(R.id.lens_detected_landmark)
+        lensDetectedLandmarkContainer = findViewById(R.id.lens_detected_landmark_container)
+        lensCamera = findViewById(R.id.lens_camera)
+    }
+
+    private fun setupLensSensors() {
         viewModel.getPOIDist().observe(this) { poiDist ->
             if (poiDist != null) {
                 lensPoiNameText.text = poiDist.first.name
@@ -84,6 +107,40 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
                 lensPoiNameText.text = "No Point of Interest found"
                 lensPoiDistText.text = ""
             }
+        }
+    }
+
+    private val launchCameraActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
+                viewModel.handleCameraResponse(result.data!!.data!!)
+            }
+        }
+
+    private fun setupLensCamera() {
+        lensCamera = findViewById(R.id.lens_camera)
+        lensCamera.setOnClickListener {
+            launchCameraActivity.launch(Intent(this, CameraActivity::class.java))
+        }
+
+        viewModel.getLandmarks().observe(this) { landmarks ->
+            if (landmarks.isEmpty()) {
+                Toast.makeText(applicationContext, "No landmark found in the picture", Toast.LENGTH_LONG)
+                    .show()
+            } else {
+                lensCamera.isVisible = false
+                lensInfoContainer.isVisible = false
+                lensDetectedLandmark.text = landmarks[0].landmark
+                lensDetectedLandmarkContainer.isVisible = true
+                lensDismissLandmark.isVisible = true
+            }
+        }
+
+        lensDismissLandmark.setOnClickListener {
+            lensDetectedLandmarkContainer.isVisible = false
+            lensDismissLandmark.isVisible = false
+            lensCamera.isVisible = true
+            lensInfoContainer.isVisible = true
         }
     }
 

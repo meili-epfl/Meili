@@ -5,12 +5,15 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.net.Uri
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.epfl.meili.MainApplication
+import com.github.epfl.meili.lens.LandmarkDetectionService
 import com.github.epfl.meili.models.PointOfInterest
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 import com.google.maps.android.SphericalUtil.computeDistanceBetween
 import com.google.maps.android.SphericalUtil.computeHeading
 import kotlin.math.PI
@@ -112,6 +115,7 @@ class MapActivityViewModel(application: Application): PoiMarkerViewModel(applica
     }
 
     private val mPOIDist: MutableLiveData<Pair<PointOfInterest, Int>> = MutableLiveData()
+    private val mLandMarks: MutableLiveData<List<FirebaseVisionCloudLandmark>> = MutableLiveData()
 
     init {
         sensorManager.registerListener(accelerometerListener, accelerometer, SENSOR_DELAY)
@@ -119,4 +123,11 @@ class MapActivityViewModel(application: Application): PoiMarkerViewModel(applica
     }
 
     fun getPOIDist(): LiveData<Pair<PointOfInterest, Int>> = mPOIDist
+    fun getLandmarks(): LiveData<List<FirebaseVisionCloudLandmark>> = mLandMarks
+
+    fun handleCameraResponse(uri: Uri) {
+        LandmarkDetectionService.detectInImage(getApplication(), uri)
+            .addOnSuccessListener { mLandMarks.value = it }
+            .addOnFailureListener { mLandMarks.value = listOf() }
+    }
 }
