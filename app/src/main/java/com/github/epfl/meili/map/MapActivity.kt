@@ -63,12 +63,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         azimuthText = findViewById(R.id.azimuth)
         listenToAzimuth()
 
-        // Initialize API entry points
-        Places.initialize(
-            applicationContext,
-            getString(R.string.google_maps_key)
-        ) // change API key here
-
+        Places.initialize(applicationContext, getString(R.string.google_maps_key))
         placesClient = Places.createClient(this)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -78,8 +73,9 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
     }
 
     private fun listenToAzimuth() {
-        viewModel.getAzimuth().observe(this) { azimuth ->
-            azimuthText.text = azimuth.toString()
+        viewModel.getPointOfInterest().observe(this) { poi ->
+            if (poi != null)
+                azimuthText.text = poi.name
         }
     }
 

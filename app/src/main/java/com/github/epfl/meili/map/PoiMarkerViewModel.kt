@@ -28,7 +28,7 @@ open class PoiMarkerViewModel(application: Application) :
 
     private var database: Database<PointOfInterest>? = null
     private var poiService: PoiService? = null
-    private var lastUserLocation: LatLng? = null
+    protected var lastUserLocation: LatLng? = null
 
     private var nbCurrentRequests = 0
 
