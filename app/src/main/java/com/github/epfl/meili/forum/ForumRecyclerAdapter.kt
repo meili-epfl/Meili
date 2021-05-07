@@ -8,28 +8,27 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.util.MeiliRecyclerAdapter
 
-class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var items: List<Pair<String, Post>> = ArrayList()
+class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) :
+    MeiliRecyclerAdapter<Post>() {
     private var userId: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-            PostViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false), forumViewModel)
+        PostViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false),
+            forumViewModel
+        )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-            (holder as PostViewHolder).bind(items[position], userId)
+        (holder as PostViewHolder).bind(items[position], userId)
 
-    override fun getItemCount() = items.size
-
-    fun submitList(list: List<Pair<String, Post>>) {
-        items = list
-    }
-
-    fun submitUserInfo(uid: String){
+    fun submitUserInfo(uid: String) {
         userId = uid
     }
 
-    class PostViewHolder(itemView: View, private val forumViewModel: ForumViewModel) : RecyclerView.ViewHolder(itemView) {
+    class PostViewHolder(itemView: View, private val forumViewModel: ForumViewModel) :
+        RecyclerView.ViewHolder(itemView) {
         private val author: TextView = itemView.findViewById(R.id.post_author)
         private val title: TextView = itemView.findViewById(R.id.post_title)
         private val postId: TextView = itemView.findViewById(R.id.post_id)
@@ -45,20 +44,25 @@ class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) : Recycle
             title.text = post.title
 
             //show or hide up/downvote depending on user status
-            val visibility = if(userId == null){
+            val visibility = if (userId == null) {
                 View.GONE
-            }else{
+            } else {
                 View.VISIBLE
             }
             upvoteButton.visibility = visibility
             downvoteButton.visibility = visibility
-            if(userId != null){
+            if (userId != null) {
                 setupButtons(post.upvoters, post.downvoters, userId, pair.first)
             }
             upvoteCount.text = (post.upvoters.size - post.downvoters.size).toString()
         }
 
-        private fun setupButtons(upvoters: ArrayList<String>, downvoters: ArrayList<String>, userId: String, postId: String){
+        private fun setupButtons(
+            upvoters: ArrayList<String>,
+            downvoters: ArrayList<String>,
+            userId: String,
+            postId: String
+        ) {
             when {
                 upvoters.contains(userId) -> {
                     upvoteButton.setImageResource(R.mipmap.upvote_filled_foreground)
@@ -74,7 +78,7 @@ class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) : Recycle
                 }
             }
             upvoteButton.setOnClickListener { forumViewModel.upvote(postId, userId) }
-            downvoteButton.setOnClickListener{ forumViewModel.downvote(postId, userId) }
+            downvoteButton.setOnClickListener { forumViewModel.downvote(postId, userId) }
         }
     }
 }
