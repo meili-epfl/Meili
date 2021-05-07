@@ -33,7 +33,11 @@ I am really happy with the codebase we are building and maintaining since it all
 
 ## Thomas
 
-## TODO
+This week I worked on implementing the poi history feature for the profile.
+
+I am happy because it looks quite good and I managed to make it in the right amount of time.
+
+However I fell sick so wasn't able to finish testing it and to work on the other tasks for this week. So next week I will have some catching up to do.
 
 
 ## Yingxuan
