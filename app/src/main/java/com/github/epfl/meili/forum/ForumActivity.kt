@@ -31,6 +31,8 @@ import java.util.concurrent.Executors
 class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSelectedListener  {
     companion object {
         private const val CARD_PADDING: Int = 30
+        private const val NEWEST = "Newest"
+        private const val OLDEST = "Oldest"
     }
 
     private lateinit var recyclerAdapter: ForumRecyclerAdapter
@@ -92,7 +94,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         displayImageView = findViewById(R.id.post_display_image)
         filterSpinner = findViewById(R.id.spinner)
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(this, R.array.filters_array,
+        ArrayAdapter.createFromResource(this, R.array.sort_array,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specify the layout to use when the list of choices appears
@@ -136,15 +138,14 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         }
 
         val user: User = Auth.getCurrentUser()!!
+        val timestamp = System.currentTimeMillis()
 
-        val postId = "${user.uid}${System.currentTimeMillis()}"
+        val postId = "${user.uid}${timestamp}"
 
         val title = editTitleView.text.toString()
         val text = editTextVIew.text.toString()
 
-        val timeStamp = System.currentTimeMillis() / 1000
-
-        viewModel.addElement(postId, Post(user.username, title, timeStamp, text))
+        viewModel.addElement(postId, Post(user.username, title, timestamp, text))
 
         if (bitmap != null) {
             executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }
@@ -202,17 +203,16 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     }
 
     private fun sortPosts(b:Boolean){
-            viewModel.getElements().observe(this, { map ->
-                recyclerAdapter.submitList(map.toSortedMap(Comparator { lhs, rhs ->
-                    //b is a switcher for most or least recent order
-                    if(b){
-                        // -1 - less than or equal, 1 - greater than, all inversed for descending
-                        if (map[lhs]!!.timestamp >= map[rhs]!!.timestamp) -1 else  1}
-                        else{if (map[lhs]!!.timestamp <= map[rhs]!!.timestamp) -1 else  1}
-                }).toList()
-                )
-                recyclerAdapter.notifyDataSetChanged()
+        viewModel.getElements().removeObservers(this)
+        viewModel.getElements().observe(this, { map ->
+            recyclerAdapter.submitList(map.toList().sortedBy { pair ->
+                if (b)
+                    -pair.second.timestamp
+                else
+                    pair.second.timestamp
             })
+            recyclerAdapter.notifyDataSetChanged()
+        })
     }
 
 
@@ -228,15 +228,11 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
-        val selectedItem = parent?.getItemAtPosition(pos)
-        if(selectedItem=="Newest Post"){
-            sortPosts(true);
-        }
-        if(selectedItem=="Oldest Post"){
-            sortPosts(false);
+        when (parent?.getItemAtPosition(pos)) {
+            NEWEST -> sortPosts(true)
+            OLDEST -> sortPosts(false)
         }
     }
 
-    override fun onNothingSelected(p0: AdapterView<*>?) {
-    }
+    override fun onNothingSelected(p0: AdapterView<*>?) {}
 }
