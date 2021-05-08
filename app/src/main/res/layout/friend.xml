@@ -8,11 +8,12 @@
 
     <TextView
         android:id="@+id/friendName"
-        android:layout_width="319dp"
-        android:layout_height="42dp"
+        android:layout_width="322dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="12dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.042"
         app:layout_constraintStart_toEndOf="@+id/friendImage"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,4 +26,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
+
+    <Button
+        android:id="@+id/friend_chat_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="49dp"
+        android:layout_height="41dp"
+        app:icon="@android:drawable/stat_notify_chat"
+        app:iconTint="@color/black_purple"
+        app:layout_constraintEnd_toEndOf="@+id/friendName"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,27 +18,27 @@ import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.friends.NearbyActivity
+import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 
 //TODO: fix on click is not working and fix setting default image if none received e.g meili logo
-//TODO: change background of friend field to make it more appealing, maybe something whiter
-class FriendsListActivity : AppCompatActivity() {
+//TODO: modify such that when any button clicked it know what there has to be done
+class FriendsListActivity : AppCompatActivity(), ClickListener {
     companion object {
         private const val FRIENDS_PADDING: Int = 15
         private const val TAG: String = "FriendListActivity"
         private const val TITLE: String = "My Friends"
-        const val FRIEND_KEY = "FRIEND_KEY"
         private const val DEFAULT_MEILI_FRIEND_UID = "OP7VVymi3ZOfTr0akvMnh5HEa2a2"
-        private const val DEFAULT_MEILI_FRIEND_USERNAME = "Meili"
+
+        const val FRIEND_KEY = "FRIEND_KEY"
     }
 
     private lateinit var recyclerAdapter: FriendsListRecyclerAdapter
     private lateinit var viewModel: MeiliViewModel<Friend>
 
+    private var usersMap: HashMap<String, User> = HashMap()
     private lateinit var addFriendsButton: Button
-
-    private var remainingFriends = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +77,7 @@ class FriendsListActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        recyclerAdapter = FriendsListRecyclerAdapter()
+        recyclerAdapter = FriendsListRecyclerAdapter(this)
         val recyclerView: RecyclerView = findViewById(R.id.friends_list_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@FriendsListActivity)
@@ -88,7 +88,6 @@ class FriendsListActivity : AppCompatActivity() {
 
     private fun onFriendsUpdateReceived(map: Map<String, Friend>) {
         addDefaultFriend(map)
-        Log.d(TAG, "first"+map.toString())
         //TODO: change to only fetch new friends
 
         UserInfoService().getUserInformation(map.keys.toList(), { onFriendsInfoReceived(it) },
@@ -97,6 +96,7 @@ class FriendsListActivity : AppCompatActivity() {
 
     private fun onFriendsInfoReceived(users: Map<String, User>) {
         Log.d(TAG, users.toString())
+        usersMap = HashMap(users)
         recyclerAdapter.submitList(users.toList())
         recyclerAdapter.notifyDataSetChanged()
     }
@@ -104,8 +104,6 @@ class FriendsListActivity : AppCompatActivity() {
     fun onFriendsListButtonClicked(view: View) {
         when (view) {
             addFriendsButton -> showAddFriends()
-            else -> openFriendChat((view as TextView).text as String)
-
         }
     }
 
@@ -121,8 +119,18 @@ class FriendsListActivity : AppCompatActivity() {
     }
 
     private fun openFriendChat(friendUid: String) {
+        Log.d(TAG, "uid$friendUid")
+        Log.d(TAG, usersMap.toString())
+        Log.d(TAG, usersMap[friendUid].toString())
         val intent =
-            Intent(this, ChatLogActivity::class.java).putExtra(FRIEND_KEY, Friend(friendUid))
+            Intent(this, ChatLogActivity::class.java).putExtra(FRIEND_KEY, usersMap[friendUid])
         startActivity(intent)
+    }
+
+    override fun onClicked(buttonId: Int, info: String) {
+        when(buttonId){
+            R.id.friend_chat_button -> openFriendChat(info)
+            R.id.friendName -> openFriendChat(info) // TODO: add link to profile when done
+        }
     }
 }
