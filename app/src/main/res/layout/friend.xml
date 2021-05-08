@@ -7,15 +7,22 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/friend_name"
-        android:layout_width="360dp"
-        android:layout_height="33dp"
-        android:layout_marginTop="4dp"
-        android:onClick="onFriendsListButtonClicked"
+        android:id="@+id/friendName"
+        android:layout_width="319dp"
+        android:layout_height="42dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/friendImage"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/friendImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.005"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
 </androidx.constraintlayout.widget.ConstraintLayout>

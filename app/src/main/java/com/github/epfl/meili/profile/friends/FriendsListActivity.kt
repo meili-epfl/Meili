@@ -2,6 +2,7 @@ package com.github.epfl.meili.profile.friends
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -15,10 +16,13 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Friend
+import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.friends.NearbyActivity
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 
+//TODO: fix on click is not working and fix setting default image if none received e.g meili logo
+//TODO: change background of friend field to make it more appealing, maybe something whiter
 class FriendsListActivity : AppCompatActivity() {
     companion object {
         private const val FRIENDS_PADDING: Int = 15
@@ -33,6 +37,8 @@ class FriendsListActivity : AppCompatActivity() {
     private lateinit var viewModel: MeiliViewModel<Friend>
 
     private lateinit var addFriendsButton: Button
+
+    private var remainingFriends = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,13 +58,17 @@ class FriendsListActivity : AppCompatActivity() {
         }
 
         @Suppress("UNCHECKED_CAST")
-        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
+        viewModel =
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
 
-        viewModel.initDatabase(FirestoreDatabase("friends/" + Auth.getCurrentUser()!!.uid + "/friends", Friend::class.java))
+        viewModel.initDatabase(
+            FirestoreDatabase(
+                "friends/" + Auth.getCurrentUser()!!.uid + "/friends",
+                Friend::class.java
+            )
+        )
         viewModel.getElements().observe(this) { map ->
-            addDefaultFriend(map)
-            recyclerAdapter.submitList(map.toList())
-            recyclerAdapter.notifyDataSetChanged()
+            onFriendsUpdateReceived(map)
         }
     }
 
@@ -74,6 +84,21 @@ class FriendsListActivity : AppCompatActivity() {
             addItemDecoration(TopSpacingItemDecoration(FRIENDS_PADDING))
             adapter = recyclerAdapter
         }
+    }
+
+    private fun onFriendsUpdateReceived(map: Map<String, Friend>) {
+        addDefaultFriend(map)
+        Log.d(TAG, "first"+map.toString())
+        //TODO: change to only fetch new friends
+
+        UserInfoService().getUserInformation(map.keys.toList(), { onFriendsInfoReceived(it) },
+            { Log.d(TAG, "Error when fetching friends information") })
+    }
+
+    private fun onFriendsInfoReceived(users: Map<String, User>) {
+        Log.d(TAG, users.toString())
+        recyclerAdapter.submitList(users.toList())
+        recyclerAdapter.notifyDataSetChanged()
     }
 
     fun onFriendsListButtonClicked(view: View) {
@@ -96,7 +121,8 @@ class FriendsListActivity : AppCompatActivity() {
     }
 
     private fun openFriendChat(friendUid: String) {
-        val intent = Intent(this, ChatLogActivity::class.java).putExtra(FRIEND_KEY, Friend(friendUid))
+        val intent =
+            Intent(this, ChatLogActivity::class.java).putExtra(FRIEND_KEY, Friend(friendUid))
         startActivity(intent)
     }
 }

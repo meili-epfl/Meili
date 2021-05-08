@@ -14,7 +14,7 @@ import com.github.epfl.meili.util.ImageUtility
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 
-class ProfileViewModel(user: User): ViewModel() {
+class ProfileViewModel(user: User) : ViewModel() {
     private val mUser: MutableLiveData<User> = MutableLiveData()
     private val mRequestCreator: MutableLiveData<RequestCreator> = MutableLiveData()
     private var bitmap: Bitmap? = null
@@ -27,9 +27,9 @@ class ProfileViewModel(user: User): ViewModel() {
             if (it.exists()) {
                 mUser.value = it.toObject(User::class.java)
                 FirebaseStorageService.getDownloadUrl(
-                        "images/avatars/${uid()}",
-                        { uri -> loadImageIntoRequestCreator(uri) },
-                        { /* do nothing in case of failure */ }
+                    "images/avatars/${uid()}",
+                    { uri -> loadImageIntoRequestCreator(uri) },
+                    { /* do nothing in case of failure */ }
                 )
             }
         }
