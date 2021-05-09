@@ -13,6 +13,7 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.VisitedPointOfInterest
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
@@ -22,16 +23,24 @@ import java.util.*
 class PoiHistoryActivity : AppCompatActivity() {
     companion object {
         private const val CARD_PADDING: Int = 30
+        private const val ACTIVITY_TITLE = "POI History"
+
+        fun addPoiToHistory(userKey: String, poi: PointOfInterest) {
+            FirestoreDatabase( // add to poi history
+                "poi-history/$userKey/poi-history",
+                VisitedPointOfInterest::class.java
+            ).addElement(poi.uid, VisitedPointOfInterest(poi))
+        }
     }
 
-    private lateinit var recyclerAdapter: PoiHistoryRecyclerAdapter
+    private lateinit var adapter: PoiHistoryRecyclerAdapter
     private lateinit var viewModel: MeiliViewModel<VisitedPointOfInterest>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_poi_history)
 
-        title = "POI History"
+        title = ACTIVITY_TITLE
 
         val userKey = Auth.getCurrentUser()!!.uid
         initRecyclerView()
@@ -54,9 +63,8 @@ class PoiHistoryActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-
+    @Suppress("UNCHECKED_CAST")
     private fun initViewModel(userKey: String) {
-        @Suppress("UNCHECKED_CAST")
         viewModel =
             ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<VisitedPointOfInterest>
 
@@ -74,17 +82,17 @@ class PoiHistoryActivity : AppCompatActivity() {
     private fun poiHistoryMapListener(map: Map<String, VisitedPointOfInterest>) {
         val list = map.toList()
             .sortedWith { o1, o2 -> o2.second.dateVisited!!.compareTo(o1.second.dateVisited) }
-        recyclerAdapter.submitList(list)
-        recyclerAdapter.notifyDataSetChanged()
+        adapter.submitList(list)
+        adapter.notifyDataSetChanged()
     }
 
     private fun initRecyclerView() {
-        recyclerAdapter = PoiHistoryRecyclerAdapter()
-        val recyclerView: RecyclerView = findViewById(R.id.poi_history_recycler_view)
-        recyclerView.apply {
+        adapter = PoiHistoryRecyclerAdapter()
+        val recycler: RecyclerView = findViewById(R.id.poi_history_recycler_view)
+        recycler.apply {
             layoutManager = LinearLayoutManager(this@PoiHistoryActivity)
             addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
-            adapter = recyclerAdapter
+            adapter = adapter
         }
     }
 }

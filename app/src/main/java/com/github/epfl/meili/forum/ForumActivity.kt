@@ -14,14 +14,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
-import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.models.VisitedPointOfInterest
 import com.github.epfl.meili.photo.CameraActivity
+import com.github.epfl.meili.profile.PoiHistoryActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
 import com.github.epfl.meili.util.MenuActivity
@@ -54,7 +53,8 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
                 loadImage(result.data!!.data!!)
             }
         }
-    private val launchGallery =  registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it) }
+    private val launchGallery =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it) }
     private lateinit var useCameraButton: ImageView
     private lateinit var useGalleryButton: ImageView
     private lateinit var displayImageView: ImageView
@@ -137,10 +137,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         viewModel.addElement(postId, Post(user.username, title, text))
 
         val userKey = user.uid
-        FirestoreDatabase( // add to poi history
-            "poi-history/$userKey/poi-history",
-            VisitedPointOfInterest::class.java
-        ).addElement(poi.uid, VisitedPointOfInterest(poi))
+        PoiHistoryActivity.addPoiToHistory(userKey, poi)
 
         if (bitmap != null) {
             executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }
@@ -180,7 +177,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
                 View.GONE
 
             //and upvote/downvote
-            if(loggedIn && Auth.getCurrentUser() != null){
+            if (loggedIn && Auth.getCurrentUser() != null) {
                 recyclerAdapter.submitUserInfo(Auth.getCurrentUser()!!.uid)
                 recyclerAdapter.notifyDataSetChanged()
             }

@@ -9,14 +9,13 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
-import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.models.VisitedPointOfInterest
+import com.github.epfl.meili.profile.PoiHistoryActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
 import com.github.epfl.meili.util.DateAuxiliary
 import com.github.epfl.meili.util.MenuActivity
@@ -55,10 +54,10 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         verifyAndUpdateUserIsLoggedIn(Auth.isLoggedIn.value!!)
     }
 
-    fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
+    private fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
         if (isLoggedIn) {
             currentUser = Auth.getCurrentUser()
-          
+
             val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)
             val friend = intent.getParcelableExtra<Friend>(FRIEND_KEY)
             val databasePath: String
@@ -81,11 +80,11 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
                 // The friend chat document in the database is saved under the key with value
                 // of the two user ids concatenated in sorted order
                 chatId =
-                        if (friendUid < currentUid) "$friendUid;$currentUid" else "$currentUid;$friendUid"
+                    if (friendUid < currentUid) "$friendUid;$currentUid" else "$currentUid;$friendUid"
 
                 setGroupChat(false)
 
-                Log.d(TAG, "Starting friend chat with ${friend?.uid}")
+                Log.d(TAG, "Starting friend chat with ${friend.uid}")
 
                 databasePath = "FriendChat/${chatId}"
             }
@@ -123,18 +122,15 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         findViewById<EditText>(R.id.edit_text_chat_log).text.clear()
 
         ChatMessageViewModel.addMessage(
-                text,
-                currentUser!!.uid,
-                chatId,
-                System.currentTimeMillis() / 1000,
-                currentUser!!.username
+            text,
+            currentUser!!.uid,
+            chatId,
+            System.currentTimeMillis() / 1000,
+            currentUser!!.username
         )
 
         val userKey = currentUser!!.uid
-        FirestoreDatabase( // add to poi history
-            "poi-history/$userKey/poi-history",
-            VisitedPointOfInterest::class.java
-        ).addElement(poi.uid, VisitedPointOfInterest(poi))
+        PoiHistoryActivity.addPoiToHistory(userKey, poi)
     }
 
     private fun listenForMessages() {
@@ -167,11 +163,11 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 }
 
 class ChatItem(
-        private val message: ChatMessage,
-        private val isChatMessageFromCurrentUser: Boolean,
-        private val isGroupChat: Boolean
+    private val message: ChatMessage,
+    private val isChatMessageFromCurrentUser: Boolean,
+    private val isGroupChat: Boolean
 ) :
-        Item<GroupieViewHolder>() {
+    Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
         return if (isChatMessageFromCurrentUser) {
             R.layout.chat_from_me_row
@@ -184,12 +180,12 @@ class ChatItem(
         viewHolder.itemView.findViewById<TextView>(R.id.text_gchat_message).text = message.text
         val date = DateAuxiliary.getDateFromTimestamp(message.timestamp)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_timestamp).text =
-                DateAuxiliary.getTime(date)
+            DateAuxiliary.getTime(date)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
-                DateAuxiliary.getDay(date)
+            DateAuxiliary.getDay(date)
         if (!isChatMessageFromCurrentUser) {
             viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text =
-                    if (isGroupChat) message.fromName else ""
+                if (isGroupChat) message.fromName else ""
         }
     }
 }
