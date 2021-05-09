@@ -33,7 +33,7 @@ class PoiHistoryActivity : AppCompatActivity() {
         }
     }
 
-    private lateinit var adapter: PoiHistoryRecyclerAdapter
+    private lateinit var radapter: PoiHistoryRecyclerAdapter
     private lateinit var viewModel: MeiliViewModel<VisitedPointOfInterest>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,14 +53,12 @@ class PoiHistoryActivity : AppCompatActivity() {
     }
 
     fun onPoiHistoryButtonClick(view: View) {
-        openPoi(view.findViewById(R.id.poi_id))
-    }
-
-    private fun openPoi(view: View) {
-        val poiId: String = (view as TextView).text.toString()
-        val intent = Intent(this, ForumActivity::class.java)
-        intent.putExtra(MapActivity.POI_KEY, viewModel.getElements().value?.get(poiId)?.poi)
-        startActivity(intent)
+        startActivity(
+            Intent(this, ForumActivity::class.java).putExtra(
+                MapActivity.POI_KEY,
+                viewModel.getElements().value?.get((view.findViewById(R.id.poi_id) as TextView).text.toString())?.poi
+            )
+        )
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -82,17 +80,17 @@ class PoiHistoryActivity : AppCompatActivity() {
     private fun poiHistoryMapListener(map: Map<String, VisitedPointOfInterest>) {
         val list = map.toList()
             .sortedWith { o1, o2 -> o2.second.dateVisited!!.compareTo(o1.second.dateVisited) }
-        adapter.submitList(list)
-        adapter.notifyDataSetChanged()
+        radapter.submitList(list)
+        radapter.notifyDataSetChanged()
     }
 
     private fun initRecyclerView() {
         val recycler: RecyclerView = findViewById(R.id.poi_history_recycler_view)
-        adapter = PoiHistoryRecyclerAdapter()
+        radapter = PoiHistoryRecyclerAdapter()
         recycler.apply {
             layoutManager = LinearLayoutManager(this@PoiHistoryActivity)
             addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
-            adapter = adapter
+            adapter = radapter
         }
     }
 }

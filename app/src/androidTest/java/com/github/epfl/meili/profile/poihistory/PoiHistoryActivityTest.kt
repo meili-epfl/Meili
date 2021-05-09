@@ -1,10 +1,15 @@
 package com.github.epfl.meili.profile.poihistory
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -17,6 +22,7 @@ import com.github.epfl.meili.models.VisitedPointOfInterest
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.firebase.firestore.*
 import com.google.firebase.storage.FirebaseStorage
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -33,7 +39,6 @@ class PoiHistoryActivityTest {
 
     companion object {
         private const val TEST_UID = "UID"
-        private const val TEST_USERNAME = "AUTHOR"
         private val TEST_POI =
             VisitedPointOfInterest(PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2"))
     }
@@ -74,7 +79,6 @@ class PoiHistoryActivityTest {
             mock(ListenerRegistration::class.java)
         }
         `when`(mockCollection.document(contains(TEST_UID))).thenReturn(mockDocument)
-        //`when`(mockCollection.document(contains(TEST_POI.poi?.name))).thenReturn(mockDocument)
 
         val mockDocumentSnapshot = mock(DocumentSnapshot::class.java)
         `when`(mockDocumentSnapshot.id).thenReturn(TEST_POI.poi?.uid)
@@ -85,7 +89,6 @@ class PoiHistoryActivityTest {
 
 
         mockAuthenticationService.setMockUid(TEST_UID)
-        mockAuthenticationService.setUsername(TEST_USERNAME)
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
@@ -97,6 +100,7 @@ class PoiHistoryActivityTest {
     @Test
     fun launchForumIntentsTest() {
         database.onEvent(mockSnapshot, null)
+
 
         onView(withId(R.id.poi_history_recycler_view))
             .check(matches(isDisplayed()))
@@ -110,12 +114,15 @@ class PoiHistoryActivityTest {
                 )
             )
 
-//        onView(withText(TEST_POI.poi?.name)).perform(click())
-//        Intents.intended(
-//            allOf(
-//                hasExtra("POI_KEY", TEST_POI.poi),
-//                hasComponent(ForumActivity::class.java.name)
-//            )
-//        )
+        val intent = Intent()
+        val intentResult = Instrumentation.ActivityResult(Activity.RESULT_OK, intent)
+
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(intentResult)
+
+        onView(withText(TEST_POI.poi?.name)).perform(click())
+
+        Intents.intended(allOf())
+
+
     }
 }

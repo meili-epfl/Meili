@@ -15,8 +15,8 @@ import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.profile.poihistory.PoiHistoryActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
+import com.github.epfl.meili.profile.poihistory.PoiHistoryActivity
 import com.github.epfl.meili.util.DateAuxiliary
 import com.github.epfl.meili.util.MenuActivity
 import com.xwray.groupie.GroupAdapter
@@ -54,7 +54,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         verifyAndUpdateUserIsLoggedIn(Auth.isLoggedIn.value!!)
     }
 
-    private fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
+    fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
         if (isLoggedIn) {
             currentUser = Auth.getCurrentUser()
 
