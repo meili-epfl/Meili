@@ -13,6 +13,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.NavigableActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -21,6 +22,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     { viewModel.loadLocalImage(contentResolver, it) }
 
     private lateinit var photoView: CircleImageView
+    private lateinit var photoEditView: FloatingActionButton
     private lateinit var nameView: TextView
     private lateinit var bioView: TextView
     private lateinit var nameEditView: EditText
@@ -43,6 +45,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         super.onCreate(savedInstanceState)
 
         photoView = findViewById(R.id.photo)
+        photoEditView = findViewById(R.id.photo_edit)
         nameView = findViewById(R.id.profile_name)
         bioView = findViewById(R.id.profile_bio)
         nameEditView = findViewById(R.id.profile_edit_name)
@@ -66,6 +69,8 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         if (!Auth.isLoggedIn.value!!) {
             Auth.signIn(this)
         }
+
+        showProfile()
     }
 
     private fun setupViewModel() {
@@ -73,11 +78,11 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
                 .get(ProfileViewModel::class.java)
         viewModel.getUser().removeObservers(this)
         viewModel.getUser().observe(this) { user ->
-            nameView.setText(user.username)
-            bioView.setText(user.bio)
+            nameView.text = user.username
+            bioView.text = user.bio
 
             if(nameView.text.isEmpty()){
-                nameView.setText(Auth.getCurrentUser()!!.username)
+                nameView.text = Auth.getCurrentUser()!!.username
             }
         }
         viewModel.getRequestCreator().removeObservers(this)
@@ -86,7 +91,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
     fun onProfileButtonClick(view: View) {
         when (view) {
-            photoView -> launchGallery.launch("image/*")
+            photoEditView -> launchGallery.launch("image/*")
             saveButton -> saveProfile()
             cancelButton -> showProfile()
             seeFriendsButton -> showFriends()
@@ -113,6 +118,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private fun showProfile() {
         profileView.visibility = View.VISIBLE
         profileEditView.visibility = View.GONE
+        photoEditView.visibility = View.GONE
     }
 
     private fun showEditMode() {
@@ -121,6 +127,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
         profileView.visibility = View.GONE
         profileEditView.visibility = View.VISIBLE
+        photoEditView.visibility = View.VISIBLE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
