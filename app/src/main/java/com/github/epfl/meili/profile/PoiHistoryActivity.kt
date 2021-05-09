@@ -1,6 +1,8 @@
 package com.github.epfl.meili.profile
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -8,7 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.VisitedPointOfInterest
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
@@ -39,12 +43,24 @@ class PoiHistoryActivity : AppCompatActivity() {
         viewModel.onDestroy()
     }
 
+    fun onPoiHistoryButtonClick(view: View) {
+        openPoi(view.findViewById(R.id.poi_id))
+    }
+
+    private fun openPoi(view: View) {
+        val poiId: String = (view as TextView).text.toString()
+        val intent = Intent(this, ForumActivity::class.java)
+        intent.putExtra(MapActivity.POI_KEY, viewModel.getElements().value?.get(poiId)?.poi)
+        startActivity(intent)
+    }
+
+
     private fun initViewModel(userKey: String) {
         @Suppress("UNCHECKED_CAST")
         viewModel =
             ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<VisitedPointOfInterest>
 
-        viewModel.setDatabase(
+        viewModel.initDatabase(
             FirestoreDatabase(
                 "poi-history/$userKey/poi-history",
                 VisitedPointOfInterest::class.java

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
@@ -70,7 +71,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         executor = Executors.newSingleThreadExecutor()
 
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
-        val poiKey = poi.uid
 
         initViews()
         initViewModel()
