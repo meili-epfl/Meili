@@ -16,7 +16,6 @@ import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
-import com.github.epfl.meili.profile.poihistory.PoiHistoryActivity
 import com.github.epfl.meili.util.DateAuxiliary
 import com.github.epfl.meili.util.MenuActivity
 import com.xwray.groupie.GroupAdapter
@@ -34,15 +33,12 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     private var currentUser: User? = null
     private lateinit var chatId: String
     private var messageSet = HashSet<ChatMessage>()
-    private lateinit var poi: PointOfInterest
 
     private var isGroupChat = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
-
-        poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
 
         findViewById<RecyclerView>(R.id.recycleview_chat_log).adapter = adapter
 
@@ -128,9 +124,6 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
             System.currentTimeMillis() / 1000,
             currentUser!!.username
         )
-
-        val userKey = currentUser!!.uid
-        PoiHistoryActivity.addPoiToHistory(userKey, poi)
     }
 
     private fun listenForMessages() {

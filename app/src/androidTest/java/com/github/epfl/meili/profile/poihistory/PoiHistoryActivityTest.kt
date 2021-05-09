@@ -16,20 +16,21 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.VisitedPointOfInterest
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.firebase.firestore.*
 import com.google.firebase.storage.FirebaseStorage
-import org.hamcrest.Matchers.allOf
+import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.contains
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
@@ -78,7 +79,9 @@ class PoiHistoryActivityTest {
             database = invocation.arguments[0] as FirestoreDatabase<VisitedPointOfInterest>
             mock(ListenerRegistration::class.java)
         }
-        `when`(mockCollection.document(contains(TEST_UID))).thenReturn(mockDocument)
+        `when`(mockCollection.document(ArgumentMatchers.matches(TEST_POI.poi?.uid))).thenReturn(
+            mockDocument
+        )
 
         val mockDocumentSnapshot = mock(DocumentSnapshot::class.java)
         `when`(mockDocumentSnapshot.id).thenReturn(TEST_POI.poi?.uid)
@@ -101,6 +104,10 @@ class PoiHistoryActivityTest {
     fun launchForumIntentsTest() {
         database.onEvent(mockSnapshot, null)
 
+        PoiHistoryActivity.addPoiToHistory(
+            TEST_UID,
+            PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2")
+        )
 
         onView(withId(R.id.poi_history_recycler_view))
             .check(matches(isDisplayed()))
@@ -121,7 +128,11 @@ class PoiHistoryActivityTest {
 
         onView(withText(TEST_POI.poi?.name)).perform(click())
 
-        Intents.intended(allOf())
+        Intents.intended(
+            CoreMatchers.allOf(
+                IntentMatchers.hasComponent(ForumActivity::class.java.name)
+            )
+        )
 
 
     }
