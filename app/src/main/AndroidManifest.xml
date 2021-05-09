@@ -77,7 +77,7 @@
             android:name=".forum.PostActivity"
             android:parentActivityName=".forum.ForumActivity" />
         <activity
-            android:name=".profile.PoiHistoryActivity"
+            android:name=".profile.poihistory.PoiHistoryActivity"
             android:parentActivityName=".profile.ProfileActivity" />
     </application>
 

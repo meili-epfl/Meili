@@ -15,7 +15,7 @@ import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.profile.PoiHistoryActivity
+import com.github.epfl.meili.profile.poihistory.PoiHistoryActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
 import com.github.epfl.meili.util.DateAuxiliary
 import com.github.epfl.meili.util.MenuActivity

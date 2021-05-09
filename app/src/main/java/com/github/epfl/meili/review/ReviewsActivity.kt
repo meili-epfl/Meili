@@ -13,7 +13,7 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
-import com.github.epfl.meili.profile.PoiHistoryActivity
+import com.github.epfl.meili.profile.poihistory.PoiHistoryActivity
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.TopSpacingItemDecoration

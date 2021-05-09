@@ -1,4 +1,4 @@
-package com.github.epfl.meili.profile
+package com.github.epfl.meili.profile.poihistory
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView

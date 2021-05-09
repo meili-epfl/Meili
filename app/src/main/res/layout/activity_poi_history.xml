@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    tools:context=".profile.PoiHistoryActivity">
+    tools:context=".profile.poihistory.PoiHistoryActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/poi_history_recycler_view"

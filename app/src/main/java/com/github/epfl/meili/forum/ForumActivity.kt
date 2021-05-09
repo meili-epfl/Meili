@@ -20,7 +20,7 @@ import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
-import com.github.epfl.meili.profile.PoiHistoryActivity
+import com.github.epfl.meili.profile.poihistory.PoiHistoryActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
 import com.github.epfl.meili.util.MenuActivity

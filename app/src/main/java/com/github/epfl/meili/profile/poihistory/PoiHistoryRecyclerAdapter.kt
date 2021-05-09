@@ -1,4 +1,4 @@
-package com.github.epfl.meili.profile
+package com.github.epfl.meili.profile.poihistory
 
 import android.view.LayoutInflater
 import android.view.View

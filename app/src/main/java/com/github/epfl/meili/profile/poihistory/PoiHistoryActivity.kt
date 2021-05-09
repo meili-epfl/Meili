@@ -1,4 +1,4 @@
-package com.github.epfl.meili.profile
+package com.github.epfl.meili.profile.poihistory
 
 import android.content.Intent
 import android.os.Bundle
@@ -87,8 +87,8 @@ class PoiHistoryActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        adapter = PoiHistoryRecyclerAdapter()
         val recycler: RecyclerView = findViewById(R.id.poi_history_recycler_view)
+        adapter = PoiHistoryRecyclerAdapter()
         recycler.apply {
             layoutManager = LinearLayoutManager(this@PoiHistoryActivity)
             addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
