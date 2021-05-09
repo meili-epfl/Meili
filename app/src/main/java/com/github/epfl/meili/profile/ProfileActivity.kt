@@ -9,13 +9,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.home.RequiresLoginActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
+import com.github.epfl.meili.util.NavigableActivity
 import de.hdodenhof.circleimageview.CircleImageView
 
 
-class ProfileActivity : RequiresLoginActivity() {
-
+class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profile) {
     private val launchGallery = registerForActivityResult(ActivityResultContracts.GetContent())
     { viewModel.loadLocalImage(contentResolver, it) }
 
@@ -25,12 +24,15 @@ class ProfileActivity : RequiresLoginActivity() {
     private lateinit var historyButton: Button
     private lateinit var saveButton: Button
     private lateinit var seeFriendsButton: Button
+    private lateinit var signInButton: Button
+    private lateinit var signOutButton: Button
+
+    private lateinit var signedInView: View
 
     private lateinit var viewModel: ProfileViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
 
         photoView = findViewById(R.id.photo)
         nameView = findViewById(R.id.name)
@@ -38,11 +40,24 @@ class ProfileActivity : RequiresLoginActivity() {
         saveButton = findViewById(R.id.save)
         historyButton = findViewById(R.id.history)
         seeFriendsButton = findViewById(R.id.list_friends_button)
+        signInButton = findViewById(R.id.sign_in)
+        signOutButton = findViewById(R.id.sign_out)
+
+        signedInView = findViewById(R.id.signed_in)
+
+        Auth.isLoggedIn.observe(this) {
+            verifyAndUpdateUserIsLoggedIn()
+        }
+
+        if (!Auth.isLoggedIn.value!!) {
+            Auth.signIn(this)
+        }
     }
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(Auth.getCurrentUser()!!))
                 .get(ProfileViewModel::class.java)
+        viewModel.getUser().removeObservers(this)
         viewModel.getUser().observe(this) { user ->
             nameView.setText(user.username)
             bioView.setText(user.bio)
@@ -51,7 +66,7 @@ class ProfileActivity : RequiresLoginActivity() {
                 nameView.setText(Auth.getCurrentUser()!!.username)
             }
         }
-
+        viewModel.getRequestCreator().removeObservers(this)
         viewModel.getRequestCreator().observe(this) { it.into(photoView) }
     }
 
@@ -61,6 +76,8 @@ class ProfileActivity : RequiresLoginActivity() {
             saveButton -> saveProfile()
             historyButton -> startActivity(Intent(this, PoiHistoryActivity::class.java))
             seeFriendsButton -> showFriends()
+            signInButton -> Auth.signIn(this)
+            signOutButton -> Auth.signOut()
         }
     }
 
@@ -76,17 +93,21 @@ class ProfileActivity : RequiresLoginActivity() {
         viewModel.updateProfile(user)
     }
 
-    override fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
-        if (isLoggedIn) {
-            setupViewModel()
-            supportActionBar?.title = ""
-        } else {
-            supportActionBar?.title = "Not Signed In"
-            Auth.signIn(this)
-        }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Auth.onActivityResult(this, requestCode, resultCode, data)
     }
 
-    companion object {
-        const val TAG = "ProfileActivity"
+    private fun verifyAndUpdateUserIsLoggedIn() {
+        if (Auth.isLoggedIn.value!!) {
+            setupViewModel()
+            supportActionBar?.title = ""
+            signedInView.visibility = View.VISIBLE
+            signInButton.visibility = View.GONE
+        } else {
+            supportActionBar?.title = "Not Signed In"
+            signedInView.visibility = View.GONE
+            signInButton.visibility = View.VISIBLE
+        }
     }
 }

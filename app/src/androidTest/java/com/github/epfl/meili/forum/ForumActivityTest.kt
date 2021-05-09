@@ -18,10 +18,12 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.photo.CameraActivity
@@ -42,9 +44,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.contains
+import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
@@ -61,6 +63,7 @@ class ForumActivityTest {
 
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
     private val mockCollection: CollectionReference = mock(CollectionReference::class.java)
+    private val mockComments: CollectionReference = mock(CollectionReference::class.java)
     private val mockDocument: DocumentReference = mock(DocumentReference::class.java)
 
     private val mockSnapshotBeforeAddition: QuerySnapshot = mock(QuerySnapshot::class.java)
@@ -68,7 +71,12 @@ class ForumActivityTest {
 
     private val mockAuthenticationService = MockAuthenticationService()
 
-    private lateinit var database: FirestoreDatabase<Post>
+    // transaction mocks
+    private val transactionFunctionCaptor = ArgumentCaptor.forClass(Transaction.Function::class.java)
+    private val mockTransaction = mock(Transaction::class.java)
+
+    private lateinit var database: AtomicPostFirestoreDatabase
+    private lateinit var commentsDatabase: FirestoreDatabase<Comment>
 
     private val intent = Intent(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext, ForumActivity::class.java)
             .putExtra(MapActivity.POI_KEY, TEST_POI_KEY)
@@ -84,20 +92,40 @@ class ForumActivityTest {
 
     init {
         setupMocks()
+        setupTransactionMocks()
         setupPostActivityMocks()
+    }
+
+    private fun setupTransactionMocks() {
+        `when`(mockFirestore.runTransaction(transactionFunctionCaptor.capture()))
+            .thenReturn(mock(Task::class.java))
+
+        val mockSnapshot = mock(DocumentSnapshot::class.java)
+        `when`(mockTransaction.get(any())).thenReturn(mockSnapshot)
+
+        `when`(mockSnapshot.get("upvoters")).thenReturn(listOf(TEST_UID))
+        `when`(mockSnapshot.get("downvoters")).thenReturn(listOf("OTHER_UID"))
     }
 
     private fun setupMocks() {
         `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts")).thenReturn(mockCollection)
+
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
-            database = invocation.arguments[0] as FirestoreDatabase<Post>
+                database = invocation.arguments[0] as AtomicPostFirestoreDatabase
             mock(ListenerRegistration::class.java)
         }
         `when`(mockCollection.document(contains(TEST_UID))).thenReturn(mockDocument)
 
+        `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts/${TEST_UID}/comments")).thenReturn(mockComments)
+        `when`(mockComments.addSnapshotListener(any())).thenAnswer { invocation ->
+            commentsDatabase = invocation.arguments[0] as FirestoreDatabase<Comment>
+            mock(ListenerRegistration::class.java)
+        }
+        `when`(mockComments.document(contains(TEST_UID))).thenReturn(mockDocument)
+
         `when`(mockSnapshotBeforeAddition.documents).thenReturn(ArrayList<DocumentSnapshot>())
 
-        val mockDocumentSnapshot: DocumentSnapshot = mock(DocumentSnapshot::class.java)
+        val mockDocumentSnapshot = mock(DocumentSnapshot::class.java)
         `when`(mockDocumentSnapshot.id).thenReturn(TEST_UID)
         `when`(mockDocumentSnapshot.toObject(Post::class.java)).thenReturn(TEST_POST)
         `when`(mockSnapshotAfterAddition.documents).thenReturn(listOf(mockDocumentSnapshot))
@@ -210,6 +238,19 @@ class ForumActivityTest {
                 hasExtra("Post", TEST_POST),
                 hasComponent(PostActivity::class.java.name)
         ))
+    }
+
+    @Test
+    fun clickUpvoteDownvoteButtonsTest(){
+        mockAuthenticationService.signInIntent()
+        database.onEvent(mockSnapshotAfterAddition, null)
+
+        Thread.sleep(2000)
+
+        onView(withId(R.id.upvote_button)).perform(click())
+        transactionFunctionCaptor.value.apply(mockTransaction)
+        onView(withId(R.id.downovte_button)).perform(click())
+        transactionFunctionCaptor.value.apply(mockTransaction)
     }
 
     @Test

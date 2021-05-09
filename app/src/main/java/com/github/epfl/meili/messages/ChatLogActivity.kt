@@ -11,12 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.home.RequiresLoginActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
+import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.models.VisitedPointOfInterest
+import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
 import com.github.epfl.meili.util.DateAuxiliary
 import com.github.epfl.meili.util.MenuActivity
 import com.xwray.groupie.GroupAdapter
@@ -32,10 +33,11 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
     private var currentUser: User? = null
-    private lateinit var groupId: String
+    private lateinit var chatId: String
     private var messageSet = HashSet<ChatMessage>()
     private lateinit var poi: PointOfInterest
 
+    private var isGroupChat = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,24 +58,63 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
         if (isLoggedIn) {
             currentUser = Auth.getCurrentUser()
+          
+            val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)
+            val friend = intent.getParcelableExtra<Friend>(FRIEND_KEY)
+            val databasePath: String
 
-            supportActionBar?.title = poi.name
+            if (poi != null) {
 
-            groupId = poi.uid
+                supportActionBar?.title = poi.name
+                chatId = poi.uid
 
-            Log.d(TAG, "the poi is ${poi.name} and has id ${poi.uid}")
-            ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter("POI/${poi.uid}"))
+                setGroupChat(true)
+
+                Log.d(TAG, "Starting chat group at ${poi.name} and has id ${poi.uid}")
+
+                databasePath = "POI/${chatId}"
+            } else {
+                supportActionBar?.title = friend?.uid
+                val friendUid: String = friend?.uid!!
+                val currentUid: String = currentUser!!.uid
+
+                // The friend chat document in the database is saved under the key with value
+                // of the two user ids concatenated in sorted order
+                chatId =
+                        if (friendUid < currentUid) "$friendUid;$currentUid" else "$currentUid;$friendUid"
+
+                setGroupChat(false)
+
+                Log.d(TAG, "Starting friend chat with ${friend?.uid}")
+
+                databasePath = "FriendChat/${chatId}"
+            }
+
+            ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter(databasePath))
 
             listenForMessages()
 
             findViewById<Button>(R.id.button_chat_log).setOnClickListener {
                 performSendMessage()
             }
+
         } else {
             currentUser = null
             supportActionBar?.title = "Not Signed In"
             Auth.signIn(this)
         }
+    }
+
+    private fun setGroupChat(isGroupChat: Boolean) {
+        this.isGroupChat = isGroupChat
+        if (!isGroupChat) {
+            hideMenuButtons()
+        }
+    }
+
+    private fun hideMenuButtons() {
+        setShowMenu(false)
+        invalidateOptionsMenu()
     }
 
 
@@ -82,11 +123,11 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         findViewById<EditText>(R.id.edit_text_chat_log).text.clear()
 
         ChatMessageViewModel.addMessage(
-            text,
-            currentUser!!.uid,
-            groupId,
-            System.currentTimeMillis() / 1000,
-            currentUser!!.username
+                text,
+                currentUser!!.uid,
+                chatId,
+                System.currentTimeMillis() / 1000,
+                currentUser!!.username
         )
 
         val userKey = currentUser!!.uid
@@ -104,7 +145,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
             newMessages.forEach { message ->
                 Log.d(TAG, "loading message: ${message.text}")
 
-                adapter.add(ChatItem(message, message.fromId == currentUser!!.uid))
+                adapter.add(ChatItem(message, message.fromId == currentUser!!.uid, isGroupChat))
             }
 
             messageSet.addAll(newMessages)
@@ -117,16 +158,20 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         ChatMessageViewModel.messages.observe(this, groupMessageObserver)
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         Auth.onActivityResult(this, requestCode, resultCode, data)
     }
-
 }
 
-class ChatItem(private val message: ChatMessage, private val isChatMessageFromCurrentUser: Boolean) :
-    Item<GroupieViewHolder>() {
+class ChatItem(
+        private val message: ChatMessage,
+        private val isChatMessageFromCurrentUser: Boolean,
+        private val isGroupChat: Boolean
+) :
+        Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
         return if (isChatMessageFromCurrentUser) {
             R.layout.chat_from_me_row
@@ -139,13 +184,12 @@ class ChatItem(private val message: ChatMessage, private val isChatMessageFromCu
         viewHolder.itemView.findViewById<TextView>(R.id.text_gchat_message).text = message.text
         val date = DateAuxiliary.getDateFromTimestamp(message.timestamp)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_timestamp).text =
-            DateAuxiliary.getTime(date)
+                DateAuxiliary.getTime(date)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
-            DateAuxiliary.getDay(date)
-
+                DateAuxiliary.getDay(date)
         if (!isChatMessageFromCurrentUser) {
             viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text =
-                message.fromName
+                    if (isGroupChat) message.fromName else ""
         }
     }
 }
