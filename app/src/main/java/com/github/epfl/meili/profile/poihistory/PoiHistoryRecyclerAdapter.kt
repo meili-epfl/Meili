@@ -12,11 +12,17 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class PoiHistoryRecyclerAdapter : MeiliRecyclerAdapter<VisitedPointOfInterest>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        PoiViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.poi, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return PoiViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.poi, parent, false)
+        )
+    }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-        (holder as PoiViewHolder).bind(items[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val pvh = (holder as PoiViewHolder)
+        pvh.bind(items[position])
+    }
+
 
     class PoiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val poiName: TextView = itemView.findViewById(R.id.poi_name)
