@@ -114,8 +114,25 @@
             android:id="@+id/forum_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/spinner"
             tools:layout_editor_absoluteX="12dp"
-            tools:layout_editor_absoluteY="33dp" />
+            tools:layout_editor_absoluteY="33dp"
+            />
+
+        <TextView
+            android:id="@+id/sort_by"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text="Sort by:"/>
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/sort_by"
+            android:layout_alignParentTop="true"
+            />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/create_post"

@@ -29,9 +29,11 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
+class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSelectedListener  {
     companion object {
         private const val CARD_PADDING: Int = 30
+        private const val NEWEST = "Newest"
+        private const val OLDEST = "Oldest"
     }
 
     private lateinit var recyclerAdapter: ForumRecyclerAdapter
@@ -45,6 +47,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
     private lateinit var editTextVIew: EditText
     private lateinit var submitButton: Button
     private lateinit var cancelButton: Button
+    private lateinit var filterSpinner: Spinner
 
     // image choice and upload
     private val launchCameraActivity =
@@ -93,6 +96,17 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         useCameraButton = findViewById(R.id.post_use_camera)
         useGalleryButton = findViewById(R.id.post_use_gallery)
         displayImageView = findViewById(R.id.post_display_image)
+        filterSpinner = findViewById(R.id.spinner)
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter.createFromResource(this, R.array.sort_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            filterSpinner.adapter = adapter
+        }
+        filterSpinner.onItemSelectedListener = this
 
     }
 
@@ -128,13 +142,14 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         }
 
         val user: User = Auth.getCurrentUser()!!
+        val timestamp = System.currentTimeMillis()
 
-        val postId = "${user.uid}${System.currentTimeMillis()}"
+        val postId = "${user.uid}${timestamp}"
 
         val title = editTitleView.text.toString()
         val text = editTextVIew.text.toString()
 
-        viewModel.addElement(postId, Post(user.username, title, text))
+        viewModel.addElement(postId, Post(user.username, title, timestamp, text))
 
         val userKey = user.uid
         PoiHistoryActivity.addPoiToHistory(userKey, poi)
@@ -194,6 +209,20 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
         editPostView.visibility = View.GONE
     }
 
+    private fun sortPosts(b:Boolean){
+        viewModel.getElements().removeObservers(this)
+        viewModel.getElements().observe(this, { map ->
+            recyclerAdapter.submitList(map.toList().sortedBy { pair ->
+                if (b)
+                    -pair.second.timestamp
+                else
+                    pair.second.timestamp
+            })
+            recyclerAdapter.notifyDataSetChanged()
+        })
+    }
+
+
     private fun loadImage(filePath: Uri) {
         executor.execute {
             val bitmap = getBitmapFromFilePath(contentResolver, filePath)
@@ -204,4 +233,13 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu) {
             }
         }
     }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
+        when (parent?.getItemAtPosition(pos)) {
+            NEWEST -> sortPosts(true)
+            OLDEST -> sortPosts(false)
+        }
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {}
 }
