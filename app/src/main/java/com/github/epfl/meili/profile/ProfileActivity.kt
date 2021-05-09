@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
@@ -28,10 +29,10 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var nameEditView: EditText
     private lateinit var bioEditView: EditText
 
-    private lateinit var profileEditButton: Button
+    private lateinit var profileEditButton: FloatingActionButton
     private lateinit var saveButton: Button
     private lateinit var cancelButton: Button
-    private lateinit var seeFriendsButton: Button
+    private lateinit var seeFriendsButton: ImageButton
     private lateinit var signInButton: Button
     private lateinit var signOutButton: Button
 
@@ -117,7 +118,11 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
     private fun showProfile() {
         profileView.visibility = View.VISIBLE
+        seeFriendsButton.visibility = View.VISIBLE
+        signOutButton.visibility = View.VISIBLE
         profileEditView.visibility = View.GONE
+        photoEditView.visibility = View.GONE
+        profileEditButton.visibility = View.VISIBLE
         photoEditView.visibility = View.GONE
     }
 
@@ -126,7 +131,11 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         bioEditView.setText(bioView.text)
 
         profileView.visibility = View.GONE
+        seeFriendsButton.visibility = View.GONE
+        signOutButton.visibility = View.GONE
         profileEditView.visibility = View.VISIBLE
+        photoEditView.visibility = View.VISIBLE
+        profileEditButton.visibility = View.GONE
         photoEditView.visibility = View.VISIBLE
     }
 
@@ -141,10 +150,12 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             supportActionBar?.title = ""
             signedInView.visibility = View.VISIBLE
             signInButton.visibility = View.GONE
+            signOutButton.visibility = View.VISIBLE
         } else {
             supportActionBar?.title = "Not Signed In"
             signedInView.visibility = View.GONE
             signInButton.visibility = View.VISIBLE
+            signOutButton.visibility = View.GONE
         }
     }
 }
