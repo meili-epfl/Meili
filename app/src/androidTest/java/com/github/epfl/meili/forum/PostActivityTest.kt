@@ -53,7 +53,7 @@ class PostActivityTest {
     companion object {
         private const val TEST_POI_KEY = "POI_KEY"
         private const val TEST_ID = "ID"
-        private val TEST_POST = Post("AUTHOR", "TITLE", "TEXT")
+        private val TEST_POST = Post("AUTHOR", "TITLE", -1,"TEXT")
         private val TEST_COMMENT = Comment("AUTHOR_COMMENT", "TEXT_COMMENT")
     }
 
