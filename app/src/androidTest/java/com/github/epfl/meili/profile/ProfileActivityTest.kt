@@ -137,20 +137,20 @@ class ProfileActivityTest {
         runOnUiThread {
             listenerCaptor.value!!.onSuccess(mockDocumentSnapshot1)
         }
-        onView(withId(R.id.name)).check(matches(withText(MOCK_USERNAME)))
-        onView(withId(R.id.bio)).check(matches(withText(MOCK_BIO)))
+        onView(withId(R.id.profile_edit_name)).check(matches(withText(MOCK_USERNAME)))
+        onView(withId(R.id.profile_edit_bio)).check(matches(withText(MOCK_BIO)))
         onView(withId(R.id.photo)).check(matches(isDisplayed()))
 
-        onView(withId(R.id.name)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
-        onView(withId(R.id.bio)).perform(clearText(), typeText(TEST_BIO), closeSoftKeyboard())
+        onView(withId(R.id.profile_edit_name)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
+        onView(withId(R.id.profile_edit_bio)).perform(clearText(), typeText(TEST_BIO), closeSoftKeyboard())
         onView(withId(R.id.save)).perform(click())
 
         runOnUiThread {
             listenerCaptor.value!!.onSuccess(mockDocumentSnapshot2)
         }
 
-        onView(withId(R.id.name)).check(matches(withText(TEST_USERNAME)))
-        onView(withId(R.id.bio)).check(matches(withText(TEST_BIO)))
+        onView(withId(R.id.profile_edit_name)).check(matches(withText(TEST_USERNAME)))
+        onView(withId(R.id.profile_edit_bio)).check(matches(withText(TEST_BIO)))
     }
 
     @Test

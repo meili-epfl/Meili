@@ -1,110 +1,137 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".profile.ProfileActivity"
-    >
+    tools:context=".profile.ProfileActivity">
 
     <RelativeLayout
+        android:id="@+id/signed_in"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/signed_in">
+        android:layout_height="match_parent">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/photo"
             android:layout_width="150dp"
             android:layout_height="175dp"
-            android:layout_gravity="center_horizontal"
             android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
             android:onClick="onProfileButtonClick"
-            android:src="@mipmap/meili_launcher"
-            />
+            android:src="@mipmap/meili_launcher" />
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/profile_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:id="@+id/name_container"
             android:layout_below="@+id/photo">
 
             <TextView
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:text="Name:" />
-
-            <EditText
-                android:id="@+id/name"
-                android:layout_height="wrap_content"
+                android:id="@+id/profile_name"
                 android:layout_width="match_parent"
-                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
                 android:gravity="center"
-                android:text=""
-                />
-        </LinearLayout>
+                android:textSize="24sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/bio_container"
-            android:layout_below="@id/name_container">
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:layout_margin="5dp"
-                android:text="About Me:" />
-
-            <EditText
-                android:id="@+id/bio"
-                android:layout_width="0dp"
-                android:layout_height="77dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onProfileButtonClick"
-            android:layout_below="@id/bio_container"
-            android:layout_centerHorizontal="true"
-            android:text="Save My Profile"
-            android:orientation="vertical">
+                android:id="@+id/profile_bio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/profile_name"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:gravity="center"
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/list_friends_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onProfileButtonClick"
-                android:text="My Friends"/>
+                android:text="My Friends"
+                android:layout_below="@+id/profile_bio" />
 
             <Button
-                android:id="@+id/save"
+                android:id="@+id/profile_edit_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onProfileButtonClick"
-                android:text="Save My Profile" />
+                android:text="Edit profile"
+                android:layout_below="@+id/list_friends_button" />
 
             <Button
+                android:id="@+id/sign_out"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/sign_out"
+                android:onClick="onProfileButtonClick"
                 android:text="Sign Out"
-                android:onClick="onProfileButtonClick"/>
+                android:layout_below="@id/profile_edit_button"/>
+        </RelativeLayout>
 
-        </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/profile_edit_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/photo"
+            android:visibility="invisible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name:" />
+
+                <EditText
+                    android:id="@+id/profile_edit_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Your Name"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="About Me:" />
+
+                <EditText
+                    android:id="@+id/profile_edit_bio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Hi ! I am using Meili !" />
+
+                <Button
+                    android:id="@+id/save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onProfileButtonClick"
+                    android:text="Save My Profile" />
+
+                <Button
+                    android:id="@+id/cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onProfileButtonClick"
+                    android:text="Cancel" />
+            </LinearLayout>
+        </RelativeLayout>
     </RelativeLayout>
 
     <Button
+        android:id="@+id/sign_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/sign_in"
-        android:text="Sign In"
         android:onClick="onProfileButtonClick"
-        />
+        android:text="Sign In" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
