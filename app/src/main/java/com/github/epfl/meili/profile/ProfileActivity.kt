@@ -1,7 +1,6 @@
 package com.github.epfl.meili.profile
 
 import android.content.Intent
-import android.inputmethodservice.Keyboard
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -76,13 +75,13 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(Auth.getCurrentUser()!!))
-                .get(ProfileViewModel::class.java)
+            .get(ProfileViewModel::class.java)
         viewModel.getUser().removeObservers(this)
         viewModel.getUser().observe(this) { user ->
             nameView.text = user.username
             bioView.text = user.bio
 
-            if(nameView.text.isEmpty()){
+            if (nameView.text.isEmpty()) {
                 nameView.text = Auth.getCurrentUser()!!.username
             }
         }

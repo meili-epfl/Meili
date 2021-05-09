@@ -24,30 +24,29 @@
             android:layout_width="150dp"
             android:layout_height="175dp"
             android:layout_above="@+id/profile_edit_container"
-            android:onClick="onProfileButtonClick"
             android:layout_alignEnd="@id/photo"
+            android:onClick="onProfileButtonClick"
             app:srcCompat="@drawable/ic_baseline_add_photo_alternate_24" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/profile_edit_button"
             android:layout_width="150dp"
             android:layout_height="175dp"
+            android:layout_alignEnd="@id/photo"
             android:layout_alignBottom="@id/photo"
             android:onClick="onProfileButtonClick"
-            android:layout_alignEnd="@id/photo"
             app:srcCompat="@drawable/ic_baseline_edit_24" />
 
         <ImageButton
             android:id="@+id/list_friends_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:onClick="onProfileButtonClick"
-            android:text="My Friends"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="32dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
             android:background="@drawable/ic_baseline_people_24"
-            />
+            android:onClick="onProfileButtonClick"
+            android:text="My Friends" />
 
         <RelativeLayout
             android:id="@+id/profile_container"
@@ -102,7 +101,7 @@
                     android:id="@+id/profile_edit_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Your Name"/>
+                    android:hint="Your Name" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -120,22 +119,22 @@
                 android:id="@+id/save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onProfileButtonClick"
-                android:text="Save My Profile"
-                android:layout_marginTop="16dp"
                 android:layout_below="@id/profile_edit_linear"
-                android:layout_alignEnd="@id/profile_edit_linear"/>
+                android:layout_alignEnd="@id/profile_edit_linear"
+                android:layout_marginTop="16dp"
+                android:onClick="onProfileButtonClick"
+                android:text="Save My Profile" />
 
             <Button
                 android:id="@+id/cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onProfileButtonClick"
-                android:text="Cancel"
+                android:layout_below="@id/profile_edit_linear"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_below="@id/profile_edit_linear"
-                android:layout_toStartOf="@id/save"/>
+                android:layout_toStartOf="@id/save"
+                android:onClick="onProfileButtonClick"
+                android:text="Cancel" />
         </RelativeLayout>
     </RelativeLayout>
 
@@ -143,10 +142,10 @@
         android:id="@+id/sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onProfileButtonClick"
-        android:text="Sign In"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:onClick="onProfileButtonClick"
+        android:text="Sign In" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
@@ -161,11 +160,11 @@
         android:id="@+id/sign_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onProfileButtonClick"
-        android:text="Sign Out"
         android:layout_above="@id/navigation"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:onClick="onProfileButtonClick"
+        android:text="Sign Out" />
 
 </RelativeLayout>
