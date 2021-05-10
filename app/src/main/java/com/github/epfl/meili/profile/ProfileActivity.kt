@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
@@ -25,6 +27,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var seeFriendsButton: Button
     private lateinit var signInButton: Button
     private lateinit var signOutButton: Button
+    private lateinit var switchModeButton: Button
 
     private lateinit var signedInView: View
 
@@ -40,6 +43,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         seeFriendsButton = findViewById(R.id.list_friends_button)
         signInButton = findViewById(R.id.sign_in)
         signOutButton = findViewById(R.id.sign_out)
+        switchModeButton = findViewById(R.id.switch_mode)
 
         signedInView = findViewById(R.id.signed_in)
 
@@ -75,6 +79,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             seeFriendsButton -> showFriends()
             signInButton -> Auth.signIn(this)
             signOutButton -> Auth.signOut()
+            switchModeButton -> changeMode()
         }
     }
 
@@ -93,6 +98,39 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Auth.onActivityResult(this, requestCode, resultCode, data)
+    }
+
+    private fun changeMode(){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Choose Mode")
+        val styles = arrayOf("Light","Dark","System default")
+        val checkedItem = 0
+
+        builder.setSingleChoiceItems(styles, checkedItem) { dialog, which ->
+
+            when (which) {
+                0 -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    delegate.applyDayNight()
+                    dialog.dismiss()
+                }
+                1 -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    delegate.applyDayNight()
+
+                    dialog.dismiss()
+                }
+                2 -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    delegate.applyDayNight()
+                    dialog.dismiss()
+                }
+
+            }
+        }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
     private fun verifyAndUpdateUserIsLoggedIn() {

@@ -95,6 +95,14 @@
                 android:text="Sign Out"
                 android:onClick="onProfileButtonClick"/>
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/switch_mode"
+                android:text="Switch mode"
+                android:onClick="onProfileButtonClick"
+                />
+
         </LinearLayout>
     </RelativeLayout>
 
