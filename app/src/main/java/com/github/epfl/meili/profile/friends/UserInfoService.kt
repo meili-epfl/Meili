@@ -23,23 +23,27 @@ open class UserInfoService {
             } else {
                 responsesRemaining = uids.size
                 for (uid in uids) {
-                    documentService().getDocument(getUserPath(uid)).addOnSuccessListener {
-                        if (it.exists()) {
-                            val user = it.toObject(User::class.java)
-                            if (user == null) {
-                                onError(Error("Error fetching response"))
-                                responsesRemaining = 0
-                            } else {
-                                usersInfo[user.uid] = user
-                                if (responsesRemaining == 1) {
-                                    onSuccess(usersInfo)
-                                    usersInfo.clear()
-                                    responsesRemaining = 0
-                                } else {
-                                    responsesRemaining--
-                                }
-                            }
-                        }
+                    getSingleUserInfo(uid, onSuccess, onError)
+                }
+            }
+        }
+    }
+
+    private fun getSingleUserInfo(uid: String, onSuccess: ((Map<String, User>) -> Unit), onError: ((Error) -> Unit)) {
+        documentService().getDocument(getUserPath(uid)).addOnSuccessListener {
+            if (it.exists()) {
+                val user = it.toObject(User::class.java)
+                if (user == null) {
+                    onError(Error("Error fetching response"))
+                    responsesRemaining = 0
+                } else {
+                    usersInfo[user.uid] = user
+                    if (responsesRemaining == 1) {
+                        onSuccess(usersInfo)
+                        usersInfo.clear()
+                        responsesRemaining = 0
+                    } else {
+                        responsesRemaining--
                     }
                 }
             }
