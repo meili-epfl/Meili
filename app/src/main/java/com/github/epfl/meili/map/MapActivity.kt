@@ -84,7 +84,8 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         // Initialize map
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
+        val mapFragment =
+            supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
     }
 
@@ -126,8 +127,11 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
         viewModel.getLandmarks().observe(this) { landmarks ->
             if (landmarks.isEmpty()) {
-                Toast.makeText(applicationContext, "No landmark found in the picture", Toast.LENGTH_LONG)
-                    .show()
+                Toast.makeText(
+                    applicationContext,
+                    "No landmark found in the picture",
+                    Toast.LENGTH_LONG
+                ).show()
             } else {
                 lensCamera.isVisible = false
                 lensInfoContainer.isVisible = false
@@ -151,7 +155,12 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
         val currentUser = Auth.getCurrentUser()
         if (currentUser != null) {
-            viewModel.setDatabase(FirestoreDatabase("users-poi-list/${currentUser.uid}/poi-list", PointOfInterest::class.java))
+            viewModel.setDatabase(
+                FirestoreDatabase(
+                    "users-poi-list/${currentUser.uid}/poi-list",
+                    PointOfInterest::class.java
+                )
+            )
         }
 
         // Initialize the manager with the context and the map.
@@ -221,8 +230,16 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         map = googleMap
         when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
-                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))}
-            Configuration.UI_MODE_NIGHT_YES -> {googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_dark))}
+                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+            }
+            Configuration.UI_MODE_NIGHT_YES -> {
+                googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        this,
+                        R.raw.map_style_dark
+                    )
+                )
+            }
         }
 
         updateMapUI()
