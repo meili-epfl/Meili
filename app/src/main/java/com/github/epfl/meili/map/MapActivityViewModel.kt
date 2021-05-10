@@ -9,8 +9,8 @@ import android.net.Uri
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.github.epfl.meili.util.LandmarkDetectionService
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.util.LandmarkDetectionService
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 import com.google.maps.android.SphericalUtil.computeDistanceBetween
@@ -85,9 +85,8 @@ class MapActivityViewModel(application: Application) : PoiMarkerViewModel(applic
 
     private fun azimuthInDegrees(): Double = floatOrientation[0] * 180 / PI
 
-    private fun checkAnglesClose(a: Double, b: Double, tolerance: Double): Boolean {
-        return (a - tolerance / 2).rem(360) <= b && b <= (a + tolerance / 2).rem(360)
-    }
+    private fun checkAnglesClose(a: Double, b: Double, tolerance: Double) =
+        (a - tolerance / 2).rem(360) <= b && b <= (a + tolerance / 2).rem(360)
 
     // assumes lastUserLocation not null
     private fun getUserLocation() =

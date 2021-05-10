@@ -43,8 +43,7 @@
             android:parentActivityName=".profile.friends.FriendsListActivity" />
         <activity
             android:name=".home.GoogleSignInActivity"
-            android:label="Meili"
-            android:exported="false">
+            android:label="Meili">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
