@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
@@ -72,7 +73,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = MapActivityViewModel(application)
+        viewModel = ViewModelProvider(this).get(MapActivityViewModel::class.java)
 
         initLensViews()
         setupLensSensors()
