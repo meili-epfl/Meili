@@ -1,4 +1,4 @@
-package com.github.epfl.meili.lens
+package com.github.epfl.meili.util
 
 import android.content.Context
 import android.net.Uri

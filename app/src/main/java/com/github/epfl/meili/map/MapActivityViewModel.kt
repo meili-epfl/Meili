@@ -9,8 +9,7 @@ import android.net.Uri
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.github.epfl.meili.MainApplication
-import com.github.epfl.meili.lens.LandmarkDetectionService
+import com.github.epfl.meili.util.LandmarkDetectionService
 import com.github.epfl.meili.models.PointOfInterest
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
