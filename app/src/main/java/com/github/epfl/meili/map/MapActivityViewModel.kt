@@ -24,6 +24,11 @@ class MapActivityViewModel(application: Application) : PoiMarkerViewModel(applic
         private const val FIELD_OF_VIEW = 40.0 // degrees
         private const val LENS_MAX_DISTANCE = 500.0 // meters
         private const val AZIMUTH_TOLERANCE = 5.0 // degrees
+
+        var getSensorManager: (application: Application) -> SensorManager =
+            { getSystemService(it, SensorManager::class.java)!! }
+
+        var getEventValues: (event: SensorEvent) -> FloatArray = { it.values }
     }
 
     private var floatGravity = FloatArray(3)
@@ -38,7 +43,7 @@ class MapActivityViewModel(application: Application) : PoiMarkerViewModel(applic
     private val mLandMarks: MutableLiveData<List<FirebaseVisionCloudLandmark>> = MutableLiveData()
 
     init {
-        val sensorManager = getSystemService(getApplication(), SensorManager::class.java)!!
+        val sensorManager = getSensorManager(getApplication())
         registerListener(sensorManager, Sensor.TYPE_ACCELEROMETER)
         registerListener(sensorManager, Sensor.TYPE_MAGNETIC_FIELD)
     }
@@ -127,11 +132,11 @@ class MapActivityViewModel(application: Application) : PoiMarkerViewModel(applic
         return pois
     }
 
-    inner class MapSensorEventListener(private val sensor: Int) : SensorEventListener {
+    private inner class MapSensorEventListener(private val sensor: Int) : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent) {
             when (sensor) {
-                Sensor.TYPE_ACCELEROMETER -> floatGravity = event.values
-                Sensor.TYPE_MAGNETIC_FIELD -> floatGeoMagnetic = event.values
+                Sensor.TYPE_ACCELEROMETER -> floatGravity = getEventValues(event)
+                Sensor.TYPE_MAGNETIC_FIELD -> floatGeoMagnetic = getEventValues(event)
             }
             updateOrientation()
             updatePOIDist()

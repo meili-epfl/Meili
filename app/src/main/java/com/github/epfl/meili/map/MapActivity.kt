@@ -65,7 +65,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
     private lateinit var clusterRenderer: PoiRenderer
 
-    lateinit var viewModel: MapActivityViewModel
+    private lateinit var viewModel: MapActivityViewModel
 
     private val poiItems: HashMap<String, PoiItem> = HashMap()
 

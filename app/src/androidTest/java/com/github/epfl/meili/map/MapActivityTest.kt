@@ -1,16 +1,20 @@
 package com.github.epfl.meili.map
 
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.location.LocationManager
 import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
+import androidx.test.rule.GrantPermissionRule
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObjectNotFoundException
 import androidx.test.uiautomator.UiSelector
@@ -26,7 +30,6 @@ import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
 import com.google.firebase.storage.FirebaseStorage
-import com.schibsted.spain.barista.interaction.PermissionGranter
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.`is`
@@ -35,7 +38,9 @@ import org.hamcrest.TypeSafeMatcher
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
@@ -47,8 +52,17 @@ class MapActivityTest {
     @get: Rule
     var testRule = ActivityScenarioRule(MapActivity::class.java)
 
+    @get:Rule
+    var permissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION)
+
+
+    private val listenerCaptor = ArgumentCaptor.forClass(SensorEventListener::class.java)
+    private val mockSensorEvent = mock(SensorEvent::class.java)
+
     init {
         setupMocks()
+        setupSensorMocks()
     }
 
     private fun setupMocks() {
@@ -69,6 +83,16 @@ class MapActivityTest {
         FirestoreDocumentService.databaseProvider = { mockFirestore }
         FirebaseStorageService.storageProvider = { mock(FirebaseStorage::class.java) }
         LocationService.getLocationManager = { mock(LocationManager::class.java) }
+    }
+
+    private fun setupSensorMocks() {
+        val mockSensorManager = mock(SensorManager::class.java)
+        `when`(mockSensorManager.registerListener(
+            listenerCaptor.capture(), any(), anyInt())
+        ).thenReturn(true)
+
+        MapActivityViewModel.getEventValues = { FloatArray(3) }
+        MapActivityViewModel.getSensorManager = { mockSensorManager }
     }
 
     @Before
@@ -102,7 +126,6 @@ class MapActivityTest {
 
     @Test
     fun locationButtonClickableAfterPermissionGrant() {
-        PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
         val imageView = onView(
                 allOf(
                         withContentDescription("My Location"),
@@ -117,6 +140,11 @@ class MapActivityTest {
                 )
         )
         imageView.perform(click())
+    }
+
+    @Test
+    fun sensorsCalculationWorks() {
+        runOnUiThread { listenerCaptor.value.onSensorChanged(mockSensorEvent) }
     }
 
     @Test
