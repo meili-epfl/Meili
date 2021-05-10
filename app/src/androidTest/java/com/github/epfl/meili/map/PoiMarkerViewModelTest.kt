@@ -4,7 +4,6 @@ import android.location.Location
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
-import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiService
@@ -45,7 +44,7 @@ class PoiMarkerViewModelTest {
 
     @Before
     fun initService() {
-        testRule.scenario.onActivity { service = it.viewModel }
+        testRule.scenario.onActivity { service = PoiMarkerViewModel(it.application) }
     }
 
     @Test
