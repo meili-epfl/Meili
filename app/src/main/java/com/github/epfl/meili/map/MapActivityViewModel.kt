@@ -44,7 +44,7 @@ class MapActivityViewModel(application: Application): PoiMarkerViewModel(applica
         override fun onSensorChanged(event: SensorEvent) {
             floatGravity = event.values
             updateOrientation()
-            // Do not recompute nearest POI as both sensor listeners are called approximately at the same time
+            updatePOIDist()
         }
 
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
@@ -54,11 +54,7 @@ class MapActivityViewModel(application: Application): PoiMarkerViewModel(applica
         override fun onSensorChanged(event: SensorEvent) {
             floatGeoMagnetic = event.values
             updateOrientation()
-            if (!checkAnglesClose(azimuthInDegrees(), lastAzimuth, AZIMUTH_TOLERANCE)) {
-                mPOIDist.value = closestPoiAndDistance(fieldOfViewPOIs())
-            }
-
-            lastAzimuth = azimuthInDegrees()
+            updatePOIDist()
         }
 
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
@@ -89,6 +85,14 @@ class MapActivityViewModel(application: Application): PoiMarkerViewModel(applica
             floatGeoMagnetic
         )
         SensorManager.getOrientation(floatRotationMatrix, floatOrientation)
+    }
+
+    private fun updatePOIDist() {
+        if (!checkAnglesClose(azimuthInDegrees(), lastAzimuth, AZIMUTH_TOLERANCE)) {
+            mPOIDist.value = closestPoiAndDistance(fieldOfViewPOIs())
+        }
+
+        lastAzimuth = azimuthInDegrees()
     }
 
     private fun azimuthInDegrees(): Double = floatOrientation[0] * 180 / PI

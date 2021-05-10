@@ -2,11 +2,6 @@ package com.github.epfl.meili.database
 
 import java.util.*
 import kotlin.collections.HashSet
-import kotlin.collections.Map
-import kotlin.collections.Set
-import kotlin.collections.forEach
-import kotlin.collections.plus
-
 
 abstract class Database<T>: Observable() {
     abstract var elements: Map<String, T>
