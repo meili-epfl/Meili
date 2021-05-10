@@ -89,7 +89,7 @@ class FriendsListActivityTest {
     fun uiDisplaysCorrectInfo() {
         database.onEvent(mockSnapshotAfterAddition, null)
 
-        Espresso.onView(textViewContainsText(TEST_FRIEND_UID)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(textViewContainsText(TEST_FRIEND_NAME)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     @Test
