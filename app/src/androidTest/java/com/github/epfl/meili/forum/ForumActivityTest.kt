@@ -57,8 +57,8 @@ class ForumActivityTest {
     companion object {
         private const val TEST_UID = "UID"
         private const val TEST_USERNAME = "AUTHOR"
-        private val TEST_POST = Post(TEST_USERNAME, "TITLE", "TEXT")
-        private val TEST_POI_KEY = PointOfInterest(100.0,100.0,"lorem_ipsum1", "lorem_ipsum2")
+        private val TEST_POST = Post(TEST_USERNAME, "TITLE", -1, "TEXT")
+        private val TEST_POI_KEY = PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2")
     }
 
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
@@ -72,14 +72,18 @@ class ForumActivityTest {
     private val mockAuthenticationService = MockAuthenticationService()
 
     // transaction mocks
-    private val transactionFunctionCaptor = ArgumentCaptor.forClass(Transaction.Function::class.java)
+    private val transactionFunctionCaptor =
+        ArgumentCaptor.forClass(Transaction.Function::class.java)
     private val mockTransaction = mock(Transaction::class.java)
 
     private lateinit var database: AtomicPostFirestoreDatabase
     private lateinit var commentsDatabase: FirestoreDatabase<Comment>
 
-    private val intent = Intent(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext, ForumActivity::class.java)
-            .putExtra(MapActivity.POI_KEY, TEST_POI_KEY)
+    private val intent = Intent(
+        InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
+        ForumActivity::class.java
+    )
+        .putExtra(MapActivity.POI_KEY, TEST_POI_KEY)
 
     @get:Rule
     var rule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(intent)
@@ -108,10 +112,12 @@ class ForumActivityTest {
     }
 
     private fun setupMocks() {
-        `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts")).thenReturn(mockCollection)
+        `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts")).thenReturn(
+            mockCollection
+        )
 
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
-                database = invocation.arguments[0] as AtomicPostFirestoreDatabase
+            database = invocation.arguments[0] as AtomicPostFirestoreDatabase
             mock(ListenerRegistration::class.java)
         }
         `when`(mockCollection.document(contains(TEST_UID))).thenReturn(mockDocument)
@@ -135,7 +141,7 @@ class ForumActivityTest {
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
-        FirebaseStorageService.storageProvider = { mock(FirebaseStorage::class.java)}
+        FirebaseStorageService.storageProvider = { mock(FirebaseStorage::class.java) }
         Auth.authService = mockAuthenticationService
     }
 
@@ -155,6 +161,21 @@ class ForumActivityTest {
         `when`(mockTask.addOnSuccessListener(any())).thenReturn(mockTask)
 
         FirebaseStorageService.storageProvider = { mockFirebase }
+    }
+
+    private fun textViewContainsText(content: String): Matcher<View?> {
+        return object : TypeSafeMatcher<View?>() {
+            override fun describeTo(description: Description) {
+                description.appendText("A TextView with the text: $content")
+            }
+
+            override fun matchesSafely(item: View?): Boolean {
+                when (item) {
+                    is TextView -> return item.text == content
+                }
+                return false
+            }
+        }
     }
 
     @Test
@@ -206,8 +227,16 @@ class ForumActivityTest {
 
         onView(withId(R.id.create_post)).perform(click())
 
-        onView(withId(R.id.post_edit_title)).perform(clearText(), typeText(TEST_POST.title), closeSoftKeyboard())
-        onView(withId(R.id.post_edit_text)).perform(clearText(), typeText(TEST_POST.text), closeSoftKeyboard())
+        onView(withId(R.id.post_edit_title)).perform(
+            clearText(),
+            typeText(TEST_POST.title),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.post_edit_text)).perform(
+            clearText(),
+            typeText(TEST_POST.text),
+            closeSoftKeyboard()
+        )
 
         onView(withId(R.id.submit_post)).perform(click())
 
@@ -218,8 +247,16 @@ class ForumActivityTest {
         onView(withId(R.id.edit_post)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.forum_recycler_view))
-                .check(matches(isDisplayed()))
-                .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_POST.title))))
+            .check(matches(isDisplayed()))
+            .perform(
+                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
+                    hasDescendant(
+                        withText(
+                            TEST_POST.title
+                        )
+                    )
+                )
+            )
 
         onView(textViewContainsText(TEST_POST.title)).check(matches(isDisplayed()))
         onView(textViewContainsText(TEST_USERNAME)).check(matches(isDisplayed()))
@@ -230,18 +267,36 @@ class ForumActivityTest {
         mockAuthenticationService.signOut()
         database.onEvent(mockSnapshotAfterAddition, null)
         onView(withId(R.id.forum_recycler_view))
-                .check(matches(isDisplayed()))
-                .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_POST.title))))
+            .check(matches(isDisplayed()))
+            .perform(
+                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
+                    hasDescendant(
+                        withText(
+                            TEST_POST.title
+                        )
+                    )
+                )
+            )
 
         onView(withText(TEST_POST.title)).perform(click())
-        Intents.intended(allOf(
+        Intents.intended(
+            allOf(
                 hasExtra("Post", TEST_POST),
                 hasComponent(PostActivity::class.java.name)
-        ))
+            )
+        )
     }
 
     @Test
-    fun clickUpvoteDownvoteButtonsTest(){
+
+    fun clickOnSortingButtonTest() {
+        mockAuthenticationService.signInIntent()
+        database.onEvent(mockSnapshotBeforeAddition, null)
+        onView(withId(R.id.spinner)).perform(click())
+    }
+
+    @Test
+    fun clickUpvoteDownvoteButtonsTest() {
         mockAuthenticationService.signInIntent()
         database.onEvent(mockSnapshotAfterAddition, null)
 
@@ -253,29 +308,17 @@ class ForumActivityTest {
         transactionFunctionCaptor.value.apply(mockTransaction)
     }
 
-    @Test
-    fun useCameraIntentsTest() {
-        mockAuthenticationService.signInIntent()
-        database.onEvent(mockSnapshotBeforeAddition, null)
+        @Test
+        fun useCameraIntentsTest() {
+            mockAuthenticationService.signInIntent()
+            database.onEvent(mockSnapshotBeforeAddition, null)
 
-        onView(withId(R.id.create_post)).perform(click())
+            onView(withId(R.id.create_post)).perform(click())
 
-        onView(withId(R.id.post_use_camera)).perform(click())
-        Intents.intended(hasComponent(CameraActivity::class.java.name))
-    }
-    
-    private fun textViewContainsText(content: String): Matcher<View?> {
-        return object : TypeSafeMatcher<View?>() {
-            override fun describeTo(description: Description) {
-                description.appendText("A TextView with the text: $content")
-            }
-
-            override fun matchesSafely(item: View?): Boolean {
-                when (item) {
-                    is TextView -> return item.text == content
-                }
-                return false
-            }
+            onView(withId(R.id.post_use_camera)).perform(click())
+            Intents.intended(hasComponent(CameraActivity::class.java.name))
         }
-    }
+
+
+
 }
