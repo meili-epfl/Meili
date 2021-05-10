@@ -134,17 +134,16 @@ class ChatLogMenuButtonsTest {
         ).perform(click())
     }
 
-    // This test is not passing on cirrus
-//
-//    @Test
-//    fun clickReviewMenuButton() {
-//
-//        onView(
-//            allOf(
-//                withId(R.id.menu_reviews), withText("Reviews"),
-//            )
-//        ).perform(click())
-//    }
+
+    @Test
+    fun clickReviewMenuButton() {
+
+        onView(
+            allOf(
+                withId(R.id.menu_reviews), withText("Reviews"),
+            )
+        ).perform(click())
+    }
 
 
 }

@@ -107,7 +107,7 @@ class CameraActivityTest {
             }
         }
 
-        onView(withId(R.id.camera_preview)).perform(touches)
+        //onView(withId(R.id.camera_preview)).perform(touches)
     }
 
 
