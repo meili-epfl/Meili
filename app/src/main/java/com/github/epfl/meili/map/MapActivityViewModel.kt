@@ -19,18 +19,13 @@ import com.google.maps.android.SphericalUtil.computeHeading
 import kotlin.math.PI
 import kotlin.math.roundToInt
 
-class MapActivityViewModel(application: Application): PoiMarkerViewModel(application) {
+class MapActivityViewModel(application: Application) : PoiMarkerViewModel(application) {
     companion object {
         private const val SENSOR_DELAY = 500_000 // microseconds
         private const val FIELD_OF_VIEW = 40.0 // degrees
         private const val LENS_MAX_DISTANCE = 500.0 // meters
         private const val AZIMUTH_TOLERANCE = 5.0 // degrees
     }
-
-    private var sensorManager: SensorManager =
-        getSystemService(getApplication<MainApplication>().applicationContext, SensorManager::class.java)!!
-    private var accelerometer: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-    private var magneticField: Sensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
 
     private var floatGravity = FloatArray(3)
     private var floatGeoMagnetic = FloatArray(3)
@@ -40,32 +35,21 @@ class MapActivityViewModel(application: Application): PoiMarkerViewModel(applica
 
     private var lastAzimuth: Double = 500.0 // impossible azimuth for initialisation
 
-    private val accelerometerListener = object : SensorEventListener {
-        override fun onSensorChanged(event: SensorEvent) {
-            floatGravity = event.values
-            updateOrientation()
-            updatePOIDist()
-        }
-
-        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
-    }
-
-    private val magneticFieldListener = object : SensorEventListener {
-        override fun onSensorChanged(event: SensorEvent) {
-            floatGeoMagnetic = event.values
-            updateOrientation()
-            updatePOIDist()
-        }
-
-        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
-    }
-
     private val mPOIDist: MutableLiveData<Pair<PointOfInterest, Int>> = MutableLiveData()
     private val mLandMarks: MutableLiveData<List<FirebaseVisionCloudLandmark>> = MutableLiveData()
 
     init {
-        sensorManager.registerListener(accelerometerListener, accelerometer, SENSOR_DELAY)
-        sensorManager.registerListener(magneticFieldListener, magneticField, SENSOR_DELAY)
+        val sensorManager = getSystemService(getApplication(), SensorManager::class.java)!!
+        sensorManager.registerListener(
+            MapSensorEventListener(Sensor.TYPE_ACCELEROMETER),
+            sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+            SENSOR_DELAY
+        )
+        sensorManager.registerListener(
+            MapSensorEventListener(Sensor.TYPE_MAGNETIC_FIELD),
+            sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+            SENSOR_DELAY
+        )
     }
 
     fun getPOIDist(): LiveData<Pair<PointOfInterest, Int>> = mPOIDist
@@ -102,7 +86,8 @@ class MapActivityViewModel(application: Application): PoiMarkerViewModel(applica
     }
 
     // assumes lastUserLocation not null
-    private fun getUserLocation() = LatLng(lastUserLocation!!.latitude, lastUserLocation!!.longitude)
+    private fun getUserLocation() =
+        LatLng(lastUserLocation!!.latitude, lastUserLocation!!.longitude)
 
     private fun closestPoiAndDistance(pois: List<PointOfInterest>): Pair<PointOfInterest, Int>? {
         if (lastUserLocation == null) return null
@@ -141,5 +126,18 @@ class MapActivityViewModel(application: Application): PoiMarkerViewModel(applica
         }
 
         return pois
+    }
+
+    inner class MapSensorEventListener(private val sensor: Int) : SensorEventListener {
+        override fun onSensorChanged(event: SensorEvent) {
+            when (sensor) {
+                Sensor.TYPE_ACCELEROMETER -> floatGravity = event.values
+                Sensor.TYPE_MAGNETIC_FIELD -> floatGeoMagnetic = event.values
+            }
+            updateOrientation()
+            updatePOIDist()
+        }
+
+        override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
     }
 }
