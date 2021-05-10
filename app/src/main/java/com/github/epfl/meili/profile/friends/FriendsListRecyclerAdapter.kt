@@ -9,12 +9,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 
-class FriendsListRecyclerAdapter(val clickListener: ClickListener) : MeiliRecyclerAdapter<User>() {
+class FriendsListRecyclerAdapter(private val clickListener: ClickListener) : MeiliRecyclerAdapter<User>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         FriendViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.friend, parent, false),
@@ -27,7 +29,7 @@ class FriendsListRecyclerAdapter(val clickListener: ClickListener) : MeiliRecycl
     class FriendViewHolder(itemView: View, private val listener: ClickListener) :
         RecyclerView.ViewHolder(itemView), View.OnClickListener {
         private val name: TextView = itemView.findViewById(R.id.friendName)
-        private val picture: ImageView = itemView.findViewById(R.id.friendImage)
+        private val picture: CircleImageView = itemView.findViewById(R.id.friendImage)
         private lateinit var user: User
 
         init {
@@ -37,10 +39,13 @@ class FriendsListRecyclerAdapter(val clickListener: ClickListener) : MeiliRecycl
 
         fun bind(pair: Pair<String, User>) {
             Log.d("Recycler friend", pair.second.username)
-            val friend = pair.second
-            user = friend
-            name.text = friend.username
-            Picasso.get().load("images/avatars/${friend.uid}").into(picture)
+            user = pair.second
+            name.text = user.username
+            FirebaseStorageService.getDownloadUrl(
+                    "images/avatars/${user.uid}",
+                    { uri -> Picasso.get().load(uri).into(picture) },
+                    { /* do nothing in case of failure */ }
+            )
         }
 
         override fun onClick(v: View) {
