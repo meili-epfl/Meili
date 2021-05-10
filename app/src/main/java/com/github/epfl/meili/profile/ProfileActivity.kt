@@ -11,6 +11,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.NavigableActivity
+import com.github.epfl.meili.util.UIUtility
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -69,6 +70,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     }
 
     fun onProfileButtonClick(view: View) {
+        UIUtility.hideSoftKeyboard(this)
         when (view) {
             photoView -> launchGallery.launch("image/*")
             saveButton -> saveProfile()
