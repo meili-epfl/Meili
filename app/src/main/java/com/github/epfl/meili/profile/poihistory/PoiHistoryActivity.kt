@@ -24,10 +24,11 @@ class PoiHistoryActivity : AppCompatActivity() {
     companion object {
         private const val CARD_PADDING: Int = 30
         private const val ACTIVITY_TITLE = "POI History"
+        private const val DB_PATH = "poi-history/%s/poi-history"
 
         fun addPoiToHistory(userKey: String, poi: PointOfInterest) {
             FirestoreDatabase( // add to poi history
-                "poi-history/$userKey/poi-history",
+                String.format(DB_PATH, userKey),
                 VisitedPointOfInterest::class.java
             ).addElement(poi.uid, VisitedPointOfInterest(poi))
         }
@@ -68,7 +69,7 @@ class PoiHistoryActivity : AppCompatActivity() {
 
         viewModel.initDatabase(
             FirestoreDatabase(
-                "poi-history/$userKey/poi-history",
+                String.format(DB_PATH, userKey),
                 VisitedPointOfInterest::class.java
             )
         )
