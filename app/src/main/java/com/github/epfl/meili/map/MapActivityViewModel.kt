@@ -40,14 +40,14 @@ class MapActivityViewModel(application: Application) : PoiMarkerViewModel(applic
 
     init {
         val sensorManager = getSystemService(getApplication(), SensorManager::class.java)!!
+        registerListener(sensorManager, Sensor.TYPE_ACCELEROMETER)
+        registerListener(sensorManager, Sensor.TYPE_MAGNETIC_FIELD)
+    }
+
+    private fun registerListener(sensorManager: SensorManager, sensor: Int) {
         sensorManager.registerListener(
-            MapSensorEventListener(Sensor.TYPE_ACCELEROMETER),
-            sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-            SENSOR_DELAY
-        )
-        sensorManager.registerListener(
-            MapSensorEventListener(Sensor.TYPE_MAGNETIC_FIELD),
-            sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+            MapSensorEventListener(sensor),
+            sensorManager.getDefaultSensor(sensor),
             SENSOR_DELAY
         )
     }
