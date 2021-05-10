@@ -19,7 +19,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.MockAuthenticationService

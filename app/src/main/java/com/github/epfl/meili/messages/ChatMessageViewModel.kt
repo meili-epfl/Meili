@@ -15,11 +15,17 @@ object ChatMessageViewModel : ViewModel(),
     val messages: LiveData<List<ChatMessage>?> = _messages
 
 
+    /**
+     * Sets the database for messages
+     */
     fun setMessageDatabase(database: MessageDatabase) {
         this.database = database
         database.addObserver(this)
     }
 
+    /**
+     * Adds a message to the database
+     */
     fun addMessage(text: String, fromId: String, toId: String, timeStamp: Long, fromName: String) {
         val message = ChatMessage(
             text,

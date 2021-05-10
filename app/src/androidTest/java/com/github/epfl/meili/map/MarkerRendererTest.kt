@@ -15,45 +15,45 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
-class PoiRendererTest {
+class MarkerRendererTest {
 
     @Test
     fun generalTest() {
         MapsInitializer.initialize(MainApplication.applicationContext())
         Looper.prepare()
         val mockClusterManager = Mockito.mock(ClusterManager::class.java)
-        val renderer = PoiRendererTester(MainApplication.applicationContext(), null, mockClusterManager as ClusterManager<PoiItem>)
+        val renderer = MarkerRendererTester(MainApplication.applicationContext(), null, mockClusterManager as ClusterManager<MarkerItem>)
 
 
-        val poi1 = PoiItem(PointOfInterest(41.075000, 1.130870, "place1", "place1"))
-        val poi2 = PoiItem(PointOfInterest(41.063563, 1.083658, "place2", "place2"))
+        val poi1 = MarkerItem(PointOfInterest(41.075000, 1.130870, "place1", "place1"))
+        val poi2 = MarkerItem(PointOfInterest(41.063563, 1.083658, "place2", "place2"))
 
-        val poiStatusMap = HashMap<PoiItem, PoiMarkerViewModel.PointOfInterestStatus>()
+        val poiStatusMap = HashMap<MarkerItem, MarkerViewModel.PointOfInterestStatus>()
 
-        poiStatusMap.put(poi1, PoiMarkerViewModel.PointOfInterestStatus.VISIBLE)
-        poiStatusMap.put(poi2, PoiMarkerViewModel.PointOfInterestStatus.REACHABLE)
+        poiStatusMap.put(poi1, MarkerViewModel.PointOfInterestStatus.VISIBLE)
+        poiStatusMap.put(poi2, MarkerViewModel.PointOfInterestStatus.REACHABLE)
 
         renderer.renderClusterItems(poiStatusMap)
 
         val markerOptions = MarkerOptions()
 
         renderer.onBeforeClusterItemRenderedCaller(poi1, markerOptions)
-        assertEquals(markerOptions.icon, PoiRenderer.VISIBLE_ICON)
+        assertEquals(markerOptions.icon, MarkerRenderer.VISIBLE_ICON)
 
         renderer.onBeforeClusterItemRenderedCaller(poi2, markerOptions)
 
-        assertEquals(markerOptions.icon, PoiRenderer.REACHABLE_ICON)
+        assertEquals(markerOptions.icon, MarkerRenderer.REACHABLE_ICON)
 
-        poiStatusMap.put(poi1, PoiMarkerViewModel.PointOfInterestStatus.VISITED)
+        poiStatusMap.put(poi1, MarkerViewModel.PointOfInterestStatus.VISITED)
         renderer.renderClusterItems(poiStatusMap)
         renderer.onBeforeClusterItemRenderedCaller(poi1, markerOptions)
 
-        assertEquals(markerOptions.icon, PoiRenderer.VISITED_ICON)
+        assertEquals(markerOptions.icon, MarkerRenderer.VISITED_ICON)
     }
 }
 
-class PoiRendererTester(context: Context?, map: GoogleMap?, clusterManager: ClusterManager<PoiItem>) : PoiRenderer(context, map, clusterManager) {
-    fun onBeforeClusterItemRenderedCaller(item: PoiItem, markerOptions: MarkerOptions) {
+class MarkerRendererTester(context: Context?, map: GoogleMap?, clusterManager: ClusterManager<MarkerItem>) : MarkerRenderer(context, map, clusterManager) {
+    fun onBeforeClusterItemRenderedCaller(item: MarkerItem, markerOptions: MarkerOptions) {
         super.onBeforeClusterItemRendered(item, markerOptions)
     }
 }

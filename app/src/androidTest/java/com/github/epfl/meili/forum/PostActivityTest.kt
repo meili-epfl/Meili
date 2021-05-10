@@ -20,7 +20,7 @@ import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.util.MockAuthenticationService
@@ -30,7 +30,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description

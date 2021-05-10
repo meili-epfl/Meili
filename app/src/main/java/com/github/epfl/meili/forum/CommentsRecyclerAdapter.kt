@@ -8,27 +8,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
-import com.github.epfl.meili.util.MeiliViewModel
 
-class CommentsRecyclerAdapter(private val viewModel: MeiliViewModel<Comment>) :
+class CommentsRecyclerAdapter :
     MeiliRecyclerAdapter<Comment>() {
-    private var userId: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         CommentViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.comment, parent, false),
-            viewModel
+            LayoutInflater.from(parent.context).inflate(R.layout.comment, parent, false)
         )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-        (holder as CommentViewHolder).bind(items[position], userId)
+        (holder as CommentViewHolder).bind(items[position])
 
-    class CommentViewHolder(itemView: View, private val viewModel: MeiliViewModel<Comment>) :
+    class CommentViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         private val author: TextView = itemView.findViewById(R.id.comment_author)
         private val text: TextView = itemView.findViewById(R.id.comment_text)
 
-        fun bind(pair: Pair<String, Comment>, userId: String?) {
+        /**
+         * Binds the comment contained in `pair` to its viewholder
+         */
+        fun bind(pair: Pair<String, Comment>) {
             val comment = pair.second
             author.text = comment.author
             text.text = comment.text

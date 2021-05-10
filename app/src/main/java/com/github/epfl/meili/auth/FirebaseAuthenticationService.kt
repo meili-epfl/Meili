@@ -1,4 +1,4 @@
-package com.github.epfl.meili.home
+package com.github.epfl.meili.auth
 
 import android.app.Activity
 import android.content.Intent
@@ -22,18 +22,19 @@ class FirebaseAuthenticationService : AuthenticationService {
 
     init {
         val context = MainApplication.applicationContext()
-        // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(context.getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build()
         googleSignInClient = GoogleSignIn.getClient(context, gso)
 
-        // Initialize Firebase Auth
         auth = Firebase.auth
 
     }
 
+    /**
+     * Sets the auth service
+     */
     fun setAuth(authService: FirebaseAuth) {
         auth = authService
     }
@@ -48,7 +49,7 @@ class FirebaseAuthenticationService : AuthenticationService {
         }
     }
 
-    override fun signInIntent(): Intent {
+    override fun signInIntent(activity: Activity): Intent {
         return googleSignInClient.signInIntent
     }
 
@@ -64,18 +65,14 @@ class FirebaseAuthenticationService : AuthenticationService {
     }
 
     override fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?, onComplete: () -> Unit) {
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
-                // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)!!
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
                 firebaseAuthWithGoogle(activity, account.idToken!!, onComplete)
             } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
-                // ...
             }
         }
     }

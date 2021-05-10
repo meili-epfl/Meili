@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
-import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.Friend
@@ -49,6 +49,9 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         verifyAndUpdateUserIsLoggedIn(Auth.isLoggedIn.value!!)
     }
 
+    /**
+     * Depending on `isLoggedIn`, starts a group/private chat or not
+     */
     fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
         if (isLoggedIn) {
             currentUser = Auth.getCurrentUser()
@@ -79,7 +82,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
                 setGroupChat(false)
 
-                Log.d(TAG, "Starting friend chat with ${friend?.uid}")
+                Log.d(TAG, "Starting friend chat with ${friend.uid}")
 
                 databasePath = "FriendChat/${chatId}"
             }
@@ -94,8 +97,8 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
         } else {
             currentUser = null
-            supportActionBar?.title = "Not Signed In"
-            Auth.signIn(this)
+            supportActionBar?.title = getString(R.string.not_signed_in)
+            Auth.signInIntent(this)
         }
     }
 
@@ -150,7 +153,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        Auth.onActivityResult(this, requestCode, resultCode, data)
+        Auth.onActivityResult(this, requestCode, resultCode, data) {}
     }
 }
 

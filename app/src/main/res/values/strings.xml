@@ -8,4 +8,20 @@
     <string name="submit_text">Submit</string>
     <string name="cancel_text">Cancel</string>
     <string name="fab_review_content_description">add/edit my review</string>
+    <string name="sign_in_button_message">Sign In</string>
+    <string name="sign_out_button_message">Sign Out</string>
+    <string name="welcome_message">Welcome %s!</string>
+    <string name="fetch_pois_error_message">An error occurred while fetching POIs</string>
+    <string name="not_signed_in">Not Signed In</string>
+    <string name="poi_no_info">No information found for this point of interest :(</string>
+    <string name="open">OPEN</string>
+    <string name="closed">CLOSED</string>
+    <string name="friend_succ">Friendship successful!</string>
+    <string name="accept_friend">Accept friendship with %s</string>
+    <string name="accept">Accept</string>
+    <string name="confirm_code">Confirm the code matches on both devices to finalize your friendship: %s</string>
+    <string name="friend_abort">Friendship aborted!</string>
+    <string name="location_required">Location is required for this feature</string>
+    <string name="looking_for_friend">Looking for your friend!</string>
+    <string name="error_find_friend">Error finding friend</string>
 </resources>

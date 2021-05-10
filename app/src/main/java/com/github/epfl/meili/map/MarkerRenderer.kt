@@ -11,27 +11,30 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer
 /**
  * PoiRenderer is the class which renders POIs as Markers on the Map and also handles cluster rendering
  */
-open class PoiRenderer(context: Context?, map: GoogleMap?, val clusterManager: ClusterManager<PoiItem>)
-    : DefaultClusterRenderer<PoiItem>(context, map, clusterManager) {
+open class MarkerRenderer(context: Context?, map: GoogleMap?, private val clusterManager: ClusterManager<MarkerItem>)
+    : DefaultClusterRenderer<MarkerItem>(context, map, clusterManager) {
 
-    private var poiStatusMap: Map<PoiItem, PoiMarkerViewModel.PointOfInterestStatus>? = null
+    private var poiStatusMap: Map<MarkerItem, MarkerViewModel.PointOfInterestStatus>? = null
 
-    override fun onBeforeClusterItemRendered(item: PoiItem, markerOptions: MarkerOptions) {
+    override fun onBeforeClusterItemRendered(item: MarkerItem, markerOptions: MarkerOptions) {
         val icon: BitmapDescriptor
-        if (poiStatusMap == null || !poiStatusMap!!.contains(item)) {
-            icon = DEFAULT_ICON
+        icon = if (poiStatusMap == null || !poiStatusMap!!.contains(item)) {
+            DEFAULT_ICON
         } else {
-            icon = when (poiStatusMap!![item]) {
-                PoiMarkerViewModel.PointOfInterestStatus.REACHABLE -> REACHABLE_ICON
-                PoiMarkerViewModel.PointOfInterestStatus.VISITED -> VISITED_ICON
-                PoiMarkerViewModel.PointOfInterestStatus.VISIBLE -> VISIBLE_ICON
+            when (poiStatusMap!![item]) {
+                MarkerViewModel.PointOfInterestStatus.REACHABLE -> REACHABLE_ICON
+                MarkerViewModel.PointOfInterestStatus.VISITED -> VISITED_ICON
+                MarkerViewModel.PointOfInterestStatus.VISIBLE -> VISIBLE_ICON
                 else -> DEFAULT_ICON
             }
         }
         markerOptions.icon(icon)
     }
 
-    fun renderClusterItems(poiStatusMap: Map<PoiItem, PoiMarkerViewModel.PointOfInterestStatus>) {
+    /**
+     * Renders all cluster items in `poiStatusMap`
+     */
+    fun renderClusterItems(poiStatusMap: Map<MarkerItem, MarkerViewModel.PointOfInterestStatus>) {
         clusterManager.clearItems()
 
         clusterManager.addItems(poiStatusMap.keys)

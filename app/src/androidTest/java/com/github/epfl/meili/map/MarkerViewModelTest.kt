@@ -18,10 +18,10 @@ import org.mockito.Mockito
 
 @Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
-class PoiMarkerViewModelTest {
+class MarkerViewModelTest {
     private val mockLocation: Location = Mockito.mock(Location::class.java)
 
-    private var service: PoiMarkerViewModel = PoiMarkerViewModel()
+    private var service: MarkerViewModel = MarkerViewModel()
     private val testPoiList = ArrayList<PointOfInterest>()
     private val poi1 = PointOfInterest(41.075000, 1.130870, "place1", "place1")
     private val poi2 = PointOfInterest(41.063563, 1.083658, "place2", "place2")
@@ -45,12 +45,12 @@ class PoiMarkerViewModelTest {
     fun poisReceivedFromServiceAddedProperlyBeforeLocation() {
         val mockPoiService = Mockito.mock(PoiService::class.java)
         val expectedPoiMap = HashMap<String, PointOfInterest>()
-        val expectedStatusMap = HashMap<String, PoiMarkerViewModel.PointOfInterestStatus>()
+        val expectedStatusMap = HashMap<String, MarkerViewModel.PointOfInterestStatus>()
         expectedPoiMap[poi1.uid] = poi1
         expectedPoiMap[poi2.uid] = poi2
 
-        expectedStatusMap[poi1.uid] = PoiMarkerViewModel.PointOfInterestStatus.VISITED
-        expectedStatusMap[poi2.uid] = PoiMarkerViewModel.PointOfInterestStatus.VISIBLE
+        expectedStatusMap[poi1.uid] = MarkerViewModel.PointOfInterestStatus.VISITED
+        expectedStatusMap[poi2.uid] = MarkerViewModel.PointOfInterestStatus.VISIBLE
 
         val databaseMap = HashMap<String, PointOfInterest>()
         databaseMap[poi1.uid] = poi1
@@ -90,12 +90,12 @@ class PoiMarkerViewModelTest {
     fun onRepeatedErrorsDisplayErrorMessage() {
         val mockPoiService = Mockito.mock(PoiService::class.java)
         val expectedPoiMap = HashMap<String, PointOfInterest>()
-        val expectedStatusMap = HashMap<String, PoiMarkerViewModel.PointOfInterestStatus>()
+        val expectedStatusMap = HashMap<String, MarkerViewModel.PointOfInterestStatus>()
         expectedPoiMap[poi1.uid] = poi1
         expectedPoiMap[poi2.uid] = poi2
 
-        expectedStatusMap[poi1.uid] = PoiMarkerViewModel.PointOfInterestStatus.VISITED
-        expectedStatusMap[poi2.uid] = PoiMarkerViewModel.PointOfInterestStatus.VISIBLE
+        expectedStatusMap[poi1.uid] = MarkerViewModel.PointOfInterestStatus.VISITED
+        expectedStatusMap[poi2.uid] = MarkerViewModel.PointOfInterestStatus.VISIBLE
 
         val databaseMap = HashMap<String, PointOfInterest>()
         databaseMap[poi1.uid] = poi1
@@ -136,8 +136,8 @@ class PoiMarkerViewModelTest {
         }
 
         UiThreadStatement.runOnUiThread {
-            val poiStatusMap = HashMap<String, PoiMarkerViewModel.PointOfInterestStatus>()
-            poiStatusMap[poi1.uid] = PoiMarkerViewModel.PointOfInterestStatus.REACHABLE
+            val poiStatusMap = HashMap<String, MarkerViewModel.PointOfInterestStatus>()
+            poiStatusMap[poi1.uid] = MarkerViewModel.PointOfInterestStatus.REACHABLE
             service.mPointsOfInterestStatus.value = poiStatusMap
             service.setDatabase(mockDatabase as Database<PointOfInterest>)
             service.setPoiVisited(poi1)
@@ -149,12 +149,12 @@ class PoiMarkerViewModelTest {
     fun reachablePoi() {
         val mockPoiService = Mockito.mock(PoiService::class.java)
         val expectedPoiMap = HashMap<String, PointOfInterest>()
-        val expectedStatusMap = HashMap<String, PoiMarkerViewModel.PointOfInterestStatus>()
+        val expectedStatusMap = HashMap<String, MarkerViewModel.PointOfInterestStatus>()
         expectedPoiMap[poi1.uid] = poi1
         expectedPoiMap[poi2.uid] = poi2
 
-        expectedStatusMap[poi1.uid] = PoiMarkerViewModel.PointOfInterestStatus.REACHABLE
-        expectedStatusMap[poi2.uid] = PoiMarkerViewModel.PointOfInterestStatus.VISIBLE
+        expectedStatusMap[poi1.uid] = MarkerViewModel.PointOfInterestStatus.REACHABLE
+        expectedStatusMap[poi2.uid] = MarkerViewModel.PointOfInterestStatus.VISIBLE
 
         val databaseMap = HashMap<String, PointOfInterest>()
         databaseMap[poi1.uid] = poi1
@@ -206,12 +206,12 @@ class PoiMarkerViewModelTest {
     fun updateTest() {
         val mockPoiService = Mockito.mock(PoiService::class.java)
         val expectedPoiMap = HashMap<String, PointOfInterest>()
-        val expectedStatusMap = HashMap<String, PoiMarkerViewModel.PointOfInterestStatus>()
+        val expectedStatusMap = HashMap<String, MarkerViewModel.PointOfInterestStatus>()
         expectedPoiMap[poi1.uid] = poi1
         expectedPoiMap[poi2.uid] = poi2
 
-        expectedStatusMap[poi1.uid] = PoiMarkerViewModel.PointOfInterestStatus.VISITED
-        expectedStatusMap[poi2.uid] = PoiMarkerViewModel.PointOfInterestStatus.VISITED
+        expectedStatusMap[poi1.uid] = MarkerViewModel.PointOfInterestStatus.VISITED
+        expectedStatusMap[poi2.uid] = MarkerViewModel.PointOfInterestStatus.VISITED
 
         Mockito.`when`(mockPoiService.getReachablePoi(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(ArrayList())
         val databaseMap = HashMap<String, PointOfInterest>()

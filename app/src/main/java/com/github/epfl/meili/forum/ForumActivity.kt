@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
-import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
@@ -93,13 +93,10 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         useGalleryButton = findViewById(R.id.post_use_gallery)
         displayImageView = findViewById(R.id.post_display_image)
         filterSpinner = findViewById(R.id.spinner)
-        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter.createFromResource(this, R.array.sort_array,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
             filterSpinner.adapter = adapter
         }
         filterSpinner.onItemSelectedListener = this
@@ -155,7 +152,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     }
 
     private fun initViewModel() {
-        @Suppress("UNCHECKED_CAST")
         viewModel = ViewModelProvider(this).get(ForumViewModel::class.java)
 
         viewModel.initDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts"))
@@ -177,14 +173,12 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
 
     private fun initLoggedInListener() {
         Auth.isLoggedIn.observe(this, { loggedIn ->
-            //If the user is logged in he can create a new post
             createPostButton.isEnabled = loggedIn
             createPostButton.visibility = if (loggedIn)
                 View.VISIBLE
             else
                 View.GONE
 
-            //and upvote/downvote
             if(loggedIn && Auth.getCurrentUser() != null){
                 recyclerAdapter.submitUserInfo(Auth.getCurrentUser()!!.uid)
                 recyclerAdapter.notifyDataSetChanged()

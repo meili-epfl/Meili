@@ -18,6 +18,8 @@ import com.google.android.libraries.places.api.net.*
 class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
     companion object {
         private const val TAG = "PoiInfoFragment"
+        private const val PHOTO_WIDTH = 1000
+        private const val PHOTO_HEIGHT = 600
         private val DEFAULT_SERVICE = { PlacesClientService() }
         var placesClientService: () -> PlacesClientService = DEFAULT_SERVICE
     }
@@ -34,7 +36,7 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
 
         // Initialize Places API entry point
         val placesClient =
-            placesClientService().getPlacesClient(activity, getString(R.string.google_maps_key))
+            placesClientService().getPlacesClient(activity?.applicationContext!!, getString(R.string.google_maps_key))
 
         val placeId = poi.uid
 
@@ -53,7 +55,7 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
         placesClient.fetchPlace(request)
             .addOnSuccessListener(getOnSuccessListener(view, placesClient)).addOnFailureListener {
                 val infoTextView = view.findViewById<TextView>(R.id.infoTextView)
-                infoTextView.text = "No information found for this point of interest :("
+                infoTextView.text = getString(R.string.poi_no_info)
             }
     }
 
@@ -66,8 +68,8 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
 
             val openText = when {
                 place.isOpen == null -> ""
-                place.isOpen!! -> "OPEN"
-                else -> "CLOSED"
+                place.isOpen!! -> getString(R.string.open)
+                else -> getString(R.string.closed)
             }
 
             val infoTextView = view.findViewById<TextView>(R.id.infoTextView)
@@ -84,8 +86,8 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
                 val photoMetadata = metada.first()
 
                 val photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                    .setMaxWidth(1000)
-                    .setMaxHeight(600)
+                    .setMaxWidth(PHOTO_WIDTH)
+                    .setMaxHeight(PHOTO_HEIGHT)
                     .build()
                 placesClient.fetchPhoto(photoRequest)
                     .addOnSuccessListener { fetchPhotoResponse: FetchPhotoResponse ->

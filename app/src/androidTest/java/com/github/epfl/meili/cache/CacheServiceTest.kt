@@ -1,22 +1,18 @@
 package com.github.epfl.meili.cache
 
 import android.content.SharedPreferences
-import androidx.test.espresso.core.internal.deps.guava.cache.Cache
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiGoogleRetriever
-import com.github.epfl.meili.poi.PoiServiceCached
 import com.github.epfl.meili.util.InternetConnectionService
 import com.google.android.gms.maps.model.LatLng
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import org.junit.Assert
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
 import org.mockito.Mockito
 import java.lang.reflect.Type
 
@@ -71,7 +67,7 @@ class CacheServiceTest {
 
     private fun setInternetConnection(status: Boolean) {
         Mockito.`when`(mockInternetConnectionService.isConnectedToInternet(MainApplication.applicationContext())).thenReturn(status)
-        service.setInternetConnectionServicce(mockInternetConnectionService)
+        service.setInternetConnectionService(mockInternetConnectionService)
     }
 
 

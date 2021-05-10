@@ -34,12 +34,7 @@ class FirebaseMessageDatabaseAdapter(private val path: String) : MessageDatabase
         ref.addChildEventListener(this)
     }
 
-    /**
-     * Add message the corresponding Firebase Database in path
-     *
-     * @param path: Path inside the firebase database to the chat group
-     * @param chatMessage: chat message to be added inside the database
-     */
+
     override fun addMessageToDatabase(chatMessage: ChatMessage) {
         val reference = databaseInstance.getReference(path).push()
         if(Firebase.auth.uid != null){

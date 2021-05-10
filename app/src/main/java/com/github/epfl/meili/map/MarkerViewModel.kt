@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.epfl.meili.MainApplication
+import com.github.epfl.meili.R
 import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiService
@@ -20,7 +21,7 @@ import kotlin.collections.HashMap
  * This list is Personalized for each user and depending on their position and the history of visited POIs
  * each POI will have a different status between VISITED, VISIBLE and REACHABLE
  */
-class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
+class MarkerViewModel : ViewModel(), Observer, LocationListener {
 
     private var database: Database<PointOfInterest>? = null
     private var poiService: PoiService? = null
@@ -39,6 +40,9 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
 
+    /**
+     * Sets the poi service to `service`
+     */
     fun setPoiService(service: PoiService) {
         this.poiService = service
         if (lastUserLocation != null) {
@@ -65,12 +69,15 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
         nbCurrentRequests += 1
 
         if (nbCurrentRequests >= MAX_NUM_REQUESTS) {
-            Toast.makeText(MainApplication.applicationContext(), "An error occured while fetching POIs", Toast.LENGTH_LONG).show()
+            Toast.makeText(MainApplication.applicationContext(), MainApplication.applicationContext().getString(R.string.fetch_pois_error_message), Toast.LENGTH_LONG).show()
         } else {
             requestPois()
         }
     }
 
+    /**
+     * Sets the database to `db`
+     */
     fun setDatabase(db: Database<PointOfInterest>) {
         this.database = db
         database!!.addObserver(this)
@@ -138,6 +145,9 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
         mPointsOfInterestStatus.value = statusMap
     }
 
+    /**
+     * Marks `poi` as having been visited if it is reachable
+     */
     fun setPoiVisited(poi: PointOfInterest) {
         if (mPointsOfInterestStatus.value!![poi.uid] == PointOfInterestStatus.REACHABLE) {
             if (database != null && !database!!.elements.containsKey(poi.uid)) {
@@ -153,7 +163,7 @@ class PoiMarkerViewModel : ViewModel(), Observer, LocationListener {
         if (lastUserLocation != newLocation) {
             lastUserLocation = newLocation
             if (shouldCallService && poiService != null) {
-                Log.d(TAG, "lastUserLocation" + lastUserLocation)
+                Log.d(TAG, "lastUserLocation$lastUserLocation")
                 requestPois()
             }
         }

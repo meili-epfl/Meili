@@ -1,4 +1,4 @@
-package com.github.epfl.meili.home
+package com.github.epfl.meili.auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -22,11 +22,17 @@ class GoogleSignInActivity : AppCompatActivity() {
         })
     }
 
+    /**
+     * Launches the map activity, called when the user doesn't want to sign in and so has reduced functionality
+     */
     fun onMapViewButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
         val intent = Intent(this, MapActivity::class.java)
         startActivity(intent)
     }
 
+    /**
+     * Callback for signin button
+     */
     fun onGoogleButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
         if (Auth.getCurrentUser() != null) {
             signOut()
@@ -36,7 +42,7 @@ class GoogleSignInActivity : AppCompatActivity() {
     }
 
     private fun signIn() {
-        Auth.signIn(this)
+        Auth.signInIntent(this)
     }
 
     private fun signOut() {
@@ -45,11 +51,11 @@ class GoogleSignInActivity : AppCompatActivity() {
 
     private fun updateUI() {
         var message = ""
-        var buttonMessage = "Sign In"
+        var buttonMessage = getString(R.string.sign_in_button_message)
 
         if (Auth.isLoggedIn.value!!) {
-            message = "Welcome "+Auth.name!!+"!"
-            buttonMessage = "Sign Out"
+            message = String.format(getString(R.string.welcome_message), Auth.name!!)
+            buttonMessage = getString(R.string.sign_out_button_message)
             startActivity(Intent(this, MapActivity::class.java))
         }
 
@@ -59,6 +65,6 @@ class GoogleSignInActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Auth.onActivityResult(this, requestCode, resultCode, data)
+        Auth.onActivityResult(this, requestCode, resultCode, data) {}
     }
 }

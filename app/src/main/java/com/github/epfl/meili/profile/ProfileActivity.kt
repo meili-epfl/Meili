@@ -8,7 +8,7 @@ import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
-import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.NavigableActivity
 import de.hdodenhof.circleimageview.CircleImageView
@@ -48,19 +48,19 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         }
 
         if (!Auth.isLoggedIn.value!!) {
-            Auth.signIn(this)
+            Auth.signInIntent(this)
         }
     }
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(Auth.getCurrentUser()!!))
-                .get(ProfileViewModel::class.java)
+            .get(ProfileViewModel::class.java)
         viewModel.getUser().removeObservers(this)
         viewModel.getUser().observe(this) { user ->
             nameView.setText(user.username)
             bioView.setText(user.bio)
 
-            if(nameView.text.isEmpty()){
+            if (nameView.text.isEmpty()) {
                 nameView.setText(Auth.getCurrentUser()!!.username)
             }
         }
@@ -70,10 +70,10 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
     fun onProfileButtonClick(view: View) {
         when (view) {
-            photoView -> launchGallery.launch("image/*")
+            photoView -> launchGallery.launch(IMAGE_PATH)
             saveButton -> saveProfile()
             seeFriendsButton -> showFriends()
-            signInButton -> Auth.signIn(this)
+            signInButton -> Auth.signInIntent(this)
             signOutButton -> Auth.signOut()
         }
     }
@@ -91,8 +91,9 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
-        Auth.onActivityResult(this, requestCode, resultCode, data)
+        Auth.onActivityResult(this, requestCode, resultCode, data) {}
     }
 
     private fun verifyAndUpdateUserIsLoggedIn() {
@@ -102,9 +103,13 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             signedInView.visibility = View.VISIBLE
             signInButton.visibility = View.GONE
         } else {
-            supportActionBar?.title = "Not Signed In"
+            supportActionBar?.title = getString(R.string.not_signed_in)
             signedInView.visibility = View.GONE
             signInButton.visibility = View.VISIBLE
         }
+    }
+
+    companion object {
+        private const val IMAGE_PATH = "image/*"
     }
 }

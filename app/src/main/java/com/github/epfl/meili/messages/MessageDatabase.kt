@@ -22,8 +22,16 @@ abstract class MessageDatabase(path: String) : Observable() {
         }
     }
 
+    /**
+     * Add message the corresponding Firebase Database in path
+     *
+     * @param chatMessage: chat message to be added inside the database
+     */
     abstract fun addMessageToDatabase(chatMessage: ChatMessage)
 
+    /**
+     * Gets the messages
+     */
     abstract fun getMessages(): ArrayList<ChatMessage>
 
     override fun addObserver(o: Observer?) { //TODO: write tests for observers

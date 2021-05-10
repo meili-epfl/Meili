@@ -40,7 +40,7 @@
             android:name=".profile.friends.NearbyActivity"
             android:parentActivityName=".profile.friends.FriendsListActivity" />
         <activity
-            android:name=".home.GoogleSignInActivity"
+            android:name=".auth.GoogleSignInActivity"
             android:label="Meili">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

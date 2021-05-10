@@ -69,7 +69,7 @@ class PoiServiceCachedTest {
         `when`(mockInternetConnectionService.isConnectedToInternet(MainApplication.applicationContext())).thenReturn(
             status
         )
-        service.setInternetConnectionServicce(mockInternetConnectionService)
+        service.setInternetConnectionService(mockInternetConnectionService)
     }
 
     @Test

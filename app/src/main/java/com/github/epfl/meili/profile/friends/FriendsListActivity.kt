@@ -11,11 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Friend
-import com.github.epfl.meili.profile.friends.NearbyActivity
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 
@@ -26,7 +25,7 @@ class FriendsListActivity : AppCompatActivity() {
         private const val TITLE: String = "My Friends"
         const val FRIEND_KEY = "FRIEND_KEY"
         private const val DEFAULT_MEILI_FRIEND_UID = "OP7VVymi3ZOfTr0akvMnh5HEa2a2"
-        private const val DEFAULT_MEILI_FRIEND_USERNAME = "Meili"
+        const val FRIENDS_DB_PATH = "friends/%s/friends"
     }
 
     private lateinit var recyclerAdapter: FriendsListRecyclerAdapter
@@ -52,9 +51,17 @@ class FriendsListActivity : AppCompatActivity() {
         }
 
         @Suppress("UNCHECKED_CAST")
-        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
+        viewModel =
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
 
-        viewModel.initDatabase(FirestoreDatabase("friends/" + Auth.getCurrentUser()!!.uid + "/friends", Friend::class.java))
+        viewModel.initDatabase(
+            FirestoreDatabase(
+                String.format(
+                    FRIENDS_DB_PATH,
+                    Auth.getCurrentUser()!!.uid
+                ), Friend::class.java
+            )
+        )
         viewModel.getElements().observe(this) { map ->
             addDefaultFriend(map)
             recyclerAdapter.submitList(map.toList())
@@ -96,7 +103,8 @@ class FriendsListActivity : AppCompatActivity() {
     }
 
     private fun openFriendChat(friendUid: String) {
-        val intent = Intent(this, ChatLogActivity::class.java).putExtra(FRIEND_KEY, Friend(friendUid))
+        val intent =
+            Intent(this, ChatLogActivity::class.java).putExtra(FRIEND_KEY, Friend(friendUid))
         startActivity(intent)
     }
 }

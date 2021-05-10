@@ -23,6 +23,9 @@ class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
         (holder as PostViewHolder).bind(items[position], userId)
 
+    /**
+     * Sets the user
+     */
     fun submitUserInfo(uid: String) {
         userId = uid
     }
@@ -36,6 +39,9 @@ class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) :
         private val downvoteButton: ImageButton = itemView.findViewById(R.id.downovte_button)
         private val upvoteCount: TextView = itemView.findViewById(R.id.upvote_count)
 
+        /**
+         * Binds the post contained in `pair` to its viewholder
+         */
         fun bind(pair: Pair<String, Post>, userId: String?) {
             postId.text = pair.first
 

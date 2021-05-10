@@ -1,4 +1,4 @@
-package com.github.epfl.meili.home
+package com.github.epfl.meili.auth
 
 import android.app.Activity
 import android.content.Intent
@@ -7,45 +7,55 @@ import androidx.lifecycle.ViewModel
 import com.github.epfl.meili.models.User
 
 
-object Auth : ViewModel() {
+object Auth : ViewModel(), AuthenticationService {
     private const val RC_SIGN_IN = 9001
     var name: String? = null
     var email: String? = null
-    val isLoggedIn = MutableLiveData<Boolean>(false)
+    val isLoggedIn = MutableLiveData(false)
 
     var authService: AuthenticationService = FirebaseAuthenticationService()
 
 
+    /**
+     * Sets the auth service
+     */
     fun setAuthenticationService(authService: AuthenticationService) {
         this.authService = authService
 
         updateUserData()
     }
 
-    fun getCurrentUser(): User? {
+    override fun getCurrentUser(): User? {
         return authService.getCurrentUser()
     }
 
-    fun signIn(activity: Activity) {
-        val signInIntent = authService.signInIntent()
+    override fun signInIntent(activity: Activity): Intent {
+        val signInIntent = authService.signInIntent(activity)
 
         activity.startActivityForResult(signInIntent, RC_SIGN_IN)
+        return signInIntent
     }
 
-    fun signOut() {
+    override fun signOut() {
         authService.signOut()
 
         updateUserData()
     }
 
 
-    fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?) {
+    override fun onActivityResult(
+        activity: Activity,
+        requestCode: Int,
+        result: Int,
+        data: Intent?,
+        onComplete: () -> Unit
+    ) {
         authService.onActivityResult(activity, requestCode, result, data) {
             updateUserData()
         }
     }
 
-    fun updateUserData() {
+    private fun updateUserData() {
         val user = getCurrentUser()
 
         if (user != null) {

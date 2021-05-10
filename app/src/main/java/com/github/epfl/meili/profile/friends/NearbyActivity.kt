@@ -10,8 +10,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.LocationService.isLocationEnabled
@@ -27,7 +27,8 @@ class NearbyActivity : AppCompatActivity() {
         private val STRATEGY = Strategy.P2P_CLUSTER
         private const val ACK = "ACK"
 
-        var getConnectionsClient: (Activity) -> ConnectionsClient = { a -> Nearby.getConnectionsClient(a) }
+        var getConnectionsClient: (Activity) -> ConnectionsClient =
+            { a -> Nearby.getConnectionsClient(a) }
     }
 
     private lateinit var findMyFriendButton: Button
@@ -41,7 +42,11 @@ class NearbyActivity : AppCompatActivity() {
                 ACK -> connectionsClient.disconnectFromEndpoint(endpointId)
                 else -> {
                     database.addElement(payloadString, Friend(payloadString))
-                    Toast.makeText(applicationContext, "Friendship successful!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.friend_succ),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     connectionsClient.sendPayload(endpointId, Payload.fromBytes(ACK.toByteArray()))
                 }
             }
@@ -53,16 +58,23 @@ class NearbyActivity : AppCompatActivity() {
     private val connectionLifecycleCallback = object : ConnectionLifecycleCallback() {
         override fun onConnectionInitiated(endpointId: String, info: ConnectionInfo) {
             AlertDialog.Builder(this@NearbyActivity)
-                    .setTitle("Accept friendship with ${info.endpointName}")
-                    .setMessage("Confirm the code matches on both devices to finalize your friendship: ${info.authenticationToken}")
-                    .setPositiveButton("Accept") { _, _ ->
-                        connectionsClient.acceptConnection(endpointId, payloadCallback)
-                    }
-                    .setNegativeButton(android.R.string.cancel) { _, _ ->
-                        connectionsClient.rejectConnection(endpointId)
-                    }
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show()
+                .setTitle(String.format(getString(R.string.accept_friend), info.endpointName))
+                .setMessage(
+                    String.format(
+                        getString(
+                            R.string.confirm_code,
+                            info.authenticationToken
+                        )
+                    )
+                )
+                .setPositiveButton(getString(R.string.accept)) { _, _ ->
+                    connectionsClient.acceptConnection(endpointId, payloadCallback)
+                }
+                .setNegativeButton(android.R.string.cancel) { _, _ ->
+                    connectionsClient.rejectConnection(endpointId)
+                }
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show()
         }
 
         override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
@@ -75,7 +87,12 @@ class NearbyActivity : AppCompatActivity() {
                     connectionsClient.sendPayload(endpointId, uidPayload)
                 }
                 ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED ->
-                    Toast.makeText(applicationContext, "Friendship aborted!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.friend_abort),
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
                 else -> Log.e(TAG, "CODE: ${result.status.statusCode}")
             }
         }
@@ -85,7 +102,11 @@ class NearbyActivity : AppCompatActivity() {
 
     private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
         override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
-            connectionsClient.requestConnection(localUser.username, endpointId, connectionLifecycleCallback)
+            connectionsClient.requestConnection(
+                localUser.username,
+                endpointId,
+                connectionLifecycleCallback
+            )
         }
 
         override fun onEndpointLost(endpointId: String) {}
@@ -111,12 +132,17 @@ class NearbyActivity : AppCompatActivity() {
         }
 
         localUser = Auth.getCurrentUser()!!
-        database = FirestoreDatabase("friends/${localUser.uid}/friends", Friend::class.java)
+        database = FirestoreDatabase(
+            String.format(
+                FriendsListActivity.FRIENDS_DB_PATH,
+                localUser.uid
+            ), Friend::class.java
+        )
         connectionsClient = getConnectionsClient(this)
     }
 
     fun onNearbyButtonClick(view: View) {
-        when(view) {
+        when (view) {
             findMyFriendButton -> {
                 startAdvertising()
                 startDiscovery()
@@ -126,16 +152,16 @@ class NearbyActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (!isLocationPermissionGranted(this)) {
             Toast.makeText(
-                    applicationContext,
-                    "Location is required for this feature",
-                    Toast.LENGTH_SHORT
+                applicationContext,
+                getString(R.string.location_required),
+                Toast.LENGTH_SHORT
             ).show()
             finish()
         } else {
@@ -149,18 +175,40 @@ class NearbyActivity : AppCompatActivity() {
 
     private fun startAdvertising() {
         val advertisingOptions = AdvertisingOptions.Builder().setStrategy(STRATEGY).build()
-        connectionsClient.startAdvertising(localUser.username, packageName, connectionLifecycleCallback, advertisingOptions)
-                .addOnSuccessListener { Toast.makeText(applicationContext, "Looking for your friend!", Toast.LENGTH_SHORT).show() }
-                .addOnFailureListener { Toast.makeText(applicationContext, "Error finding friend", Toast.LENGTH_SHORT).show() }
+        connectionsClient.startAdvertising(
+            localUser.username,
+            packageName,
+            connectionLifecycleCallback,
+            advertisingOptions
+        )
+            .addOnSuccessListener {
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.looking_for_friend),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.error_find_friend),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 
     private fun startDiscovery() {
         val discoveryOptions = DiscoveryOptions.Builder().setStrategy(STRATEGY).build()
         connectionsClient.startDiscovery(packageName, endpointDiscoveryCallback, discoveryOptions)
-                .addOnFailureListener {
-                    Toast.makeText(applicationContext, "Error finding friend", Toast.LENGTH_SHORT).show()
-                    Log.e(TAG, it.toString())
-                }
+            .addOnFailureListener {
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.error_find_friend),
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+                Log.e(TAG, it.toString())
+            }
     }
 
     override fun onDestroy() {

@@ -2,8 +2,8 @@ package com.github.epfl.meili.util
 
 import android.app.Activity
 import android.content.Intent
-import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.home.AuthenticationService
+import com.github.epfl.meili.auth.Auth
+import com.github.epfl.meili.auth.AuthenticationService
 import com.github.epfl.meili.models.User
 
 class MockAuthenticationService : AuthenticationService {
@@ -28,7 +28,7 @@ class MockAuthenticationService : AuthenticationService {
         }
     }
 
-    override fun signInIntent(): Intent {
+    override fun signInIntent(activity: Activity): Intent {
         signedIn = true
         Auth.isLoggedIn.postValue(true)
         return Intent()
