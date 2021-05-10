@@ -35,7 +35,9 @@
         <activity
             android:name=".photo.PhotoCropActivity"
             android:noHistory="true" />
-        <activity android:name=".photo.PhotoEditActivity" />
+        <activity
+            android:name=".photo.PhotoEditActivity"
+            android:configChanges="orientation|screenSize" />
         <activity
             android:name=".profile.friends.NearbyActivity"
             android:parentActivityName=".profile.friends.FriendsListActivity" />
@@ -62,7 +64,7 @@
             android:parentActivityName=".map.MapActivity" />
         <activity
             android:name=".review.ReviewsActivity"
-            android:parentActivityName=".map.MapActivity" />
+            android:parentActivityName=".map.MapActivity"/>
         <activity
             android:name=".poi.PoiActivity"
             android:parentActivityName=".map.MapActivity" />
@@ -71,10 +73,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".profile.ProfileActivity"/>
+        <activity android:name=".profile.ProfileActivity" />
         <activity
             android:name=".forum.PostActivity"
-            android:parentActivityName=".forum.ForumActivity" />
+            android:parentActivityName=".forum.ForumActivity"/>
     </application>
 
 </manifest>
