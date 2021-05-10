@@ -21,17 +21,21 @@ import com.github.epfl.meili.profile.friends.NearbyActivity
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
+import com.google.firebase.firestore.FirebaseFirestore
 
-//TODO: fix on click is not working and fix setting default image if none received e.g meili logo
-//TODO: modify such that when any button clicked it know what there has to be done
+//TODO: fix setting default image if none received e.g meili logo
+//TODO: write tests for user info
 class FriendsListActivity : AppCompatActivity(), ClickListener {
     companion object {
         private const val FRIENDS_PADDING: Int = 15
         private const val TAG: String = "FriendListActivity"
         private const val TITLE: String = "My Friends"
         private const val DEFAULT_MEILI_FRIEND_UID = "OP7VVymi3ZOfTr0akvMnh5HEa2a2"
-
         const val FRIEND_KEY = "FRIEND_KEY"
+
+
+        var serviceProvider: () -> UserInfoService = { UserInfoService() }
+        var getFriendsDatabasePath: (String) -> String = {uid -> "friends/$uid/friends"}
     }
 
     private lateinit var recyclerAdapter: FriendsListRecyclerAdapter
@@ -63,7 +67,7 @@ class FriendsListActivity : AppCompatActivity(), ClickListener {
 
         viewModel.initDatabase(
             FirestoreDatabase(
-                "friends/" + Auth.getCurrentUser()!!.uid + "/friends",
+                getFriendsDatabasePath(Auth.getCurrentUser()!!.uid),
                 Friend::class.java
             )
         )
@@ -90,12 +94,11 @@ class FriendsListActivity : AppCompatActivity(), ClickListener {
         addDefaultFriend(map)
         //TODO: change to only fetch new friends
 
-        UserInfoService().getUserInformation(map.keys.toList(), { onFriendsInfoReceived(it) },
+        serviceProvider().getUserInformation(map.keys.toList(), { onFriendsInfoReceived(it) },
             { Log.d(TAG, "Error when fetching friends information") })
     }
 
     private fun onFriendsInfoReceived(users: Map<String, User>) {
-        Log.d(TAG, users.toString())
         usersMap = HashMap(users)
         recyclerAdapter.submitList(users.toList())
         recyclerAdapter.notifyDataSetChanged()
@@ -119,9 +122,6 @@ class FriendsListActivity : AppCompatActivity(), ClickListener {
     }
 
     private fun openFriendChat(friendUid: String) {
-        Log.d(TAG, "uid$friendUid")
-        Log.d(TAG, usersMap.toString())
-        Log.d(TAG, usersMap[friendUid].toString())
         val intent =
             Intent(this, ChatLogActivity::class.java).putExtra(FRIEND_KEY, usersMap[friendUid])
         startActivity(intent)

@@ -64,7 +64,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
                 nameView.setText(Auth.getCurrentUser()!!.username)
             }
         }
-        viewModel.getRequestCreator().removeObservers(this) //TODO: why remove observers?? I want to reuse the view model in other parts of the code is it still fine?
+        viewModel.getRequestCreator().removeObservers(this)
         viewModel.getRequestCreator().observe(this) { it.into(photoView) }
     }
 
