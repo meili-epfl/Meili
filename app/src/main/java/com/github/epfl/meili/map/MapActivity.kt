@@ -76,7 +76,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         viewModel = ViewModelProvider(this).get(MapActivityViewModel::class.java)
 
         initLensViews()
-        setupLensSensors()
+        setupLandmarkDetection()
         setupLensCamera()
 
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
@@ -100,7 +100,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         lensCamera = findViewById(R.id.lens_camera)
     }
 
-    private fun setupLensSensors() {
+    private fun setupLandmarkDetection() {
         viewModel.getPOIDist().observe(this) { poiDist ->
             if (poiDist != null) {
                 lensPoiNameText.text = poiDist.first.name
@@ -120,7 +120,6 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         }
 
     private fun setupLensCamera() {
-        lensCamera = findViewById(R.id.lens_camera)
         lensCamera.setOnClickListener {
             launchCameraActivity.launch(Intent(this, CameraActivity::class.java))
         }
@@ -133,19 +132,19 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
                     Toast.LENGTH_LONG
                 ).show()
             } else {
-                lensCamera.isVisible = false
-                lensInfoContainer.isVisible = false
                 lensDetectedLandmark.text = landmarks[0].landmark
                 lensDetectedLandmarkContainer.isVisible = true
                 lensDismissLandmark.isVisible = true
+                lensCamera.isVisible = false
+                lensInfoContainer.isVisible = false
             }
         }
 
         lensDismissLandmark.setOnClickListener {
-            lensDetectedLandmarkContainer.isVisible = false
-            lensDismissLandmark.isVisible = false
             lensCamera.isVisible = true
             lensInfoContainer.isVisible = true
+            lensDetectedLandmarkContainer.isVisible = false
+            lensDismissLandmark.isVisible = false
         }
     }
 

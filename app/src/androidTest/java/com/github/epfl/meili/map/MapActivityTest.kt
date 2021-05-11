@@ -169,19 +169,23 @@ class MapActivityTest {
         val mockLandmark = mock(FirebaseVisionCloudLandmark::class.java)
         `when`(mockLandmark.landmark).thenReturn(TEST_LANDMARK)
 
+        lateinit var viewModel: MapActivityViewModel
+
         testRule.scenario.onActivity {
             val lazyViewModel: Lazy<MapActivityViewModel> = it.viewModels()
-            lazyViewModel.value.handleCameraResponse(Uri.EMPTY)
-
-            runOnUiThread {
-                landmarkListenerCaptor.value.onSuccess(listOf(mockLandmark))
-            }
-
-            onView(withText(TEST_LANDMARK)).check(matches(isDisplayed()))
-            onView(withId(R.id.lens_dismiss_landmark)).perform(click())
-
-            onView(withId(R.id.lens_dismiss_landmark)).check(matches(not(isDisplayed())))
+            viewModel = lazyViewModel.value
         }
+
+        viewModel.handleCameraResponse(Uri.EMPTY)
+
+        runOnUiThread {
+            landmarkListenerCaptor.value.onSuccess(listOf(mockLandmark))
+        }
+
+        onView(withText(TEST_LANDMARK)).check(matches(isDisplayed()))
+        onView(withId(R.id.lens_dismiss_landmark)).perform(click())
+
+        onView(withId(R.id.lens_dismiss_landmark)).check(matches(not(isDisplayed())))
     }
 
     private fun childAtPosition(
