@@ -28,10 +28,10 @@ class PoiRendererTest {
         val poi1 = PoiItem(PointOfInterest(41.075000, 1.130870, "place1", "place1"))
         val poi2 = PoiItem(PointOfInterest(41.063563, 1.083658, "place2", "place2"))
 
-        val poiStatusMap = HashMap<PoiItem, PoiMarkerViewModel.PointOfInterestStatus>()
+        val poiStatusMap = HashMap<PoiItem, PointOfInterestStatus>()
 
-        poiStatusMap.put(poi1, PoiMarkerViewModel.PointOfInterestStatus.VISIBLE)
-        poiStatusMap.put(poi2, PoiMarkerViewModel.PointOfInterestStatus.REACHABLE)
+        poiStatusMap.put(poi1, PointOfInterestStatus.VISIBLE)
+        poiStatusMap.put(poi2, PointOfInterestStatus.REACHABLE)
 
         renderer.renderClusterItems(poiStatusMap)
 
@@ -44,7 +44,7 @@ class PoiRendererTest {
 
         assertEquals(markerOptions.icon, PoiRenderer.REACHABLE_ICON)
 
-        poiStatusMap.put(poi1, PoiMarkerViewModel.PointOfInterestStatus.VISITED)
+        poiStatusMap.put(poi1, PointOfInterestStatus.VISITED)
         renderer.renderClusterItems(poiStatusMap)
         renderer.onBeforeClusterItemRenderedCaller(poi1, markerOptions)
 
