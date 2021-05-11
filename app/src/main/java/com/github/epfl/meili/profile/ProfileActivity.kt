@@ -48,6 +48,19 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initializeViews()
+        
+        Auth.isLoggedIn.observe(this) {
+            verifyAndUpdateUserIsLoggedIn()
+        }
+        if (!Auth.isLoggedIn.value!!) {
+            Auth.signIn(this)
+        }
+
+        showProfile()
+    }
+
+    private fun initializeViews() {
         photoView = findViewById(R.id.photo)
         photoEditView = findViewById(R.id.photo_edit)
         nameView = findViewById(R.id.profile_name)
@@ -69,16 +82,6 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         signedInView = findViewById(R.id.signed_in)
         profileView = findViewById(R.id.profile_container)
         profileEditView = findViewById(R.id.profile_edit_container)
-
-        Auth.isLoggedIn.observe(this) {
-            verifyAndUpdateUserIsLoggedIn()
-        }
-
-        if (!Auth.isLoggedIn.value!!) {
-            Auth.signIn(this)
-        }
-
-        showProfile()
     }
 
     private fun setupViewModel() {
