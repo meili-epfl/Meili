@@ -30,6 +30,11 @@ import kotlin.collections.HashMap
 import kotlin.math.PI
 import kotlin.math.roundToInt
 
+/**
+ * Manages the list of points of interest and Meili Lens
+ * The list personalized for each user and depending on their position and the history of visited POIs
+ * each POI will have a different status between VISITED, VISIBLE and REACHABLE
+ */
 class MapActivityViewModel(application: Application) :
     AndroidViewModel(application), Observer, LocationListener
 {
@@ -84,9 +89,20 @@ class MapActivityViewModel(application: Application) :
         )
     }
 
+    /**
+     * Get the live data object containing the nearest point of interest in the user's field of view
+     * and it's distance from the user (in meters).
+     */
     fun getPoiDist(): LiveData<Pair<PointOfInterest, Int>> = mPoiDist
+
+    /**
+     * Get the live data object containing the list of landmarks detected in a photo taken by the user
+     */
     fun getLandmarks(): LiveData<List<FirebaseVisionCloudLandmark>> = mLandMarks
 
+    /**
+     * Detect landmarks in the photo received from the camera activity
+     */
     fun handleCameraResponse(uri: Uri) {
         LandmarkDetectionService.detectInImage(getApplication(), uri)
             .addOnSuccessListener { mLandMarks.value = it }
