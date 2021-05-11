@@ -13,6 +13,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.NavigableActivity
+import com.github.epfl.meili.util.UserPreferences
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -103,29 +104,28 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private fun changeMode(){
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Choose Mode")
-        val styles = arrayOf("Light","Dark","System default")
-        val checkedItem = 0
+        val styles = arrayOf("System default","Light","Dark")
+
+        val checkedItem = UserPreferences(this).darkMode
 
         builder.setSingleChoiceItems(styles, checkedItem) { dialog, which ->
 
             when (which) {
                 0 -> {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    delegate.applyDayNight()
-                    dialog.dismiss()
-                }
-                1 -> {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    delegate.applyDayNight()
-
-                    dialog.dismiss()
-                }
-                2 -> {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    UserPreferences(this).darkMode = 0
                     delegate.applyDayNight()
-                    dialog.dismiss()
-                }
-
+                    dialog.dismiss() }
+                1 -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    UserPreferences(this).darkMode = 1
+                    delegate.applyDayNight()
+                    dialog.dismiss() }
+                2 -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    UserPreferences(this).darkMode = 2
+                    delegate.applyDayNight()
+                    dialog.dismiss() }
             }
         }
 
