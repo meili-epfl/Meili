@@ -12,7 +12,6 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
-import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
@@ -68,7 +67,6 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
                 databasePath = "POI/${chatId}"
             } else {
-                Log.d(TAG, "friend value$friend")
                 supportActionBar?.title = friend?.username
                 val friendUid: String = friend?.uid!!
                 val currentUid: String = currentUser!!.uid

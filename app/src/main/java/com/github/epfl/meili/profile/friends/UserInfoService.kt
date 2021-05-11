@@ -12,6 +12,15 @@ open class UserInfoService {
     private var usersInfo: HashMap<String, User> = HashMap()
     private var responsesRemaining = 0
 
+    /**
+     * @param uids list of uids that we want to user information of
+     * @param onSuccess function that will be called with the mapping between uid and User object
+     * if operation successful
+     * @param onError function that will be called if any error happens
+     *
+     * This function will fetch one-by-one the user information from the Firestore and will call
+     * onSuccess with the result if successful otherwise it will call onError
+     */
     open fun getUserInformation(
             uids: List<String>,
             onSuccess: ((Map<String, User>) -> Unit)?,

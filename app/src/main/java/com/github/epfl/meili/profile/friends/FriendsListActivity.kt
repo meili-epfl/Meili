@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,10 +20,8 @@ import com.github.epfl.meili.profile.friends.NearbyActivity
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
-import com.google.firebase.firestore.FirebaseFirestore
 
 //TODO: fix setting default image if none received e.g meili logo
-//TODO: write tests for user info
 class FriendsListActivity : AppCompatActivity(), ClickListener {
     companion object {
         private const val FRIENDS_PADDING: Int = 15
@@ -35,7 +32,7 @@ class FriendsListActivity : AppCompatActivity(), ClickListener {
 
 
         var serviceProvider: () -> UserInfoService = { UserInfoService() }
-        var getFriendsDatabasePath: (String) -> String = {uid -> "friends/$uid/friends"}
+        var getFriendsDatabasePath: (String) -> String = { uid -> "friends/$uid/friends" }
     }
 
     private lateinit var recyclerAdapter: FriendsListRecyclerAdapter
@@ -63,13 +60,13 @@ class FriendsListActivity : AppCompatActivity(), ClickListener {
 
         @Suppress("UNCHECKED_CAST")
         viewModel =
-            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
+                ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
 
         viewModel.initDatabase(
-            FirestoreDatabase(
-                getFriendsDatabasePath(Auth.getCurrentUser()!!.uid),
-                Friend::class.java
-            )
+                FirestoreDatabase(
+                        getFriendsDatabasePath(Auth.getCurrentUser()!!.uid),
+                        Friend::class.java
+                )
         )
         viewModel.getElements().observe(this) { map ->
             onFriendsUpdateReceived(map)
@@ -95,7 +92,7 @@ class FriendsListActivity : AppCompatActivity(), ClickListener {
         //TODO: change to only fetch new friends
 
         serviceProvider().getUserInformation(map.keys.toList(), { onFriendsInfoReceived(it) },
-            { Log.d(TAG, "Error when fetching friends information") })
+                { Log.d(TAG, "Error when fetching friends information") })
     }
 
     private fun onFriendsInfoReceived(users: Map<String, User>) {
@@ -123,12 +120,12 @@ class FriendsListActivity : AppCompatActivity(), ClickListener {
 
     private fun openFriendChat(friendUid: String) {
         val intent =
-            Intent(this, ChatLogActivity::class.java).putExtra(FRIEND_KEY, usersMap[friendUid])
+                Intent(this, ChatLogActivity::class.java).putExtra(FRIEND_KEY, usersMap[friendUid])
         startActivity(intent)
     }
 
     override fun onClicked(buttonId: Int, info: String) {
-        when(buttonId){
+        when (buttonId) {
             R.id.friend_chat_button -> openFriendChat(info)
             R.id.friendName -> openFriendChat(info) // TODO: add link to profile when done
         }
