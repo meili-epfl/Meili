@@ -1,10 +1,9 @@
-package com.github.epfl.meili.map
+package com.github.epfl.meili.util
 
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.epfl.meili.util.LocationService
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
