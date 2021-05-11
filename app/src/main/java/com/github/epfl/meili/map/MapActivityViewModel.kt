@@ -5,32 +5,59 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.location.Location
+import android.location.LocationListener
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.github.epfl.meili.MainApplication
+import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.poi.PoiService
 import com.github.epfl.meili.util.LandmarkDetectionService
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 import com.google.maps.android.SphericalUtil.computeDistanceBetween
 import com.google.maps.android.SphericalUtil.computeHeading
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.math.PI
 import kotlin.math.roundToInt
 
-class MapActivityViewModel(application: Application) : PoiMarkerViewModel(application) {
+class MapActivityViewModel(application: Application) :
+    AndroidViewModel(application), Observer, LocationListener
+{
     companion object {
         private const val SENSOR_DELAY = 500_000 // microseconds
         private const val FIELD_OF_VIEW = 25.0 // degrees
         private const val LENS_MAX_DISTANCE = 500.0 // meters
         private const val AZIMUTH_TOLERANCE = 15.0 // degrees
 
+        private const val REACHABLE_DIST = 50.0 //meters
+        private const val MAX_NUM_REQUESTS = 2
+
         var getSensorManager: (application: Application) -> SensorManager =
             { getSystemService(it, SensorManager::class.java)!! }
 
         var getEventValues: (event: SensorEvent) -> FloatArray = { it.values }
     }
+
+    private var database: Database<PointOfInterest>? = null
+    private var poiService: PoiService? = null
+    private var lastUserLocation: LatLng? = null
+
+    private var nbCurrentRequests = 0
+
+    val mPointsOfInterest: MutableLiveData<Map<String, PointOfInterest>> =
+        MutableLiveData(HashMap())
+    val mPointsOfInterestStatus: MutableLiveData<Map<String, PointOfInterestStatus>> =
+        MutableLiveData(HashMap())
 
     private var floatGravity = FloatArray(3)
     private var floatGeoMagnetic = FloatArray(3)
@@ -40,7 +67,7 @@ class MapActivityViewModel(application: Application) : PoiMarkerViewModel(applic
 
     private var lastUpdatedAzimuth: Double = 500.0 // impossible azimuth for initialisation
 
-    private val mPOIDist: MutableLiveData<Pair<PointOfInterest, Int>> = MutableLiveData()
+    private val mPoiDist: MutableLiveData<Pair<PointOfInterest, Int>> = MutableLiveData()
     private val mLandMarks: MutableLiveData<List<FirebaseVisionCloudLandmark>> = MutableLiveData()
 
     init {
@@ -57,7 +84,7 @@ class MapActivityViewModel(application: Application) : PoiMarkerViewModel(applic
         )
     }
 
-    fun getPOIDist(): LiveData<Pair<PointOfInterest, Int>> = mPOIDist
+    fun getPoiDist(): LiveData<Pair<PointOfInterest, Int>> = mPoiDist
     fun getLandmarks(): LiveData<List<FirebaseVisionCloudLandmark>> = mLandMarks
 
     fun handleCameraResponse(uri: Uri) {
@@ -76,10 +103,10 @@ class MapActivityViewModel(application: Application) : PoiMarkerViewModel(applic
         SensorManager.getOrientation(floatRotationMatrix, floatOrientation)
     }
 
-    private fun updatePOIDist() {
+    private fun updatePoiDist() {
         Log.e(azimuthInDegrees().toString(), lastUpdatedAzimuth.toString())
         if (!checkAnglesClose(azimuthInDegrees(), lastUpdatedAzimuth, AZIMUTH_TOLERANCE)) {
-            mPOIDist.value = closestPoiAndDistance(fieldOfViewPOIs())
+            mPoiDist.value = closestPoiAndDistance(fieldOfViewPOIs())
             lastUpdatedAzimuth = azimuthInDegrees()
         }
     }
@@ -139,9 +166,134 @@ class MapActivityViewModel(application: Application) : PoiMarkerViewModel(applic
                 Sensor.TYPE_MAGNETIC_FIELD -> floatGeoMagnetic = getEventValues(event)
             }
             updateOrientation()
-            updatePOIDist()
+            updatePoiDist()
         }
 
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
     }
+
+    fun setPoiService(service: PoiService) {
+        this.poiService = service
+        if (lastUserLocation != null) {
+            requestPois()
+        }
+    }
+
+    private fun requestPois() {
+        poiService!!.requestPois(
+            lastUserLocation!!,
+            { poiList -> onSuccessPoiReceived(poiList) },
+            { error -> onError(error) })
+    }
+
+    private fun onSuccessPoiReceived(poiList: List<PointOfInterest>) {
+        nbCurrentRequests = 0
+        addPoiList(poiList)
+        setReachablePois()
+    }
+
+    private fun onError(error: Error) {
+        nbCurrentRequests += 1
+
+        if (nbCurrentRequests >= MAX_NUM_REQUESTS) {
+            Toast.makeText(MainApplication.applicationContext(), "An error occured while fetching POIs", Toast.LENGTH_LONG).show()
+        } else {
+            requestPois()
+        }
+    }
+
+    fun setDatabase(db: Database<PointOfInterest>) {
+        this.database = db
+        database!!.addObserver(this)
+    }
+
+    override fun update(o: Observable?, arg: Any?) {
+        mPointsOfInterest.value = mPointsOfInterest.value!! + database!!.elements
+
+        // update status of each Poi to VISITED
+        var statusMap: Map<String, PointOfInterestStatus> = mPointsOfInterestStatus.value!!
+        for (poi in database!!.elements) {
+            statusMap = statusMap + Pair(poi.value.uid, PointOfInterestStatus.VISITED)
+        }
+
+        mPointsOfInterestStatus.value = statusMap
+
+        setReachablePois()
+    }
+
+    private fun setReachablePois() {
+        if (lastUserLocation != null) {
+            //set all reachable pois to REACHABLE status
+            val reachablePois = poiService!!.getReachablePoi(
+                lastUserLocation!!,
+                mPointsOfInterest.value!!.values.toList(),
+                REACHABLE_DIST
+            )
+            var statusMap = mPointsOfInterestStatus.value!!
+
+            for (poi in reachablePois) {
+                statusMap = statusMap + Pair(poi.uid, PointOfInterestStatus.REACHABLE)
+            }
+
+            // Unset unreachable pois to either VISIBLE or VISITED
+            val unreachablePois = mPointsOfInterest.value!!.values.minus(reachablePois)
+
+
+            if (database != null) {
+                val visitedPois = database!!.elements
+
+                for (poi in unreachablePois) {
+                    statusMap = statusMap + Pair(
+                        poi.uid,
+                        if (visitedPois.containsKey(poi.uid)) PointOfInterestStatus.VISITED else PointOfInterestStatus.VISIBLE
+                    )
+                }
+            }
+
+            mPointsOfInterestStatus.value = statusMap
+        }
+    }
+
+    private fun addPoiList(list: List<PointOfInterest>) {
+        var poiMap = mPointsOfInterest.value!!
+        var statusMap = mPointsOfInterestStatus.value!!
+
+        for (poi in list) {
+            if (!poiMap.containsKey(poi.uid)) {
+                poiMap = poiMap + Pair(poi.uid, poi)
+                statusMap = statusMap + Pair(poi.uid, PointOfInterestStatus.VISIBLE)
+            }
+        }
+
+        mPointsOfInterest.value = poiMap
+        mPointsOfInterestStatus.value = statusMap
+    }
+
+    fun setPoiVisited(poi: PointOfInterest) {
+        if (mPointsOfInterestStatus.value!![poi.uid] == PointOfInterestStatus.REACHABLE) {
+            if (database != null && !database!!.elements.containsKey(poi.uid)) {
+                database!!.addElement(poi.uid, poi)
+            }
+        }
+    }
+
+    override fun onLocationChanged(location: Location) {
+        val shouldCallService = lastUserLocation == null
+        val newLocation = LatLng(location.latitude, location.longitude)
+
+        if (lastUserLocation != newLocation) {
+            lastUserLocation = newLocation
+            if (shouldCallService && poiService != null) {
+                requestPois()
+            }
+        }
+
+        setReachablePois()
+    }
+
+    override fun onProviderEnabled(provider: String) {}
+
+    override fun onProviderDisabled(provider: String) {}
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
 }

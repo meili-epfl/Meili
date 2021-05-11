@@ -48,7 +48,6 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
-import java.lang.IllegalArgumentException
 
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -56,7 +55,7 @@ import java.lang.IllegalArgumentException
 class MapActivityTest {
 
     companion object {
-        private val TEST_LANDMARK = "LANDMARK"
+        private const val TEST_LANDMARK = "LANDMARK"
     }
 
     @get: Rule

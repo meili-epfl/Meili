@@ -101,7 +101,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
     }
 
     private fun setupLandmarkDetection() {
-        viewModel.getPOIDist().observe(this) { poiDist ->
+        viewModel.getPoiDist().observe(this) { poiDist ->
             if (poiDist != null) {
                 lensPoiNameText.text = poiDist.first.name
                 lensPoiDistText.text = "${poiDist.second} meters away"
@@ -180,10 +180,10 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
             val intent = Intent(this, ForumActivity::class.java)
             intent.putExtra(POI_KEY, it.poi)
 
-            val statuses: Map<String, PoiMarkerViewModel.PointOfInterestStatus> =
+            val statuses: Map<String, PointOfInterestStatus> =
                 viewModel.mPointsOfInterestStatus.value!!
 
-            if (statuses[it.poi.uid] == PoiMarkerViewModel.PointOfInterestStatus.REACHABLE) {
+            if (statuses[it.poi.uid] == PointOfInterestStatus.REACHABLE) {
                 viewModel.setPoiVisited(it.poi)
             }
 
@@ -196,8 +196,8 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         }
     }
 
-    private fun addItems(map: Map<String, PoiMarkerViewModel.PointOfInterestStatus>) {
-        val newMap = HashMap<PoiItem, PoiMarkerViewModel.PointOfInterestStatus>()
+    private fun addItems(map: Map<String, PointOfInterestStatus>) {
+        val newMap = HashMap<PoiItem, PointOfInterestStatus>()
         for (entry in map.entries) {
             val poiItem = if (poiItems.containsKey(entry.key)) {
                 poiItems[entry.key]!!
