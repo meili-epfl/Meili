@@ -28,6 +28,7 @@ import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.util.LandmarkDetectionService
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.MockAuthenticationService
+import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
@@ -47,6 +48,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import java.lang.IllegalArgumentException
 
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -60,9 +62,11 @@ class MapActivityTest {
     @get: Rule
     var testRule = ActivityScenarioRule(MapActivity::class.java)
 
-    private val landmarkListenerCaptor =
+    private val landmarkSuccessListenerCaptor =
         ArgumentCaptor.forClass(OnSuccessListener::class.java) as
                 ArgumentCaptor<OnSuccessListener<List<FirebaseVisionCloudLandmark>>>
+
+    private val landmarkFailureListenerCaptor = ArgumentCaptor.forClass(OnFailureListener::class.java)
 
     init {
         setupMocks()
@@ -71,7 +75,8 @@ class MapActivityTest {
 
     private fun setupLandmarkServiceMocks() {
         val mockTask = mock(Task::class.java) as Task<List<FirebaseVisionCloudLandmark>>
-        `when`(mockTask.addOnSuccessListener(landmarkListenerCaptor.capture())).thenReturn(mockTask)
+        `when`(mockTask.addOnSuccessListener(landmarkSuccessListenerCaptor.capture())).thenReturn(mockTask)
+        `when`(mockTask.addOnFailureListener(landmarkFailureListenerCaptor.capture())).thenReturn(mockTask)
 
         LandmarkDetectionService.detectInImage = { _, _ -> mockTask }
     }
@@ -179,13 +184,17 @@ class MapActivityTest {
         viewModel.handleCameraResponse(Uri.EMPTY)
 
         runOnUiThread {
-            landmarkListenerCaptor.value.onSuccess(listOf(mockLandmark))
+            landmarkSuccessListenerCaptor.value.onSuccess(listOf(mockLandmark))
         }
 
         onView(withText(TEST_LANDMARK)).check(matches(isDisplayed()))
         onView(withId(R.id.lens_dismiss_landmark)).perform(click())
 
         onView(withId(R.id.lens_dismiss_landmark)).check(matches(not(isDisplayed())))
+
+        runOnUiThread {
+            landmarkFailureListenerCaptor.value.onFailure(IllegalArgumentException(""))
+        }
     }
 
     private fun childAtPosition(

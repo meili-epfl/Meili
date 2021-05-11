@@ -6,6 +6,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.net.Uri
+import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -21,9 +22,9 @@ import kotlin.math.roundToInt
 class MapActivityViewModel(application: Application) : PoiMarkerViewModel(application) {
     companion object {
         private const val SENSOR_DELAY = 500_000 // microseconds
-        private const val FIELD_OF_VIEW = 40.0 // degrees
+        private const val FIELD_OF_VIEW = 25.0 // degrees
         private const val LENS_MAX_DISTANCE = 500.0 // meters
-        private const val AZIMUTH_TOLERANCE = 5.0 // degrees
+        private const val AZIMUTH_TOLERANCE = 15.0 // degrees
 
         var getSensorManager: (application: Application) -> SensorManager =
             { getSystemService(it, SensorManager::class.java)!! }
@@ -37,7 +38,7 @@ class MapActivityViewModel(application: Application) : PoiMarkerViewModel(applic
     private val floatOrientation = FloatArray(3)
     private val floatRotationMatrix = FloatArray(9)
 
-    private var lastAzimuth: Double = 500.0 // impossible azimuth for initialisation
+    private var lastUpdatedAzimuth: Double = 500.0 // impossible azimuth for initialisation
 
     private val mPOIDist: MutableLiveData<Pair<PointOfInterest, Int>> = MutableLiveData()
     private val mLandMarks: MutableLiveData<List<FirebaseVisionCloudLandmark>> = MutableLiveData()
@@ -76,11 +77,11 @@ class MapActivityViewModel(application: Application) : PoiMarkerViewModel(applic
     }
 
     private fun updatePOIDist() {
-        if (!checkAnglesClose(azimuthInDegrees(), lastAzimuth, AZIMUTH_TOLERANCE)) {
+        Log.e(azimuthInDegrees().toString(), lastUpdatedAzimuth.toString())
+        if (!checkAnglesClose(azimuthInDegrees(), lastUpdatedAzimuth, AZIMUTH_TOLERANCE)) {
             mPOIDist.value = closestPoiAndDistance(fieldOfViewPOIs())
+            lastUpdatedAzimuth = azimuthInDegrees()
         }
-
-        lastAzimuth = azimuthInDegrees()
     }
 
     private fun azimuthInDegrees(): Double = floatOrientation[0] * 180 / PI

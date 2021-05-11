@@ -10,21 +10,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/lens_card">
-            <RelativeLayout
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 >
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/lens_visuals_container"
-                    android:layout_centerVertical="true"
+                    android:layout_weight="2"
                     >
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Meili Lens"
                         android:id="@+id/lens_text"
+                        android:layout_centerHorizontal="true"
                         />
                     <ImageView
                         android:layout_width="wrap_content"
@@ -37,9 +39,8 @@
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/lens_visuals_container"
                     android:id="@+id/lens_info_container"
-                    android:layout_centerHorizontal="true"
+                    android:layout_weight="4"
                     >
                     <TextView
                         android:layout_width="wrap_content"
@@ -50,56 +51,51 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
                         android:layout_below="@+id/lens_poi_name"
                         android:id="@+id/lens_poi_distance"
+                        android:layout_centerHorizontal="true"
                         />
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/lens_visuals_container"
                     android:id="@+id/lens_detected_landmark_container"
-                    android:layout_centerHorizontal="true"
                     android:visibility="gone"
+                    android:layout_weight="4"
                     >
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Point Of Interest Detected!"
-                        android:layout_centerHorizontal="true"
                         android:id="@+id/lens_detected_landmark_text"
+                        android:layout_centerHorizontal="true"
                         />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/lens_detected_landmark"
-                        android:layout_centerHorizontal="true"
                         android:layout_below="@id/lens_detected_landmark_text"
+                        android:layout_centerHorizontal="true"
                         />
                 </RelativeLayout>
-                <RelativeLayout
+                <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/lens_info_container"
-                    >
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/lens_camera"
-                        android:layout_alignParentEnd="true"
-                        android:src="@android:drawable/ic_menu_camera"
-                        />
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/lens_dismiss_landmark"
-                        android:src="@drawable/ic_done"
-                        android:visibility="gone"
-                        android:layout_alignParentEnd="true"
-                        />
-                </RelativeLayout>
-        </RelativeLayout>
+                    android:id="@+id/lens_camera"
+                    android:src="@android:drawable/ic_menu_camera"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lens_dismiss_landmark"
+                    android:src="@drawable/ic_done"
+                    android:visibility="gone"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    />
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
 
