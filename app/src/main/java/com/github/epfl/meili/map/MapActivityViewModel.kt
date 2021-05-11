@@ -120,7 +120,7 @@ class MapActivityViewModel(application: Application) :
     }
 
     private fun updatePoiDist() {
-        Log.e(azimuthInDegrees().toString(), lastUpdatedAzimuth.toString())
+        //Log.e(azimuthInDegrees().toString(), lastUpdatedAzimuth.toString())
         if (!checkAnglesClose(azimuthInDegrees(), lastUpdatedAzimuth, AZIMUTH_TOLERANCE)) {
             mPoiDist.value = closestPoiAndDistance(fieldOfViewPOIs())
             lastUpdatedAzimuth = azimuthInDegrees()
