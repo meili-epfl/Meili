@@ -113,19 +113,20 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             when (which) {
                 0 -> {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                    UserPreferences(this).darkMode = 0
-                    delegate.applyDayNight()
-                    dialog.dismiss() }
+
+                     }
                 1 -> {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    UserPreferences(this).darkMode = 1
-                    delegate.applyDayNight()
-                    dialog.dismiss() }
+
+                     }
                 2 -> {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    UserPreferences(this).darkMode = 2
-                    delegate.applyDayNight()
-                    dialog.dismiss() } } }
+
+                     } }
+            UserPreferences(this).darkMode = which
+            delegate.applyDayNight()
+            dialog.dismiss()
+        }
 
         val dialog = builder.create()
         dialog.show()
