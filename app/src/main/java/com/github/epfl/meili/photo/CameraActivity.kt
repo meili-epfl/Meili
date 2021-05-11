@@ -65,7 +65,7 @@ class CameraActivity : AppCompatActivity() {
 
         makePhotosHaveOrientation()
 
-        editPhoto = intent.getBooleanExtra(EDIT_PHOTO, false)
+        editPhoto = intent.getBooleanExtra(EDIT_PHOTO, true)
     }
 
     private fun initializeUiControls() {

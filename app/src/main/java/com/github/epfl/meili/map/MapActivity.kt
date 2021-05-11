@@ -105,9 +105,9 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         viewModel.getPoiDist().observe(this) { poiDist ->
             if (poiDist != null) {
                 lensPoiNameText.text = poiDist.first.name
-                lensPoiDistText.text = "${poiDist.second} meters away"
+                lensPoiDistText.text = String.format(getString(R.string.lens_poi_distance), poiDist.second)
             } else {
-                lensPoiNameText.text = "No Point of Interest found"
+                lensPoiNameText.text = getString(R.string.no_poi_found)
                 lensPoiDistText.text = ""
             }
         }
@@ -132,7 +132,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
             if (landmarks.isEmpty()) {
                 Toast.makeText(
                     applicationContext,
-                    "No landmark found in the picture",
+                    getString(R.string.no_landmark_detected),
                     Toast.LENGTH_LONG
                 ).show()
             } else {
