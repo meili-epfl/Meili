@@ -105,7 +105,8 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         viewModel.getPoiDist().observe(this) { poiDist ->
             if (poiDist != null) {
                 lensPoiNameText.text = poiDist.first.name
-                lensPoiDistText.text = String.format(getString(R.string.lens_poi_distance), poiDist.second)
+                lensPoiDistText.text =
+                    String.format(getString(R.string.lens_poi_distance), poiDist.second)
             } else {
                 lensPoiNameText.text = getString(R.string.no_poi_found)
                 lensPoiDistText.text = ""
@@ -231,17 +232,10 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+            Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED ->
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
-            }
-            Configuration.UI_MODE_NIGHT_YES -> {
-                googleMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                        this,
-                        R.raw.map_style_dark
-                    )
-                )
-            }
+            Configuration.UI_MODE_NIGHT_YES ->
+                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_dark))
         }
 
         updateMapUI()

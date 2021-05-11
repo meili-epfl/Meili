@@ -1,5 +1,6 @@
 package com.github.epfl.meili.map
 
+import android.content.Context
 import android.location.LocationManager
 import android.net.Uri
 import android.view.View
@@ -32,7 +33,10 @@ import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
+import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
+import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmarkDetector
+import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.google.firebase.storage.FirebaseStorage
 import com.schibsted.spain.barista.interaction.PermissionGranter
 import org.hamcrest.CoreMatchers.not
@@ -77,7 +81,13 @@ class MapActivityTest {
         `when`(mockTask.addOnSuccessListener(landmarkSuccessListenerCaptor.capture())).thenReturn(mockTask)
         `when`(mockTask.addOnFailureListener(landmarkFailureListenerCaptor.capture())).thenReturn(mockTask)
 
-        LandmarkDetectionService.detectInImage = { _, _ -> mockTask }
+        val mockFirebaseVision = mock(FirebaseVision::class.java)
+        val mockLandmarkDetector = mock(FirebaseVisionCloudLandmarkDetector::class.java)
+        `when`(mockFirebaseVision.visionCloudLandmarkDetector).thenReturn(mockLandmarkDetector)
+        `when`(mockLandmarkDetector.detectInImage(any())).thenReturn(mockTask)
+
+        LandmarkDetectionService.firebaseVisionImage = { _, _ -> mock(FirebaseVisionImage::class.java) }
+        LandmarkDetectionService.firebaseVision = { mockFirebaseVision }
     }
 
     private fun setupMocks() {
