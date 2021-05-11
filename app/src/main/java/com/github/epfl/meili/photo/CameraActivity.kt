@@ -29,6 +29,7 @@ class CameraActivity : AppCompatActivity() {
         private const val PRESS_DELAY = 200L
         private const val TAG = "CameraActivity"
         const val URI_KEY = "URI_KEY"
+        const val EDIT_PHOTO = "EDIT_PHOTO"
     }
 
     private var imageCapture: ImageCapture? = null // is null when camera hasn't started
@@ -43,6 +44,8 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var previewView: PreviewView
 
     private var lensFacing: Int = CameraSelector.LENS_FACING_BACK // which direction is the camera facing
+
+    private var editPhoto = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +65,7 @@ class CameraActivity : AppCompatActivity() {
 
         makePhotosHaveOrientation()
 
+        editPhoto = intent.getBooleanExtra(EDIT_PHOTO, false)
     }
 
     private fun initializeUiControls() {
@@ -86,10 +90,17 @@ class CameraActivity : AppCompatActivity() {
                         }
 
                         override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                            val intent = Intent(applicationContext, PhotoCropActivity::class.java)
-                            intent.flags = intent.flags or FLAG_ACTIVITY_FORWARD_RESULT
-                            intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
-                            startActivity(intent)
+                            if (editPhoto) {
+                                val intent = Intent(applicationContext, PhotoCropActivity::class.java)
+                                intent.flags = intent.flags or FLAG_ACTIVITY_FORWARD_RESULT
+                                intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
+                                startActivity(intent)
+                            } else {
+                                val intent = Intent()
+                                intent.data = Uri.fromFile(photoFile)
+                                setResult(RESULT_OK, intent)
+                                finish()
+                            }
                         }
                     })
             }

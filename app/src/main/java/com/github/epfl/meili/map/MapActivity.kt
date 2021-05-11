@@ -3,6 +3,7 @@ package com.github.epfl.meili.map
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Camera
 import android.location.Location
 import android.os.Bundle
 import android.view.View
@@ -121,7 +122,10 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
     private fun setupLensCamera() {
         lensCamera.setOnClickListener {
-            launchCameraActivity.launch(Intent(this, CameraActivity::class.java))
+            launchCameraActivity.launch(
+                Intent(this, CameraActivity::class.java)
+                    .putExtra(CameraActivity.EDIT_PHOTO, false)
+            )
         }
 
         viewModel.getLandmarks().observe(this) { landmarks ->
@@ -133,19 +137,18 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
                 ).show()
             } else {
                 lensDetectedLandmark.text = landmarks[0].landmark
-                lensDetectedLandmarkContainer.isVisible = true
-                lensDismissLandmark.isVisible = true
-                lensCamera.isVisible = false
-                lensInfoContainer.isVisible = false
+                toggleLens()
             }
         }
 
-        lensDismissLandmark.setOnClickListener {
-            lensCamera.isVisible = true
-            lensInfoContainer.isVisible = true
-            lensDetectedLandmarkContainer.isVisible = false
-            lensDismissLandmark.isVisible = false
-        }
+        lensDismissLandmark.setOnClickListener { toggleLens() }
+    }
+
+    private fun toggleLens() {
+        lensCamera.isVisible = !lensCamera.isVisible
+        lensInfoContainer.isVisible = !lensInfoContainer.isVisible
+        lensDetectedLandmarkContainer.isVisible = !lensDetectedLandmarkContainer.isVisible
+        lensDismissLandmark.isVisible = !lensDismissLandmark.isVisible
     }
 
     private fun setUpClusterer() {
