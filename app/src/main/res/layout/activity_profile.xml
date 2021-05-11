@@ -98,16 +98,21 @@
                             android:id="@+id/profile_comments_button"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
-                            android:onClick="onProfileButtonClick" />
+                            android:onClick="onProfileButtonClick"
+                            android:src="@drawable/ic_comment"
+                            android:background="@color/design_default_color_primary"
+                            android:padding="32dp"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
-                            android:paddingStart="16dp"
-                            android:paddingTop="16dp"
-                            android:paddingEnd="16dp"
+                            android:paddingStart="8dp"
+                            android:paddingTop="8dp"
+                            android:paddingEnd="8dp"
                             android:text="Comments"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
@@ -122,16 +127,21 @@
                             android:id="@+id/profile_posts_button"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
-                            android:onClick="onProfileButtonClick" />
+                            android:onClick="onProfileButtonClick"
+                            android:src="@drawable/ic_posts"
+                            android:background="@color/design_default_color_primary"
+                            android:padding="32dp"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
-                            android:paddingStart="16dp"
-                            android:paddingTop="16dp"
-                            android:paddingEnd="16dp"
+                            android:paddingStart="8dp"
+                            android:paddingTop="8dp"
+                            android:paddingEnd="8dp"
                             android:text="Posts"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
@@ -152,16 +162,21 @@
                             android:id="@+id/profile_reviews_button"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
-                            android:onClick="onProfileButtonClick" />
+                            android:onClick="onProfileButtonClick"
+                            android:src="@drawable/ic_review"
+                            android:background="@color/design_default_color_primary"
+                            android:padding="32dp"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
-                            android:paddingStart="16dp"
-                            android:paddingTop="16dp"
-                            android:paddingEnd="16dp"
+                            android:paddingStart="8dp"
+                            android:paddingTop="8dp"
+                            android:paddingEnd="8dp"
                             android:text="Reviews"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
@@ -176,16 +191,21 @@
                             android:id="@+id/profile_poi_history_button"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
-                            android:onClick="onProfileButtonClick" />
+                            android:onClick="onProfileButtonClick"
+                            android:src="@drawable/ic_location"
+                            android:background="@color/design_default_color_primary"
+                            android:padding="32dp"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitCenter"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
-                            android:paddingStart="16dp"
-                            android:paddingTop="16dp"
-                            android:paddingEnd="16dp"
+                            android:paddingStart="8dp"
+                            android:paddingTop="8dp"
+                            android:paddingEnd="8dp"
                             android:text="POI"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
