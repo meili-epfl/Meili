@@ -125,9 +125,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                     UserPreferences(this).darkMode = 2
                     delegate.applyDayNight()
-                    dialog.dismiss() }
-            }
-        }
+                    dialog.dismiss() } } }
 
         val dialog = builder.create()
         dialog.show()

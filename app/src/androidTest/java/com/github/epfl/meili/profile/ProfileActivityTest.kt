@@ -177,4 +177,10 @@ class ProfileActivityTest {
         onView(withId(R.id.feed)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(FeedActivity::class.qualifiedName))
     }
+
+    @Test
+    fun changeModeTest(){
+        onView(withId(R.id.switch_mode)).perform(click())
+        onView(withId(android.R.id.button1)).perform(click())
+    }
 }
