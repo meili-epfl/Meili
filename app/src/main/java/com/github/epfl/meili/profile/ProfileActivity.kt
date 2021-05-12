@@ -46,7 +46,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
     private lateinit var viewModel: ProfileViewModel
 
-    private var isProfileOwner = true
+    private var isProfileOwner = false
 
     companion object {
         private const val SUPPORT_ACTIONBAR_SIGNED_IN = ""
@@ -58,15 +58,13 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         super.onCreate(savedInstanceState)
 
         initializeViews()
-        
+
         Auth.isLoggedIn.observe(this) {
             verifyAndUpdateUserIsLoggedIn()
         }
         if (!Auth.isLoggedIn.value!!) {
             Auth.signIn(this)
         }
-
-        showProfile()
     }
 
     private fun initializeViews() {
@@ -174,19 +172,24 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
     private fun verifyAndUpdateUserIsLoggedIn() {
         if (Auth.isLoggedIn.value!!) {
-            setupViewModel()
             supportActionBar?.title = SUPPORT_ACTIONBAR_SIGNED_IN
             signedInView.visibility = View.VISIBLE
             signInButton.visibility = View.GONE
 
-            if (isProfileOwner) {
-                signOutButton.visibility = View.VISIBLE
-            }
+            setupViewModel()
+            updateIsProfileOwner()
+            showProfile()
         } else {
             supportActionBar?.title = SUPPORT_ACTIONBAR_NOT_SIGNED_IN
             signedInView.visibility = View.GONE
             signInButton.visibility = View.VISIBLE
             signOutButton.visibility = View.GONE
         }
+    }
+
+    private fun updateIsProfileOwner() {
+        val authUser = Auth.getCurrentUser()!!
+        val profileUser = viewModel.getUser().value!!
+        isProfileOwner = (authUser.uid == profileUser.uid)
     }
 }
