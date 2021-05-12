@@ -141,15 +141,10 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         profileEditView.visibility = View.GONE
         photoEditView.visibility = View.GONE
 
-        if (isProfileOwner) {
-            seeFriendsButton.visibility = View.VISIBLE
-            signOutButton.visibility = View.VISIBLE
-            profileEditButton.visibility = View.VISIBLE
-        } else {
-            seeFriendsButton.visibility = View.GONE
-            signOutButton.visibility = View.GONE
-            profileEditButton.visibility = View.GONE
-        }
+        val editableVisibility = if (isProfileOwner) View.VISIBLE else View.GONE
+        seeFriendsButton.visibility = editableVisibility
+        signOutButton.visibility = editableVisibility
+        profileEditButton.visibility = editableVisibility
     }
 
     private fun showEditMode() {
