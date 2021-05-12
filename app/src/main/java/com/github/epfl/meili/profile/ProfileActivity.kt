@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.util.UIUtility
@@ -52,6 +53,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         private const val SUPPORT_ACTIONBAR_SIGNED_IN = ""
         private const val SUPPORT_ACTIONBAR_NOT_SIGNED_IN = "Not Signed In"
         private const val STORAGE_IMAGES_PATH = "image/*"
+        const val USER_KEY = "USER_KEY"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +94,14 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this, ProfileViewModelFactory(Auth.getCurrentUser()!!))
+        var profileOwner = intent.getParcelableExtra<User>(USER_KEY)
+
+        // By default profile we are seeing is ours
+        if (profileOwner == null) {
+            profileOwner = Auth.getCurrentUser()!!
+        }
+
+        viewModel = ViewModelProvider(this, ProfileViewModelFactory(profileOwner))
             .get(ProfileViewModel::class.java)
         viewModel.getUser().removeObservers(this)
         viewModel.getUser().observe(this) { user ->
