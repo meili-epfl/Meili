@@ -46,8 +46,10 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
     private lateinit var viewModel: ProfileViewModel
 
+    private var isProfileOwner = true
+
     companion object {
-        private const val SUPPORT_ACTIONBAR_EMPTY = ""
+        private const val SUPPORT_ACTIONBAR_SIGNED_IN = ""
         private const val SUPPORT_ACTIONBAR_NOT_SIGNED_IN = "Not Signed In"
         private const val STORAGE_IMAGES_PATH = "image/*"
     }
@@ -138,12 +140,18 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         UIUtility.hideSoftKeyboard(this)
 
         profileView.visibility = View.VISIBLE
-        seeFriendsButton.visibility = View.VISIBLE
-        signOutButton.visibility = View.VISIBLE
         profileEditView.visibility = View.GONE
         photoEditView.visibility = View.GONE
-        profileEditButton.visibility = View.VISIBLE
-        photoEditView.visibility = View.GONE
+
+        if (isProfileOwner) {
+            seeFriendsButton.visibility = View.VISIBLE
+            signOutButton.visibility = View.VISIBLE
+            profileEditButton.visibility = View.VISIBLE
+        } else {
+            seeFriendsButton.visibility = View.GONE
+            signOutButton.visibility = View.GONE
+            profileEditButton.visibility = View.GONE
+        }
     }
 
     private fun showEditMode() {
@@ -167,10 +175,13 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private fun verifyAndUpdateUserIsLoggedIn() {
         if (Auth.isLoggedIn.value!!) {
             setupViewModel()
-            supportActionBar?.title = SUPPORT_ACTIONBAR_EMPTY
+            supportActionBar?.title = SUPPORT_ACTIONBAR_SIGNED_IN
             signedInView.visibility = View.VISIBLE
             signInButton.visibility = View.GONE
-            signOutButton.visibility = View.VISIBLE
+
+            if (isProfileOwner) {
+                signOutButton.visibility = View.VISIBLE
+            }
         } else {
             supportActionBar?.title = SUPPORT_ACTIONBAR_NOT_SIGNED_IN
             signedInView.visibility = View.GONE
