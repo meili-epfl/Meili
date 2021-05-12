@@ -14,7 +14,7 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer
 open class PoiRenderer(context: Context?, map: GoogleMap?, val clusterManager: ClusterManager<PoiItem>)
     : DefaultClusterRenderer<PoiItem>(context, map, clusterManager) {
 
-    private var poiStatusMap: Map<PoiItem, PoiMarkerViewModel.PointOfInterestStatus>? = null
+    private var poiStatusMap: Map<PoiItem, PointOfInterestStatus>? = null
 
     override fun onBeforeClusterItemRendered(item: PoiItem, markerOptions: MarkerOptions) {
         val icon: BitmapDescriptor
@@ -22,16 +22,16 @@ open class PoiRenderer(context: Context?, map: GoogleMap?, val clusterManager: C
             icon = DEFAULT_ICON
         } else {
             icon = when (poiStatusMap!![item]) {
-                PoiMarkerViewModel.PointOfInterestStatus.REACHABLE -> REACHABLE_ICON
-                PoiMarkerViewModel.PointOfInterestStatus.VISITED -> VISITED_ICON
-                PoiMarkerViewModel.PointOfInterestStatus.VISIBLE -> VISIBLE_ICON
+                PointOfInterestStatus.REACHABLE -> REACHABLE_ICON
+                PointOfInterestStatus.VISITED -> VISITED_ICON
+                PointOfInterestStatus.VISIBLE -> VISIBLE_ICON
                 else -> DEFAULT_ICON
             }
         }
         markerOptions.icon(icon)
     }
 
-    fun renderClusterItems(poiStatusMap: Map<PoiItem, PoiMarkerViewModel.PointOfInterestStatus>) {
+    fun renderClusterItems(poiStatusMap: Map<PoiItem, PointOfInterestStatus>) {
         clusterManager.clearItems()
 
         clusterManager.addItems(poiStatusMap.keys)
