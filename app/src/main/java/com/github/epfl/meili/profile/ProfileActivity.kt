@@ -70,7 +70,6 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     }
 
     fun onProfileButtonClick(view: View) {
-        UIUtility.hideSoftKeyboard(this)
         when (view) {
             photoView -> launchGallery.launch("image/*")
             saveButton -> saveProfile()
