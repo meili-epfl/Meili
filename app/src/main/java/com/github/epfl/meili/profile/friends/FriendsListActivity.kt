@@ -21,7 +21,6 @@ import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 
-//TODO: fix setting default image if none received e.g meili logo
 class FriendsListActivity : AppCompatActivity(), ClickListener {
     companion object {
         private const val FRIENDS_PADDING: Int = 15
@@ -89,9 +88,10 @@ class FriendsListActivity : AppCompatActivity(), ClickListener {
 
     private fun onFriendsUpdateReceived(map: Map<String, Friend>) {
         addDefaultFriend(map)
-        //TODO: change to only fetch new friends
 
-        serviceProvider().getUserInformation(map.keys.toList(), { onFriendsInfoReceived(it) },
+        val newFriendsList = map.keys.toList().minus(usersMap.keys.toList())
+
+        serviceProvider().getUserInformation(newFriendsList, { onFriendsInfoReceived(it) },
                 { Log.d(TAG, "Error when fetching friends information") })
     }
 
