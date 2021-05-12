@@ -11,4 +11,7 @@
     <string name="lens_poi_distance">%d meters away</string>
     <string name="no_poi_found">No Point of Interest found</string>
     <string name="no_landmark_detected">No landmark found in the picture</string>
+    <string name="facebook_app_id">1155284924987862</string>
+    <string name="fb_login_protocol_scheme">fb1155284924987862</string>
+
 </resources>

@@ -2,11 +2,18 @@ package com.github.epfl.meili.profile
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.profile.friends.FriendsListActivity
@@ -24,11 +31,14 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var saveButton: Button
     private lateinit var seeFriendsButton: Button
     private lateinit var signInButton: Button
+    private lateinit var facebookSignInButton: LoginButton
     private lateinit var signOutButton: Button
 
     private lateinit var signedInView: View
 
     private lateinit var viewModel: ProfileViewModel
+
+    private lateinit var callbackManager: CallbackManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +49,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         saveButton = findViewById(R.id.save)
         seeFriendsButton = findViewById(R.id.list_friends_button)
         signInButton = findViewById(R.id.sign_in)
+        facebookSignInButton = findViewById(R.id.facebook_sign_in)
         signOutButton = findViewById(R.id.sign_out)
 
         signedInView = findViewById(R.id.signed_in)
@@ -50,7 +61,29 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         if (!Auth.isLoggedIn.value!!) {
             Auth.signIn(this)
         }
+        registerFacbookCallBack()
     }
+
+    private fun registerFacbookCallBack(){
+        callbackManager = CallbackManager.Factory.create()
+
+        facebookSignInButton.registerCallback(callbackManager, object: FacebookCallback<LoginResult>{
+            override fun onSuccess(loginResult: LoginResult?) {
+                Log.d("ProfileActivity", "facebook uid: "+loginResult!!.accessToken.userId)
+                //extra if we want to get facebook picture
+                //var imageURL: String = "https://graph.facebook.com/"+loginResult!!.accessToken.userId+"/picture?return_ssl_resources=1"
+            }
+
+            override fun onCancel() {
+                Log.d("ProfileActivity", "FACBOOK CANCELED!")
+            }
+
+            override fun onError(exception: FacebookException) {
+                Log.d("ProfileActivity", "FACEBOOK ERROR!")
+            }
+        })
+    }
+
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(Auth.getCurrentUser()!!))
@@ -93,6 +126,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Auth.onActivityResult(this, requestCode, resultCode, data)
+        callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun verifyAndUpdateUserIsLoggedIn() {
@@ -101,10 +135,12 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             supportActionBar?.title = ""
             signedInView.visibility = View.VISIBLE
             signInButton.visibility = View.GONE
+            facebookSignInButton.visibility = View.GONE
         } else {
             supportActionBar?.title = "Not Signed In"
             signedInView.visibility = View.GONE
             signInButton.visibility = View.VISIBLE
+            facebookSignInButton.visibility = View.VISIBLE
         }
     }
 }
