@@ -25,7 +25,7 @@
         app:layout_constraintHorizontal_bias="0.005"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@mipmap/meili_launcher" />
+        android:src="@mipmap/meili_launcher" />
 
     <Button
         android:id="@+id/friend_chat_button"

@@ -44,6 +44,7 @@ class FriendsListRecyclerAdapter(private val clickListener: ClickListener) : Mei
             Log.d("Recycler friend", pair.second.username)
             user = pair.second
             name.text = user.username
+
             FirebaseStorageService.getDownloadUrl(
                     imageAvatarPath(user.uid),
                     { uri -> Picasso.get().load(uri).into(picture) },
