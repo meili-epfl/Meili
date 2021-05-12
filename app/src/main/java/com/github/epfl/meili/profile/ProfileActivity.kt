@@ -124,11 +124,12 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         user.bio = bioEditView.text.toString()
         viewModel.updateProfile(user)
 
-        UIUtility.hideSoftKeyboard(this)
         showProfile()
     }
 
     private fun showProfile() {
+        UIUtility.hideSoftKeyboard(this)
+
         profileView.visibility = View.VISIBLE
         seeFriendsButton.visibility = View.VISIBLE
         signOutButton.visibility = View.VISIBLE
