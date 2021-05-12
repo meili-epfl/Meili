@@ -46,6 +46,12 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
     private lateinit var viewModel: ProfileViewModel
 
+    companion object {
+        private const val SUPPORT_ACTIONBAR_EMPTY = ""
+        private const val SUPPORT_ACTIONBAR_NOT_SIGNED_IN = "Not Signed In"
+        private const val STORAGE_IMAGES_PATH = "image/*"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -104,7 +110,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     /** Buttons callback function */
     fun onProfileButtonClick(view: View) {
         when (view) {
-            photoEditView -> launchGallery.launch("image/*")
+            photoEditView -> launchGallery.launch(STORAGE_IMAGES_PATH)
             saveButton -> saveProfile()
             cancelButton -> showProfile()
             seeFriendsButton -> showFriends()
@@ -161,12 +167,12 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private fun verifyAndUpdateUserIsLoggedIn() {
         if (Auth.isLoggedIn.value!!) {
             setupViewModel()
-            supportActionBar?.title = ""
+            supportActionBar?.title = SUPPORT_ACTIONBAR_EMPTY
             signedInView.visibility = View.VISIBLE
             signInButton.visibility = View.GONE
             signOutButton.visibility = View.VISIBLE
         } else {
-            supportActionBar?.title = "Not Signed In"
+            supportActionBar?.title = SUPPORT_ACTIONBAR_NOT_SIGNED_IN
             signedInView.visibility = View.GONE
             signInButton.visibility = View.VISIBLE
             signOutButton.visibility = View.GONE
