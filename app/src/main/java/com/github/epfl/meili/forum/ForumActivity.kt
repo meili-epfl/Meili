@@ -120,7 +120,10 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
             submitButton -> addPost()
             cancelButton -> showListPostsView()
             useGalleryButton -> launchGallery.launch("image/*")
-            useCameraButton -> launchCameraActivity.launch(Intent(this, CameraActivity::class.java))
+            useCameraButton -> launchCameraActivity.launch(
+                Intent(this, CameraActivity::class.java)
+                    .putExtra(CameraActivity.EDIT_PHOTO, true)
+            )
             else -> openPost(view.findViewById(R.id.post_id))
         }
     }

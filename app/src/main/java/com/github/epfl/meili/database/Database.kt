@@ -1,9 +1,7 @@
 package com.github.epfl.meili.database
 
-import java.util.Observable
-import java.util.Observer
+import java.util.*
 import kotlin.collections.HashSet
-
 
 abstract class Database<T>: Observable() {
     abstract var elements: Map<String, T>

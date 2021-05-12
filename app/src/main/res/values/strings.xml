@@ -8,4 +8,7 @@
     <string name="submit_text">Submit</string>
     <string name="cancel_text">Cancel</string>
     <string name="fab_review_content_description">add/edit my review</string>
+    <string name="lens_poi_distance">%d meters away</string>
+    <string name="no_poi_found">No Point of Interest found</string>
+    <string name="no_landmark_detected">No landmark found in the picture</string>
 </resources>
