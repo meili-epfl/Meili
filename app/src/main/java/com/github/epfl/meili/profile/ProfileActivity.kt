@@ -101,6 +101,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         viewModel.getRequestCreator().observe(this) { it.into(photoView) }
     }
 
+    /** Buttons callback function */
     fun onProfileButtonClick(view: View) {
         when (view) {
             photoEditView -> launchGallery.launch("image/*")

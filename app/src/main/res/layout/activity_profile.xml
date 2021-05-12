@@ -26,7 +26,8 @@
             android:layout_above="@+id/profile_edit_container"
             android:layout_alignEnd="@id/photo"
             android:onClick="onProfileButtonClick"
-            app:srcCompat="@drawable/ic_baseline_add_photo_alternate_24" />
+            app:srcCompat="@drawable/ic_baseline_add_photo_alternate_24"
+            android:contentDescription="@string/button_to_change_profile_picture" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/profile_edit_button"
@@ -35,7 +36,8 @@
             android:layout_alignEnd="@id/photo"
             android:layout_alignBottom="@id/photo"
             android:onClick="onProfileButtonClick"
-            app:srcCompat="@drawable/ic_baseline_edit_24" />
+            app:srcCompat="@drawable/ic_baseline_edit_24"
+            android:contentDescription="@string/button_to_edit_profile" />
 
         <ImageButton
             android:id="@+id/list_friends_button"
@@ -46,7 +48,7 @@
             android:layout_marginEnd="32dp"
             android:background="@drawable/ic_baseline_people_24"
             android:onClick="onProfileButtonClick"
-            android:text="My Friends" />
+            android:contentDescription="@string/my_friends" />
 
         <RelativeLayout
             android:id="@+id/profile_container"
@@ -103,7 +105,8 @@
                             android:background="@color/design_default_color_primary"
                             android:padding="32dp"
                             android:adjustViewBounds="true"
-                            android:scaleType="fitCenter"/>
+                            android:scaleType="fitCenter"
+                            android:contentDescription="@string/profile_comments_button" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -113,7 +116,7 @@
                             android:paddingStart="8dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
-                            android:text="Comments"
+                            android:text="@string/profile_comments_textview"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                     </RelativeLayout>
@@ -132,7 +135,8 @@
                             android:background="@color/design_default_color_primary"
                             android:padding="32dp"
                             android:adjustViewBounds="true"
-                            android:scaleType="fitCenter"/>
+                            android:scaleType="fitCenter"
+                            android:contentDescription="@string/profile_posts_button" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -142,7 +146,7 @@
                             android:paddingStart="8dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
-                            android:text="Posts"
+                            android:text="@string/profile_posts_textview"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                     </RelativeLayout>
@@ -167,7 +171,8 @@
                             android:background="@color/design_default_color_primary"
                             android:padding="32dp"
                             android:adjustViewBounds="true"
-                            android:scaleType="fitCenter"/>
+                            android:scaleType="fitCenter"
+                            android:contentDescription="@string/profile_reviews_button" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -177,7 +182,7 @@
                             android:paddingStart="8dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
-                            android:text="Reviews"
+                            android:text="@string/profile_reviews_textview"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                     </RelativeLayout>
@@ -196,7 +201,8 @@
                             android:background="@color/design_default_color_primary"
                             android:padding="32dp"
                             android:adjustViewBounds="true"
-                            android:scaleType="fitCenter"/>
+                            android:scaleType="fitCenter"
+                            android:contentDescription="@string/profile_poi_history_button" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -206,7 +212,7 @@
                             android:paddingStart="8dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
-                            android:text="POI"
+                            android:text="@string/profile_poi_history_textview"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                     </RelativeLayout>
@@ -234,24 +240,24 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Name:" />
+                    android:text="@string/profile_name_edit_textview" />
 
                 <EditText
                     android:id="@+id/profile_edit_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Your Name" />
+                    android:hint="@string/profile_name_edit_edittext" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="About Me:" />
+                    android:text="@string/profile_bio_edit_textview" />
 
                 <EditText
                     android:id="@+id/profile_edit_bio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Hi ! I am using Meili !" />
+                    android:hint="@string/profile_bio_edit_edittext" />
             </LinearLayout>
 
             <Button
@@ -262,7 +268,7 @@
                 android:layout_alignEnd="@id/profile_edit_linear"
                 android:layout_marginTop="16dp"
                 android:onClick="onProfileButtonClick"
-                android:text="Save My Profile" />
+                android:text="@string/save_my_profile" />
 
             <Button
                 android:id="@+id/cancel"
@@ -273,7 +279,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_toStartOf="@id/save"
                 android:onClick="onProfileButtonClick"
-                android:text="Cancel" />
+                android:text="@string/profile_edit_cancel" />
         </RelativeLayout>
     </RelativeLayout>
 
@@ -284,7 +290,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:onClick="onProfileButtonClick"
-        android:text="Sign In" />
+        android:text="@string/sign_in" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
@@ -304,6 +310,6 @@
         android:layout_marginBottom="16dp"
         android:gravity="center"
         android:onClick="onProfileButtonClick"
-        android:text="Sign Out" />
+        android:text="@string/sign_out" />
 
 </RelativeLayout>
