@@ -13,6 +13,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.NavigableActivity
+import com.github.epfl.meili.util.UIUtility
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -123,6 +124,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         user.bio = bioEditView.text.toString()
         viewModel.updateProfile(user)
 
+        UIUtility.hideSoftKeyboard(this)
         showProfile()
     }
 
