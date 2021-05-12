@@ -11,7 +11,6 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.NavigableActivity
-import com.github.epfl.meili.util.UIUtility
 import de.hdodenhof.circleimageview.CircleImageView
 
 
