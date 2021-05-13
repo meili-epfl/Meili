@@ -24,7 +24,8 @@ Other than that, my time estimates were perfect for the implementation of the fe
 
 ## Marcel (Scrum Master)
 
-#todo
+This week I have worked on implementing 2 tasks. The first was to create a service that would fetch the information from a list of users. This will be used for displaying other users information as for example information about your friends, people with whom you are chating or even posts writers. The second task was to improve the UI of the friends list so that we could see the picture of the friend, its name and that it was clear from the UI as how you can acces his/her profile (clicking on the name) or how to chat with him/her (clicking on a message-like button). This two tasks already took me the 8-hours (which is 1 hour more than estimated) it was mainly because of the difficulty I found when implementing the service that fetches users information, since nothing really similar had been done before in our codebase. So I couldn't finish my last 1-hour task but I'll finish it next sprint.
+Moreover, I recorded a video together with Aman, for showcasing the feature ask during the destabilization sprint. I hope everyone will like it as much as I would like to :) . Recording the video and video editing also took me a decent amount of extra time that I wasn't able to invest in finishing this last task.
 
 ## Thomas
 
