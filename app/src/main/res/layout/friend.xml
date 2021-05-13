@@ -25,13 +25,12 @@
         app:layout_constraintTop_toTopOf="parent"
         android:src="@mipmap/meili_launcher" />
 
-    <Button
+    <ImageButton
         android:id="@+id/friend_chat_button"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="49dp"
+        android:layout_width="40dp"
         android:layout_height="41dp"
-        app:icon="@android:drawable/stat_notify_chat"
-        app:iconTint="@color/design_default_color_secondary"
+        android:background="@android:drawable/stat_notify_chat"
+        android:backgroundTint="@color/design_default_color_secondary"
         app:layout_constraintEnd_toEndOf="@+id/friendName"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

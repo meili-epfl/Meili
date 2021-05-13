@@ -4,7 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
@@ -15,29 +15,30 @@ import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
-class FriendsListRecyclerAdapter(private val clickListener: ClickListener) : MeiliRecyclerAdapter<User>() {
+class FriendsListRecyclerAdapter(private val clickListener: ClickListener) :
+    MeiliRecyclerAdapter<User>() {
     companion object {
         var imageAvatarPath: (String) -> String = { uid -> "images/avatars/${uid}" }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-            FriendViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.friend, parent, false),
-                    clickListener
-            )
+        FriendViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.friend, parent, false),
+            clickListener
+        )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-            (holder as FriendViewHolder).bind(items[position])
+        (holder as FriendViewHolder).bind(items[position])
 
     class FriendViewHolder(itemView: View, private val listener: ClickListener) :
-            RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        RecyclerView.ViewHolder(itemView), View.OnClickListener {
         private val name: TextView = itemView.findViewById(R.id.friendName)
         private val picture: CircleImageView = itemView.findViewById(R.id.friendImage)
         private lateinit var user: User
 
         init {
             name.setOnClickListener(this)
-            itemView.findViewById<Button>(R.id.friend_chat_button).setOnClickListener(this)
+            itemView.findViewById<ImageButton>(R.id.friend_chat_button).setOnClickListener(this)
         }
 
         fun bind(pair: Pair<String, User>) {
@@ -46,9 +47,9 @@ class FriendsListRecyclerAdapter(private val clickListener: ClickListener) : Mei
             name.text = user.username
 
             FirebaseStorageService.getDownloadUrl(
-                    imageAvatarPath(user.uid),
-                    { uri -> Picasso.get().load(uri).into(picture) },
-                    { /* do nothing in case of failure */ }
+                imageAvatarPath(user.uid),
+                { uri -> Picasso.get().load(uri).into(picture) },
+                { /* do nothing in case of failure */ }
             )
         }
 
