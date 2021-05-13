@@ -9,6 +9,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.epfl.meili.R
@@ -110,7 +111,8 @@ class FriendsListActivityTest {
 
         database.onEvent(mockSnapshotAfterAddition, null)
 
-        Espresso.onView(textViewContainsText(TEST_FRIEND_NAME)).perform(click())
+        Espresso.onView(textViewContainsText(TEST_FRIEND_NAME)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withId(R.id.friend_chat_button)).perform(click())
 
         Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
 

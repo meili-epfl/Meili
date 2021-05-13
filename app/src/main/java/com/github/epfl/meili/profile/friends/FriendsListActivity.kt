@@ -16,6 +16,7 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.profile.friends.NearbyActivity
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliViewModel
@@ -124,10 +125,16 @@ class FriendsListActivity : AppCompatActivity(), ClickListener {
         startActivity(intent)
     }
 
+    private fun openFriendProfile(friendUid: String) {
+        val intent =
+            Intent(this, ProfileActivity::class.java).putExtra(ProfileActivity.USER_KEY, friendUid)
+        startActivity(intent)
+    }
+
     override fun onClicked(buttonId: Int, info: String) {
         when (buttonId) {
             R.id.friend_chat_button -> openFriendChat(info)
-            R.id.friendName -> openFriendChat(info) // TODO: add link to profile when done
+            R.id.friend_card -> openFriendProfile(info)
         }
     }
 }
