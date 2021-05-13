@@ -84,8 +84,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
             }
 
             ChatMessageViewModel.setMessageDatabase(FirebaseMessageDatabaseAdapter(databasePath))
-
-            listenForMessages()
+            listenForMessages(chatId)
 
             findViewById<Button>(R.id.button_chat_log).setOnClickListener {
                 performSendMessage()
@@ -124,19 +123,16 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         )
     }
 
-    private fun listenForMessages() {
+    private fun listenForMessages(chatID: String) {
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
             val newMessages = list.minus(messageSet)
-
-            newMessages.forEach { message ->
-                Log.d(TAG, "loading message: ${message.text}")
-
-                adapter.add(ChatItem(message, message.fromId == currentUser!!.uid, isGroupChat))
+            newMessages.filter { message -> message.toId == chatID }.forEach { message ->
+                    Log.d(TAG, "loading message: ${message.text}")
+                    adapter.add(ChatItem(message, message.fromId == currentUser!!.uid, isGroupChat))
             }
 
             messageSet.addAll(newMessages)
-
             //scroll down
             val lastItemPos = adapter.itemCount - 1
             findViewById<RecyclerView>(R.id.recycleview_chat_log).scrollToPosition(lastItemPos)
