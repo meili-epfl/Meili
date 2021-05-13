@@ -10,37 +10,37 @@ import org.json.JSONException
 import org.json.JSONObject
 
 class FacebookAuthenticationService : AuthenticationService {
-    override fun getCurrentUser(): User? {
-        val loggedOut = AccessToken.getCurrentAccessToken() == null
-        return if (loggedOut) {
-            null
-        } else {
-            fetchUser()
-        }
-    }
 
-    private fun fetchUser(): User {
-        val profile = Profile.getCurrentProfile()
-        var email = ""
+    companion object{
+        fun fetchFacebookUser(accessToken: AccessToken?, profile: Profile): User?{
+            if(accessToken == null){
+                return null
+            }else{
+                var email = ""
 
-        val request = GraphRequest.newMeRequest(
-            AccessToken.getCurrentAccessToken()
-        ) { jsonObject: JSONObject, _: GraphResponse ->
-            try {
-                email = jsonObject.getString("email")
-            } catch (e: JSONException) {
+                val request = GraphRequest.newMeRequest(
+                    accessToken
+                ) { jsonObject: JSONObject, _: GraphResponse ->
+                    try {
+                        email = jsonObject.getString("email")
+                    } catch (e: JSONException) {
+                    }
+                }
+
+                val parameters = Bundle()
+                parameters.putString("fields", "email")
+                request.parameters = parameters
+
+                val t = Thread(request::executeAndWait)
+                t.start()
+                t.join()
+
+                return User(profile.id, profile.name, email, " ")
             }
         }
-
-        val parameters = Bundle()
-        parameters.putString("fields", "email")
-        request.parameters = parameters
-
-        val t = Thread(request::executeAndWait)
-        t.start()
-        t.join()
-
-        return User(profile.id, profile.name, email, " ")
+    }
+    override fun getCurrentUser(): User? {
+        return fetchFacebookUser(AccessToken.getCurrentAccessToken(), Profile.getCurrentProfile())
     }
 
     override fun signInIntent(): Intent {
@@ -57,7 +57,7 @@ class FacebookAuthenticationService : AuthenticationService {
         requestCode: Int,
         result: Int,
         data: Intent?,
-        onComplete: () -> Unit
+        onComplete: () -> Unit,
     ) {
     }
 }
