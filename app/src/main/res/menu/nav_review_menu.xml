@@ -6,5 +6,5 @@
         app:showAsAction="always"/>
     <item android:id="@+id/menu_chat"
         android:title="Chat"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 </menu>

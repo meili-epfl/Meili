@@ -6,8 +6,5 @@
         app:showAsAction="always"/>
     <item android:id="@+id/menu_reviews"
         android:title="Reviews"
-        app:showAsAction="always"/>
-    <item android:id="@+id/menu_poi_history"
-        android:title="Poi History"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 </menu>
