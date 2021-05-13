@@ -6,11 +6,14 @@ import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.BuildConfig
@@ -25,6 +28,7 @@ import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
 import com.github.epfl.meili.util.LocationService.requestLocationPermission
 import com.github.epfl.meili.util.NavigableActivity
+import com.github.epfl.meili.util.UserPreferences
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
@@ -68,6 +72,8 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
     private lateinit var viewModel: MapActivityViewModel
 
+    private lateinit var switchModeButton: Button
+
     private val poiItems: HashMap<String, PoiItem> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +84,10 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         initLensViews()
         setupLandmarkDetection()
         setupLensCamera()
+        checkTheme(UserPreferences(this).darkMode)
+        switchModeButton = findViewById(R.id.switch_mode)
+        switchModeButton.setOnClickListener{changeMode()}
+
 
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
         placesClient = Places.createClient(this)
@@ -211,6 +221,31 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         }
 
         clusterRenderer.renderClusterItems(newMap)
+    }
+
+    private fun checkTheme(chosen: Int) {
+        when (chosen) {
+            0 -> { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) }
+            1 -> { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) }
+            2 -> { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) } }
+        delegate.applyDayNight()
+    }
+
+    private fun changeMode(){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Choose Mode")
+        val styles = arrayOf("System default","Light","Dark")
+
+        val checkedItem = UserPreferences(this).darkMode
+
+        builder.setSingleChoiceItems(styles, checkedItem) { dialog, which ->
+            checkTheme(which)
+            UserPreferences(this).darkMode = which
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
     override fun onRequestPermissionsResult(
