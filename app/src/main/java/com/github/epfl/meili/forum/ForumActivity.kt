@@ -25,6 +25,7 @@ import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
 import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.TopSpacingItemDecoration
+import com.github.epfl.meili.util.UIUtility
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -117,12 +118,16 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     }
 
     fun onForumButtonClick(view: View) {
+        UIUtility.hideSoftKeyboard(this)
         when (view) {
             createPostButton -> showEditPostView()
             submitButton -> addPost()
             cancelButton -> showListPostsView()
             useGalleryButton -> launchGallery.launch("image/*")
-            useCameraButton -> launchCameraActivity.launch(Intent(this, CameraActivity::class.java))
+            useCameraButton -> launchCameraActivity.launch(
+                Intent(this, CameraActivity::class.java)
+                    .putExtra(CameraActivity.EDIT_PHOTO, true)
+            )
             else -> openPost(view.findViewById(R.id.post_id))
         }
     }

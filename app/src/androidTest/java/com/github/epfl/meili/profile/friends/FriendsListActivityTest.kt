@@ -15,6 +15,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Friend
+import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.firebase.firestore.*
 import org.hamcrest.Description
@@ -34,7 +35,7 @@ class FriendsListActivityTest {
         private const val TEST_CURRENT_USER_UID = "UID"
         private const val TEST_FRIEND_UID = "FRIEND_UID"
         private val TEST_FRIEND = Friend(TEST_FRIEND_UID)
-        private const val DEFAULT_TEST_MEILI_FRIEND_UID = "OP7VVymi3ZOfTr0akvMnh5HEa2a2"
+        private const val TEST_FRIEND_NAME = "Friend"
     }
 
     private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
@@ -88,18 +89,32 @@ class FriendsListActivityTest {
     fun uiDisplaysCorrectInfo() {
         database.onEvent(mockSnapshotAfterAddition, null)
 
-        Espresso.onView(textViewContainsText(TEST_FRIEND_UID)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(textViewContainsText(TEST_FRIEND_NAME)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     @Test
     fun friendChatIsDisplayedCorrectly() {
+        val testFriendMap = HashMap<String, User>()
+        testFriendMap[TEST_FRIEND_UID] = User(TEST_FRIEND_UID, TEST_FRIEND_NAME)
+
+        val mockUserInfoService = Mockito.mock(UserInfoService::class.java)
+        Mockito.`when`(mockUserInfoService.getUserInformation(Mockito.anyList(), Mockito.any(), Mockito.any())).then {
+            val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)
+
+            onSuccess(testFriendMap)
+
+            return@then null
+        }
+
+        FriendsListActivity.serviceProvider = { mockUserInfoService }
+
         database.onEvent(mockSnapshotAfterAddition, null)
 
-        Espresso.onView(textViewContainsText(TEST_FRIEND_UID)).perform(click())
+        Espresso.onView(textViewContainsText(TEST_FRIEND_NAME)).perform(click())
 
         Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
 
-        Espresso.onView(textViewContainsText(TEST_FRIEND_UID)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(textViewContainsText(TEST_FRIEND_NAME)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         Espresso.onView(buttonViewContainsText("Send")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }

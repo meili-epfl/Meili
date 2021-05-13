@@ -12,7 +12,6 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
-import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
@@ -55,7 +54,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
             currentUser = Auth.getCurrentUser()
 
             val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)
-            val friend = intent.getParcelableExtra<Friend>(FRIEND_KEY)
+            val friend = intent.getParcelableExtra<User>(FRIEND_KEY)
             val databasePath: String
 
             if (poi != null) {
@@ -69,7 +68,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
                 databasePath = "POI/${chatId}"
             } else {
-                supportActionBar?.title = friend?.uid
+                supportActionBar?.title = friend?.username
                 val friendUid: String = friend?.uid!!
                 val currentUid: String = currentUser!!.uid
 

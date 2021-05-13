@@ -17,6 +17,7 @@ import com.github.epfl.meili.profile.poihistory.PoiHistoryActivity
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.TopSpacingItemDecoration
+import com.github.epfl.meili.util.UIUtility
 
 
 class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
@@ -68,6 +69,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
     }
 
     fun onReviewButtonClick(view: View) {
+        UIUtility.hideSoftKeyboard(this)
         when (view.id) {
             R.id.submit_review -> {
                 submitButtonListener()
