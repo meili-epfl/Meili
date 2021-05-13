@@ -11,9 +11,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.friends.FriendsListActivity
-import com.github.epfl.meili.profile.poihistory.PoiHistoryActivity
+import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.util.UIUtility
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -127,6 +126,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             signInButton -> Auth.signIn(this)
             signOutButton -> Auth.signOut()
             profileEditButton -> showEditMode()
+            poiButton -> startActivity(Intent(this, FavoritePoisActivity::class.java))
         }
     }
 

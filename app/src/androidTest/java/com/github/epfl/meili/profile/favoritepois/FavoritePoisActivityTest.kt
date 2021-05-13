@@ -1,4 +1,4 @@
-package com.github.epfl.meili.profile.poihistory
+package com.github.epfl.meili.profile.favoritepois
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -36,7 +36,7 @@ import org.mockito.Mockito.mock
 
 @Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
-class PoiHistoryActivityTest {
+class FavoritePoisActivityTest {
 
     companion object {
         private const val TEST_UID = "UID"
@@ -56,8 +56,8 @@ class PoiHistoryActivityTest {
 
 
     @get:Rule
-    var rule: ActivityScenarioRule<PoiHistoryActivity> =
-        ActivityScenarioRule(PoiHistoryActivity::class.java)
+    var rule: ActivityScenarioRule<FavoritePoisActivity> =
+        ActivityScenarioRule(FavoritePoisActivity::class.java)
 
     @Before
     fun initIntents() = Intents.init()
@@ -104,12 +104,12 @@ class PoiHistoryActivityTest {
     fun launchForumIntentsTest() {
         database.onEvent(mockSnapshot, null)
 
-        PoiHistoryActivity.addPoiToHistory(
+        FavoritePoisActivity.addPoiToFavorites(
             TEST_UID,
             PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2")
         )
 
-        onView(withId(R.id.poi_history_recycler_view))
+        onView(withId(R.id.favorite_pois_recycler_view))
             .check(matches(isDisplayed()))
             .perform(
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(

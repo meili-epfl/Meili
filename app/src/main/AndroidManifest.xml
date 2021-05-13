@@ -81,7 +81,7 @@
             android:name=".forum.PostActivity"
             android:parentActivityName=".forum.ForumActivity" />
         <activity
-            android:name=".profile.poihistory.PoiHistoryActivity"
+            android:name=".profile.favoritepois.FavoritePoisActivity"
             android:parentActivityName=".profile.ProfileActivity" />
 
     </application>

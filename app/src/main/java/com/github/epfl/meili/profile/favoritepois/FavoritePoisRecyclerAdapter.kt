@@ -1,4 +1,4 @@
-package com.github.epfl.meili.profile.poihistory
+package com.github.epfl.meili.profile.favoritepois
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +11,7 @@ import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PoiHistoryRecyclerAdapter : MeiliRecyclerAdapter<VisitedPointOfInterest>() {
+class FavoritePoisRecyclerAdapter : MeiliRecyclerAdapter<VisitedPointOfInterest>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return PoiViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.poi, parent, false)

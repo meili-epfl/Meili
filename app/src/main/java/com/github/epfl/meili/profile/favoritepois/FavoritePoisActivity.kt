@@ -1,4 +1,4 @@
-package com.github.epfl.meili.profile.poihistory
+package com.github.epfl.meili.profile.favoritepois
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,26 +20,26 @@ import com.github.epfl.meili.util.TopSpacingItemDecoration
 import java.util.*
 
 
-class PoiHistoryActivity : AppCompatActivity() {
+class FavoritePoisActivity : AppCompatActivity() {
     companion object {
         private const val CARD_PADDING: Int = 30
-        private const val ACTIVITY_TITLE = "POI History"
+        private const val ACTIVITY_TITLE = "Favorite POIs"
         private const val DB_PATH = "poi-history/%s/poi-history"
 
-        fun addPoiToHistory(userKey: String, poi: PointOfInterest) {
-            FirestoreDatabase( // add to poi history
+        fun addPoiToFavorites(userKey: String, poi: PointOfInterest) {
+            FirestoreDatabase( // add to poi favorites
                 String.format(DB_PATH, userKey),
                 VisitedPointOfInterest::class.java
             ).addElement(poi.uid, VisitedPointOfInterest(poi))
         }
     }
 
-    private lateinit var radapter: PoiHistoryRecyclerAdapter
+    private lateinit var radapter: FavoritePoisRecyclerAdapter
     private lateinit var viewModel: MeiliViewModel<VisitedPointOfInterest>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_poi_history)
+        setContentView(R.layout.activity_favorite_pois)
 
         title = ACTIVITY_TITLE
 
@@ -53,7 +53,7 @@ class PoiHistoryActivity : AppCompatActivity() {
         viewModel.onDestroy()
     }
 
-    fun onPoiHistoryButtonClick(view: View) {
+    fun onFavoritePoisButtonClick(view: View) {
         startActivity(
             Intent(this, ForumActivity::class.java).putExtra(
                 MapActivity.POI_KEY,
@@ -74,11 +74,11 @@ class PoiHistoryActivity : AppCompatActivity() {
             )
         )
         viewModel.getElements().observe(this, { map ->
-            poiHistoryMapListener(map)
+            favoritePoisMapListener(map)
         })
     }
 
-    private fun poiHistoryMapListener(map: Map<String, VisitedPointOfInterest>) {
+    private fun favoritePoisMapListener(map: Map<String, VisitedPointOfInterest>) {
         val list = map.toList()
             .sortedWith { o1, o2 -> o2.second.dateVisited!!.compareTo(o1.second.dateVisited) }
         radapter.submitList(list)
@@ -86,10 +86,10 @@ class PoiHistoryActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        val recycler: RecyclerView = findViewById(R.id.poi_history_recycler_view)
-        radapter = PoiHistoryRecyclerAdapter()
+        val recycler: RecyclerView = findViewById(R.id.favorite_pois_recycler_view)
+        radapter = FavoritePoisRecyclerAdapter()
         recycler.apply {
-            layoutManager = LinearLayoutManager(this@PoiHistoryActivity)
+            layoutManager = LinearLayoutManager(this@FavoritePoisActivity)
             addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
             adapter = radapter
         }

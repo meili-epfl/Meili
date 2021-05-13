@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    tools:context=".profile.poihistory.PoiHistoryActivity">
+    tools:context=".profile.favoritepois.FavoritePoisActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/poi_history_recycler_view"
+        android:id="@+id/favorite_pois_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

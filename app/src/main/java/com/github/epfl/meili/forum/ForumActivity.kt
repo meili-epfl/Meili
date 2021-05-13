@@ -20,12 +20,13 @@ import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
-import com.github.epfl.meili.profile.poihistory.PoiHistoryActivity
+import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
 import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import com.github.epfl.meili.util.UIUtility
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -43,6 +44,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView
 
+    private lateinit var favorite: FloatingActionButton
     private lateinit var editPostView: View
     private lateinit var editTitleView: EditText
     private lateinit var editTextVIew: EditText
@@ -94,6 +96,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         submitButton = findViewById(R.id.submit_post)
         cancelButton = findViewById(R.id.cancel_post)
 
+        favorite = findViewById(R.id.favorite)
         useCameraButton = findViewById(R.id.post_use_camera)
         useGalleryButton = findViewById(R.id.post_use_gallery)
         displayImageView = findViewById(R.id.post_display_image)
@@ -109,6 +112,10 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         }
         filterSpinner.onItemSelectedListener = this
 
+        if (Auth.getCurrentUser() == null) {
+            favorite.visibility = View.GONE
+        }
+
     }
 
     override fun onDestroy() {
@@ -121,6 +128,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         UIUtility.hideSoftKeyboard(this)
         when (view) {
             createPostButton -> showEditPostView()
+            favorite -> FavoritePoisActivity.addPoiToFavorites(Auth.getCurrentUser()!!.uid, poi)
             submitButton -> addPost()
             cancelButton -> showListPostsView()
             useGalleryButton -> launchGallery.launch("image/*")
@@ -156,8 +164,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
 
         viewModel.addElement(postId, Post(user.username, title, timestamp, text))
 
-        val userKey = user.uid
-        PoiHistoryActivity.addPoiToHistory(userKey, poi)
+
 
         if (bitmap != null) {
             executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }
