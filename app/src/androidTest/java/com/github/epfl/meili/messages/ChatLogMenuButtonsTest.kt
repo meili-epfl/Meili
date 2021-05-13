@@ -133,14 +133,14 @@ class ChatLogMenuButtonsTest {
     }
 
 
-//    @Test
-//    fun clickReviewMenuButton() {
-//        onView(
-//            allOf(
-//                withId(R.id.menu_reviews), withText("Reviews"),
-//            )
-//        ).perform(click())
-//    }
+    @Test
+    fun clickReviewMenuButton() {
+        onView(
+            allOf(
+                withId(R.id.menu_reviews), withText("Reviews"),
+            )
+        ).perform(click())
+    }
 
 
 }

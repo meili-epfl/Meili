@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/menu_chat"
         android:title="Chat"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
     <item android:id="@+id/menu_reviews"
         android:title="Reviews"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 </menu>
