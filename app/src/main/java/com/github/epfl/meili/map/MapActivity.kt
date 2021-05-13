@@ -94,8 +94,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         // Initialize map
-        val mapFragment =
-            supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
     }
 
@@ -204,9 +203,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
             true
         }
 
-        viewModel.mPointsOfInterestStatus.observe(this) {
-            addItems(it)
-        }
+        viewModel.mPointsOfInterestStatus.observe(this) { addItems(it) }
     }
 
     private fun addItems(map: Map<String, PointOfInterestStatus>) {
@@ -214,9 +211,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         for (entry in map.entries) {
             val poiItem = if (poiItems.containsKey(entry.key)) {
                 poiItems[entry.key]!!
-            } else {
-                PoiItem(viewModel.mPointsOfInterest.value?.get(entry.key)!!)
-            }
+            } else { PoiItem(viewModel.mPointsOfInterest.value?.get(entry.key)!!) }
             newMap[poiItem] = entry.value
         }
 
@@ -241,8 +236,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         builder.setSingleChoiceItems(styles, checkedItem) { dialog, which ->
             checkTheme(which)
             UserPreferences(this).darkMode = which
-            dialog.dismiss()
-        }
+            dialog.dismiss() }
 
         val dialog = builder.create()
         dialog.show()
