@@ -42,7 +42,9 @@ However, my time estimate for the poi history feature was not enough, as I had p
 
 ## Yingxuan
 
-#TODO
+This week I worked on the feature that allows user to customize the app's theme. I learned how to use Preferences to remember user's choice without accessing the database, and made the current mode correspond to the checked item. I also refactor the code to avoid repetitions and changed the location of the theme button to make it reachable for all users. It took me more time than expected to match the chosen item in alert dialog with the correct theme and to reorganize the map's action bar. So I did not have time to do the other tasks.
+
+I should be less greedy in the future and do more research before estimating the time.
 
 ## Overall team
 
