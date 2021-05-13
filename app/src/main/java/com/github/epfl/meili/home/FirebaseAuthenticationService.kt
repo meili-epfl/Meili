@@ -3,6 +3,7 @@ package com.github.epfl.meili.home
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
+import com.facebook.login.LoginManager
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.User
@@ -49,6 +50,7 @@ class FirebaseAuthenticationService : AuthenticationService {
     }
 
     override fun signInIntent(): Intent {
+        LoginManager.getInstance().logOut()
         return googleSignInClient.signInIntent
     }
 

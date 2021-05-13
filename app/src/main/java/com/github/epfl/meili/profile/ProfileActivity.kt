@@ -8,14 +8,12 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
-import com.facebook.CallbackManager
-import com.facebook.FacebookCallback
-import com.facebook.FacebookException
-import com.facebook.login.LoginManager
+import com.facebook.*
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.home.FacebookAuthenticationService
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.NavigableActivity
 import de.hdodenhof.circleimageview.CircleImageView
@@ -54,6 +52,9 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
         signedInView = findViewById(R.id.signed_in)
 
+        FacebookSdk.sdkInitialize(getApplicationContext())
+        registerFacebookCallBack()
+
         Auth.isLoggedIn.observe(this) {
             verifyAndUpdateUserIsLoggedIn()
         }
@@ -61,39 +62,59 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         if (!Auth.isLoggedIn.value!!) {
             Auth.signIn(this)
         }
-        registerFacbookCallBack()
+
+
     }
 
-    private fun registerFacbookCallBack(){
+    private fun registerFacebookCallBack() {
         callbackManager = CallbackManager.Factory.create()
 
-        facebookSignInButton.registerCallback(callbackManager, object: FacebookCallback<LoginResult>{
-            override fun onSuccess(loginResult: LoginResult?) {
-                Log.d("ProfileActivity", "facebook uid: "+loginResult!!.accessToken.userId)
-                //extra if we want to get facebook picture
-                //var imageURL: String = "https://graph.facebook.com/"+loginResult!!.accessToken.userId+"/picture?return_ssl_resources=1"
-            }
+        facebookSignInButton.setPermissions("email")
+        facebookSignInButton.registerCallback(
+            callbackManager,
+            object : FacebookCallback<LoginResult> {
+                private lateinit var profileTracker: ProfileTracker
 
-            override fun onCancel() {
-                Log.d("ProfileActivity", "FACBOOK CANCELED!")
-            }
+                override fun onSuccess(loginResult: LoginResult?) {
+                    Log.d("ProfileActivity", "facebook uid: " + loginResult!!.accessToken.userId)
 
-            override fun onError(exception: FacebookException) {
-                Log.d("ProfileActivity", "FACEBOOK ERROR!")
-            }
-        })
+                    if (Profile.getCurrentProfile() == null) {
+                        profileTracker = object : ProfileTracker() {
+                            override fun onCurrentProfileChanged(
+                                oldProfile: Profile?,
+                                currentProfile: Profile
+                            ) {
+                                Auth.signOut()
+                                Auth.setAuthenticationService(FacebookAuthenticationService())
+                                profileTracker.stopTracking()
+                            }
+                        }
+                    } else {
+                        Auth.signOut()
+                        Auth.setAuthenticationService(FacebookAuthenticationService())
+                    }
+                }
+
+                override fun onCancel() {
+                    Log.d("ProfileActivity", "FACEBOOK CANCELED!")
+                }
+
+                override fun onError(exception: FacebookException) {
+                    Log.d("ProfileActivity", "FACEBOOK ERROR!")
+                }
+            })
     }
 
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(Auth.getCurrentUser()!!))
-                .get(ProfileViewModel::class.java)
+            .get(ProfileViewModel::class.java)
         viewModel.getUser().removeObservers(this)
         viewModel.getUser().observe(this) { user ->
             nameView.setText(user.username)
             bioView.setText(user.bio)
 
-            if(nameView.text.isEmpty()){
+            if (nameView.text.isEmpty()) {
                 nameView.setText(Auth.getCurrentUser()!!.username)
             }
         }
