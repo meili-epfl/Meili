@@ -1,7 +1,12 @@
 # Summary for sprint 9
 
 ## Ahmed
-##TODO
+
+This week, I continued working on implementing the facebook login feature with Thomas as well as fixing some bug.
+
+I spent a while to discover what was causing the bug; especially that it was coming from a code that I didn't write. After familiarizing myself to this code, I have finally been able to fix the bug (the fix itself is barely a line but took a while to figure out). A take away from this experience is that it is probably more efficient to assign the person who wrote the code to fix the bug (if we know where the bug is sourcing from).
+
+I also worked what I estimated as half of the work for the facebook login and Thomas did the rest. I was then assigned the task to add tests for this code which turned out to be tricky since we don't know how to mock the facebook service.
 
 ## Aman
 
