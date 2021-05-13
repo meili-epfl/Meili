@@ -95,7 +95,6 @@ class FavoritePoisActivityTest {
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
-        FirebaseStorageService.storageProvider = { mock(FirebaseStorage::class.java) }
         Auth.authService = mockAuthenticationService
 
     }
