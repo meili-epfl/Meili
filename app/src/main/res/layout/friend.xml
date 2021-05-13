@@ -31,7 +31,7 @@
         android:layout_width="49dp"
         android:layout_height="41dp"
         app:icon="@android:drawable/stat_notify_chat"
-        app:iconTint="@color/black_purple"
+        app:iconTint="@color/design_default_color_secondary"
         app:layout_constraintEnd_toEndOf="@+id/friendName"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
