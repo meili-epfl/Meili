@@ -34,13 +34,15 @@ Moreover, I recorded a video together with Aman, for showcasing the feature ask 
 
 ## Thomas
 
-#TODO
+This week I worked on finishing the point of interest history feature, which actually turned into a favorite poi feature. I also fixed the bug of keyboards which didn't close themselves when the user had finished creating a post. Finally, I finished Ahmed's implementation of Facebook login.
+
+I am glad that I effectively managed to implement the Facebook login feature, especially since it was the first time that I touched that part of the codebase, and I think that I integrated it well with the existing code.
+
+However, my time estimate for the poi history feature was not enough, as I had problems with tests that passed locally but not on cirrus, which took a lot of time to fix. But now I have learned some things which can go wrong on cirrus (such as a test failing and that making another test which doesn't fail otherwise fail) and so I will be able to be faster next week.
 
 ## Yingxuan
 
-This week I worked on the feature that allows user to customize the app's theme. I learned how to use Preferences to remember user's choice without accessing the database, and made the current mode correspond to the checked item. I also refactor the code to avoid repetitions and changed the location of the theme button to make it reachable for all users. It took me more time than expected to match the chosen item in alert dialog with the correct theme and to reorganize the map's action bar. So I did not have time to do the other tasks.
-
-I should be less greedy in the future and do more research before estimating the time.
+#TODO
 
 ## Overall team
 
