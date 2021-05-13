@@ -9,7 +9,6 @@ import android.location.Location
 import android.location.LocationListener
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.AndroidViewModel
@@ -120,7 +119,6 @@ class MapActivityViewModel(application: Application) :
     }
 
     private fun updatePoiDist() {
-        //Log.e(azimuthInDegrees().toString(), lastUpdatedAzimuth.toString())
         if (!checkAnglesClose(azimuthInDegrees(), lastUpdatedAzimuth, AZIMUTH_TOLERANCE)) {
             mPoiDist.value = closestPoiAndDistance(fieldOfViewPOIs())
             lastUpdatedAzimuth = azimuthInDegrees()

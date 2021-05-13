@@ -14,15 +14,12 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.github.epfl.meili.R
-import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.database.FirestoreDocumentService
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.util.LocationService
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.storage.FirebaseStorage
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
