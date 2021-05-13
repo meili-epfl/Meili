@@ -111,6 +111,7 @@ class FriendsListActivityTest {
 
         database.onEvent(mockSnapshotAfterAddition, null)
 
+        Espresso.onView(textViewContainsText(TEST_FRIEND_NAME)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         Espresso.onView(withId(R.id.friend_chat_button)).perform(click())
 
         Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
