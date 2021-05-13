@@ -58,6 +58,7 @@ class ReviewMenuButtonsTest {
 
     @Test
     fun clickChatMenuButton() {
+        Thread.sleep(1000)
         onView(
             Matchers.allOf(
                     withId(R.id.menu_chat),
@@ -68,6 +69,7 @@ class ReviewMenuButtonsTest {
 
     @Test
     fun clickForumMenuButton() {
+        Thread.sleep(1000)
         onView(
             Matchers.allOf(
                     withId(R.id.menu_forum),
