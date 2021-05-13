@@ -50,7 +50,6 @@ class FirebaseAuthenticationService : AuthenticationService {
     }
 
     override fun signInIntent(): Intent {
-        LoginManager.getInstance().logOut()
         return googleSignInClient.signInIntent
     }
 

@@ -22,23 +22,23 @@ class FacebookAuthenticationService : AuthenticationService {
     private fun fetchUser(): User {
         val profile = Profile.getCurrentProfile()
         var email = ""
-//
-//        val request = GraphRequest.newMeRequest(
-//            AccessToken.getCurrentAccessToken()
-//        ) { jsonObject: JSONObject, _: GraphResponse ->
-//            try {
-//                email = jsonObject.getString("email")
-//            } catch (e: JSONException) {
-//            }
-//        }
-//
-//        val parameters = Bundle()
-//        parameters.putString("fields", "email")
-//        request.parameters = parameters
-//
-//        val t = Thread(request::executeAndWait)
-//        t.start()
-//        t.join()
+
+        val request = GraphRequest.newMeRequest(
+            AccessToken.getCurrentAccessToken()
+        ) { jsonObject: JSONObject, _: GraphResponse ->
+            try {
+                email = jsonObject.getString("email")
+            } catch (e: JSONException) {
+            }
+        }
+
+        val parameters = Bundle()
+        parameters.putString("fields", "email")
+        request.parameters = parameters
+
+        val t = Thread(request::executeAndWait)
+        t.start()
+        t.join()
 
         return User(profile.id, profile.name, email, " ")
     }
@@ -48,7 +48,6 @@ class FacebookAuthenticationService : AuthenticationService {
     }
 
     override fun signOut() {
-
         LoginManager.getInstance().logOut()
         Auth.setAuthenticationService(FirebaseAuthenticationService())
     }

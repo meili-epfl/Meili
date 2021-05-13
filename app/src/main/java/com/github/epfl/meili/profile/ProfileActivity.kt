@@ -52,7 +52,6 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
         signedInView = findViewById(R.id.signed_in)
 
-        FacebookSdk.sdkInitialize(getApplicationContext())
         registerFacebookCallBack()
 
         Auth.isLoggedIn.observe(this) {
@@ -62,8 +61,6 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         if (!Auth.isLoggedIn.value!!) {
             Auth.signIn(this)
         }
-
-
     }
 
     private fun registerFacebookCallBack() {
@@ -76,31 +73,25 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
                 private lateinit var profileTracker: ProfileTracker
 
                 override fun onSuccess(loginResult: LoginResult?) {
-                    Log.d("ProfileActivity", "facebook uid: " + loginResult!!.accessToken.userId)
-
                     if (Profile.getCurrentProfile() == null) {
                         profileTracker = object : ProfileTracker() {
                             override fun onCurrentProfileChanged(
                                 oldProfile: Profile?,
                                 currentProfile: Profile
                             ) {
-                                Auth.signOut()
                                 Auth.setAuthenticationService(FacebookAuthenticationService())
                                 profileTracker.stopTracking()
                             }
                         }
                     } else {
-                        Auth.signOut()
                         Auth.setAuthenticationService(FacebookAuthenticationService())
                     }
                 }
 
                 override fun onCancel() {
-                    Log.d("ProfileActivity", "FACEBOOK CANCELED!")
                 }
 
                 override fun onError(exception: FacebookException) {
-                    Log.d("ProfileActivity", "FACEBOOK ERROR!")
                 }
             })
     }
