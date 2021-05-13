@@ -1,6 +1,5 @@
 package com.github.epfl.meili.map
 
-import android.content.Context
 import android.location.LocationManager
 import android.net.Uri
 import android.view.View

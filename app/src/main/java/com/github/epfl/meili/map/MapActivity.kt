@@ -3,7 +3,6 @@ package com.github.epfl.meili.map
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Camera
 import android.location.Location
 import android.os.Bundle
 import android.view.View
