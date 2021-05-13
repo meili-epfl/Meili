@@ -58,7 +58,6 @@ class ForumMenuButtonsTests {
 
     @Test
     fun clickChatMenuButton() {
-        Thread.sleep(1000)
         Espresso.onView(
                 allOf(
                         ViewMatchers.withId(R.id.menu_chat), withText("Chat")
@@ -68,7 +67,6 @@ class ForumMenuButtonsTests {
 
     @Test
     fun clickReviewMenuButton() {
-        Thread.sleep(1000)
         Espresso.onView(
                 allOf(
                         ViewMatchers.withId(R.id.menu_reviews), withText("Reviews")

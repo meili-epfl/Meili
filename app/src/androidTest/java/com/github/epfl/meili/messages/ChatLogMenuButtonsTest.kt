@@ -125,7 +125,6 @@ class ChatLogMenuButtonsTest {
 
     @Test
     fun clickForumMenuButton() {
-        Thread.sleep(1000)
         onView(
             allOf(
                 withId(R.id.menu_forum), withText("Forum"),
@@ -134,15 +133,14 @@ class ChatLogMenuButtonsTest {
     }
 
 
-    @Test
-    fun clickReviewMenuButton() {
-        Thread.sleep(1000)
-        onView(
-            allOf(
-                withId(R.id.menu_reviews), withText("Reviews"),
-            )
-        ).perform(click())
-    }
+//    @Test
+//    fun clickReviewMenuButton() {
+//        onView(
+//            allOf(
+//                withId(R.id.menu_reviews), withText("Reviews"),
+//            )
+//        ).perform(click())
+//    }
 
 
 }
