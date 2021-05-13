@@ -134,7 +134,7 @@ class FriendsListActivity : AppCompatActivity(), ClickListener {
     override fun onClicked(buttonId: Int, info: String) {
         when (buttonId) {
             R.id.friend_chat_button -> openFriendChat(info)
-            R.id.friendName -> openFriendProfile(info)
+            R.id.friend_card -> openFriendProfile(info)
         }
     }
 }
