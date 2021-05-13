@@ -13,20 +13,24 @@ import com.github.epfl.meili.util.ImageUtility
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.RequestCreator
 
-class ProfileViewModel(user: User) : ViewModel() {
+class ProfileViewModel(profileUid: String) : ViewModel() {
     private val mUser: MutableLiveData<User> = MutableLiveData()
     private val mRequestCreator: MutableLiveData<RequestCreator> = MutableLiveData()
     private var bitmap: Bitmap? = null
 
-    private fun uid() = mUser.value!!.uid
+    private var uid: String = profileUid
+
+    companion object {
+        private const val USERS_PATH = "users"
+        private const val AVATARS_PATH = "images/avatars"
+    }
 
     init {
-        mUser.value = user
-        FirestoreDocumentService.getDocument("users/${uid()}").addOnSuccessListener {
+        FirestoreDocumentService.getDocument("${USERS_PATH}/${uid}").addOnSuccessListener {
             if (it.exists()) {
                 mUser.value = it.toObject(User::class.java)
                 FirebaseStorageService.getDownloadUrl(
-                    "images/avatars/${uid()}",
+                    "${AVATARS_PATH}/${uid}",
                     { uri -> loadImageIntoRequestCreator(uri) },
                     { /* do nothing in case of failure */ }
                 )
@@ -39,9 +43,9 @@ class ProfileViewModel(user: User) : ViewModel() {
 
     fun updateProfile(user: User) {
         mUser.value = user
-        FirestoreDocumentService.setDocument("users/${uid()}", user)
+        FirestoreDocumentService.setDocument("${USERS_PATH}/${uid}", user)
         if (bitmap != null) {
-            ImageUtility.compressAndUploadToFirebase("images/avatars/${uid()}", bitmap!!)
+            ImageUtility.compressAndUploadToFirebase("${AVATARS_PATH}/${uid}", bitmap!!)
         }
     }
 
