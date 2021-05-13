@@ -36,4 +36,5 @@ Other than that, my time estimates were perfect for the implementation of the fe
 
 ## Overall team
 
-#TODO
+I believe the team has overcomed the destabilization sprint exceedingly well. We have managed to implement the user story that the assistants added (calling it Meili Lens) but also we were able to implement many other cool features as improving the UI for the friends list, adding the possibility to see profiles of other users, being able to save your favorite pois and even fixing some bugs we discovered in the chat. Finally, we also started addressing the comments from the code review we received from the assistants by revising the past code but also by having them in mind while writing new code.
+We are continuing to do at least 2 stand-ups per week which are proving to be really useful to share what we are doing and give our opinions on how to make the app better and how to help the other teamates. 
