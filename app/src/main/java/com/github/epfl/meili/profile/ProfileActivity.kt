@@ -109,13 +109,8 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         val checkedItem = UserPreferences(this).darkMode
 
         builder.setSingleChoiceItems(styles, checkedItem) { dialog, which ->
-
-            when (which) {
-                0 -> { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) }
-                1 -> { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) }
-                2 -> { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) } }
+            checkTheme(which)
             UserPreferences(this).darkMode = which
-            delegate.applyDayNight()
             dialog.dismiss()
         }
 
@@ -123,9 +118,18 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         dialog.show()
     }
 
+    private fun checkTheme(chosen: Int) {
+        when (chosen) {
+            0 -> { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) }
+            1 -> { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) }
+            2 -> { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) } }
+            delegate.applyDayNight()
+    }
+
     private fun verifyAndUpdateUserIsLoggedIn() {
         if (Auth.isLoggedIn.value!!) {
             setupViewModel()
+            checkTheme(UserPreferences(this).darkMode)
             supportActionBar?.title = ""
             signedInView.visibility = View.VISIBLE
             signInButton.visibility = View.GONE
