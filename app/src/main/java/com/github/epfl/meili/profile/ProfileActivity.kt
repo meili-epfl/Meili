@@ -48,6 +48,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var viewModel: ProfileViewModel
 
     private var isProfileOwner = false
+    private var profileUid: String? = null
 
     companion object {
         private const val SUPPORT_ACTIONBAR_SIGNED_IN = ""
@@ -59,7 +60,10 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initializeViews()
+        profileUid = intent.getStringExtra(USER_KEY)
+        if (profileUid == null) {
+            profileUid = Auth.getCurrentUser()!!.uid // By default profile we are seeing is ours
+        }
 
         Auth.isLoggedIn.observe(this) {
             verifyAndUpdateUserIsLoggedIn()
@@ -67,6 +71,8 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         if (!Auth.isLoggedIn.value!!) {
             Auth.signIn(this)
         }
+
+        initializeViews()
     }
 
     private fun initializeViews() {
@@ -94,14 +100,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     }
 
     private fun setupViewModel() {
-        var profileOwner = intent.getParcelableExtra<User>(USER_KEY)
-
-        // By default profile we are seeing is ours
-        if (profileOwner == null) {
-            profileOwner = Auth.getCurrentUser()!!
-        }
-
-        viewModel = ViewModelProvider(this, ProfileViewModelFactory(profileOwner))
+        viewModel = ViewModelProvider(this, ProfileViewModelFactory(profileUid!!))
             .get(ProfileViewModel::class.java)
         viewModel.getUser().removeObservers(this)
         viewModel.getUser().observe(this) { user ->
@@ -193,7 +192,6 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
     private fun updateIsProfileOwner() {
         val authUser = Auth.getCurrentUser()!!
-        val profileUser = viewModel.getUser().value!!
-        isProfileOwner = (authUser.uid == profileUser.uid)
+        isProfileOwner = (authUser.uid == profileUid)
     }
 }

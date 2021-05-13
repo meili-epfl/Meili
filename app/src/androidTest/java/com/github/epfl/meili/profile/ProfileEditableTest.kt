@@ -60,7 +60,7 @@ class ProfileEditableTest {
         InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
         ProfileActivity::class.java
     )
-        .putExtra(ProfileActivity.USER_KEY, TEST_USER)
+        .putExtra(ProfileActivity.USER_KEY, TEST_UID)
 
     @get:Rule
     var testRule: ActivityScenarioRule<ProfileActivity> = ActivityScenarioRule(intent)
@@ -143,6 +143,10 @@ class ProfileEditableTest {
 
     @Test
     fun cannotEditNotOwnedProfile() {
+        runOnUiThread {
+            listenerCaptor.value!!.onSuccess(mockDocumentSnapshot2)
+        }
+
         onView(withId(R.id.profile_name)).check(matches(withText(TEST_USERNAME)))
         onView(withId(R.id.profile_bio)).check(matches(withText(TEST_BIO)))
         onView(withId(R.id.photo)).check(matches(isDisplayed()))
