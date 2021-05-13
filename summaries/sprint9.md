@@ -13,7 +13,13 @@ I combined these 2 features and added them to the main map actiivty so that the 
 
 
 ## Ewan 
-#TODO
+This week I worked on the profile. I improved the UI so that buttons are better placed, and that they are only available when it makes sense. I also made it so that you can click on your friends in your friends list to see their profile (not editable). I'm very happy with my design choices, I think it looks super cool.
+
+As I wanted to make things pretty, I spent extra time on that.
+
+I also had an unexpected error that only happened on Cirrus which made me do overtime (I wouldn't consider that as part of the time estimates, as the tests passed locally). I think the reason was that Cirrus doesn't use the same devices as the android emulator, which makes certain buttons unreachable if we aren't careful with how we implement the UI. That was a learning experience.
+
+Other than that, my time estimates were perfect for the implementation of the features and the tests, which is the most important. I'm happy with my work this week.
 
 
 ## Marcel (Scrum Master)
