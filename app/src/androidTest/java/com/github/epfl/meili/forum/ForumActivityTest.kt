@@ -26,9 +26,8 @@ import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.models.VisitedPointOfInterest
+import com.github.epfl.meili.models.FavoritePointOfInterest
 import com.github.epfl.meili.photo.CameraActivity
-import com.github.epfl.meili.review.ReviewsActivityTest
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
@@ -82,7 +81,7 @@ class ForumActivityTest {
 
     private lateinit var database: AtomicPostFirestoreDatabase
     private lateinit var commentsDatabase: FirestoreDatabase<Comment>
-    private lateinit var poiDatabase: FirestoreDatabase<VisitedPointOfInterest>
+    private lateinit var poiDatabase: FirestoreDatabase<FavoritePointOfInterest>
 
     private val intent = Intent(
         InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
@@ -144,7 +143,7 @@ class ForumActivityTest {
         // Mock poi history
         `when`(mockFirestore.collection("poi-history/${TEST_UID}/poi-history")).thenReturn(mockPoiHistory)
         `when`(mockPoiHistory.addSnapshotListener(any())).thenAnswer { invocation ->
-            poiDatabase = invocation.arguments[0] as FirestoreDatabase<VisitedPointOfInterest>
+            poiDatabase = invocation.arguments[0] as FirestoreDatabase<FavoritePointOfInterest>
             mock(ListenerRegistration::class.java)
         }
         `when`(mockPoiHistory.document(ArgumentMatchers.matches(TEST_POI_KEY.uid))).thenReturn(mockDocument)

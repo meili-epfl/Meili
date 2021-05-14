@@ -14,15 +14,13 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.epfl.meili.R
-import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
-import com.github.epfl.meili.models.VisitedPointOfInterest
+import com.github.epfl.meili.models.FavoritePointOfInterest
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.firebase.firestore.*
-import com.google.firebase.storage.FirebaseStorage
 import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
@@ -41,7 +39,7 @@ class FavoritePoisActivityTest {
     companion object {
         private const val TEST_UID = "UID"
         private val TEST_POI =
-            VisitedPointOfInterest(PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2"))
+            FavoritePointOfInterest(PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2"))
     }
 
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
@@ -52,7 +50,7 @@ class FavoritePoisActivityTest {
 
     private val mockAuthenticationService = MockAuthenticationService()
 
-    private lateinit var database: FirestoreDatabase<VisitedPointOfInterest>
+    private lateinit var database: FirestoreDatabase<FavoritePointOfInterest>
 
 
     @get:Rule
@@ -71,12 +69,12 @@ class FavoritePoisActivityTest {
     }
 
     private fun setupMocks() {
-        `when`(mockFirestore.collection("poi-history/$TEST_UID/poi-history")).thenReturn(
+        `when`(mockFirestore.collection("poi-favorite/$TEST_UID/poi-favorite")).thenReturn(
             mockCollection
         )
 
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
-            database = invocation.arguments[0] as FirestoreDatabase<VisitedPointOfInterest>
+            database = invocation.arguments[0] as FirestoreDatabase<FavoritePointOfInterest>
             mock(ListenerRegistration::class.java)
         }
         `when`(mockCollection.document(ArgumentMatchers.matches(TEST_POI.poi?.uid))).thenReturn(
@@ -85,7 +83,7 @@ class FavoritePoisActivityTest {
 
         val mockDocumentSnapshot = mock(DocumentSnapshot::class.java)
         `when`(mockDocumentSnapshot.id).thenReturn(TEST_POI.poi?.uid)
-        `when`(mockDocumentSnapshot.toObject(VisitedPointOfInterest::class.java)).thenReturn(
+        `when`(mockDocumentSnapshot.toObject(FavoritePointOfInterest::class.java)).thenReturn(
             TEST_POI
         )
         `when`(mockSnapshot.documents).thenReturn(listOf(mockDocumentSnapshot))

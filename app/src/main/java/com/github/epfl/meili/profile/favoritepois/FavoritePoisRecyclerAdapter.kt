@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
-import com.github.epfl.meili.models.VisitedPointOfInterest
+import com.github.epfl.meili.models.FavoritePointOfInterest
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 
-class FavoritePoisRecyclerAdapter : MeiliRecyclerAdapter<VisitedPointOfInterest>() {
+class FavoritePoisRecyclerAdapter : MeiliRecyclerAdapter<FavoritePointOfInterest>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return PoiViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.poi, parent, false)
@@ -30,11 +30,11 @@ class FavoritePoisRecyclerAdapter : MeiliRecyclerAdapter<VisitedPointOfInterest>
         private val poiId: TextView = itemView.findViewById(R.id.poi_id)
 
 
-        fun bind(pair: Pair<String, VisitedPointOfInterest>) {
+        fun bind(pair: Pair<String, FavoritePointOfInterest>) {
             poiId.text = pair.first
             val poi = pair.second
             poiName.text = poi.poi?.name
-            visitedDate.text = SimpleDateFormat("dd/MM/yyyy", Locale.US).format(poi.dateVisited!!)
+            visitedDate.text = SimpleDateFormat("dd/MM/yyyy", Locale.US).format(poi.dateFavorite!!)
         }
     }
 }
