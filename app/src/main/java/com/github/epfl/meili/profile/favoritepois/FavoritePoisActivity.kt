@@ -24,7 +24,7 @@ class FavoritePoisActivity : AppCompatActivity() {
     companion object {
         private const val CARD_PADDING: Int = 30
         private const val ACTIVITY_TITLE = "Favorite POIs"
-        private const val DB_PATH = "poi-favorite/%s/poi-favorite"
+         const val DB_PATH = "poi-favorite/%s/poi-favorite"
 
         fun addPoiToFavorites(userKey: String, poi: PointOfInterest) {
             FirestoreDatabase( // add to poi favorites

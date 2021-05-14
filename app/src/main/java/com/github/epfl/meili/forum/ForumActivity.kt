@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.models.FavoritePointOfInterest
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
@@ -31,7 +33,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSelectedListener  {
+class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSelectedListener {
     companion object {
         private const val CARD_PADDING: Int = 30
         private const val NEWEST = "Newest"
@@ -44,7 +46,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView
 
-    private lateinit var favorite: FloatingActionButton
+    private lateinit var favoriteButton: FloatingActionButton
     private lateinit var editPostView: View
     private lateinit var editTitleView: EditText
     private lateinit var editTextVIew: EditText
@@ -96,13 +98,14 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         submitButton = findViewById(R.id.submit_post)
         cancelButton = findViewById(R.id.cancel_post)
 
-        favorite = findViewById(R.id.favorite)
+        favoriteButton = findViewById(R.id.favorite)
         useCameraButton = findViewById(R.id.post_use_camera)
         useGalleryButton = findViewById(R.id.post_use_gallery)
         displayImageView = findViewById(R.id.post_display_image)
         filterSpinner = findViewById(R.id.spinner)
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(this, R.array.sort_array,
+        ArrayAdapter.createFromResource(
+            this, R.array.sort_array,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specify the layout to use when the list of choices appears
@@ -113,7 +116,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         filterSpinner.onItemSelectedListener = this
 
         if (Auth.getCurrentUser() == null) {
-            favorite.visibility = View.GONE
+            favoriteButton.visibility = View.GONE
         }
 
     }
@@ -128,7 +131,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         UIUtility.hideSoftKeyboard(this)
         when (view) {
             createPostButton -> showEditPostView()
-            favorite -> FavoritePoisActivity.addPoiToFavorites(Auth.getCurrentUser()!!.uid, poi)
+            favoriteButton -> viewModel.addFavoritePoi(poi)
             submitButton -> addPost()
             cancelButton -> showListPostsView()
             useGalleryButton -> launchGallery.launch("image/*")
@@ -178,6 +181,14 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         viewModel = ViewModelProvider(this).get(ForumViewModel::class.java)
         val poiKey = poi.uid
         viewModel.initDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts"))
+        if (Auth.getCurrentUser() != null) {
+            viewModel.initFavoritePoisDatabase(
+                FirestoreDatabase( // add to poi favorites
+                    String.format(FavoritePoisActivity.DB_PATH, Auth.getCurrentUser()!!.uid),
+                    FavoritePointOfInterest::class.java
+                )
+            )
+        }
         viewModel.getElements().observe(this, { map ->
             recyclerAdapter.submitList(map.toList())
             recyclerAdapter.notifyDataSetChanged()
@@ -221,7 +232,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         editPostView.visibility = View.GONE
     }
 
-    private fun sortPosts(b:Boolean){
+    private fun sortPosts(b: Boolean) {
         viewModel.getElements().removeObservers(this)
         viewModel.getElements().observe(this, { map ->
             recyclerAdapter.submitList(map.toList().sortedBy { pair ->

@@ -26,7 +26,7 @@ class FavoritePoisRecyclerAdapter : MeiliRecyclerAdapter<FavoritePointOfInterest
 
     class PoiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val poiName: TextView = itemView.findViewById(R.id.poi_name)
-        private val visitedDate: TextView = itemView.findViewById(R.id.visited_date)
+        private val favoriteDate: TextView = itemView.findViewById(R.id.favorite_date)
         private val poiId: TextView = itemView.findViewById(R.id.poi_id)
 
 
@@ -34,7 +34,7 @@ class FavoritePoisRecyclerAdapter : MeiliRecyclerAdapter<FavoritePointOfInterest
             poiId.text = pair.first
             val poi = pair.second
             poiName.text = poi.poi?.name
-            visitedDate.text = SimpleDateFormat("dd/MM/yyyy", Locale.US).format(poi.dateFavorite!!)
+            favoriteDate.text = SimpleDateFormat("dd/MM/yyyy", Locale.US).format(poi.dateFavorite!!)
         }
     }
 }

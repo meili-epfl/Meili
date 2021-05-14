@@ -40,7 +40,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var commentsButton: ImageButton
     private lateinit var postsButton: ImageButton
     private lateinit var reviewsButton: ImageButton
-    private lateinit var poiButton: ImageButton
+    private lateinit var favoritePoisButton: ImageButton
 
     private lateinit var signedInView: View
     private lateinit var profileView: View
@@ -93,7 +93,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         commentsButton = findViewById(R.id.profile_comments_button)
         postsButton = findViewById(R.id.profile_posts_button)
         reviewsButton = findViewById(R.id.profile_reviews_button)
-        poiButton = findViewById(R.id.profile_poi_history_button)
+        favoritePoisButton = findViewById(R.id.profile_poi_history_button)
 
         signedInView = findViewById(R.id.signed_in)
         profileView = findViewById(R.id.profile_container)
@@ -126,7 +126,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             signInButton -> Auth.signIn(this)
             signOutButton -> Auth.signOut()
             profileEditButton -> showEditMode()
-            poiButton -> startActivity(Intent(this, FavoritePoisActivity::class.java))
+            favoritePoisButton -> startActivity(Intent(this, FavoritePoisActivity::class.java))
         }
     }
 
