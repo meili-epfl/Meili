@@ -11,20 +11,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
-import com.github.epfl.meili.models.ChatMessage
-import com.github.epfl.meili.models.PointOfInterest
-import com.github.epfl.meili.models.User
+import com.github.epfl.meili.models.*
+import com.github.epfl.meili.notification.RetrofitInstance
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
 import com.github.epfl.meili.util.DateAuxiliary
 import com.github.epfl.meili.util.MenuActivity
+import com.google.firebase.messaging.FirebaseMessaging
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
     companion object {
         private const val TAG: String = "ChatLogActivity"
+        private const val MY_TOPIC: String = "/topics/myTopic"
     }
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
@@ -37,7 +41,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
-
+        FirebaseMessaging.getInstance().subscribeToTopic(MY_TOPIC)
         findViewById<RecyclerView>(R.id.recycleview_chat_log).adapter = adapter
 
         Auth.isLoggedIn.observe(this) {
@@ -109,9 +113,24 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         invalidateOptionsMenu()
     }
 
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch{
+        try{
+            val response = RetrofitInstance.api.postNotification(notification)
+            if(response.isSuccessful){
+                Log.d(TAG, "successful response")
+            }else{
+                Log.e(TAG, response.errorBody().toString())
+            }
+        }catch(e: Exception){
+            Log.e(TAG, e.toString())
+        }
+    }
 
     private fun performSendMessage() {
         val text = findViewById<EditText>(R.id.edit_text_chat_log).text.toString()
+        if(text.isEmpty()){
+            return
+        }
         findViewById<EditText>(R.id.edit_text_chat_log).text.clear()
 
         ChatMessageViewModel.addMessage(
@@ -121,6 +140,15 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
                 System.currentTimeMillis() / 1000,
                 currentUser!!.username
         )
+        //send notification if in direct message not poi chat
+        if(intent.getParcelableExtra<User>(FRIEND_KEY) != null){
+            PushNotification(
+                NotificationData("Message from ${currentUser!!.username}", text),
+                MY_TOPIC //TODO CHANGE THIS TO BE DIRECTED (get from chatID)
+            ).also{
+                sendNotification(it)
+            }
+        }
     }
 
     private fun listenForMessages(chatID: String) {
