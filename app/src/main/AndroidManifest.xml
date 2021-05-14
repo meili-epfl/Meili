@@ -17,6 +17,8 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -110,6 +112,14 @@
             android:name=".profile.myposts.MyPostsActivity"
             android:parentActivityName=".profile.ProfileActivity"
             android:screenOrientation="portrait" />
+
+        <service android:name=".notification.FirebaseNotificationService"
+                android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
