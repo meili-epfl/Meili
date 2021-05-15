@@ -65,6 +65,7 @@ class ForumActivityTest {
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
     private val mockCollection: CollectionReference = mock(CollectionReference::class.java)
     private val mockComments: CollectionReference = mock(CollectionReference::class.java)
+    private val mockPoiHistory: CollectionReference = mock(CollectionReference::class.java)
     private val mockDocument: DocumentReference = mock(DocumentReference::class.java)
 
     private val mockSnapshotBeforeAddition: QuerySnapshot = mock(QuerySnapshot::class.java)
@@ -79,6 +80,7 @@ class ForumActivityTest {
 
     private lateinit var database: AtomicPostFirestoreDatabase
     private lateinit var commentsDatabase: FirestoreDatabase<Comment>
+    private lateinit var poiDatabase: FirestoreDatabase<PointOfInterest>
 
     private val intent = Intent(
         InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
@@ -136,6 +138,14 @@ class ForumActivityTest {
         `when`(mockDocumentSnapshot.id).thenReturn(TEST_UID)
         `when`(mockDocumentSnapshot.toObject(Post::class.java)).thenReturn(TEST_POST)
         `when`(mockSnapshotAfterAddition.documents).thenReturn(listOf(mockDocumentSnapshot))
+
+        // Mock poi history
+        `when`(mockFirestore.collection("poi-history/${TEST_UID}/poi-history")).thenReturn(mockPoiHistory)
+        `when`(mockPoiHistory.addSnapshotListener(any())).thenAnswer { invocation ->
+            poiDatabase = invocation.arguments[0] as FirestoreDatabase<PointOfInterest>
+            mock(ListenerRegistration::class.java)
+        }
+        `when`(mockPoiHistory.document(ArgumentMatchers.matches(TEST_POI_KEY.uid))).thenReturn(mockDocument)
 
         mockAuthenticationService.setMockUid(TEST_UID)
         mockAuthenticationService.setUsername(TEST_USERNAME)

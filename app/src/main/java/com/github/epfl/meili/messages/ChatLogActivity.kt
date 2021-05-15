@@ -32,6 +32,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     private var currentUser: User? = null
     private lateinit var chatId: String
     private var messageSet = HashSet<ChatMessage>()
+
     private var isGroupChat = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +78,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
                 // The friend chat document in the database is saved under the key with value
                 // of the two user ids concatenated in sorted order
                 chatId =
-                        if (friendUid < currentUid) "$friendUid;$currentUid" else "$currentUid;$friendUid"
+                    if (friendUid < currentUid) "$friendUid;$currentUid" else "$currentUid;$friendUid"
 
                 setGroupChat(false)
 
@@ -118,11 +119,11 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         findViewById<EditText>(R.id.edit_text_chat_log).text.clear()
 
         ChatMessageViewModel.addMessage(
-                text,
-                currentUser!!.uid,
-                chatId,
-                System.currentTimeMillis() / 1000,
-                currentUser!!.username
+            text,
+            currentUser!!.uid,
+            chatId,
+            System.currentTimeMillis() / 1000,
+            currentUser!!.username
         )
     }
 
@@ -153,11 +154,11 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 }
 
 class ChatItem(
-        private val message: ChatMessage,
-        private val isChatMessageFromCurrentUser: Boolean,
-        private val isGroupChat: Boolean
+    private val message: ChatMessage,
+    private val isChatMessageFromCurrentUser: Boolean,
+    private val isGroupChat: Boolean
 ) :
-        Item<GroupieViewHolder>() {
+    Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
         return if (isChatMessageFromCurrentUser) {
             R.layout.chat_from_me_row
@@ -170,12 +171,12 @@ class ChatItem(
         viewHolder.itemView.findViewById<TextView>(R.id.text_gchat_message).text = message.text
         val date = DateAuxiliary.getDateFromTimestamp(message.timestamp)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_timestamp).text =
-                DateAuxiliary.getTime(date)
+            DateAuxiliary.getTime(date)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
-                DateAuxiliary.getDay(date)
+            DateAuxiliary.getDay(date)
         if (!isChatMessageFromCurrentUser) {
             viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text =
-                    if (isGroupChat) message.fromName else ""
+                if (isGroupChat) message.fromName else ""
         }
     }
 }

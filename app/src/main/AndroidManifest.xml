@@ -79,7 +79,11 @@
         <activity android:name=".profile.ProfileActivity" />
         <activity
             android:name=".forum.PostActivity"
-            android:parentActivityName=".forum.ForumActivity"/>
+            android:parentActivityName=".forum.ForumActivity" />
+        <activity
+            android:name=".profile.favoritepois.FavoritePoisActivity"
+            android:parentActivityName=".profile.ProfileActivity" />
+
     </application>
 
 </manifest>

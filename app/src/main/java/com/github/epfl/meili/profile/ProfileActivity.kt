@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.profile.friends.FriendsListActivity
+import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.util.UIUtility
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -23,6 +24,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     { viewModel.loadLocalImage(contentResolver, it) }
 
     private lateinit var photoView: CircleImageView
+
     private lateinit var photoEditView: FloatingActionButton
     private lateinit var nameView: TextView
     private lateinit var bioView: TextView
@@ -38,7 +40,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var commentsButton: ImageButton
     private lateinit var postsButton: ImageButton
     private lateinit var reviewsButton: ImageButton
-    private lateinit var poiButton: ImageButton
+    private lateinit var favoritePoisButton: ImageButton
 
     private lateinit var signedInView: View
     private lateinit var profileView: View
@@ -91,7 +93,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         commentsButton = findViewById(R.id.profile_comments_button)
         postsButton = findViewById(R.id.profile_posts_button)
         reviewsButton = findViewById(R.id.profile_reviews_button)
-        poiButton = findViewById(R.id.profile_poi_history_button)
+        favoritePoisButton = findViewById(R.id.profile_poi_history_button)
 
         signedInView = findViewById(R.id.signed_in)
         profileView = findViewById(R.id.profile_container)
@@ -127,6 +129,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             signInButton -> Auth.signInIntent(this)
             signOutButton -> Auth.signOut()
             profileEditButton -> showEditMode()
+            favoritePoisButton -> startActivity(Intent(this, FavoritePoisActivity::class.java))
         }
     }
 
