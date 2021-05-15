@@ -9,9 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.util.MeiliViewModel
@@ -23,7 +23,7 @@ class FavoritePoisActivity : AppCompatActivity() {
     companion object {
         private const val CARD_PADDING: Int = 30
         private const val ACTIVITY_TITLE = "Favorite POIs"
-         const val DB_PATH = "poi-favorite/%s/poi-favorite"
+        const val DB_PATH = "poi-favorite/%s/poi-favorite"
     }
 
     private lateinit var radapter: FavoritePoisRecyclerAdapter
