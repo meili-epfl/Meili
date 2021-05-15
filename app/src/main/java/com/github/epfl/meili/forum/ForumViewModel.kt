@@ -11,7 +11,6 @@ class ForumViewModel : MeiliViewModel<Post>() {
 
     fun initFavoritePoisDatabase(database: Database<PointOfInterest>) {
         this.favoritePoisDatabase = database
-        database.addObserver(this)
     }
 
     fun addFavoritePoi(poi: PointOfInterest) {
