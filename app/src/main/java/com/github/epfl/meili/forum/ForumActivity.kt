@@ -17,7 +17,6 @@ import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
-import com.github.epfl.meili.models.FavoritePointOfInterest
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
@@ -185,7 +184,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
             viewModel.initFavoritePoisDatabase(
                 FirestoreDatabase( // add to poi favorites
                     String.format(FavoritePoisActivity.DB_PATH, Auth.getCurrentUser()!!.uid),
-                    FavoritePointOfInterest::class.java
+                    PointOfInterest::class.java
                 )
             )
         }

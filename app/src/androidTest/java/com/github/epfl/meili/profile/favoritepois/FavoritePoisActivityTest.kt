@@ -18,7 +18,6 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
-import com.github.epfl.meili.models.FavoritePointOfInterest
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.firebase.firestore.*
 import org.hamcrest.CoreMatchers
@@ -39,7 +38,7 @@ class FavoritePoisActivityTest {
     companion object {
         private const val TEST_UID = "UID"
         private val TEST_POI =
-            FavoritePointOfInterest(PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2"))
+            PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2")
     }
 
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
@@ -50,7 +49,7 @@ class FavoritePoisActivityTest {
 
     private val mockAuthenticationService = MockAuthenticationService()
 
-    private lateinit var database: FirestoreDatabase<FavoritePointOfInterest>
+    private lateinit var database: FirestoreDatabase<PointOfInterest>
 
 
     @get:Rule
@@ -74,16 +73,16 @@ class FavoritePoisActivityTest {
         )
 
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
-            database = invocation.arguments[0] as FirestoreDatabase<FavoritePointOfInterest>
+            database = invocation.arguments[0] as FirestoreDatabase<PointOfInterest>
             mock(ListenerRegistration::class.java)
         }
-        `when`(mockCollection.document(ArgumentMatchers.matches(TEST_POI.poi?.uid))).thenReturn(
+        `when`(mockCollection.document(ArgumentMatchers.matches(TEST_POI.uid))).thenReturn(
             mockDocument
         )
 
         val mockDocumentSnapshot = mock(DocumentSnapshot::class.java)
-        `when`(mockDocumentSnapshot.id).thenReturn(TEST_POI.poi?.uid)
-        `when`(mockDocumentSnapshot.toObject(FavoritePointOfInterest::class.java)).thenReturn(
+        `when`(mockDocumentSnapshot.id).thenReturn(TEST_POI.uid)
+        `when`(mockDocumentSnapshot.toObject(PointOfInterest::class.java)).thenReturn(
             TEST_POI
         )
         `when`(mockSnapshot.documents).thenReturn(listOf(mockDocumentSnapshot))
@@ -101,10 +100,6 @@ class FavoritePoisActivityTest {
     fun launchForumIntentsTest() {
         database.onEvent(mockSnapshot, null)
 
-        FavoritePoisActivity.addPoiToFavorites(
-            TEST_UID,
-            PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2")
-        )
 
         onView(withId(R.id.favorite_pois_recycler_view))
             .check(matches(isDisplayed()))
@@ -112,7 +107,7 @@ class FavoritePoisActivityTest {
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
                     hasDescendant(
                         withText(
-                            TEST_POI.poi?.name
+                            TEST_POI.name
                         )
                     )
                 )
@@ -123,7 +118,7 @@ class FavoritePoisActivityTest {
 
         Intents.intending(IntentMatchers.anyIntent()).respondWith(intentResult)
 
-        onView(withText(TEST_POI.poi?.name)).perform(click())
+        onView(withText(TEST_POI.name)).perform(click())
 
         Intents.intended(
             CoreMatchers.allOf(
