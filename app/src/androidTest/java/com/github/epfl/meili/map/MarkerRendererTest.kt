@@ -10,7 +10,6 @@ import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
@@ -18,51 +17,42 @@ import org.mockito.Mockito
 @Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class MarkerRendererTest {
-
-    private lateinit var renderer: MarkerRendererTester
-    private lateinit var markerOptions: MarkerOptions
-    private val poiStatusMap = HashMap<MarkerItem, PointOfInterestStatus>()
-
-    @Before
-    fun init() {
+    @Test
+    fun generalTest() {
         MapsInitializer.initialize(MainApplication.applicationContext())
         Looper.prepare()
         val mockClusterManager = Mockito.mock(ClusterManager::class.java)
-        renderer = MarkerRendererTester(
+        val renderer = MarkerRendererTester(
             MainApplication.applicationContext(),
             null,
             mockClusterManager as ClusterManager<MarkerItem>
         )
 
 
+        val poi1 = MarkerItem(PointOfInterest(41.075000, 1.130870, "place1", "place1"))
+        val poi2 = MarkerItem(PointOfInterest(41.063563, 1.083658, "place2", "place2"))
+
+        val poiStatusMap = HashMap<MarkerItem, PointOfInterestStatus>()
+
+        poiStatusMap[poi1] = PointOfInterestStatus.VISIBLE
+        poiStatusMap[poi2] = PointOfInterestStatus.REACHABLE
+
         renderer.renderClusterItems(poiStatusMap)
 
-        markerOptions = MarkerOptions()
-    }
-
-    @Test
-    fun test1() {
-        val poi1 = MarkerItem(PointOfInterest(41.075000, 1.130870, "place1", "place1"))
-        poiStatusMap[poi1] = PointOfInterestStatus.VISIBLE
-
+        val markerOptions = MarkerOptions()
 
         renderer.onBeforeClusterItemRenderedCaller(poi1, markerOptions)
         assertEquals(markerOptions.icon, MarkerRenderer.VISIBLE_ICON)
+
+        renderer.onBeforeClusterItemRenderedCaller(poi2, markerOptions)
+
+        assertEquals(markerOptions.icon, MarkerRenderer.REACHABLE_ICON)
 
         poiStatusMap[poi1] = PointOfInterestStatus.VISITED
         renderer.renderClusterItems(poiStatusMap)
         renderer.onBeforeClusterItemRenderedCaller(poi1, markerOptions)
 
         assertEquals(markerOptions.icon, MarkerRenderer.VISITED_ICON)
-    }
-
-    @Test
-    fun test2() {
-        val poi2 = MarkerItem(PointOfInterest(41.063563, 1.083658, "place2", "place2"))
-        poiStatusMap[poi2] = PointOfInterestStatus.REACHABLE
-        renderer.onBeforeClusterItemRenderedCaller(poi2, markerOptions)
-
-        assertEquals(markerOptions.icon, MarkerRenderer.REACHABLE_ICON)
     }
 }
 

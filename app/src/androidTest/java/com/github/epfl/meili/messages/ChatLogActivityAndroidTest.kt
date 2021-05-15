@@ -28,6 +28,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.ArgumentMatchers.any
 
 
 @LargeTest
@@ -54,7 +55,7 @@ class ChatLogActivityAndroidTest {
             Mockito.`when`(mockAuth.getCurrentUser())
                 .thenReturn(User("fake_uid", "fake_name", "fake_email", " "))
 
-            Mockito.`when`(mockAuth.signInIntent(null)).thenReturn(intent)
+            Mockito.`when`(mockAuth.signInIntent(any())).thenReturn(intent)
             Auth.setAuthenticationService(mockAuth)
         }
 

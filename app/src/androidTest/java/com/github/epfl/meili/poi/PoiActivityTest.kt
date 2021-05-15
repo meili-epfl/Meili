@@ -62,7 +62,7 @@ class PoiActivityTest {
 
         `when`(mockPlacesClient.fetchPhoto(any())).thenReturn(tcs2.task)
 
-        `when`(mockPlaces.getPlacesClient(any(), any())).thenReturn(mockPlacesClient)
+        `when`(mockPlaces.getPlacesClient(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(mockPlacesClient)
 
         PoiInfoFragment.placesClientService = { mockPlaces }
     }
@@ -82,5 +82,14 @@ class PoiActivityTest {
         onView(withId(R.id.pager)).perform(swipeLeft())
         pressBack()
         pressBack()
+    }
+
+    object MockitoHelper {
+        fun <T> anyObject(): T {
+            Mockito.any<T>()
+            return uninitialized()
+        }
+        @Suppress("UNCHECKED_CAST")
+        fun <T> uninitialized(): T =  null as T
     }
 }
