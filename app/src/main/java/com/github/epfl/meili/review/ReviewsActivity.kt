@@ -17,12 +17,13 @@ import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.ProfileActivity
+import com.github.epfl.meili.profile.UserProfileLinker
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.*
 
 
-class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener {
+class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, UserProfileLinker {
     companion object {
         private const val CARD_PADDING: Int = 30
 
@@ -192,13 +193,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener {
 
     override fun onClicked(buttonId: Int, info: String) {
         when (buttonId) {
-            R.id.review_author_name -> openUserProfile(info)
+            R.id.review_author_name -> openUserProfile(info, this)
         }
-    }
-
-    private fun openUserProfile(friendUid: String) {
-        val intent =
-                Intent(this, ProfileActivity::class.java).putExtra(ProfileActivity.USER_KEY, friendUid)
-        startActivity(intent)
     }
 }
