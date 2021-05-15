@@ -7,14 +7,15 @@
     tools:context=".forum.ForumActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/edit_post"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/edit_post">
+        android:layout_height="match_parent">
 
         <EditText
             android:id="@+id/post_edit_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autofillHints=""
             android:ems="10"
             android:gravity="start|top"
             android:hint="@string/title_70_characters_max"
@@ -22,42 +23,40 @@
             android:maxLength="70"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:autofillHints="" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/post_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autofillHints=""
             android:ems="10"
             android:gravity="start|top"
             android:hint="@string/text_500_characters_max"
             android:inputType="textMultiLine"
             android:maxLength="500"
-            app:layout_constraintTop_toBottomOf="@id/post_edit_title"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:autofillHints="" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/post_edit_title" />
 
         <ImageView
             android:id="@+id/post_display_image"
             android:layout_width="wrap_content"
-            tools:srcCompat="@tools:sample/backgrounds/scenic"
-            app:layout_constraintTop_toBottomOf="@id/post_edit_text"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="0dp"
+            android:contentDescription="@string/forum_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.7"
-            android:layout_height="0dp"
-            android:contentDescription="@string/forum_image" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/post_edit_text"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/post_display_image"
-            >
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/post_display_image">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -68,49 +67,48 @@
                     android:id="@+id/post_use_camera"
                     android:layout_width="100dp"
                     android:layout_height="50dp"
-                    app:srcCompat="@android:drawable/ic_menu_camera"
+                    android:contentDescription="@string/use_camera"
                     android:onClick="onForumButtonClick"
-                    android:contentDescription="@string/use_camera" />
+                    app:srcCompat="@android:drawable/ic_menu_camera" />
 
                 <ImageView
                     android:id="@+id/post_use_gallery"
                     android:layout_width="100dp"
                     android:layout_height="50dp"
-                    app:srcCompat="@android:drawable/ic_menu_gallery"
+                    android:contentDescription="@string/use_gallery"
                     android:onClick="onForumButtonClick"
-                    android:contentDescription="@string/use_gallery" />
+                    app:srcCompat="@android:drawable/ic_menu_gallery" />
 
             </LinearLayout>
 
             <Button
-                android:id="@+id/submit_post"
+                android:id="@+id/cancel_post"
+                style="@style/Theme.Meili.button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onForumButtonClick"
-                style="@style/Theme.Meili.button"
-                android:theme="@style/Theme.Meili.button"
-                android:text="@string/create_post"
-                />
+                android:text="@string/cancel"
+                android:theme="@style/Theme.Meili.button" />
 
             <Button
-                android:id="@+id/cancel_post"
+                android:id="@+id/submit_post"
+                style="@style/Theme.Meili.button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onForumButtonClick"
-                style="@style/Theme.Meili.button"
-                android:theme="@style/Theme.Meili.button"
-                android:text="@string/cancel"/>
+                android:text="@string/create_post"
+                android:theme="@style/Theme.Meili.button" />
+
 
         </LinearLayout>
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <RelativeLayout
+        android:id="@+id/list_posts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/list_posts">
+        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/forum_recycler_view"
@@ -118,23 +116,21 @@
             android:layout_height="match_parent"
             android:layout_below="@id/spinner"
             tools:layout_editor_absoluteX="12dp"
-            tools:layout_editor_absoluteY="33dp"
-            />
+            tools:layout_editor_absoluteY="33dp" />
 
         <TextView
             android:id="@+id/sort_by"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:text="@string/sort_by"/>
+            android:text="@string/sort_by" />
 
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/sort_by"
             android:layout_alignParentTop="true"
-            />
+            android:layout_toEndOf="@+id/sort_by" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/create_post"
@@ -143,10 +139,10 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
             android:clickable="true"
+            android:contentDescription="@string/create_post"
             android:focusable="true"
             android:onClick="onForumButtonClick"
             app:srcCompat="@android:drawable/ic_input_add"
-            android:contentDescription="@string/create_post"
             tools:ignore="RelativeOverlap" />
     </RelativeLayout>
 
