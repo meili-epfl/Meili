@@ -1,6 +1,8 @@
 package com.github.epfl.meili.review
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
@@ -13,18 +15,22 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
-import com.github.epfl.meili.util.MeiliViewModel
-import com.github.epfl.meili.util.MenuActivity
-import com.github.epfl.meili.util.TopSpacingItemDecoration
-import com.github.epfl.meili.util.UIUtility
+import com.github.epfl.meili.models.User
+import com.github.epfl.meili.profile.ProfileActivity
+import com.github.epfl.meili.profile.friends.FriendsListActivity
+import com.github.epfl.meili.profile.friends.UserInfoService
+import com.github.epfl.meili.util.*
 
 
-class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
+class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener {
     companion object {
         private const val CARD_PADDING: Int = 30
 
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
         private const val EDIT_BUTTON_DRAWABLE = android.R.drawable.ic_menu_edit
+        private const val TAG = "ReviewsActivity"
+
+        var serviceProvider: () -> UserInfoService = { UserInfoService() }
     }
 
     private var currentUserReview: Review? = null
@@ -43,6 +49,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
     private lateinit var editSummaryView: EditText
     private lateinit var submitButton: Button
     private lateinit var cancelButton: Button
+
+    private var usersMap: HashMap<String, User> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,13 +143,25 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
             }
         }
 
+        val newUsersList = map.keys.toList().minus(usersMap.keys.toList())
+
+        serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, map) },
+                { Log.d(TAG, "Error when fetching users information") })
         averageRatingView.text = getString(R.string.average_rating_format).format(Review.averageRating(map))
-        recyclerAdapter.submitList(map.toList())
+    }
+
+    private fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Review>) {
+        usersMap = HashMap(users)
+        val reviewsAndUsersMap = HashMap<String, Pair<Review, User>>()
+        for( (uid, user) in users){
+            reviewsAndUsersMap[uid] = Pair(map[uid]!!, user)
+        }
+        recyclerAdapter.submitList(reviewsAndUsersMap.toList())
         recyclerAdapter.notifyDataSetChanged()
     }
 
     private fun initRecyclerView() {
-        recyclerAdapter = ReviewsRecyclerAdapter()
+        recyclerAdapter = ReviewsRecyclerAdapter(this)
         val recyclerView: RecyclerView = findViewById(R.id.reviews_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ReviewsActivity)
@@ -168,5 +188,17 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
     private fun showListReviewsView() {
         listReviewsView.visibility = View.VISIBLE
         editReviewView.visibility = View.GONE
+    }
+
+    override fun onClicked(buttonId: Int, info: String) {
+        when (buttonId) {
+            R.id.review_author_name -> openUserProfile(info)
+        }
+    }
+
+    private fun openUserProfile(friendUid: String) {
+        val intent =
+                Intent(this, ProfileActivity::class.java).putExtra(ProfileActivity.USER_KEY, friendUid)
+        startActivity(intent)
     }
 }
