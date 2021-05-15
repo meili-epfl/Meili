@@ -10,7 +10,6 @@ data class Review (
     var summary: String = ""
 ): Parcelable {
     companion object {
-        private const val TAG = "Review"
 
         fun averageRating(reviews: Map<String, Review>): Float {
             return if (reviews.isEmpty()) {

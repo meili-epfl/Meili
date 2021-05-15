@@ -14,15 +14,15 @@ object DateAuxiliary {
 
     fun getDay(date: Date): String {
         val res = date.toString()
-        val splittedRes = res.split(" ")
-        return splittedRes[MONTH] + " " + splittedRes[DAY_OF_WEEK] + " " + splittedRes[DAY_OF_MONTH]
+        val splitRes = res.split(" ")
+        return splitRes[MONTH] + " " + splitRes[DAY_OF_WEEK] + " " + splitRes[DAY_OF_MONTH]
     }
 
     fun getTime(date: Date): String {
         val res = date.toString()
-        val splittedRes = res.split(" ")
+        val splitRes = res.split(" ")
 
         // Return only hours:minutes without seconds (originally hh:mm:ss)
-        return splittedRes[TIME_OF_DAY].substring(0, splittedRes[TIME_OF_DAY].length - 3)
+        return splitRes[TIME_OF_DAY].substring(0, splitRes[TIME_OF_DAY].length - 3)
     }
 }

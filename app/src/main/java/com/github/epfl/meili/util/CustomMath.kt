@@ -1,9 +1,10 @@
 package com.github.epfl.meili.util
 
 import com.google.android.gms.maps.model.LatLng
+import kotlin.math.*
 
 object CustomMath {
-    const val EARTH_R = 6378100.0
+    private const val EARTH_R = 6378100.0
 
     /**
      * Distance computed using Harversine's formula, for more details: https://en.wikipedia.org/wiki/Haversine_formula
@@ -17,9 +18,11 @@ object CustomMath {
         val originLat = Math.toRadians(from.latitude)
         val destinationLat = Math.toRadians(to.latitude)
 
-        val a = Math.pow(Math.sin(dLat / 2), 2.0) + Math.pow(Math.sin(dLon / 2.0), 2.0) * Math.cos(originLat) * Math.cos(destinationLat)
-        val c = 2 * Math.asin(Math.sqrt(a))
+        val a = sin(dLat / 2).pow(2.0) + sin(dLon / 2.0).pow(2.0) * cos(
+            originLat
+        ) * cos(destinationLat)
+        val c = 2 * asin(sqrt(a))
 
-        return EARTH_R * c;
+        return EARTH_R * c
     }
 }

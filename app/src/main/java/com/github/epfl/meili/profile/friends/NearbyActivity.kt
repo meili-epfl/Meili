@@ -134,7 +134,7 @@ class NearbyActivity : AppCompatActivity() {
         localUser = Auth.getCurrentUser()!!
         database = FirestoreDatabase(
             String.format(
-                FriendsListActivity.FRIENDS_DB_PATH,
+                FriendsListActivity.getFriendsDatabasePath(localUser.uid),
                 localUser.uid
             ), Friend::class.java
         )

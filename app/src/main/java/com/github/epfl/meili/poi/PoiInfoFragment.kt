@@ -17,7 +17,6 @@ import com.google.android.libraries.places.api.net.*
  */
 class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
     companion object {
-        private const val TAG = "PoiInfoFragment"
         private const val PHOTO_WIDTH = 1000
         private const val PHOTO_HEIGHT = 600
         private val DEFAULT_SERVICE = { PlacesClientService() }
@@ -36,7 +35,10 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
 
         // Initialize Places API entry point
         val placesClient =
-            placesClientService().getPlacesClient(activity?.applicationContext!!, getString(R.string.google_maps_key))
+            placesClientService().getPlacesClient(
+                activity?.applicationContext!!,
+                getString(R.string.google_maps_key)
+            )
 
         val placeId = poi.uid
 

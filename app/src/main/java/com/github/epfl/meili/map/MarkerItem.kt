@@ -13,7 +13,7 @@ class MarkerItem(val poi: PointOfInterest) : ClusterItem {
         return poi.getLatLng()
     }
 
-    override fun getTitle(): String? {
+    override fun getTitle(): String {
         return poi.name
     }
 

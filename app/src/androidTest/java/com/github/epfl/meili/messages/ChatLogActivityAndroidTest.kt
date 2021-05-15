@@ -14,8 +14,13 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.github.epfl.meili.R
+<<<<<<< HEAD
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.auth.AuthenticationService
+=======
+import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.home.AuthenticationService
+>>>>>>> main
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
 import org.hamcrest.Description

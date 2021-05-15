@@ -16,7 +16,8 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
     private var internetConnectionService = InternetConnectionService()
 
     // Object for handling saving data locally on phone
-    protected var mPrefs = MainApplication.applicationContext().getSharedPreferences(sharedPreferencesKey, Context.MODE_PRIVATE)
+    protected var mPrefs: SharedPreferences = MainApplication.applicationContext()
+        .getSharedPreferences(sharedPreferencesKey, Context.MODE_PRIVATE)
     protected var gsonObject = Gson()
 
     // In-Object cached values

@@ -1,7 +1,6 @@
 package com.github.epfl.meili.poi
 
 import android.content.Context
-import androidx.fragment.app.FragmentActivity
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 

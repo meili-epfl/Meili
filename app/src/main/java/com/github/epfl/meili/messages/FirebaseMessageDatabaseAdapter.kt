@@ -8,8 +8,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Class Adapter for the Firebase Database for chat messages.
@@ -37,7 +35,7 @@ class FirebaseMessageDatabaseAdapter(private val path: String) : MessageDatabase
 
     override fun addMessageToDatabase(chatMessage: ChatMessage) {
         val reference = databaseInstance.getReference(path).push()
-        if(Firebase.auth.uid != null){
+        if (Firebase.auth.uid != null) {
             chatMessage.fromId = Firebase.auth.uid!!
         }
         reference.setValue(chatMessage)

@@ -8,12 +8,21 @@ import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.poi.PoiServiceCached
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
@@ -38,6 +47,15 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         const val POI_KEY = "POI_KEY"
     }
 
+    private lateinit var lensPoiNameText: TextView
+    private lateinit var lensPoiDistText: TextView
+    private lateinit var lensInfoContainer: View
+
+    private lateinit var lensDismissLandmark: ImageView
+    private lateinit var lensDetectedLandmark: TextView
+    private lateinit var lensDetectedLandmarkContainer: View
+    private lateinit var lensCamera: ImageView
+
     // API entry points
     private lateinit var placesClient: PlacesClient
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
@@ -50,19 +68,22 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
     private lateinit var clusterRenderer: MarkerRenderer
 
-    private val poiMarkerViewModel = MarkerViewModel()
+
+    private lateinit var viewModel: MapActivityViewModel
 
     private val markerItems: HashMap<String, MarkerItem> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel = ViewModelProvider(this).get(MapActivityViewModel::class.java)
 
-        Places.initialize(
-            applicationContext,
-            getString(R.string.google_maps_key)
-        )
 
+        initLensViews()
+        setupLandmarkDetection()
+        setupLensCamera()
+
+        Places.initialize(applicationContext, getString(R.string.google_maps_key))
         placesClient = Places.createClient(this)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -71,13 +92,76 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         mapFragment?.getMapAsync(this)
     }
 
+    private fun initLensViews() {
+        lensPoiNameText = findViewById(R.id.lens_poi_name)
+        lensPoiDistText = findViewById(R.id.lens_poi_distance)
+        lensInfoContainer = findViewById(R.id.lens_info_container)
+
+        lensDismissLandmark = findViewById(R.id.lens_dismiss_landmark)
+        lensDetectedLandmark = findViewById(R.id.lens_detected_landmark)
+        lensDetectedLandmarkContainer = findViewById(R.id.lens_detected_landmark_container)
+        lensCamera = findViewById(R.id.lens_camera)
+    }
+
+    private fun setupLandmarkDetection() {
+        viewModel.getPoiDist().observe(this) { poiDist ->
+            if (poiDist != null) {
+                lensPoiNameText.text = poiDist.first.name
+                lensPoiDistText.text =
+                    String.format(getString(R.string.lens_poi_distance), poiDist.second)
+            } else {
+                lensPoiNameText.text = getString(R.string.no_poi_found)
+                lensPoiDistText.text = ""
+            }
+        }
+    }
+
+    private val launchCameraActivity =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
+                viewModel.handleCameraResponse(result.data!!.data!!)
+            }
+        }
+
+    private fun setupLensCamera() {
+        lensCamera.setOnClickListener {
+            launchCameraActivity.launch(
+                Intent(this, CameraActivity::class.java)
+                    .putExtra(CameraActivity.EDIT_PHOTO, false)
+            )
+        }
+
+        viewModel.getLandmarks().observe(this) { landmarks ->
+            if (landmarks.isEmpty()) {
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.no_landmark_detected),
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                lensDetectedLandmark.text = landmarks[0].landmark
+                toggleLens()
+            }
+        }
+
+        lensDismissLandmark.setOnClickListener { toggleLens() }
+    }
+
+    private fun toggleLens() {
+        lensCamera.isVisible = !lensCamera.isVisible
+        lensInfoContainer.isVisible = !lensInfoContainer.isVisible
+        lensDetectedLandmarkContainer.isVisible = !lensDetectedLandmarkContainer.isVisible
+        lensDismissLandmark.isVisible = !lensDismissLandmark.isVisible
+    }
+
     private fun setUpClusterer() {
-        LocationService.listenToLocationChanges(applicationContext, poiMarkerViewModel)
-        poiMarkerViewModel.setPoiService(PoiServiceCached())
+        LocationService.listenToLocationChanges(applicationContext, viewModel)
+        viewModel.setPoiService(PoiServiceCached())
 
         val currentUser = Auth.getCurrentUser()
         if (currentUser != null) {
-            poiMarkerViewModel.setDatabase(
+
+            viewModel.setDatabase(
                 FirestoreDatabase(
                     "users-poi-list/${currentUser.uid}/poi-list",
                     PointOfInterest::class.java
@@ -98,29 +182,32 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
             val intent = Intent(this, ForumActivity::class.java)
             intent.putExtra(POI_KEY, it.poi)
 
-            val statuses: Map<String, MarkerViewModel.PointOfInterestStatus> =
-                poiMarkerViewModel.mPointsOfInterestStatus.value!!
 
-            if (statuses[it.poi.uid] == MarkerViewModel.PointOfInterestStatus.REACHABLE) {
-                poiMarkerViewModel.setPoiVisited(it.poi)
+            val statuses: Map<String, PointOfInterestStatus> =
+                viewModel.mPointsOfInterestStatus.value!!
+
+            if (statuses[it.poi.uid] == PointOfInterestStatus.REACHABLE) {
+                viewModel.setPoiVisited(it.poi)
             }
 
             startActivity(intent)
             true
         }
 
-        poiMarkerViewModel.mPointsOfInterestStatus.observe(this) {
+        viewModel.mPointsOfInterestStatus.observe(this) {
             addItems(it)
         }
     }
 
-    private fun addItems(map: Map<String, MarkerViewModel.PointOfInterestStatus>) {
-        val newMap = HashMap<MarkerItem, MarkerViewModel.PointOfInterestStatus>()
+
+    private fun addItems(map: Map<String, PointOfInterestStatus>) {
+        val newMap = HashMap<MarkerItem, PointOfInterestStatus>()
         for (entry in map.entries) {
             val poiItem = if (markerItems.containsKey(entry.key)) {
                 markerItems[entry.key]!!
             } else {
-                MarkerItem(poiMarkerViewModel.mPointsOfInterest.value?.get(entry.key)!!)
+
+                MarkerItem(viewModel.mPointsOfInterest.value?.get(entry.key)!!)
             }
             newMap[poiItem] = entry.value
         }
@@ -139,25 +226,18 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         if (isLocationPermissionGranted(this)) {
             getDeviceLocationAndSetCameraPosition()
             setUpClusterer()
-            LocationService.listenToLocationChanges(applicationContext, poiMarkerViewModel)
+            LocationService.listenToLocationChanges(applicationContext, viewModel)
         }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        val mode = resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
-        when (mode) {
-            Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+
+        when (resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
+            Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED ->
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
-            }
-            Configuration.UI_MODE_NIGHT_YES -> {
-                googleMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                        this,
-                        R.raw.map_style_dark
-                    )
-                )
-            }
+            Configuration.UI_MODE_NIGHT_YES ->
+                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_dark))
         }
 
         updateMapUI()
