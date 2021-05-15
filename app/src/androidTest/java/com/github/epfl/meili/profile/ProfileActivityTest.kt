@@ -39,6 +39,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.*
 
+@Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class ProfileActivityTest {
 
@@ -102,7 +103,7 @@ class ProfileActivityTest {
 
         FirestoreDocumentService.databaseProvider = { mockFirestore }
         Auth.authService = mockAuthenticationService
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
     }
 
     private fun setupMapMocks() {

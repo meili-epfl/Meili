@@ -12,7 +12,7 @@
         android:layout_height="17dp"
         android:layout_marginTop="240dp"
         android:layout_marginBottom="100dp"
-        android:text="Sign In to use the map"
+        android:text="@string/sign_in_to_use_the_map"
         app:layout_constraintBottom_toTopOf="@+id/signInButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="320dp"
         android:onClick="onGoogleButtonClick"
-        android:text="Sign In"
+        android:text="@string/sign_in"
         style="@style/Theme.Meili.button"
         android:theme="@style/Theme.Meili.button"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -36,7 +36,7 @@
         android:id="@+id/mapButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Meili\nLimited Functionality"
+        android:text="@string/meili_nlimited_functionality"
         style="@style/Theme.Meili.button"
         android:theme="@style/Theme.Meili.button"
         android:onClick="onMapViewButtonClick"
@@ -53,6 +53,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/meili_launcher_foreground" />
+        app:srcCompat="@mipmap/meili_launcher_foreground"
+        android:contentDescription="@string/launcher" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

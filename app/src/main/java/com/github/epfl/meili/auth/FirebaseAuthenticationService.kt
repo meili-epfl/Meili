@@ -49,7 +49,7 @@ class FirebaseAuthenticationService : AuthenticationService {
         }
     }
 
-    override fun signInIntent(activity: Activity): Intent {
+    override fun signInIntent(activity: Activity?): Intent {
         return googleSignInClient.signInIntent
     }
 

@@ -30,7 +30,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/title_hint"
             android:inputType="textShortMessage"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            android:autofillHints="" />
 
         <EditText
             android:id="@+id/review_edit_summary"
@@ -40,7 +41,8 @@
             android:gravity="top"
             android:hint="@string/summary_hint"
             android:inputType="textMultiLine"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:autofillHints="" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -107,7 +109,8 @@
             android:contentDescription="@string/fab_review_content_description"
             android:focusable="true"
             android:onClick="onReviewButtonClick"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            app:srcCompat="@android:drawable/ic_input_add"
+            tools:ignore="RelativeOverlap" />
 
     </RelativeLayout>
 

@@ -34,6 +34,9 @@ open class MarkerRenderer(
     }
 
 
+    /**
+     * Render points of interest in poiStatusMap
+     */
     fun renderClusterItems(poiStatusMap: Map<MarkerItem, PointOfInterestStatus>) {
         clusterManager.clearItems()
 

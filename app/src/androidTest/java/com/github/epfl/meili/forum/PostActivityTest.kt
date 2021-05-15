@@ -45,7 +45,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 
-
+@Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class PostActivityTest {
 
@@ -169,7 +169,7 @@ class PostActivityTest {
 
     @Test
     fun signedInDisplayCheck() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         commentsDatabase.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.post_author)).check(matches(withText(containsString(TEST_POST.author))))
@@ -184,7 +184,7 @@ class PostActivityTest {
 
     @Test
     fun addCommentDisplayCheck() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         commentsDatabase.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.comment_button)).perform(click())
@@ -197,7 +197,7 @@ class PostActivityTest {
 
     @Test
     fun addCommentTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         commentsDatabase.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.comment_button)).perform(click())

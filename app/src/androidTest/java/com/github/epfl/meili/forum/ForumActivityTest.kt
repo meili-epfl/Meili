@@ -193,7 +193,7 @@ class ForumActivityTest {
 
     @Test
     fun signedInDisplayTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.list_posts)).check(matches(isDisplayed()))
@@ -205,7 +205,7 @@ class ForumActivityTest {
 
     @Test
     fun signedInCancelAddingTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.create_post)).perform(click())
@@ -223,7 +223,7 @@ class ForumActivityTest {
 
     @Test
     fun signedInAddPostTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.create_post)).perform(click())
@@ -291,14 +291,14 @@ class ForumActivityTest {
     @Test
 
     fun clickOnSortingButtonTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
         onView(withId(R.id.spinner)).perform(click())
     }
 
     @Test
     fun clickUpvoteDownvoteButtonsTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotAfterAddition, null)
 
         Thread.sleep(2000)
@@ -311,7 +311,7 @@ class ForumActivityTest {
 
         @Test
         fun useCameraIntentsTest() {
-            mockAuthenticationService.signInIntent()
+            mockAuthenticationService.signInIntent(null)
             database.onEvent(mockSnapshotBeforeAddition, null)
 
             onView(withId(R.id.create_post)).perform(click())

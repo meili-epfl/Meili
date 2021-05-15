@@ -51,8 +51,6 @@ class ChatLogMenuButtonsTest {
 
     private val mockAuth = Mockito.mock(AuthenticationService::class.java)
 
-    private lateinit var database: FirestoreDatabase<Post>
-
     private val intent = Intent(
         InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
         ChatLogActivity::class.java
@@ -70,7 +68,7 @@ class ChatLogMenuButtonsTest {
         Mockito.`when`(mockFirestore.collection((ArgumentMatchers.any())))
             .thenReturn(mockCollection)
         Mockito.`when`(mockCollection.addSnapshotListener(ArgumentMatchers.any()))
-            .thenAnswer { invocation ->
+            .thenAnswer {
                 Mockito.mock(ListenerRegistration::class.java)
             }
         Mockito.`when`(mockCollection.document(ArgumentMatchers.contains(TEST_UID)))
@@ -94,7 +92,7 @@ class ChatLogMenuButtonsTest {
             Mockito.`when`(mockAuth.getCurrentUser())
                 .thenReturn(User("fake_uid", "fake_name", "fake_email"))
 
-            Mockito.`when`(mockAuth.signInIntent()).thenReturn(intent)
+            Mockito.`when`(mockAuth.signInIntent(null)).thenReturn(intent)
             Auth.setAuthenticationService(mockAuth)
         }
 

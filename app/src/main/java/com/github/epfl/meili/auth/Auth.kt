@@ -29,10 +29,10 @@ object Auth : ViewModel(), AuthenticationService {
         return authService.getCurrentUser()
     }
 
-    override fun signInIntent(activity: Activity): Intent {
+    override fun signInIntent(activity: Activity?): Intent {
         val signInIntent = authService.signInIntent(activity)
 
-        activity.startActivityForResult(signInIntent, RC_SIGN_IN)
+        activity!!.startActivityForResult(signInIntent, RC_SIGN_IN)
         return signInIntent
     }
 

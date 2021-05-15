@@ -11,9 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.Post

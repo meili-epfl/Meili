@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/menu_chat"
-        android:title="Chat"
+        android:title="@string/chat"
         app:showAsAction="ifRoom"/>
     <item android:id="@+id/menu_reviews"
-        android:title="Reviews"
+        android:title="@string/reviews"
         app:showAsAction="ifRoom"/>
 </menu>

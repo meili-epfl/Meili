@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -21,12 +22,8 @@ import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDocumentService
 import com.github.epfl.meili.feed.FeedActivity
-<<<<<<< HEAD
 import com.github.epfl.meili.auth.Auth
-=======
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.photo.CameraActivity
->>>>>>> main
 import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.util.LandmarkDetectionService
 import com.github.epfl.meili.util.LocationService
@@ -55,7 +52,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
-
+@Suppress("UNCHECKED_CAST")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4::class)
 class MapActivityTest {
@@ -103,7 +100,7 @@ class MapActivityTest {
         `when`(mockDocument.get()).thenReturn(mock(Task::class.java) as Task<DocumentSnapshot>)
 
         val mockAuthenticationService = MockAuthenticationService()
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         Auth.authService = mockAuthenticationService
 
         FirestoreDatabase.databaseProvider = { mockFirestore }
@@ -126,20 +123,6 @@ class MapActivityTest {
     fun reactToPermission(device: UiDevice, text: String) {
         device.findObject(UiSelector().textContains(text)).click()
     }
-
-/* This test doesn't work with gradlew since permissions are given by default and
-    the permission request dialog box doesn't appear.
-    However, the test does work on a real device (so I suppose on an emulator too, but haven't tested)
-   @Test
-   fun a_shouldDisplayPermissionRequestDialogAtStartup() {
-       val device = UiDevice.getInstance(getInstrumentation());
-       Thread.sleep(2000)
-       assertViewWithTextIsVisible(device, "ALLOW")
-       assertViewWithTextIsVisible(device, "DENY")
-       // cleanup for the next test
-       reactToPermission(device, "DENY")
-   }
-*/
 
     @Test
     fun locationButtonClickableAfterPermissionGrant() {

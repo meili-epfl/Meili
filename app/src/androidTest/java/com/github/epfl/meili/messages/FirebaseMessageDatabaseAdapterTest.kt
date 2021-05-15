@@ -13,8 +13,8 @@ import java.util.*
 @RunWith(AndroidJUnit4::class)
 class FirebaseMessageDatabaseAdapterTest {
     // Path to locate chat inside database
-    private val MOCK_PATH = "POI/mock-poi"
-    private val fake_message =
+    private val mockPath = "POI/mock-poi"
+    private val fakeMessage =
             ChatMessage("fake_text", "fake_from_id", "fake_to_id", 12345)
 
     private lateinit var db: FirebaseMessageDatabaseAdapter
@@ -22,7 +22,7 @@ class FirebaseMessageDatabaseAdapterTest {
     @Before
     fun initializeDatabase() {
         UiThreadStatement.runOnUiThread {
-            db = FirebaseMessageDatabaseAdapter(MOCK_PATH)
+            db = FirebaseMessageDatabaseAdapter(mockPath)
         }
     }
 
@@ -36,7 +36,7 @@ class FirebaseMessageDatabaseAdapterTest {
     @Test
     fun adddMessageTest() {
         val expectedList = db.getMessages()
-        expectedList.add(fake_message)
+        expectedList.add(fakeMessage)
 
         val observer = Observer { _: Observable, _: Any ->
             assertEquals(expectedList, db.getMessages())
@@ -44,7 +44,7 @@ class FirebaseMessageDatabaseAdapterTest {
 
         db.addObserver(observer)
 
-        db.addMessageToDatabase(fake_message)
+        db.addMessageToDatabase(fakeMessage)
     }
 
     /*

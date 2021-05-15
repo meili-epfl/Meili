@@ -16,6 +16,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito
 import java.lang.reflect.Type
 
+@Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class CacheServiceTest {
     private val type: Type = object: TypeToken<List<PointOfInterest?>?>() {}.type

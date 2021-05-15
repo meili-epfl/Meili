@@ -15,9 +15,9 @@ class PointOfInterestTest {
 
     @Test
     fun equalsTest() {
-        assertEquals(poi1.equals(PointOfInterest(41.075000, 1.130870, "place1", "place1", "icon_string")), true)
-        assertEquals(poi1.equals(poi2), false)
-        assertEquals(poi1.equals(poi1), true)
+        assertEquals(poi1 == PointOfInterest(41.075000, 1.130870, "place1", "place1", "icon_string"), true)
+        assertEquals(poi1 == poi2, false)
+        assertEquals(poi1 == poi1, true)
         assertEquals(poi1.equals(ArrayList<PointOfInterest>()), false)
     }
 

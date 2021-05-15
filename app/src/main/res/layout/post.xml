@@ -63,7 +63,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@mipmap/upvote_empty_foreground" />
+                    app:srcCompat="@mipmap/upvote_empty_foreground"
+                    android:contentDescription="@string/upvote" />
 
                 <ImageButton
                     android:id="@+id/downovte_button"
@@ -76,13 +77,14 @@
                     app:layout_constraintStart_toEndOf="@+id/upvote_button"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@mipmap/downvote_empty_foreground" />
+                    app:srcCompat="@mipmap/downvote_empty_foreground"
+                    android:contentDescription="@string/downvote" />
 
                 <TextView
                     android:id="@+id/upvote_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 Upvotes"
+                    android:text="@string/_0_upvotes"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/downovte_button"

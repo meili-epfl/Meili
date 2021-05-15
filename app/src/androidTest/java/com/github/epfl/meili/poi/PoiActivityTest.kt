@@ -32,7 +32,7 @@ import org.mockito.Mockito.`when`
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class PoiActivityTest {
-    private val fake_poi: PointOfInterest =
+    private val fakePoi: PointOfInterest =
         PointOfInterest(10.0, 10.0, "art_brut", "ChIJAAAAAAAAAAARg4pb6XR5bo0")
 
     private val mockPlaces: PlacesClientService = Mockito.mock(PlacesClientService::class.java)
@@ -71,7 +71,7 @@ class PoiActivityTest {
     private val intent = Intent(
         InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
         PoiActivity::class.java
-    ).putExtra("POI_KEY", fake_poi)
+    ).putExtra("POI_KEY", fakePoi)
 
     @get:Rule
     var mActivityTestRule: ActivityScenarioRule<PoiActivity> = ActivityScenarioRule(intent)

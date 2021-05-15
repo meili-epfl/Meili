@@ -45,7 +45,7 @@ class ReviewMenuButtonsTest {
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
         Auth.authService = MockAuthenticationService()
-        Auth.authService.signInIntent()
+        Auth.authService.signInIntent(null)
         ChatMessageViewModel.setMessageDatabase(MockMessageDatabase(MOCK_CHAT_PATH))
     }
 

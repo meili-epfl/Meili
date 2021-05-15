@@ -1,19 +1,18 @@
 package com.github.epfl.meili.map
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.BuildConfig
@@ -237,7 +236,12 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
             Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED ->
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
             Configuration.UI_MODE_NIGHT_YES ->
-                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_dark))
+                googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        this,
+                        R.raw.map_style_dark
+                    )
+                )
         }
 
         updateMapUI()
@@ -251,9 +255,18 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         }
     }
 
-    @SuppressLint("MissingPermission")
     private fun updateMapUI() {
         if (isLocationPermissionGranted(this)) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestLocationPermission(this)
+            }
             map.isMyLocationEnabled = true
             this.map.uiSettings?.isMyLocationButtonEnabled = true
         } else {

@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="172dp"
         android:layout_marginTop="175dp"
-        android:text="Forum"
+        android:text="@string/forum"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

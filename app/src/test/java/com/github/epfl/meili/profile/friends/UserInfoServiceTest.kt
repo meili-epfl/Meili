@@ -11,13 +11,14 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.Mockito
 
+@Suppress("UNCHECKED_CAST")
 class UserInfoServiceTest {
-    private val TEST_UID = "TEST_ID"
-    private val TEST_NAME = "TEST_NAME"
+    private val testUid = "TEST_ID"
+    private val testName = "TEST_NAME"
 
     @Test
     fun getUserInformationTest() {
-        val testUser = User(TEST_UID, TEST_NAME)
+        val testUser = User(testUid, testName)
 
         val mockDocument = Mockito.mock(DocumentSnapshot::class.java)
         Mockito.`when`(mockDocument.exists()).thenReturn(true)
@@ -37,9 +38,9 @@ class UserInfoServiceTest {
         FirestoreDocumentService.databaseProvider = { mockFirestore }
 
         val testList = ArrayList<String>()
-        testList.add(TEST_UID)
+        testList.add(testUid)
         val expectedResult = HashMap<String, User>()
-        expectedResult[TEST_UID] = testUser
+        expectedResult[testUid] = testUser
 
         val onSuccess = { it: Map<String, User> -> assertEquals(it, expectedResult) }
 

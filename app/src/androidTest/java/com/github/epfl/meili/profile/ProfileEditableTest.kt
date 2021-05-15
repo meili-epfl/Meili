@@ -4,24 +4,19 @@ import android.content.Intent
 import android.location.LocationManager
 import android.net.Uri
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDocumentService
-import com.github.epfl.meili.feed.FeedActivity
-import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.OnSuccessListener
@@ -41,6 +36,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.*
 
+@Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class ProfileEditableTest {
 
@@ -78,12 +74,12 @@ class ProfileEditableTest {
     }
 
     @Before
-    fun initIntents(){
+    fun initIntents() {
         Intents.init()
     }
 
     @After
-    fun releaseIntents(){
+    fun releaseIntents() {
         Intents.release()
     }
 
@@ -111,12 +107,12 @@ class ProfileEditableTest {
 
         FirestoreDocumentService.databaseProvider = { mockFirestore }
         Auth.authService = mockAuthenticationService
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
     }
 
     private fun setupMapMocks() {
         val mockFirestore = mock(FirebaseFirestore::class.java)
-        val mockCollection =  mock(CollectionReference::class.java)
+        val mockCollection = mock(CollectionReference::class.java)
         `when`(mockFirestore.collection(anyString())).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { mock(ListenerRegistration::class.java) }
 
@@ -132,7 +128,9 @@ class ProfileEditableTest {
         `when`(mockReference.putBytes(ArgumentMatchers.any())).thenReturn(mockUploadTask)
 
         val mockStorageTask = mock(StorageTask::class.java)
-        `when`(mockUploadTask.addOnSuccessListener(ArgumentMatchers.any())).thenReturn(mockStorageTask as StorageTask<UploadTask.TaskSnapshot>?)
+        `when`(mockUploadTask.addOnSuccessListener(ArgumentMatchers.any())).thenReturn(
+            mockStorageTask as StorageTask<UploadTask.TaskSnapshot>?
+        )
 
         val mockTask = mock(Task::class.java)
         `when`(mockReference.downloadUrl).thenReturn(mockTask as Task<Uri>?)

@@ -15,6 +15,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
+@Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class PoiServiceCachedTest {
     private val service: PoiServiceCached = PoiServiceCached()

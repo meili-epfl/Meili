@@ -14,7 +14,7 @@ interface AuthenticationService {
     /**
      * Returns the sign in intent
      */
-    fun signInIntent(activity: Activity): Intent
+    fun signInIntent(activity: Activity?): Intent
 
     /**
      * Signs the user out

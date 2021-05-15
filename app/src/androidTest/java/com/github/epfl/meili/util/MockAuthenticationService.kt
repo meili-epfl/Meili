@@ -28,7 +28,7 @@ class MockAuthenticationService : AuthenticationService {
         }
     }
 
-    override fun signInIntent(activity: Activity): Intent {
+    override fun signInIntent(activity: Activity?): Intent {
         signedIn = true
         Auth.isLoggedIn.postValue(true)
         return Intent()

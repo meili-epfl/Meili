@@ -29,7 +29,7 @@ import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
-
+@Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class NearbyActivityTest {
 
@@ -83,7 +83,7 @@ class NearbyActivityTest {
         val mockAuth = MockAuthenticationService()
         mockAuth.setMockUid(MOCK_UID)
         mockAuth.setUsername(MOCK_USERNAME)
-        mockAuth.signInIntent()
+        mockAuth.signInIntent(null)
 
         NearbyActivity.getConnectionsClient = { mockClient }
         Auth.authService = mockAuth

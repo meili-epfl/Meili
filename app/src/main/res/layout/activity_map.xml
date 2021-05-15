@@ -24,7 +24,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Meili Lens"
+                        android:text="@string/meili_lens"
                         android:id="@+id/lens_text"
                         android:layout_centerHorizontal="true"
                         />
@@ -34,7 +34,7 @@
                         android:src="@drawable/ic_eye"
                         android:layout_below="@id/lens_text"
                         android:layout_centerHorizontal="true"
-                        />
+                        android:contentDescription="@string/lens" />
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Point Of Interest Detected!"
+                        android:text="@string/point_of_interest_detected"
                         android:id="@+id/lens_detected_landmark_text"
                         android:layout_centerHorizontal="true"
                         />
@@ -85,7 +85,7 @@
                     android:src="@android:drawable/ic_menu_camera"
                     android:layout_weight="1"
                     android:layout_gravity="center"
-                    />
+                    android:contentDescription="@string/lens_camera" />
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
                     android:visibility="gone"
                     android:layout_weight="1"
                     android:layout_gravity="center"
-                    />
+                    android:contentDescription="@string/dismiss_lens" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

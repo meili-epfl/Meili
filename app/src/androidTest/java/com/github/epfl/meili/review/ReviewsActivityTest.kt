@@ -159,7 +159,7 @@ class ReviewsActivityTest {
 
     @Test
     fun signedInDisplayTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
@@ -173,7 +173,7 @@ class ReviewsActivityTest {
 
     @Test
     fun signedInCancelAddingTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())
@@ -191,7 +191,7 @@ class ReviewsActivityTest {
 
     @Test
     fun signedInAddReviewTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())
@@ -220,7 +220,7 @@ class ReviewsActivityTest {
 
     @Test
     fun signedInEditReviewTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotAfterAddition, null) // mock user has existing review
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())

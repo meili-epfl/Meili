@@ -107,7 +107,7 @@ class GoogleSignInActivityTest {
         resultData.putExtra("name", MOCK_NAME)
         val result = Instrumentation.ActivityResult(9001, resultData)
 
-        val mockIntent = mockService.signInIntent()
+        val mockIntent = mockService.signInIntent(null)
 
         intending(IntentMatchers.filterEquals(mockIntent)).respondWith(result)
     }

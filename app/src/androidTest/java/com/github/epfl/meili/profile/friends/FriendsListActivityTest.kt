@@ -30,6 +30,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito
 
+@Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class FriendsListActivityTest {
     companion object {
@@ -70,7 +71,7 @@ class FriendsListActivityTest {
 
         mockAuthenticationService.setMockUid(TEST_CURRENT_USER_UID)
         mockAuthenticationService.setUsername(TEST_CURRENT_USER_UID)
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
 
 
         Mockito.`when`(mockCollection.document(ArgumentMatchers.contains(TEST_FRIEND_UID))).thenReturn(mockDocument)
@@ -123,7 +124,7 @@ class FriendsListActivityTest {
 
     @Test
     fun onAddFriendButtonLaunchIntent() {
-        Espresso.onView(ViewMatchers.withId(R.id.add_friend_button)).perform(click())
+        Espresso.onView(withId(R.id.add_friend_button)).perform(click())
 
         Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
     }
