@@ -13,10 +13,8 @@ data class NotificationData(
         const val BASE_URL = "https://fcm.googleapis.com"
 
         //Meili FCM server key
-        const val SERVER_KEY =
-            "AAAAQMGOSZE:APA91bGNQOI6HlXae8xBeMAB30q2vsNZoNzsPpcxfO2ytTiJl4HLdiw6oQDtB6KlIdu06Qu5QSLsg3tAIgHOT4tTfErPG_cyrF1d9ULGwrOmY7swzgJ--bzjsJi1Iq9fUVY9M9zilggV"
-
-        //used json convertion type
+        const val SERVER_KEY = ""
+        //used json conversion type
         const val CONTENT_TYPE = "application/json"
     }
 
