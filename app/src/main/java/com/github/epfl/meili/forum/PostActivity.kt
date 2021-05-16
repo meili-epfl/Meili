@@ -18,11 +18,15 @@ import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.profile.UserProfileLinker
+import com.github.epfl.meili.review.ReviewsActivity
+import com.github.epfl.meili.util.ClickListener
+import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import com.squareup.picasso.Picasso
 
-class PostActivity : AppCompatActivity() {
+class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListener {
 
     companion object {
         private const val TAG = "PostActivity"
@@ -31,13 +35,15 @@ class PostActivity : AppCompatActivity() {
         private const val COMMENTS_PADDING: Int = 20
     }
 
-    private lateinit var recyclerAdapter: CommentsRecyclerAdapter
+    override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Comment, User>>
+    override lateinit var usersMap: Map<String, User>
+
     private lateinit var viewModel: MeiliViewModel<Comment>
 
     private lateinit var imageView: ImageView
     private lateinit var commentButton: Button
     private lateinit var editText: EditText
-    private lateinit var addCommentButton : Button
+    private lateinit var addCommentButton: Button
 
     private lateinit var postId: String
     private lateinit var poiKey: String
@@ -54,12 +60,14 @@ class PostActivity : AppCompatActivity() {
 
         FirebaseStorageService.getDownloadUrl(
                 "images/forum/$postId",
-                { uri -> getDownloadUrlCallback(uri)},
+                { uri -> getDownloadUrlCallback(uri) },
                 { exception ->
-                    Log.e(TAG,"Image not found", exception)
+                    Log.e(TAG, "Image not found", exception)
                     getDownloadUrlCallback(DEFAULT_URI)
                 }
         )
+
+        usersMap = HashMap()
 
         initViewModel()
         initRecyclerView()
@@ -93,13 +101,18 @@ class PostActivity : AppCompatActivity() {
 
         viewModel.initDatabase(FirestoreDatabase("forum/$poiKey/posts/$postId/comments", Comment::class.java))
         viewModel.getElements().observe(this, { map ->
-            recyclerAdapter.submitList(map.toList())
-            recyclerAdapter.notifyDataSetChanged()
+            onCommentsReceived(map)
         })
     }
 
+    private fun onCommentsReceived(commentsMap: Map<String, Comment>){
+        val newUsersList = commentsMap.keys.toList().minus(usersMap.keys.toList())
+
+        ReviewsActivity.serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, commentsMap) },
+                { Log.d(TAG, "Error when fetching users information") })
+    }
     private fun initRecyclerView() {
-        recyclerAdapter = CommentsRecyclerAdapter(viewModel)
+        recyclerAdapter = CommentsRecyclerAdapter(this)
         val recyclerView: RecyclerView = findViewById(R.id.comments_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@PostActivity)

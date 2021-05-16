@@ -11,3 +11,4 @@ abstract class MeiliRecyclerAdapter<T>: RecyclerView.Adapter<RecyclerView.ViewHo
         items = list
     }
 }
+

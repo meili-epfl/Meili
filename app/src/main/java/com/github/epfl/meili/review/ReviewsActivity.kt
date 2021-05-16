@@ -1,6 +1,5 @@
 package com.github.epfl.meili.review
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -16,14 +15,11 @@ import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.profile.UserProfileLinker
-import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.*
 
-
-class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, UserProfileLinker {
+class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, UserProfileLinker<Review> {
     companion object {
         private const val CARD_PADDING: Int = 30
 
@@ -36,7 +32,6 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
 
     private var currentUserReview: Review? = null
 
-    private lateinit var recyclerAdapter: ReviewsRecyclerAdapter
     private lateinit var viewModel: MeiliViewModel<Review>
 
     private lateinit var listReviewsView: View
@@ -51,7 +46,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
     private lateinit var submitButton: Button
     private lateinit var cancelButton: Button
 
-    private var usersMap: HashMap<String, User> = HashMap()
+    override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Review, User>>
+    override lateinit var usersMap: Map<String, User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +57,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
         editReviewView = findViewById(R.id.edit_review)
 
         val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
+        usersMap = HashMap()
         showListReviewsView()
         initReviewEditView()
         initRecyclerView()
@@ -151,15 +148,6 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
         averageRatingView.text = getString(R.string.average_rating_format).format(Review.averageRating(map))
     }
 
-    private fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Review>) {
-        usersMap = HashMap(users)
-        val reviewsAndUsersMap = HashMap<String, Pair<Review, User>>()
-        for( (uid, user) in users){
-            reviewsAndUsersMap[uid] = Pair(map[uid]!!, user)
-        }
-        recyclerAdapter.submitList(reviewsAndUsersMap.toList())
-        recyclerAdapter.notifyDataSetChanged()
-    }
 
     private fun initRecyclerView() {
         recyclerAdapter = ReviewsRecyclerAdapter(this)
@@ -189,11 +177,5 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
     private fun showListReviewsView() {
         listReviewsView.visibility = View.VISIBLE
         editReviewView.visibility = View.GONE
-    }
-
-    override fun onClicked(buttonId: Int, info: String) {
-        when (buttonId) {
-            R.id.review_author_name -> openUserProfile(info, this)
-        }
     }
 }

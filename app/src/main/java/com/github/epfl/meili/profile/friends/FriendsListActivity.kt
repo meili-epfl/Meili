@@ -10,19 +10,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
+import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.profile.UserProfileLinker
 import com.github.epfl.meili.profile.friends.NearbyActivity
 import com.github.epfl.meili.util.ClickListener
+import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 
-class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinker {
+class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinker<Friend> {
     companion object {
         private const val FRIENDS_PADDING: Int = 15
         private const val TAG: String = "FriendListActivity"
@@ -35,10 +38,10 @@ class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinke
         var getFriendsDatabasePath: (String) -> String = { uid -> "friends/$uid/friends" }
     }
 
-    private lateinit var recyclerAdapter: FriendsListRecyclerAdapter
+    override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Friend, User>>
     private lateinit var viewModel: MeiliViewModel<Friend>
 
-    private var usersMap: HashMap<String, User> = HashMap()
+    override var usersMap: Map<String, User> = HashMap()
     private lateinit var addFriendsButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,14 +95,8 @@ class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinke
 
         val newFriendsList = map.keys.toList().minus(usersMap.keys.toList())
 
-        serviceProvider().getUserInformation(newFriendsList, { onFriendsInfoReceived(it) },
+        serviceProvider().getUserInformation(newFriendsList, { onUsersInfoReceived(it, map) },
                 { Log.d(TAG, "Error when fetching friends information") })
-    }
-
-    private fun onFriendsInfoReceived(users: Map<String, User>) {
-        usersMap = HashMap(users)
-        recyclerAdapter.submitList(users.toList())
-        recyclerAdapter.notifyDataSetChanged()
     }
 
     fun onFriendsListButtonClicked(view: View) {
@@ -128,7 +125,7 @@ class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinke
     override fun onClicked(buttonId: Int, info: String) {
         when (buttonId) {
             R.id.friend_chat_button -> openFriendChat(info)
-            R.id.friend_card -> openUserProfile(info, this)
+            R.id.userName -> openUserProfile(info)
         }
     }
 }

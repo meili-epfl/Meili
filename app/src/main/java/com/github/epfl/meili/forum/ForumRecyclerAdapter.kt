@@ -3,21 +3,25 @@ package com.github.epfl.meili.forum
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.models.User
+import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
+import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
 
-class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) :
-    MeiliRecyclerAdapter<Post>() {
+class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel, private val listener: ClickListener) :
+    MeiliRecyclerAdapter<Pair<Post, User>>() {
     private var userId: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         PostViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false),
-            forumViewModel
+            forumViewModel, listener
         )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
@@ -27,8 +31,8 @@ class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) :
         userId = uid
     }
 
-    class PostViewHolder(itemView: View, private val forumViewModel: ForumViewModel) :
-        RecyclerView.ViewHolder(itemView) {
+    class PostViewHolder(itemView: View, private val forumViewModel: ForumViewModel, listener: ClickListener) :
+            MeiliWithUserRecyclerViewHolder<Post>(itemView, listener) {
         private val author: TextView = itemView.findViewById(R.id.post_author)
         private val title: TextView = itemView.findViewById(R.id.post_title)
         private val postId: TextView = itemView.findViewById(R.id.post_id)
@@ -36,10 +40,15 @@ class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) :
         private val downvoteButton: ImageButton = itemView.findViewById(R.id.downovte_button)
         private val upvoteCount: TextView = itemView.findViewById(R.id.upvote_count)
 
-        fun bind(pair: Pair<String, Post>, userId: String?) {
+        init {
+            itemView.findViewById<TextView>(R.id.userName).setOnClickListener(this)
+        }
+
+        fun bind(pair: Pair<String, Pair<Post, User>>, userId: String?) {
+            super.bind(pair.second.second, pair.second.first)
             postId.text = pair.first
 
-            val post = pair.second
+            val post = pair.second.first
             author.text = post.author
             title.text = post.title
 

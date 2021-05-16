@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.result.ActivityResult
@@ -18,10 +19,14 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
+import com.github.epfl.meili.profile.UserProfileLinker
+import com.github.epfl.meili.review.ReviewsActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
+import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import com.github.epfl.meili.util.UIUtility
@@ -29,14 +34,17 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSelectedListener  {
+class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSelectedListener, UserProfileLinker<Post>  {
     companion object {
         private const val CARD_PADDING: Int = 30
         private const val NEWEST = "Newest"
         private const val OLDEST = "Oldest"
+        private const val TAG = "ForumActivity"
     }
 
-    private lateinit var recyclerAdapter: ForumRecyclerAdapter
+    override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Post,User>>
+    override lateinit var usersMap: Map<String, User>
+
     private lateinit var viewModel: ForumViewModel
 
     private lateinit var listPostsView: View
@@ -72,6 +80,8 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         executor = Executors.newSingleThreadExecutor()
 
         poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
+        usersMap = HashMap()
+
         initViews()
         initViewModel()
         initRecyclerView()
@@ -165,13 +175,18 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
 
         viewModel.initDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts"))
         viewModel.getElements().observe(this, { map ->
-            recyclerAdapter.submitList(map.toList())
-            recyclerAdapter.notifyDataSetChanged()
+            postsMapListener(map)
         })
     }
 
+    private fun postsMapListener(map: Map<String, Post>) {
+        val newUsersList = map.keys.toList().minus(usersMap.keys.toList())
+
+        ReviewsActivity.serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, map) },
+                { Log.d(TAG, "Error when fetching users information") })
+    }
     private fun initRecyclerView() {
-        recyclerAdapter = ForumRecyclerAdapter(viewModel)
+        recyclerAdapter = ForumRecyclerAdapter(viewModel, this)
         val recyclerView: RecyclerView = findViewById(R.id.forum_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ForumActivity)
@@ -191,7 +206,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
 
             //and upvote/downvote
             if(loggedIn && Auth.getCurrentUser() != null){
-                recyclerAdapter.submitUserInfo(Auth.getCurrentUser()!!.uid)
+                (recyclerAdapter as ForumRecyclerAdapter).submitUserInfo(Auth.getCurrentUser()!!.uid)
                 recyclerAdapter.notifyDataSetChanged()
             }
         })
@@ -210,13 +225,12 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     private fun sortPosts(b:Boolean){
         viewModel.getElements().removeObservers(this)
         viewModel.getElements().observe(this, { map ->
-            recyclerAdapter.submitList(map.toList().sortedBy { pair ->
+            postsMapListener(map.toList().sortedBy { pair ->
                 if (b)
                     -pair.second.timestamp
                 else
                     pair.second.timestamp
-            })
-            recyclerAdapter.notifyDataSetChanged()
+            }.toMap())
         })
     }
 
