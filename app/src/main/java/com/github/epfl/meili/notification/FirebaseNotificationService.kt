@@ -7,8 +7,10 @@ import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_ONE_SHOT
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.github.epfl.meili.R
@@ -17,6 +19,7 @@ import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlin.random.Random
@@ -27,6 +30,22 @@ import kotlin.random.Random
 class FirebaseNotificationService : FirebaseMessagingService() {
     companion object{
         private const val CHANNEL_ID = "my_channel"
+
+        var sharedPref: SharedPreferences? = null
+
+        var token:String?
+        get(){
+            return sharedPref?.getString("token", "")
+        }
+        set(value){
+            sharedPref?.edit()?.putString("token", value)?.apply()
+        }
+    }
+
+    override fun onNewToken(newToken: String) {
+        super.onNewToken(newToken)
+        Log.d("notif","here")
+        token = newToken
     }
 
     override fun onMessageReceived(message: RemoteMessage) {

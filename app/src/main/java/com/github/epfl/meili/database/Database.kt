@@ -12,6 +12,7 @@ abstract class Database<T>: Observable() {
     abstract fun addElement(key: String, element: T?)
 
     abstract fun removeElement(key: String)
+    abstract fun updateElement(key: String, element: T?)
 
     private var observers: Set<Observer> = HashSet()
 
