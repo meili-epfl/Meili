@@ -115,17 +115,19 @@ class ForumActivityTest {
     }
 
     private fun setupMocks() {
-        `when`(mockFirestore.collection("forum")).thenReturn(
-            mockCollection
-        )
+        `when`(mockFirestore.collection("forum")).thenReturn(mockCollection)
 
-        `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
+        val mockQuery = mock(Query::class.java)
+        `when`(mockCollection.whereEqualTo(Post.POI_KEY_FIELD, TEST_POI_KEY)).thenReturn(mockQuery)
+
+        `when`(mockQuery.addSnapshotListener(any())).thenAnswer { invocation ->
             database = invocation.arguments[0] as AtomicPostFirestoreDatabase
             mock(ListenerRegistration::class.java)
         }
+
         `when`(mockCollection.document(contains(TEST_UID))).thenReturn(mockDocument)
 
-        `when`(mockFirestore.collection("forum${TEST_UID}/comments")).thenReturn(mockComments)
+        `when`(mockFirestore.collection("forum/${TEST_UID}/comments")).thenReturn(mockComments)
         `when`(mockComments.addSnapshotListener(any())).thenAnswer { invocation ->
             commentsDatabase = invocation.arguments[0] as FirestoreDatabase<Comment>
             mock(ListenerRegistration::class.java)
@@ -140,12 +142,16 @@ class ForumActivityTest {
         `when`(mockSnapshotAfterAddition.documents).thenReturn(listOf(mockDocumentSnapshot))
 
         // Mock poi history
-        `when`(mockFirestore.collection("poi-history/${TEST_UID}/poi-history")).thenReturn(mockPoiHistory)
+        `when`(mockFirestore.collection("poi-history/${TEST_UID}/poi-history")).thenReturn(
+            mockPoiHistory
+        )
         `when`(mockPoiHistory.addSnapshotListener(any())).thenAnswer { invocation ->
             poiDatabase = invocation.arguments[0] as FirestoreDatabase<PointOfInterest>
             mock(ListenerRegistration::class.java)
         }
-        `when`(mockPoiHistory.document(ArgumentMatchers.matches(TEST_POI_KEY))).thenReturn(mockDocument)
+        `when`(mockPoiHistory.document(ArgumentMatchers.matches(TEST_POI_KEY))).thenReturn(
+            mockDocument
+        )
 
         mockAuthenticationService.setMockUid(TEST_UID)
         mockAuthenticationService.setUsername(TEST_USERNAME)
@@ -319,17 +325,16 @@ class ForumActivityTest {
         transactionFunctionCaptor.value.apply(mockTransaction)
     }
 
-        @Test
-        fun useCameraIntentsTest() {
-            mockAuthenticationService.signInIntent()
-            database.onEvent(mockSnapshotBeforeAddition, null)
+    @Test
+    fun useCameraIntentsTest() {
+        mockAuthenticationService.signInIntent()
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
-            onView(withId(R.id.create_post)).perform(click())
+        onView(withId(R.id.create_post)).perform(click())
 
-            onView(withId(R.id.post_use_camera)).perform(click())
-            Intents.intended(hasComponent(CameraActivity::class.java.name))
-        }
-
+        onView(withId(R.id.post_use_camera)).perform(click())
+        Intents.intended(hasComponent(CameraActivity::class.java.name))
+    }
 
 
 }

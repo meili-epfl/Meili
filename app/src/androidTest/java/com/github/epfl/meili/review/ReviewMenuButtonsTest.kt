@@ -18,11 +18,13 @@ import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import org.hamcrest.Matchers
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 
@@ -38,9 +40,16 @@ class ReviewMenuButtonsTest {
     init {
         val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
         val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
+        val mockQuery: Query = Mockito.mock(Query::class.java)
 
         `when`(mockFirestore.collection(any())).thenReturn(mockCollection)
-        `when`(mockCollection.addSnapshotListener(any())).thenAnswer { Mockito.mock(ListenerRegistration::class.java) }
+        `when`(mockCollection.whereEqualTo(anyString(), anyString())).thenReturn(mockQuery)
+        `when`(mockCollection.addSnapshotListener(any())).thenAnswer {
+            Mockito.mock(ListenerRegistration::class.java)
+        }
+        `when`(mockQuery.addSnapshotListener(any())).thenAnswer {
+            Mockito.mock(ListenerRegistration::class.java)
+        }
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
@@ -60,8 +69,8 @@ class ReviewMenuButtonsTest {
     fun clickChatMenuButton() {
         onView(
             Matchers.allOf(
-                    withId(R.id.menu_chat),
-                    withText("Chat")
+                withId(R.id.menu_chat),
+                withText("Chat")
             )
         ).perform(click())
     }
@@ -70,9 +79,9 @@ class ReviewMenuButtonsTest {
     fun clickForumMenuButton() {
         onView(
             Matchers.allOf(
-                    withId(R.id.menu_forum),
-                    withText("Forum")
-                )
+                withId(R.id.menu_forum),
+                withText("Forum")
+            )
         ).perform(click())
     }
 }
