@@ -80,7 +80,7 @@ class ReviewsActivityTest {
     }
 
     private fun setupMocks() {
-        `when`(mockFirestore.collection("review/${TEST_POI_KEY}/reviews")).thenReturn(mockCollection)
+        `when`(mockFirestore.collection("reviews")).thenReturn(mockCollection)
         val mockQuery = mock(Query::class.java)
         `when`(mockCollection.whereEqualTo(Review.POI_KEY_FIELD, TEST_POI_KEY)).thenReturn(mockQuery)
         `when`(mockQuery.addSnapshotListener(any())).thenAnswer { invocation ->

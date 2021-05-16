@@ -93,8 +93,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         val title = editTitleView.text.toString()
         val summary = editSummaryView.text.toString()
 
-        val userKey = Auth.getCurrentUser()!!.uid
-        viewModel.addElement(userKey, Review(poi.uid, rating, title, summary))
+        val key = Auth.getCurrentUser()!!.uid + poi.uid
+        viewModel.addElement(key, Review(poi.uid, rating, title, summary))
     }
 
     private fun editReviewButtonListener() {
