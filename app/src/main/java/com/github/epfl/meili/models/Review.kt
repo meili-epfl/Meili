@@ -5,13 +5,12 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Review (
+    var poiKey: String = "",
     var rating: Float = 0f,
     var title: String = "",
-    var summary: String = ""
+    var summary: String = "",
 ): Parcelable {
     companion object {
-        private const val TAG = "Review"
-
         fun averageRating(reviews: Map<String, Review>): Float {
             return if (reviews.isEmpty()) {
                 0f

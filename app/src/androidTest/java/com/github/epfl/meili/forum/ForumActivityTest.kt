@@ -58,8 +58,9 @@ class ForumActivityTest {
     companion object {
         private const val TEST_UID = "UID"
         private const val TEST_USERNAME = "AUTHOR"
-        private val TEST_POST = Post(TEST_USERNAME, "TITLE", -1, "TEXT")
-        private val TEST_POI_KEY = PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2")
+        private const val TEST_POI_KEY = "lorem_ipsum2"
+        private val TEST_POST = Post(TEST_POI_KEY, TEST_USERNAME, "TITLE", -1, "TEXT")
+        private val TEST_POI = PointOfInterest(100.0, 100.0, "lorem_ipsum1", TEST_POI_KEY)
     }
 
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
@@ -85,8 +86,7 @@ class ForumActivityTest {
     private val intent = Intent(
         InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
         ForumActivity::class.java
-    )
-        .putExtra(MapActivity.POI_KEY, TEST_POI_KEY)
+    ).putExtra(MapActivity.POI_KEY, TEST_POI)
 
     @get:Rule
     var rule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(intent)
@@ -115,7 +115,7 @@ class ForumActivityTest {
     }
 
     private fun setupMocks() {
-        `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts")).thenReturn(
+        `when`(mockFirestore.collection("forum")).thenReturn(
             mockCollection
         )
 
@@ -125,7 +125,7 @@ class ForumActivityTest {
         }
         `when`(mockCollection.document(contains(TEST_UID))).thenReturn(mockDocument)
 
-        `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts/${TEST_UID}/comments")).thenReturn(mockComments)
+        `when`(mockFirestore.collection("forum${TEST_UID}/comments")).thenReturn(mockComments)
         `when`(mockComments.addSnapshotListener(any())).thenAnswer { invocation ->
             commentsDatabase = invocation.arguments[0] as FirestoreDatabase<Comment>
             mock(ListenerRegistration::class.java)
@@ -145,7 +145,7 @@ class ForumActivityTest {
             poiDatabase = invocation.arguments[0] as FirestoreDatabase<PointOfInterest>
             mock(ListenerRegistration::class.java)
         }
-        `when`(mockPoiHistory.document(ArgumentMatchers.matches(TEST_POI_KEY.uid))).thenReturn(mockDocument)
+        `when`(mockPoiHistory.document(ArgumentMatchers.matches(TEST_POI_KEY))).thenReturn(mockDocument)
 
         mockAuthenticationService.setMockUid(TEST_UID)
         mockAuthenticationService.setUsername(TEST_USERNAME)

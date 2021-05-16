@@ -91,7 +91,7 @@ class PostActivity : AppCompatActivity() {
         @Suppress("UNCHECKED_CAST")
         viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
 
-        viewModel.initDatabase(FirestoreDatabase("forum/$poiKey/posts/$postId/comments", Comment::class.java))
+        viewModel.initDatabase(FirestoreDatabase("forum/$postId/comments", Comment::class.java))
         viewModel.getElements().observe(this, { map ->
             recyclerAdapter.submitList(map.toList())
             recyclerAdapter.notifyDataSetChanged()

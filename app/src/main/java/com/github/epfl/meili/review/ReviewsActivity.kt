@@ -94,7 +94,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         val summary = editSummaryView.text.toString()
 
         val userKey = Auth.getCurrentUser()!!.uid
-        viewModel.addElement(userKey, Review(rating, title, summary))
+        viewModel.addElement(userKey, Review(poi.uid, rating, title, summary))
     }
 
     private fun editReviewButtonListener() {
@@ -122,7 +122,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         viewModel =
             ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
-        viewModel.initDatabase(FirestoreDatabase("review/$poiKey/reviews", Review::class.java))
+        viewModel.initDatabase(FirestoreDatabase("reviews", Review::class.java))
         viewModel.getElements().observe(this, { map ->
             reviewsMapListener(map)
         })

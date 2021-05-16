@@ -34,7 +34,7 @@ class ChatLogMenuButtonsTest {
     companion object {
         private const val TEST_UID = "UID"
         private const val TEST_USERNAME = "AUTHOR"
-        private val TEST_POST = Post(TEST_USERNAME, "TITLE", -1,"TEXT")
+        private val TEST_POST = Post("fakepoi2", TEST_USERNAME, "TITLE", -1,"TEXT")
         private const val MOCK_PATH = "POI/mock-poi"
         private const val fake_message = "fake_text"
         private const val fake_id = "fake_id"
