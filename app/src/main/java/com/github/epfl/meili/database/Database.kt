@@ -8,6 +8,8 @@ abstract class Database<T>: Observable() {
 
     abstract fun addElement(key: String, element: T?)
 
+    abstract fun updateElement(key: String, element: T?)
+
     private var observers: Set<Observer> = HashSet()
 
     override fun addObserver(o: Observer?) {
