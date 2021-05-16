@@ -17,12 +17,12 @@ open class FirestoreDatabase<T : Any>(
 
     override var elements: Map<String, T> = HashMap()
 
-    protected val ref = databaseProvider().collection(path)
+    protected val collectionReference = databaseProvider().collection(path)
 
-    private val registration = query(ref).addSnapshotListener(this)
+    private val registration = query(collectionReference).addSnapshotListener(this)
 
     override fun addElement(key: String, element: T?) {
-        ref.document(key).set(element!!)
+        collectionReference.document(key).set(element!!)
     }
 
     override fun onEvent(snapshot: QuerySnapshot?, error: FirebaseFirestoreException?) {

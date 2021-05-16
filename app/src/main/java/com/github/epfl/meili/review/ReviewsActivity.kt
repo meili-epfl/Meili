@@ -122,7 +122,10 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         viewModel =
             ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
-        viewModel.initDatabase(FirestoreDatabase("reviews", Review::class.java))
+        viewModel.initDatabase(FirestoreDatabase("reviews", Review::class.java) {
+            it.whereEqualTo(Review.POI_KEY_FIELD, poiKey)
+        })
+
         viewModel.getElements().observe(this, { map ->
             reviewsMapListener(map)
         })

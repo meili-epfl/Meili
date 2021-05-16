@@ -8,9 +8,11 @@ data class Review (
     var poiKey: String = "",
     var rating: Float = 0f,
     var title: String = "",
-    var summary: String = "",
+    var summary: String = ""
 ): Parcelable {
     companion object {
+        const val POI_KEY_FIELD = "poiKey"
+
         fun averageRating(reviews: Map<String, Review>): Float {
             return if (reviews.isEmpty()) {
                 0f

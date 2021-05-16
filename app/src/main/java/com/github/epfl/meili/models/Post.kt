@@ -16,5 +16,6 @@ data class Post(
 ) : Parcelable {
     companion object {
         const val TAG = "Post"
+        const val POI_KEY_FIELD = "poiKey"
     }
 }

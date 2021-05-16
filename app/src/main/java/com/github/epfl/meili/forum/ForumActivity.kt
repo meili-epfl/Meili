@@ -176,8 +176,9 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     private fun initViewModel() {
         @Suppress("UNCHECKED_CAST")
         viewModel = ViewModelProvider(this).get(ForumViewModel::class.java)
-        val poiKey = poi.uid
-        viewModel.initDatabase(AtomicPostFirestoreDatabase("forum"))
+        viewModel.initDatabase(AtomicPostFirestoreDatabase("forum") {
+            it.whereEqualTo(Post.POI_KEY_FIELD, poi.uid)
+        })
         if (Auth.getCurrentUser() != null) {
             viewModel.initFavoritePoisDatabase(
                 FirestoreDatabase( // add to poi favorites

@@ -11,8 +11,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
+import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.util.UIUtility
 import com.google.android.material.floatingactionbutton.FloatingActionButton
