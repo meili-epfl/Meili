@@ -19,11 +19,13 @@ import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import org.hamcrest.Matchers.allOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
@@ -37,9 +39,13 @@ class ForumMenuButtonsTests {
     init {
         val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
         val mockCollection: CollectionReference = Mockito.mock(CollectionReference::class.java)
+        val mockQuery = Mockito.mock(Query::class.java)
 
         Mockito.`when`(mockFirestore.collection(any())).thenReturn(mockCollection)
+        Mockito.`when`(mockCollection.whereEqualTo(anyString(), anyString())).thenReturn(mockQuery)
+
         Mockito.`when`(mockCollection.addSnapshotListener(any())).thenAnswer { Mockito.mock(ListenerRegistration::class.java) }
+        Mockito.`when`(mockQuery.addSnapshotListener(any())).thenAnswer { Mockito.mock(ListenerRegistration::class.java) }
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }

@@ -164,9 +164,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         val title = editTitleView.text.toString()
         val text = editTextVIew.text.toString()
 
-        viewModel.addElement(postId, Post(user.username, title, timestamp, text))
-
-
+        viewModel.addElement(postId, Post(poi.uid, user.username, title, timestamp, text))
 
         if (bitmap != null) {
             executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }
@@ -178,8 +176,9 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     private fun initViewModel() {
         @Suppress("UNCHECKED_CAST")
         viewModel = ViewModelProvider(this).get(ForumViewModel::class.java)
-        val poiKey = poi.uid
-        viewModel.initDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts"))
+        viewModel.initDatabase(AtomicPostFirestoreDatabase("forum") {
+            it.whereEqualTo(Post.POI_KEY_FIELD, poi.uid)
+        })
         if (Auth.getCurrentUser() != null) {
             viewModel.initFavoritePoisDatabase(
                 FirestoreDatabase( // add to poi favorites

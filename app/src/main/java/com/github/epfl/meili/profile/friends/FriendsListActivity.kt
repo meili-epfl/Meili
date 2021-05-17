@@ -17,7 +17,6 @@ import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.ProfileActivity
-import com.github.epfl.meili.profile.friends.NearbyActivity
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
