@@ -1,9 +1,15 @@
 package com.github.epfl.meili.poi
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -11,6 +17,10 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.models.PointOfInterest
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.*
+import io.github.ponnamkarthik.richlinkpreview.RichLinkView
+import io.github.ponnamkarthik.richlinkpreview.RichLinkViewSkype
+import io.github.ponnamkarthik.richlinkpreview.ViewListener
+
 
 /**
  * Fragment to be displayed inside of PoiActivity and which contains basic info about POI
@@ -22,9 +32,11 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
         var placesClientService: () -> PlacesClientService = DEFAULT_SERVICE
     }
 
+    private lateinit var takeMeThereButton: Button
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_poi_info, container, false)
     }
@@ -40,13 +52,16 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
 
         // Places API query fields
         val placeFields = listOf(
-            Place.Field.ADDRESS,
-            Place.Field.PHONE_NUMBER,
-            Place.Field.WEBSITE_URI,
-            Place.Field.UTC_OFFSET,
-            Place.Field.OPENING_HOURS,
-            Place.Field.PHOTO_METADATAS
+                Place.Field.ADDRESS,
+                Place.Field.PHONE_NUMBER,
+                Place.Field.WEBSITE_URI,
+                Place.Field.UTC_OFFSET,
+                Place.Field.OPENING_HOURS,
+                Place.Field.PHOTO_METADATAS
         )
+
+        takeMeThereButton = view.findViewById(R.id.take_me_there_button)
+        takeMeThereButton.visibility = GONE
 
         val request = FetchPlaceRequest.newInstance(placeId, placeFields)
 
@@ -58,8 +73,8 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
     }
 
     private fun getOnSuccessListener(
-        view: View,
-        placesClient: PlacesClient
+            view: View,
+            placesClient: PlacesClient
     ): (FetchPlaceResponse) -> Unit =
         { response: FetchPlaceResponse ->
             val place = response.place
@@ -71,17 +86,38 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
             }
 
             val infoTextView = view.findViewById<TextView>(R.id.infoTextView)
-            "${place.address}\n${place.phoneNumber}\n${place.websiteUri}\n${openText}".also {
+            "${place.address}\n${place.phoneNumber}\n${openText}".also {
                 infoTextView.text = it
+            }
+
+            Log.d(TAG, place.websiteUri.toString())
+            // TODO: fix and always make it https
+            if (place.websiteUri != null && !place.websiteUri.toString().isEmpty()) {
+                val richLinkView = view.findViewById<RichLinkViewSkype>(R.id.richLinkView)
+
+                richLinkView.setLink(place.websiteUri.toString(), object : ViewListener {
+                    override fun onSuccess(status: Boolean) {}
+                    override fun onError(e: Exception) {}
+                })
+            }
+
+           takeMeThereButton.visibility = VISIBLE
+
+            takeMeThereButton.setOnClickListener {
+                val gmmIntentUri =
+                    Uri.parse("google.navigation:q=${place.address}")
+                val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                mapIntent.setPackage("com.google.android.apps.maps")
+                startActivity(mapIntent)
             }
 
             val poiImageView = view.findViewById<ImageView>(R.id.poiImageView)
 
-            val metada = place.photoMetadatas
-            if (!(metada == null || metada.isEmpty())) {
+            val metadata = place.photoMetadatas
+            if (!(metadata == null || metadata.isEmpty())) {
 
 
-                val photoMetadata = metada.first()
+                val photoMetadata = metadata.first()
 
                 val photoRequest = FetchPhotoRequest.builder(photoMetadata)
                     .setMaxWidth(1000)

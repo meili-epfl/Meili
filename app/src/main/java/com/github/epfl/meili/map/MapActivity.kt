@@ -20,6 +20,7 @@ import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.photo.CameraActivity
+import com.github.epfl.meili.poi.PoiActivity
 import com.github.epfl.meili.poi.PoiServiceCached
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
@@ -180,23 +181,27 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
         // Add on click listener
         clusterManager.setOnClusterItemClickListener {
-            val intent = Intent(this, ForumActivity::class.java)
-            intent.putExtra(POI_KEY, it.poi)
-
-            val statuses: Map<String, PointOfInterestStatus> =
-                viewModel.mPointsOfInterestStatus.value!!
-
-            if (statuses[it.poi.uid] == PointOfInterestStatus.REACHABLE) {
-                viewModel.setPoiVisited(it.poi)
-            }
-
-            startActivity(intent)
-            true
+            onPoiItemClicked(it)
         }
 
         viewModel.mPointsOfInterestStatus.observe(this) {
             addItems(it)
         }
+    }
+
+    private fun onPoiItemClicked(poiItem: PoiItem): Boolean{
+        val intent = Intent(this, PoiActivity::class.java)
+        intent.putExtra(POI_KEY, poiItem.poi)
+
+        val statuses: Map<String, PointOfInterestStatus> =
+                viewModel.mPointsOfInterestStatus.value!!
+
+        if (statuses[poiItem.poi.uid] == PointOfInterestStatus.REACHABLE) {
+            viewModel.setPoiVisited(poiItem.poi)
+        }
+
+        startActivity(intent)
+        return true
     }
 
     private fun addItems(map: Map<String, PointOfInterestStatus>) {
