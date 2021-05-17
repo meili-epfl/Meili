@@ -15,6 +15,7 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.util.MeiliViewModel
+import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import java.util.*
 
@@ -25,7 +26,7 @@ class FavoritePoisActivity : AppCompatActivity() {
          const val DB_PATH = "poi-favorite/%s/poi-favorite"
     }
 
-    private lateinit var radapter: FavoritePoisRecyclerAdapter
+    private val recyclerAdapter = FavoritePoisRecyclerAdapter()
     private lateinit var viewModel: MeiliViewModel<PointOfInterest>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,8 +36,13 @@ class FavoritePoisActivity : AppCompatActivity() {
         title = ACTIVITY_TITLE
 
         val userKey = Auth.getCurrentUser()!!.uid
-        initRecyclerView()
+
         initViewModel(userKey)
+        initRecyclerView(
+            recyclerAdapter,
+            findViewById(R.id.favorite_pois_recycler_view),
+            this
+        )
     }
 
     override fun onDestroy() {
@@ -70,17 +76,7 @@ class FavoritePoisActivity : AppCompatActivity() {
     }
 
     private fun favoritePoisMapListener(map: Map<String, PointOfInterest>) {
-        radapter.submitList(map.toList())
-        radapter.notifyDataSetChanged()
-    }
-
-    private fun initRecyclerView() {
-        val recycler: RecyclerView = findViewById(R.id.favorite_pois_recycler_view)
-        radapter = FavoritePoisRecyclerAdapter()
-        recycler.apply {
-            layoutManager = LinearLayoutManager(this@FavoritePoisActivity)
-            addItemDecoration(TopSpacingItemDecoration())
-            adapter = radapter
-        }
+        recyclerAdapter.submitList(map.toList())
+        recyclerAdapter.notifyDataSetChanged()
     }
 }

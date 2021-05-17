@@ -15,6 +15,7 @@ import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.MenuActivity
+import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import com.github.epfl.meili.util.UIUtility
 
@@ -27,7 +28,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
 
     private var currentUserReview: Review? = null
 
-    private lateinit var recyclerAdapter: ReviewsRecyclerAdapter
+    private val recyclerAdapter = ReviewsRecyclerAdapter()
     private lateinit var viewModel: MeiliViewModel<Review>
 
     private lateinit var listReviewsView: View
@@ -55,7 +56,11 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         val poiKey = poi.uid
         showListReviewsView()
         initReviewEditView()
-        initRecyclerView()
+        initRecyclerView(
+            recyclerAdapter,
+            findViewById(R.id.reviews_recycler_view),
+            this
+        )
         initViewModel(poiKey)
         initLoggedInListener()
     }
@@ -145,16 +150,6 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
             getString(R.string.average_rating_format).format(Review.averageRating(map))
         recyclerAdapter.submitList(map.toList())
         recyclerAdapter.notifyDataSetChanged()
-    }
-
-    private fun initRecyclerView() {
-        recyclerAdapter = ReviewsRecyclerAdapter()
-        val recyclerView: RecyclerView = findViewById(R.id.reviews_recycler_view)
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@ReviewsActivity)
-            addItemDecoration(TopSpacingItemDecoration())
-            adapter = recyclerAdapter
-        }
     }
 
     private fun initLoggedInListener() {

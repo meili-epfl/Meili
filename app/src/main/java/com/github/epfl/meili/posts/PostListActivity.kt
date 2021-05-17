@@ -8,12 +8,11 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.util.TopSpacingItemDecoration
+import com.github.epfl.meili.util.RecyclerViewInitializer
 
 interface PostListActivity : AdapterView.OnItemSelectedListener {
     companion object {
@@ -52,13 +51,13 @@ interface PostListActivity : AdapterView.OnItemSelectedListener {
         }
     }
 
-    fun initRecyclerAdapter(recyclerView: RecyclerView) {
+    private fun initRecyclerAdapter(recyclerView: RecyclerView) {
         recyclerAdapter = PostListRecyclerAdapter(viewModel)
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(getActivity())
-            addItemDecoration(TopSpacingItemDecoration())
-            adapter = recyclerAdapter
-        }
+        RecyclerViewInitializer.initRecyclerView(
+            recyclerAdapter,
+            recyclerView,
+            getActivity()
+        )
     }
 
     fun initLoggedInListener() {

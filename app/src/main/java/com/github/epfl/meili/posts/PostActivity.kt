@@ -19,6 +19,7 @@ import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.MeiliViewModel
+import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import com.squareup.picasso.Picasso
 
@@ -26,7 +27,8 @@ class PostActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "PostActivity"
-        private val DEFAULT_URI = Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
+        private val DEFAULT_URI =
+            Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
         const val POST_ID = "Post_ID"
     }
 
@@ -36,7 +38,7 @@ class PostActivity : AppCompatActivity() {
     private lateinit var imageView: ImageView
     private lateinit var commentButton: Button
     private lateinit var editText: EditText
-    private lateinit var addCommentButton : Button
+    private lateinit var addCommentButton: Button
 
     private lateinit var postId: String
 
@@ -50,16 +52,16 @@ class PostActivity : AppCompatActivity() {
         initViews(post)
 
         FirebaseStorageService.getDownloadUrl(
-                "images/forum/$postId",
-                { uri -> getDownloadUrlCallback(uri)},
-                { exception ->
-                    Log.e(TAG,"Image not found", exception)
-                    getDownloadUrlCallback(DEFAULT_URI)
-                }
+            "images/forum/$postId",
+            { uri -> getDownloadUrlCallback(uri) },
+            { exception ->
+                Log.e(TAG, "Image not found", exception)
+                getDownloadUrlCallback(DEFAULT_URI)
+            }
         )
 
         initViewModel()
-        initRecyclerView()
+        initRecyclerAdapter()
         initLoggedInListener()
     }
 
@@ -86,7 +88,8 @@ class PostActivity : AppCompatActivity() {
 
     private fun initViewModel() {
         @Suppress("UNCHECKED_CAST")
-        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
+        viewModel =
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
 
         viewModel.initDatabase(FirestoreDatabase("forum/$postId/comments", Comment::class.java))
         viewModel.getElements().observe(this, { map ->
@@ -95,14 +98,10 @@ class PostActivity : AppCompatActivity() {
         })
     }
 
-    private fun initRecyclerView() {
+    private fun initRecyclerAdapter() {
         recyclerAdapter = CommentsRecyclerAdapter(viewModel)
         val recyclerView: RecyclerView = findViewById(R.id.comments_recycler_view)
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@PostActivity)
-            addItemDecoration(TopSpacingItemDecoration())
-            adapter = recyclerAdapter
-        }
+        initRecyclerView(recyclerAdapter, recyclerView,this)
         ViewCompat.setNestedScrollingEnabled(recyclerView, false);
     }
 
