@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".posts.feed.FeedActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="My Feed"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/feed_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="12dp"
+        tools:layout_editor_absoluteY="33dp"
+        />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"

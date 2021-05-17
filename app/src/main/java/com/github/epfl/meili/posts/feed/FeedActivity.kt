@@ -1,6 +1,7 @@
 package com.github.epfl.meili.posts.feed
 
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,8 +21,8 @@ class FeedActivity : NavigableActivity(R.layout.activity_feed, R.id.feed) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initRecyclerView()
         initViewModel()
+        initRecyclerView()
         initLoggedInListener()
 
         if (isLocationPermissionGranted(this)) {
@@ -31,7 +32,7 @@ class FeedActivity : NavigableActivity(R.layout.activity_feed, R.id.feed) {
 
     private fun initRecyclerView() {
         recyclerAdapter = PostListRecyclerAdapter(viewModel)
-        val recyclerView: RecyclerView = findViewById(R.id.forum_recycler_view)
+        val recyclerView: RecyclerView = findViewById(R.id.feed_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@FeedActivity)
             addItemDecoration(TopSpacingItemDecoration())

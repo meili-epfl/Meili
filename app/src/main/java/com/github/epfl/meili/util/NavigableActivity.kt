@@ -21,12 +21,12 @@ open class NavigableActivity(
         navigation.selectedItemId = activityId
 
         navigation.setOnNavigationItemSelectedListener {
-            when (it.itemId) {
+            val intent = when (it.itemId) {
                 R.id.map -> Intent(this, MapActivity::class.java)
                 R.id.profile -> Intent(this, ProfileActivity::class.java)
                 R.id.feed -> Intent(this, FeedActivity::class.java)
                 else -> Intent(this, MapActivity::class.java)
-            }.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+            }
             startActivity(intent)
             overridePendingTransition(0, 0)
             true

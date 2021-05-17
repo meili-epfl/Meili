@@ -100,9 +100,6 @@
                 android:text="Cancel"/>
 
         </LinearLayout>
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <RelativeLayout
@@ -130,7 +127,7 @@
             android:id="@+id/spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/sort_by"
+            android:layout_toEndOf="@+id/sort_by"
             android:layout_alignParentTop="true"
             />
 
