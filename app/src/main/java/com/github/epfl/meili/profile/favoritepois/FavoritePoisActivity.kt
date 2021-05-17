@@ -14,6 +14,7 @@ import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.profile.ProfileActivity.Companion.USER_KEY
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import java.util.*
@@ -35,7 +36,10 @@ class FavoritePoisActivity : AppCompatActivity() {
 
         title = ACTIVITY_TITLE
 
-        val userKey = Auth.getCurrentUser()!!.uid
+        var userKey = intent.getStringExtra(USER_KEY)
+        if (userKey == null) {
+            userKey = Auth.getCurrentUser()!!.uid
+        }
         initRecyclerView()
         initViewModel(userKey)
     }

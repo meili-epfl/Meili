@@ -126,7 +126,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             signInButton -> Auth.signIn(this)
             signOutButton -> Auth.signOut()
             profileEditButton -> showEditMode()
-            favoritePoisButton -> startActivity(Intent(this, FavoritePoisActivity::class.java))
+            favoritePoisButton -> showFavoritePoi()
         }
     }
 
@@ -195,5 +195,11 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private fun updateIsProfileOwner() {
         val authUser = Auth.getCurrentUser()!!
         isProfileOwner = (authUser.uid == profileUid)
+    }
+
+    private fun showFavoritePoi() {
+        val intent = Intent(this, FavoritePoisActivity::class.java)
+            .putExtra(USER_KEY, profileUid)
+        startActivity(intent)
     }
 }
