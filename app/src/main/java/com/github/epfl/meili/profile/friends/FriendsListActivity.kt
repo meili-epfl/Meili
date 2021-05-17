@@ -23,12 +23,10 @@ import com.github.epfl.meili.util.TopSpacingItemDecoration
 
 class FriendsListActivity : AppCompatActivity(), ClickListener {
     companion object {
-        private const val FRIENDS_PADDING: Int = 15
         private const val TAG: String = "FriendListActivity"
         private const val TITLE: String = "My Friends"
         private const val DEFAULT_MEILI_FRIEND_UID = "OP7VVymi3ZOfTr0akvMnh5HEa2a2"
         const val FRIEND_KEY = "FRIEND_KEY"
-
 
         var serviceProvider: () -> UserInfoService = { UserInfoService() }
         var getFriendsDatabasePath: (String) -> String = { uid -> "friends/$uid/friends" }
@@ -81,7 +79,7 @@ class FriendsListActivity : AppCompatActivity(), ClickListener {
         val recyclerView: RecyclerView = findViewById(R.id.friends_list_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@FriendsListActivity)
-            addItemDecoration(TopSpacingItemDecoration(FRIENDS_PADDING))
+            addItemDecoration(TopSpacingItemDecoration())
             adapter = recyclerAdapter
         }
     }

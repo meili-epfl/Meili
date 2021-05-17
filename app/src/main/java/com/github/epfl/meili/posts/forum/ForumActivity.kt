@@ -36,7 +36,6 @@ import java.util.concurrent.Executors
 
 class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSelectedListener {
     companion object {
-        private const val CARD_PADDING: Int = 30
         private const val NEWEST = "Newest"
         private const val OLDEST = "Oldest"
     }
@@ -71,7 +70,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     private var bitmap: Bitmap? = null
 
     private lateinit var poi: PointOfInterest
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -199,7 +197,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         val recyclerView: RecyclerView = findViewById(R.id.forum_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ForumActivity)
-            addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
+            addItemDecoration(TopSpacingItemDecoration())
             adapter = recyclerAdapter
         }
     }
@@ -243,7 +241,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
             recyclerAdapter.notifyDataSetChanged()
         })
     }
-
 
     private fun loadImage(filePath: Uri) {
         executor.execute {

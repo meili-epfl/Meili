@@ -8,17 +8,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.posts.forum.ForumViewModel
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 
-class PostListRecyclerAdapter(private val forumViewModel: ForumViewModel) :
+class PostListRecyclerAdapter(private val viewModel: PostListViewModel) :
     MeiliRecyclerAdapter<Post>() {
     private var userId: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         PostViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false),
-            forumViewModel
+            viewModel
         )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
@@ -28,7 +27,7 @@ class PostListRecyclerAdapter(private val forumViewModel: ForumViewModel) :
         userId = uid
     }
 
-    class PostViewHolder(itemView: View, private val forumViewModel: ForumViewModel) :
+    class PostViewHolder(itemView: View, private val forumViewModel: PostListViewModel) :
         RecyclerView.ViewHolder(itemView) {
         private val author: TextView = itemView.findViewById(R.id.post_author)
         private val title: TextView = itemView.findViewById(R.id.post_title)

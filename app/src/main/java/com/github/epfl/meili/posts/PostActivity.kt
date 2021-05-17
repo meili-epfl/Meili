@@ -28,7 +28,6 @@ class PostActivity : AppCompatActivity() {
         private const val TAG = "PostActivity"
         private val DEFAULT_URI = Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
         const val POST_ID = "Post_ID"
-        private const val COMMENTS_PADDING: Int = 20
     }
 
     private lateinit var recyclerAdapter: CommentsRecyclerAdapter
@@ -103,7 +102,7 @@ class PostActivity : AppCompatActivity() {
         val recyclerView: RecyclerView = findViewById(R.id.comments_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@PostActivity)
-            addItemDecoration(TopSpacingItemDecoration(COMMENTS_PADDING))
+            addItemDecoration(TopSpacingItemDecoration())
             adapter = recyclerAdapter
         }
         ViewCompat.setNestedScrollingEnabled(recyclerView, false);

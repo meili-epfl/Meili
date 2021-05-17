@@ -21,8 +21,6 @@ import com.github.epfl.meili.util.UIUtility
 
 class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
     companion object {
-        private const val CARD_PADDING: Int = 30
-
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
         private const val EDIT_BUTTON_DRAWABLE = android.R.drawable.ic_menu_edit
     }
@@ -154,7 +152,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         val recyclerView: RecyclerView = findViewById(R.id.reviews_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ReviewsActivity)
-            addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
+            addItemDecoration(TopSpacingItemDecoration())
             adapter = recyclerAdapter
         }
     }

@@ -21,7 +21,6 @@ import java.util.*
 
 class FavoritePoisActivity : AppCompatActivity() {
     companion object {
-        private const val CARD_PADDING: Int = 30
         private const val ACTIVITY_TITLE = "Favorite POIs"
          const val DB_PATH = "poi-favorite/%s/poi-favorite"
     }
@@ -80,7 +79,7 @@ class FavoritePoisActivity : AppCompatActivity() {
         radapter = FavoritePoisRecyclerAdapter()
         recycler.apply {
             layoutManager = LinearLayoutManager(this@FavoritePoisActivity)
-            addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
+            addItemDecoration(TopSpacingItemDecoration())
             adapter = radapter
         }
     }
