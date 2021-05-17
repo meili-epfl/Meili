@@ -1,4 +1,4 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.posts.forum
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -21,6 +21,8 @@ import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
+import com.github.epfl.meili.posts.PostActivity
+import com.github.epfl.meili.posts.PostListRecyclerAdapter
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
@@ -39,7 +41,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         private const val OLDEST = "Oldest"
     }
 
-    private lateinit var recyclerAdapter: ForumRecyclerAdapter
+    private lateinit var recyclerAdapter: PostListRecyclerAdapter
     private lateinit var viewModel: ForumViewModel
 
     private lateinit var listPostsView: View
@@ -117,7 +119,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         if (Auth.getCurrentUser() == null) {
             favoriteButton.visibility = View.GONE
         }
-
     }
 
     override fun onDestroy() {
@@ -194,7 +195,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     }
 
     private fun initRecyclerView() {
-        recyclerAdapter = ForumRecyclerAdapter(viewModel)
+        recyclerAdapter = PostListRecyclerAdapter(viewModel)
         val recyclerView: RecyclerView = findViewById(R.id.forum_recycler_view)
         recyclerView.apply {
             layoutManager = LinearLayoutManager(this@ForumActivity)

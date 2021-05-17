@@ -1,4 +1,4 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.posts
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,9 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.posts.forum.ForumViewModel
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 
-class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) :
+class PostListRecyclerAdapter(private val forumViewModel: ForumViewModel) :
     MeiliRecyclerAdapter<Post>() {
     private var userId: String? = null
 

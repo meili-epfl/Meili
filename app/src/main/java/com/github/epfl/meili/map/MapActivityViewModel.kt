@@ -6,19 +6,16 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.location.Location
-import android.location.LocationListener
 import android.net.Uri
-import android.os.Bundle
-import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiService
 import com.github.epfl.meili.util.LandmarkDetectionService
+import com.github.epfl.meili.util.PoiServiceViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.ml.vision.cloud.landmark.FirebaseVisionCloudLandmark
 import com.google.maps.android.SphericalUtil.computeDistanceBetween
@@ -35,7 +32,7 @@ import kotlin.math.roundToInt
  * each POI will have a different status between VISITED, VISIBLE and REACHABLE
  */
 class MapActivityViewModel(application: Application) :
-    AndroidViewModel(application), Observer, LocationListener
+    AndroidViewModel(application), PoiServiceViewModel, Observer
 {
     companion object {
         private const val SENSOR_DELAY = 500_000 // microseconds
@@ -44,7 +41,6 @@ class MapActivityViewModel(application: Application) :
         private const val AZIMUTH_TOLERANCE = 15.0 // degrees
 
         private const val REACHABLE_DIST = 50.0 //meters
-        private const val MAX_NUM_REQUESTS = 2
 
         var getSensorManager: (application: Application) -> SensorManager =
             { getSystemService(it, SensorManager::class.java)!! }
@@ -52,11 +48,11 @@ class MapActivityViewModel(application: Application) :
         var getEventValues: (event: SensorEvent) -> FloatArray = { it.values }
     }
 
-    private var database: Database<PointOfInterest>? = null
-    private var poiService: PoiService? = null
-    private var lastUserLocation: LatLng? = null
+    override var poiService: PoiService? = null
+    override var nbCurrentRequests: Int = 0
+    override var lastUserLocation: LatLng? = null
 
-    private var nbCurrentRequests = 0
+    private var database: Database<PointOfInterest>? = null
 
     val mPointsOfInterest: MutableLiveData<Map<String, PointOfInterest>> =
         MutableLiveData(HashMap())
@@ -186,36 +182,6 @@ class MapActivityViewModel(application: Application) :
         override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
     }
 
-    fun setPoiService(service: PoiService) {
-        this.poiService = service
-        if (lastUserLocation != null) {
-            requestPois()
-        }
-    }
-
-    private fun requestPois() {
-        poiService!!.requestPois(
-            lastUserLocation!!,
-            { poiList -> onSuccessPoiReceived(poiList) },
-            { error -> onError(error) })
-    }
-
-    private fun onSuccessPoiReceived(poiList: List<PointOfInterest>) {
-        nbCurrentRequests = 0
-        addPoiList(poiList)
-        setReachablePois()
-    }
-
-    private fun onError(error: Error) {
-        nbCurrentRequests += 1
-
-        if (nbCurrentRequests >= MAX_NUM_REQUESTS) {
-            Toast.makeText(MainApplication.applicationContext(), "An error occured while fetching POIs", Toast.LENGTH_LONG).show()
-        } else {
-            requestPois()
-        }
-    }
-
     fun setDatabase(db: Database<PointOfInterest>) {
         this.database = db
         database!!.addObserver(this)
@@ -238,7 +204,7 @@ class MapActivityViewModel(application: Application) :
     private fun setReachablePois() {
         if (lastUserLocation != null) {
             //set all reachable pois to REACHABLE status
-            val reachablePois = poiService!!.getReachablePoi(
+            val reachablePois = getReachablePoi(
                 lastUserLocation!!,
                 mPointsOfInterest.value!!.values.toList(),
                 REACHABLE_DIST
@@ -268,6 +234,12 @@ class MapActivityViewModel(application: Application) :
         }
     }
 
+    override fun onSuccessPoiReceived(poiList: List<PointOfInterest>) {
+        super.onSuccessPoiReceived(poiList)
+        addPoiList(poiList)
+        setReachablePois()
+    }
+
     private fun addPoiList(list: List<PointOfInterest>) {
         var poiMap = mPointsOfInterest.value!!
         var statusMap = mPointsOfInterestStatus.value!!
@@ -292,22 +264,7 @@ class MapActivityViewModel(application: Application) :
     }
 
     override fun onLocationChanged(location: Location) {
-        val shouldCallService = lastUserLocation == null
-        val newLocation = LatLng(location.latitude, location.longitude)
-
-        if (lastUserLocation != newLocation) {
-            lastUserLocation = newLocation
-            if (shouldCallService && poiService != null) {
-                requestPois()
-            }
-        }
-
+        super.onLocationChanged(location)
         setReachablePois()
     }
-
-    override fun onProviderEnabled(provider: String) {}
-
-    override fun onProviderDisabled(provider: String) {}
-
-    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
 }
