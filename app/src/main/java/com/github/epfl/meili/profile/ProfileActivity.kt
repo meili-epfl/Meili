@@ -122,17 +122,12 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             photoEditView -> launchGallery.launch(STORAGE_IMAGES_PATH)
             saveButton -> saveProfile()
             cancelButton -> showProfile()
-            seeFriendsButton -> showFriends()
+            seeFriendsButton -> showProfileOwnersInfo(FriendsListActivity::class.java)
             signInButton -> Auth.signIn(this)
             signOutButton -> Auth.signOut()
             profileEditButton -> showEditMode()
-            favoritePoisButton -> showFavoritePoi()
+            favoritePoisButton -> showProfileOwnersInfo(FavoritePoisActivity::class.java)
         }
-    }
-
-    private fun showFriends() {
-        val intent = Intent(this, FriendsListActivity::class.java)
-        startActivity(intent)
     }
 
     private fun saveProfile() {
@@ -197,8 +192,8 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         isProfileOwner = (authUser.uid == profileUid)
     }
 
-    private fun showFavoritePoi() {
-        val intent = Intent(this, FavoritePoisActivity::class.java)
+    private fun showProfileOwnersInfo(activityClass: Class<*>) {
+        val intent = Intent(this, activityClass)
             .putExtra(USER_KEY, profileUid)
         startActivity(intent)
     }

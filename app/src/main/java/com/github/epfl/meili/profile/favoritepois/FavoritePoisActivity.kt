@@ -36,12 +36,9 @@ class FavoritePoisActivity : AppCompatActivity() {
 
         title = ACTIVITY_TITLE
 
-        var userKey = intent.getStringExtra(USER_KEY)
-        if (userKey == null) {
-            userKey = Auth.getCurrentUser()!!.uid
-        }
+        val userKey = intent.getStringExtra(USER_KEY)
         initRecyclerView()
-        initViewModel(userKey)
+        initViewModel(userKey!!)
     }
 
     override fun onDestroy() {
