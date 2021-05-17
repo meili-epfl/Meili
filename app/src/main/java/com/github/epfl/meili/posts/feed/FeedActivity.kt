@@ -5,8 +5,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.poi.PoiServiceCached
-import com.github.epfl.meili.posts.PostListRecyclerAdapter
 import com.github.epfl.meili.posts.PostListActivity
+import com.github.epfl.meili.posts.PostListRecyclerAdapter
 import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
 import com.github.epfl.meili.util.LocationService.listenToLocationChanges

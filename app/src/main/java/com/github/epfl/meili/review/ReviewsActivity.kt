@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
@@ -16,7 +14,6 @@ import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
-import com.github.epfl.meili.util.TopSpacingItemDecoration
 import com.github.epfl.meili.util.UIUtility
 
 

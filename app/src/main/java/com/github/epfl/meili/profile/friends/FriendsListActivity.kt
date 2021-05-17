@@ -7,8 +7,6 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
@@ -20,7 +18,6 @@ import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
-import com.github.epfl.meili.util.TopSpacingItemDecoration
 
 class FriendsListActivity : AppCompatActivity(), ClickListener {
     companion object {

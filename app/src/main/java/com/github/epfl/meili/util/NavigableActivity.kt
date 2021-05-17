@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
-import com.github.epfl.meili.posts.feed.FeedActivity
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.posts.feed.FeedActivity
 import com.github.epfl.meili.profile.ProfileActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 

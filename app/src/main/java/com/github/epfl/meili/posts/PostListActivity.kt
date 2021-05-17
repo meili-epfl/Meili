@@ -14,6 +14,10 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.util.RecyclerViewInitializer
 
+/**
+ * To be implemented by all activities which display a list of posts
+ * Performs basic initialization and sorting
+ */
 interface PostListActivity : AdapterView.OnItemSelectedListener {
     companion object {
         private const val NEWEST = "Newest"
@@ -25,6 +29,9 @@ interface PostListActivity : AdapterView.OnItemSelectedListener {
 
     fun getActivity(): AppCompatActivity
 
+    /**
+     * Get intent to launch post activity
+     */
     fun getPostActivityIntent(view: View): Intent {
         val postId: String = (view as TextView).text.toString()
         return Intent(getActivity(), PostActivity::class.java)
@@ -32,6 +39,10 @@ interface PostListActivity : AdapterView.OnItemSelectedListener {
             .putExtra(PostActivity.POST_ID, postId)
     }
 
+    /**
+     * Basic Initialization of the activity's view model, recycler adapter, recycler view,
+     * and a logged in listener for the voting feature
+     */
     fun initActivity(
         viewModelClass: Class<out PostListViewModel>,
         recyclerView: RecyclerView,
@@ -69,7 +80,7 @@ interface PostListActivity : AdapterView.OnItemSelectedListener {
         })
     }
 
-    fun initSorting(sortSpinner: Spinner) {
+    private fun initSorting(sortSpinner: Spinner) {
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter.createFromResource(
             getActivity(), R.array.sort_array,

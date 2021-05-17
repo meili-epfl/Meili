@@ -21,9 +21,9 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDocumentService
-import com.github.epfl.meili.posts.feed.FeedActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.photo.CameraActivity
+import com.github.epfl.meili.posts.feed.FeedActivity
 import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.util.LandmarkDetectionService
 import com.github.epfl.meili.util.LocationService
