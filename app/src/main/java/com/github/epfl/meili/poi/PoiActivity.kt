@@ -8,8 +8,12 @@ import androidx.viewpager2.widget.ViewPager2
 import com.github.epfl.meili.R
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.util.MenuActivity
 
-class PoiActivity : AppCompatActivity() {
+class PoiActivity : MenuActivity(R.menu.nav_chat_menu) {
+    //TODO: set parent of this to map and set this as parent of chat, review, forum
+    //TODO: decide on good way to display the menus on top (since there are too many
+
     companion object {
         private const val NUM_PAGES = 3
         private const val INDEX_INFO = 0
