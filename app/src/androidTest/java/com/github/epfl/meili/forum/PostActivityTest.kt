@@ -23,6 +23,8 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.models.User
+import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
@@ -52,7 +54,9 @@ class PostActivityTest {
     companion object {
         private const val TEST_POI_KEY = "POI_KEY"
         private const val TEST_ID = "ID"
-        private val TEST_POST = Post("AUTHOR", "TITLE", -1,"TEXT")
+        private const val TEST_AUTHOR_UID = "test uid"
+        private const val TEST_USERNAME = "Test username"
+        private val TEST_POST = Post(TEST_AUTHOR_UID, "TITLE", -1,"TEXT")
         private val TEST_COMMENT = Comment("AUTHOR_COMMENT", "TEXT_COMMENT")
     }
 
@@ -64,6 +68,7 @@ class PostActivityTest {
     private val mockSnapshotBeforeAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
     private val mockSnapshotAfterAddition: QuerySnapshot = Mockito.mock(QuerySnapshot::class.java)
 
+    private val mockUserInfoService = Mockito.mock(UserInfoService::class.java)
     private val mockAuthenticationService = MockAuthenticationService()
 
     private lateinit var database: AtomicPostFirestoreDatabase
@@ -79,6 +84,22 @@ class PostActivityTest {
 
     @Before
     fun initIntents() = Intents.init()
+
+    @Before
+    fun startUserInfoService() {
+        val testFriendMap = HashMap<String, User>()
+        testFriendMap[TEST_AUTHOR_UID] = User(TEST_AUTHOR_UID, TEST_USERNAME)
+
+        Mockito.`when`(mockUserInfoService.getUserInformation(Mockito.anyList(), any(), any())).then {
+            val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)
+
+            onSuccess(testFriendMap)
+
+            return@then null
+        }
+
+        PostActivity.serviceProvider = { mockUserInfoService }
+    }
 
     @After
     fun releaseIntents() = Intents.release()

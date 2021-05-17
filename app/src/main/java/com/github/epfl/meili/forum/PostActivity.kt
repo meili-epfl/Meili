@@ -19,6 +19,7 @@ import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.UserProfileLinker
+import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.review.ReviewsActivity
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
@@ -33,6 +34,8 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         private val DEFAULT_URI = Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
         const val POST_ID = "Post_ID"
         private const val COMMENTS_PADDING: Int = 20
+
+        var serviceProvider: () -> UserInfoService = { UserInfoService() }
     }
 
     override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Comment, User>>
@@ -108,7 +111,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
     private fun onCommentsReceived(commentsMap: Map<String, Comment>){
         val newUsersList = commentsMap.keys.toList().minus(usersMap.keys.toList())
 
-        ReviewsActivity.serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, commentsMap) },
+        serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, commentsMap) },
                 { Log.d(TAG, "Error when fetching users information") })
     }
     private fun initRecyclerView() {
