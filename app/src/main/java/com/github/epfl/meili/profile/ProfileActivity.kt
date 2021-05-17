@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
@@ -192,7 +193,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         isProfileOwner = (authUser.uid == profileUid)
     }
 
-    private fun showProfileOwnersInfo(activityClass: Class<*>) {
+    private fun showProfileOwnersInfo(activityClass: Class<out AppCompatActivity>) {
         val intent = Intent(this, activityClass)
             .putExtra(USER_KEY, profileUid)
         startActivity(intent)
