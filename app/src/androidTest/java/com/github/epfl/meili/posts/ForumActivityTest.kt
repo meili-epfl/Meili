@@ -310,7 +310,7 @@ class ForumActivityTest {
     fun clickOnSortingButtonTest() {
         mockAuthenticationService.signInIntent()
         database.onEvent(mockSnapshotBeforeAddition, null)
-        onView(withId(R.id.spinner)).perform(click())
+        onView(withId(R.id.sort_spinner)).perform(click())
     }
 
     @Test

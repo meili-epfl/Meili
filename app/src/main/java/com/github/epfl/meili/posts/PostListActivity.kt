@@ -1,0 +1,108 @@
+package com.github.epfl.meili.posts
+
+import android.content.Intent
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.github.epfl.meili.R
+import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.util.TopSpacingItemDecoration
+
+interface PostListActivity : AdapterView.OnItemSelectedListener {
+    companion object {
+        private const val NEWEST = "Newest"
+        private const val OLDEST = "Oldest"
+    }
+
+    var recyclerAdapter: PostListRecyclerAdapter
+    var viewModel: PostListViewModel
+
+    fun getActivity(): AppCompatActivity
+
+    fun getPostActivityIntent(view: View): Intent {
+        val postId: String = (view as TextView).text.toString()
+        return Intent(getActivity(), PostActivity::class.java)
+            .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
+            .putExtra(PostActivity.POST_ID, postId)
+    }
+
+    fun initActivity(
+        viewModelClass: Class<out PostListViewModel>,
+        recyclerView: RecyclerView,
+        sortSpinner: Spinner
+    ) {
+        initViewModel(viewModelClass)
+        initRecyclerAdapter(recyclerView)
+        initLoggedInListener()
+        initSorting(sortSpinner)
+    }
+
+    fun initViewModel(viewModelClass: Class<out PostListViewModel>) {
+        viewModel = ViewModelProvider(getActivity()).get(viewModelClass)
+        viewModel.getElements().observe(getActivity()) {
+            recyclerAdapter.submitList(it.toList())
+            recyclerAdapter.notifyDataSetChanged()
+        }
+    }
+
+    fun initRecyclerAdapter(recyclerView: RecyclerView) {
+        recyclerAdapter = PostListRecyclerAdapter(viewModel)
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(getActivity())
+            addItemDecoration(TopSpacingItemDecoration())
+            adapter = recyclerAdapter
+        }
+    }
+
+    fun initLoggedInListener() {
+        Auth.isLoggedIn.observe(getActivity(), { loggedIn ->
+            if (loggedIn && Auth.getCurrentUser() != null) {
+                recyclerAdapter.submitUserInfo(Auth.getCurrentUser()!!.uid)
+                recyclerAdapter.notifyDataSetChanged()
+            }
+        })
+    }
+
+    fun initSorting(sortSpinner: Spinner) {
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter.createFromResource(
+            getActivity(), R.array.sort_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            sortSpinner.adapter = adapter
+        }
+        sortSpinner.onItemSelectedListener = this
+    }
+
+    private fun sortPosts(b: Boolean) {
+        viewModel.getElements().removeObservers(getActivity())
+        viewModel.getElements().observe(getActivity(), { map ->
+            recyclerAdapter.submitList(map.toList().sortedBy { pair ->
+                if (b)
+                    -pair.second.timestamp
+                else
+                    pair.second.timestamp
+            })
+            recyclerAdapter.notifyDataSetChanged()
+        })
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
+        when (parent?.getItemAtPosition(pos)) {
+            NEWEST -> sortPosts(true)
+            OLDEST -> sortPosts(false)
+        }
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {}
+}
