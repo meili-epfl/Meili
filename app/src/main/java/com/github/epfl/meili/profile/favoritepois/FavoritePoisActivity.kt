@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.profile.ProfileActivity.Companion.USER_KEY
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.TopSpacingItemDecoration
 import java.util.*
@@ -23,7 +23,7 @@ class FavoritePoisActivity : AppCompatActivity() {
     companion object {
         private const val CARD_PADDING: Int = 30
         private const val ACTIVITY_TITLE = "Favorite POIs"
-         const val DB_PATH = "poi-favorite/%s/poi-favorite"
+        const val DB_PATH = "poi-favorite/%s/poi-favorite"
     }
 
     private lateinit var radapter: FavoritePoisRecyclerAdapter
@@ -35,9 +35,9 @@ class FavoritePoisActivity : AppCompatActivity() {
 
         title = ACTIVITY_TITLE
 
-        val userKey = Auth.getCurrentUser()!!.uid
+        var userKey = intent.getStringExtra(USER_KEY)
         initRecyclerView()
-        initViewModel(userKey)
+        initViewModel(userKey!!)
     }
 
     override fun onDestroy() {

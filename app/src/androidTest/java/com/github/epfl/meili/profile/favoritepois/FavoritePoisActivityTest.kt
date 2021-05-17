@@ -13,11 +13,14 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.profile.ProfileActivity
+import com.github.epfl.meili.profile.ProfileEditableTest
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.firebase.firestore.*
 import org.hamcrest.CoreMatchers
@@ -52,9 +55,14 @@ class FavoritePoisActivityTest {
     private lateinit var database: FirestoreDatabase<PointOfInterest>
 
 
+    private val intent = Intent(
+        InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
+        FavoritePoisActivity::class.java
+    )
+        .putExtra(ProfileActivity.USER_KEY, TEST_UID)
+
     @get:Rule
-    var rule: ActivityScenarioRule<FavoritePoisActivity> =
-        ActivityScenarioRule(FavoritePoisActivity::class.java)
+    var rule: ActivityScenarioRule<FavoritePoisActivity> = ActivityScenarioRule(intent)
 
     @Before
     fun initIntents() = Intents.init()
