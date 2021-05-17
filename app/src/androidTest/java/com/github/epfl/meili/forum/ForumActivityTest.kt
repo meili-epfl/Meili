@@ -26,7 +26,9 @@ import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
+import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
@@ -48,6 +50,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.contains
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
@@ -58,7 +61,7 @@ class ForumActivityTest {
     companion object {
         private const val TEST_UID = "UID"
         private const val TEST_USERNAME = "AUTHOR"
-        private val TEST_POST = Post(TEST_USERNAME, "TITLE", -1, "TEXT")
+        private val TEST_POST = Post(TEST_UID, "TITLE", -1, "TEXT")
         private val TEST_POI_KEY = PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2")
     }
 
@@ -67,6 +70,7 @@ class ForumActivityTest {
     private val mockComments: CollectionReference = mock(CollectionReference::class.java)
     private val mockPoiHistory: CollectionReference = mock(CollectionReference::class.java)
     private val mockDocument: DocumentReference = mock(DocumentReference::class.java)
+    private val mockUserInfoService: UserInfoService = mock(UserInfoService::class.java)
 
     private val mockSnapshotBeforeAddition: QuerySnapshot = mock(QuerySnapshot::class.java)
     private val mockSnapshotAfterAddition: QuerySnapshot = mock(QuerySnapshot::class.java)
@@ -75,7 +79,7 @@ class ForumActivityTest {
 
     // transaction mocks
     private val transactionFunctionCaptor =
-        ArgumentCaptor.forClass(Transaction.Function::class.java)
+            ArgumentCaptor.forClass(Transaction.Function::class.java)
     private val mockTransaction = mock(Transaction::class.java)
 
     private lateinit var database: AtomicPostFirestoreDatabase
@@ -83,10 +87,10 @@ class ForumActivityTest {
     private lateinit var poiDatabase: FirestoreDatabase<PointOfInterest>
 
     private val intent = Intent(
-        InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
-        ForumActivity::class.java
+            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
+            ForumActivity::class.java
     )
-        .putExtra(MapActivity.POI_KEY, TEST_POI_KEY)
+            .putExtra(MapActivity.POI_KEY, TEST_POI_KEY)
 
     @get:Rule
     var rule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(intent)
@@ -103,9 +107,24 @@ class ForumActivityTest {
         setupPostActivityMocks()
     }
 
+    @Before
+    fun startUserInfoService() {
+        val testFriendMap = HashMap<String, User>()
+        testFriendMap[TEST_UID] = User(TEST_UID, TEST_USERNAME)
+
+        `when`(mockUserInfoService.getUserInformation(Mockito.anyList(), Mockito.any(), Mockito.any())).then {
+            val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)
+
+            onSuccess(testFriendMap)
+
+            return@then null
+        }
+        ForumActivity.serviceProvider = { mockUserInfoService }
+    }
+
     private fun setupTransactionMocks() {
         `when`(mockFirestore.runTransaction(transactionFunctionCaptor.capture()))
-            .thenReturn(mock(Task::class.java))
+                .thenReturn(mock(Task::class.java))
 
         val mockSnapshot = mock(DocumentSnapshot::class.java)
         `when`(mockTransaction.get(any())).thenReturn(mockSnapshot)
@@ -116,7 +135,7 @@ class ForumActivityTest {
 
     private fun setupMocks() {
         `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts")).thenReturn(
-            mockCollection
+                mockCollection
         )
 
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
@@ -239,14 +258,14 @@ class ForumActivityTest {
         onView(withId(R.id.create_post)).perform(click())
 
         onView(withId(R.id.post_edit_title)).perform(
-            clearText(),
-            typeText(TEST_POST.title),
-            closeSoftKeyboard()
+                clearText(),
+                typeText(TEST_POST.title),
+                closeSoftKeyboard()
         )
         onView(withId(R.id.post_edit_text)).perform(
-            clearText(),
-            typeText(TEST_POST.text),
-            closeSoftKeyboard()
+                clearText(),
+                typeText(TEST_POST.text),
+                closeSoftKeyboard()
         )
 
         onView(withId(R.id.submit_post)).perform(click())
@@ -258,16 +277,16 @@ class ForumActivityTest {
         onView(withId(R.id.edit_post)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.forum_recycler_view))
-            .check(matches(isDisplayed()))
-            .perform(
-                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(
-                        withText(
-                            TEST_POST.title
+                .check(matches(isDisplayed()))
+                .perform(
+                        RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
+                                hasDescendant(
+                                        withText(
+                                                TEST_POST.title
+                                        )
+                                )
                         )
-                    )
                 )
-            )
 
         onView(textViewContainsText(TEST_POST.title)).check(matches(isDisplayed()))
         onView(textViewContainsText(TEST_USERNAME)).check(matches(isDisplayed()))
@@ -278,23 +297,23 @@ class ForumActivityTest {
         mockAuthenticationService.signOut()
         database.onEvent(mockSnapshotAfterAddition, null)
         onView(withId(R.id.forum_recycler_view))
-            .check(matches(isDisplayed()))
-            .perform(
-                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(
-                        withText(
-                            TEST_POST.title
+                .check(matches(isDisplayed()))
+                .perform(
+                        RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
+                                hasDescendant(
+                                        withText(
+                                                TEST_POST.title
+                                        )
+                                )
                         )
-                    )
                 )
-            )
 
         onView(withText(TEST_POST.title)).perform(click())
         Intents.intended(
-            allOf(
-                hasExtra("Post", TEST_POST),
-                hasComponent(PostActivity::class.java.name)
-            )
+                allOf(
+                        hasExtra("Post", TEST_POST),
+                        hasComponent(PostActivity::class.java.name)
+                )
         )
     }
 
@@ -319,17 +338,16 @@ class ForumActivityTest {
         transactionFunctionCaptor.value.apply(mockTransaction)
     }
 
-        @Test
-        fun useCameraIntentsTest() {
-            mockAuthenticationService.signInIntent()
-            database.onEvent(mockSnapshotBeforeAddition, null)
+    @Test
+    fun useCameraIntentsTest() {
+        mockAuthenticationService.signInIntent()
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
-            onView(withId(R.id.create_post)).perform(click())
+        onView(withId(R.id.create_post)).perform(click())
 
-            onView(withId(R.id.post_use_camera)).perform(click())
-            Intents.intended(hasComponent(CameraActivity::class.java.name))
-        }
-
+        onView(withId(R.id.post_use_camera)).perform(click())
+        Intents.intended(hasComponent(CameraActivity::class.java.name))
+    }
 
 
 }

@@ -146,7 +146,7 @@ class PostActivityTest {
     fun checkPostShown() {
         commentsDatabase.onEvent(mockSnapshotBeforeAddition, null)
 
-        onView(withId(R.id.post_author)).check(matches(withText(containsString(TEST_POST.author))))
+        onView(withId(R.id.post_author)).check(matches(withText(containsString(TEST_POST.authorUid))))
         onView(withId(R.id.post_title)).check(matches(withText(containsString(TEST_POST.title))))
         onView(withId(R.id.post_text)).check(matches(withText(containsString(TEST_POST.text))))
         onView(withId(R.id.comments_recycler_view)).check(matches(isEnabled()))
@@ -157,7 +157,7 @@ class PostActivityTest {
         mockAuthenticationService.signOut()
         commentsDatabase.onEvent(mockSnapshotBeforeAddition, null)
 
-        onView(withId(R.id.post_author)).check(matches(withText(containsString(TEST_POST.author))))
+        onView(withId(R.id.post_author)).check(matches(withText(containsString(TEST_POST.authorUid))))
         onView(withId(R.id.post_title)).check(matches(withText(containsString(TEST_POST.title))))
         onView(withId(R.id.post_text)).check(matches(withText(containsString(TEST_POST.text))))
 
@@ -172,7 +172,7 @@ class PostActivityTest {
         mockAuthenticationService.signInIntent()
         commentsDatabase.onEvent(mockSnapshotBeforeAddition, null)
 
-        onView(withId(R.id.post_author)).check(matches(withText(containsString(TEST_POST.author))))
+        onView(withId(R.id.post_author)).check(matches(withText(containsString(TEST_POST.authorUid))))
         onView(withId(R.id.post_title)).check(matches(withText(containsString(TEST_POST.title))))
         onView(withId(R.id.post_text)).check(matches(withText(containsString(TEST_POST.text))))
 

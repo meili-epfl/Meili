@@ -22,17 +22,21 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
+import com.github.epfl.meili.models.User
+import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.firebase.firestore.*
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
@@ -42,9 +46,10 @@ import org.mockito.Mockito.mock
 class ReviewsActivityTest {
 
     companion object {
-        private const val TEST_UID = "MrPerfect"
+        private const val TEST_USERNAME = "MrPerfect"
+        private const val TEST_UID = "test uid"
 
-        private val TEST_POI_KEY = PointOfInterest(100.0,100.0,"lorem_ipsum1", "lorem_ipsum2")
+        private val TEST_POI_KEY = PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2")
         private const val TEST_TITLE = "Beach too sandy"
         private const val TEST_SUMMARY = "Water too wet"
 
@@ -68,6 +73,7 @@ class ReviewsActivityTest {
     private val mockSnapshotAfterEdition: QuerySnapshot = mock(QuerySnapshot::class.java)
 
     private val mockAuthenticationService = MockAuthenticationService()
+    private val mockUserInfoService = Mockito.mock(UserInfoService::class.java)
     private lateinit var database: FirestoreDatabase<Review>
 
     private var testAverageRatingBeforeAddition: Float = 0f
@@ -76,6 +82,21 @@ class ReviewsActivityTest {
 
     init {
         setupMocks()
+    }
+
+    @Before
+    fun startUserInfoService() {
+        val testFriendMap = HashMap<String, User>()
+        testFriendMap[TEST_UID] = User(TEST_UID, TEST_USERNAME)
+
+        `when`(mockUserInfoService.getUserInformation(Mockito.anyList(), Mockito.any(), Mockito.any())).then {
+            val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)
+
+            onSuccess(testFriendMap)
+
+            return@then null
+        }
+        ReviewsActivity.serviceProvider = { mockUserInfoService }
     }
 
     private fun setupMocks() {
@@ -138,7 +159,7 @@ class ReviewsActivityTest {
     }
 
     private val intent = Intent(getInstrumentation().targetContext.applicationContext, ReviewsActivity::class.java)
-                            .putExtra("POI_KEY", TEST_POI_KEY)
+            .putExtra("POI_KEY", TEST_POI_KEY)
 
     @get:Rule
     var rule: ActivityScenarioRule<ReviewsActivity> = ActivityScenarioRule(intent)
@@ -210,9 +231,9 @@ class ReviewsActivityTest {
 
         onView(withId(R.id.reviews_recycler_view))
                 .check(matches(isDisplayed()))
-                .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_UID))))
+                .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_USERNAME))))
 
-        onView(withText(TEST_UID)).check(matches(isDisplayed()))
+        onView(withText(TEST_USERNAME)).check(matches(isDisplayed()))
         onView(textViewContainsText(TEST_ADDED_TITLE)).check(matches(isDisplayed()))
 
         onView(withId(R.id.average_rating)).check(matches(textViewContainsText(AVERAGE_FORMAT.format(testAverageRatingAfterAddition))))
@@ -242,10 +263,10 @@ class ReviewsActivityTest {
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.reviews_recycler_view))
-            .check(matches(isDisplayed()))
-            .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_UID))))
+                .check(matches(isDisplayed()))
+                .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_USERNAME))))
 
-        onView(withText(TEST_UID)).check(matches(isDisplayed()))
+        onView(withText(TEST_USERNAME)).check(matches(isDisplayed()))
         onView(textViewContainsText(TEST_EDITED_TITLE)).check(matches(isDisplayed()))
 
         onView(withText(TEST_ADDED_TITLE)).check(doesNotExist())
