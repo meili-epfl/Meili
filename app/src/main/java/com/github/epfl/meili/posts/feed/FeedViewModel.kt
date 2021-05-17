@@ -1,6 +1,6 @@
 package com.github.epfl.meili.posts.feed
 
-import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDatabase.Companion.MAX_EQUALITY_CLAUSES
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
@@ -29,7 +29,7 @@ class FeedViewModel: PostListViewModel(), PoiServiceViewModel {
                 super.database.onDestroy()
             }
 
-            super.initDatabase(FirestoreDatabase("forum", Post::class.java) {
+            super.initDatabase(AtomicPostFirestoreDatabase("forum") {
                 it.whereIn(Post.POI_KEY_FIELD, nearestPoiKeys)
             })
             databaseInitialized = true

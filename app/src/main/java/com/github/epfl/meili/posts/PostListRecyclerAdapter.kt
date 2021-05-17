@@ -17,7 +17,6 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         PostViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false),
-            viewModel
         )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
@@ -27,7 +26,7 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel) :
         userId = uid
     }
 
-    class PostViewHolder(itemView: View, private val forumViewModel: PostListViewModel) :
+    inner class PostViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         private val author: TextView = itemView.findViewById(R.id.post_author)
         private val title: TextView = itemView.findViewById(R.id.post_title)
@@ -77,8 +76,8 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel) :
                     downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
                 }
             }
-            upvoteButton.setOnClickListener { forumViewModel.upvote(postId, userId) }
-            downvoteButton.setOnClickListener { forumViewModel.downvote(postId, userId) }
+            upvoteButton.setOnClickListener { viewModel.upvote(postId, userId) }
+            downvoteButton.setOnClickListener { viewModel.downvote(postId, userId) }
         }
     }
 }
