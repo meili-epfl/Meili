@@ -15,41 +15,42 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.profile.UserProfileLinker
-import com.github.epfl.meili.review.ReviewsActivity
+import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
+import com.github.epfl.meili.profile.friends.UserInfoService
+import com.github.epfl.meili.util.*
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
-import com.github.epfl.meili.util.MeiliRecyclerAdapter
-import com.github.epfl.meili.util.MenuActivity
-import com.github.epfl.meili.util.TopSpacingItemDecoration
-import com.github.epfl.meili.util.UIUtility
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSelectedListener, UserProfileLinker<Post>  {
+class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSelectedListener, UserProfileLinker<Post> {
     companion object {
         private const val CARD_PADDING: Int = 30
         private const val NEWEST = "Newest"
         private const val OLDEST = "Oldest"
         private const val TAG = "ForumActivity"
+
+        var serviceProvider: () -> UserInfoService = { UserInfoService() }
     }
 
-    override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Post,User>>
-    override lateinit var usersMap: Map<String, User>
-
+    override var usersMap: Map<String, User> = HashMap()
+    override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Post, User>>
     private lateinit var viewModel: ForumViewModel
 
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView
 
+    private lateinit var favoriteButton: FloatingActionButton
     private lateinit var editPostView: View
     private lateinit var editTitleView: EditText
     private lateinit var editTextVIew: EditText
@@ -59,19 +60,21 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
 
     // image choice and upload
     private val launchCameraActivity =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
-                loadImage(result.data!!.data!!)
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
+                    loadImage(result.data!!.data!!)
+                }
             }
-        }
-    private val launchGallery =  registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it) }
+    private val launchGallery =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it) }
     private lateinit var useCameraButton: ImageView
     private lateinit var useGalleryButton: ImageView
     private lateinit var displayImageView: ImageView
     private lateinit var executor: ExecutorService
     private var bitmap: Bitmap? = null
 
-    private lateinit var poiKey: String
+    private lateinit var poi: PointOfInterest
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,8 +82,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
 
         executor = Executors.newSingleThreadExecutor()
 
-        poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
-        usersMap = HashMap()
+        poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
 
         initViews()
         initViewModel()
@@ -100,13 +102,15 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         submitButton = findViewById(R.id.submit_post)
         cancelButton = findViewById(R.id.cancel_post)
 
+        favoriteButton = findViewById(R.id.favorite)
         useCameraButton = findViewById(R.id.post_use_camera)
         useGalleryButton = findViewById(R.id.post_use_gallery)
         displayImageView = findViewById(R.id.post_display_image)
         filterSpinner = findViewById(R.id.spinner)
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(this, R.array.sort_array,
-            android.R.layout.simple_spinner_item
+        ArrayAdapter.createFromResource(
+                this, R.array.sort_array,
+                android.R.layout.simple_spinner_item
         ).also { adapter ->
             // Specify the layout to use when the list of choices appears
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -114,6 +118,10 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
             filterSpinner.adapter = adapter
         }
         filterSpinner.onItemSelectedListener = this
+
+        if (Auth.getCurrentUser() == null) {
+            favoriteButton.visibility = View.GONE
+        }
 
     }
 
@@ -127,12 +135,13 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         UIUtility.hideSoftKeyboard(this)
         when (view) {
             createPostButton -> showEditPostView()
+            favoriteButton -> viewModel.addFavoritePoi(poi)
             submitButton -> addPost()
             cancelButton -> showListPostsView()
             useGalleryButton -> launchGallery.launch("image/*")
             useCameraButton -> launchCameraActivity.launch(
-                Intent(this, CameraActivity::class.java)
-                    .putExtra(CameraActivity.EDIT_PHOTO, true)
+                    Intent(this, CameraActivity::class.java)
+                            .putExtra(CameraActivity.EDIT_PHOTO, true)
             )
             else -> openPost(view.findViewById(R.id.post_id))
         }
@@ -141,9 +150,9 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     private fun openPost(view: View) {
         val postId: String = (view as TextView).text.toString()
         val intent: Intent = Intent(this, PostActivity::class.java)
-            .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
-            .putExtra(PostActivity.POST_ID, postId)
-            .putExtra(MapActivity.POI_KEY, poiKey)
+                .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
+                .putExtra(PostActivity.POST_ID, postId)
+                .putExtra(MapActivity.POI_KEY, poi.uid)
         startActivity(intent)
     }
 
@@ -160,7 +169,9 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         val title = editTitleView.text.toString()
         val text = editTextVIew.text.toString()
 
-        viewModel.addElement(postId, Post(user.username, title, timestamp, text))
+        viewModel.addElement(postId, Post(user.uid, title, timestamp, text))
+
+
 
         if (bitmap != null) {
             executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }
@@ -172,19 +183,37 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     private fun initViewModel() {
         @Suppress("UNCHECKED_CAST")
         viewModel = ViewModelProvider(this).get(ForumViewModel::class.java)
-
+        val poiKey = poi.uid
         viewModel.initDatabase(AtomicPostFirestoreDatabase("forum/$poiKey/posts"))
+        if (Auth.getCurrentUser() != null) {
+            viewModel.initFavoritePoisDatabase(
+                    FirestoreDatabase( // add to poi favorites
+                            String.format(FavoritePoisActivity.DB_PATH, Auth.getCurrentUser()!!.uid),
+                            PointOfInterest::class.java
+                    )
+            )
+        }
         viewModel.getElements().observe(this, { map ->
             postsMapListener(map)
         })
     }
 
     private fun postsMapListener(map: Map<String, Post>) {
-        val newUsersList = map.keys.toList().minus(usersMap.keys.toList())
+        Log.d(TAG, map.toString())
 
-        ReviewsActivity.serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, map) },
+        val userUidToPost = HashMap<String, Post>()
+        val userIds = ArrayList<String>()
+        for((key, value) in map){
+            userIds.add(value.authorUid)
+            userUidToPost[value.authorUid] = value
+        }
+
+        val newUsersList = userIds.minus(usersMap.keys.toList())
+
+        serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, userUidToPost) },
                 { Log.d(TAG, "Error when fetching users information") })
     }
+
     private fun initRecyclerView() {
         recyclerAdapter = ForumRecyclerAdapter(viewModel, this)
         val recyclerView: RecyclerView = findViewById(R.id.forum_recycler_view)
@@ -205,7 +234,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
                 View.GONE
 
             //and upvote/downvote
-            if(loggedIn && Auth.getCurrentUser() != null){
+            if (loggedIn && Auth.getCurrentUser() != null) {
                 (recyclerAdapter as ForumRecyclerAdapter).submitUserInfo(Auth.getCurrentUser()!!.uid)
                 recyclerAdapter.notifyDataSetChanged()
             }
@@ -222,7 +251,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         editPostView.visibility = View.GONE
     }
 
-    private fun sortPosts(b:Boolean){
+    private fun sortPosts(b: Boolean) {
         viewModel.getElements().removeObservers(this)
         viewModel.getElements().observe(this, { map ->
             postsMapListener(map.toList().sortedBy { pair ->

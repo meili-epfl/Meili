@@ -82,7 +82,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         val authorView: TextView = findViewById(R.id.post_author)
         val titleView: TextView = findViewById(R.id.post_title)
         val textView: TextView = findViewById(R.id.post_text)
-        authorView.text = post.author
+        authorView.text = post.authorUid
         titleView.text = post.title
         textView.text = post.text
 

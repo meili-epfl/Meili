@@ -48,6 +48,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
 
     override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Review, User>>
     override lateinit var usersMap: Map<String, User>
+    private lateinit var poi: PointOfInterest
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,8 +57,11 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
         listReviewsView = findViewById(R.id.list_reviews)
         editReviewView = findViewById(R.id.edit_review)
 
-        val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
+
         usersMap = HashMap()
+
+        poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
+        val poiKey = poi.uid
         showListReviewsView()
         initReviewEditView()
         initRecyclerView()
@@ -96,7 +100,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
         val title = editTitleView.text.toString()
         val summary = editSummaryView.text.toString()
 
-        viewModel.addElement(Auth.getCurrentUser()!!.uid, Review(rating, title, summary))
+        val userKey = Auth.getCurrentUser()!!.uid
+        viewModel.addElement(userKey, Review(rating, title, summary))
     }
 
     private fun editReviewButtonListener() {
@@ -121,7 +126,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
         averageRatingView = findViewById(R.id.average_rating)
 
         @Suppress("UNCHECKED_CAST")
-        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
+        viewModel =
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
         viewModel.initDatabase(FirestoreDatabase("review/$poiKey/reviews", Review::class.java))
         viewModel.getElements().observe(this, { map ->

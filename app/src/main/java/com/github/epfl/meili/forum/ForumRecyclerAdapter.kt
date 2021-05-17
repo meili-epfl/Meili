@@ -3,7 +3,6 @@ package com.github.epfl.meili.forum
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -13,27 +12,28 @@ import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
+import de.hdodenhof.circleimageview.CircleImageView
 
 class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel, private val listener: ClickListener) :
-    MeiliRecyclerAdapter<Pair<Post, User>>() {
+        MeiliRecyclerAdapter<Pair<Post, User>>() {
     private var userId: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        PostViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false),
-            forumViewModel, listener
-        )
+            PostViewHolder(
+                    LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false),
+                    forumViewModel, listener
+            )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-        (holder as PostViewHolder).bind(items[position], userId)
+            (holder as PostViewHolder).bind(items[position].second.second, items[position].second.first, userId)
 
     fun submitUserInfo(uid: String) {
         userId = uid
     }
 
     class PostViewHolder(itemView: View, private val forumViewModel: ForumViewModel, listener: ClickListener) :
-            MeiliWithUserRecyclerViewHolder<Post>(itemView, listener) {
-        private val author: TextView = itemView.findViewById(R.id.post_author)
+            MeiliWithUserRecyclerViewHolder<Post>(itemView, listener){
+
         private val title: TextView = itemView.findViewById(R.id.post_title)
         private val postId: TextView = itemView.findViewById(R.id.post_id)
         private val upvoteButton: ImageButton = itemView.findViewById(R.id.upvote_button)
@@ -44,12 +44,10 @@ class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel, private v
             itemView.findViewById<TextView>(R.id.userName).setOnClickListener(this)
         }
 
-        fun bind(pair: Pair<String, Pair<Post, User>>, userId: String?) {
-            super.bind(pair.second.second, pair.second.first)
-            postId.text = pair.first
+        fun bind(user: User, post: Post, userId: String?) {
+            super.bind(user,post)
+            postId.text = user.uid
 
-            val post = pair.second.first
-            author.text = post.author
             title.text = post.title
 
             //show or hide up/downvote depending on user status
@@ -61,16 +59,16 @@ class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel, private v
             upvoteButton.visibility = visibility
             downvoteButton.visibility = visibility
             if (userId != null) {
-                setupButtons(post.upvoters, post.downvoters, userId, pair.first)
+                setupButtons(post.upvoters, post.downvoters, userId, user.uid)
             }
             upvoteCount.text = (post.upvoters.size - post.downvoters.size).toString()
         }
 
         private fun setupButtons(
-            upvoters: ArrayList<String>,
-            downvoters: ArrayList<String>,
-            userId: String,
-            postId: String
+                upvoters: ArrayList<String>,
+                downvoters: ArrayList<String>,
+                userId: String,
+                postId: String
         ) {
             when {
                 upvoters.contains(userId) -> {
