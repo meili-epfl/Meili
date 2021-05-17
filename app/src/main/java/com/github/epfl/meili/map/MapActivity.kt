@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -40,6 +39,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.maps.android.clustering.ClusterManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapReadyCallback {
@@ -72,7 +72,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
     private lateinit var viewModel: MapActivityViewModel
 
-    private lateinit var switchModeButton: Button
+    private lateinit var switchModeButton: FloatingActionButton
 
     private val poiItems: HashMap<String, PoiItem> = HashMap()
 

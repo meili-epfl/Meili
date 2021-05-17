@@ -86,13 +86,7 @@
                     android:layout_weight="1"
                     android:layout_gravity="center"
                     />
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/switch_mode"
-                    android:text="Mode"
-                    android:layout_gravity="center"
-                    />
+
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -106,6 +100,18 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/switch_mode"
+        android:layout_width="78dp"
+        android:layout_height="66dp"
+        android:layout_alignTop="@id/map_fragment"
+
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="420dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_baseline_change_mode_24" />
 
     <androidx.fragment.app.FragmentContainerView
         android:layout_width="match_parent"
