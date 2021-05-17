@@ -1,12 +1,19 @@
 package com.github.epfl.meili.posts.feed
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.poi.PoiServiceCached
+import com.github.epfl.meili.posts.PostActivity
 import com.github.epfl.meili.posts.PostListRecyclerAdapter
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
 import com.github.epfl.meili.util.LocationService.listenToLocationChanges
@@ -25,9 +32,19 @@ class FeedActivity : NavigableActivity(R.layout.activity_feed, R.id.feed) {
         initRecyclerView()
         initLoggedInListener()
 
-        if (isLocationPermissionGranted(this)) {
-            listenToLocationChanges(applicationContext, viewModel)
-        }
+        listenToNearbyPosts()
+    }
+
+    fun onClick(view: View) {
+        openPost(view.findViewById(R.id.post_id))
+    }
+
+    private fun openPost(view: View) {
+        val postId: String = (view as TextView).text.toString()
+        val intent: Intent = Intent(this, PostActivity::class.java)
+            .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
+            .putExtra(PostActivity.POST_ID, postId)
+        startActivity(intent)
     }
 
     private fun initRecyclerView() {
@@ -63,8 +80,13 @@ class FeedActivity : NavigableActivity(R.layout.activity_feed, R.id.feed) {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        listenToNearbyPosts()
+    }
+
+    private fun listenToNearbyPosts() {
         if (isLocationPermissionGranted(this)) {
             listenToLocationChanges(applicationContext, viewModel)
+            viewModel.initPoiService(PoiServiceCached())
         }
     }
 }

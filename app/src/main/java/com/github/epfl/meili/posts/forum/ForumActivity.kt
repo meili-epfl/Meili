@@ -125,7 +125,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         executor.shutdown()
     }
 
-    fun onForumButtonClick(view: View) {
+    fun onClick(view: View) {
         UIUtility.hideSoftKeyboard(this)
         when (view) {
             createPostButton -> showEditPostView()
@@ -146,7 +146,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         val intent: Intent = Intent(this, PostActivity::class.java)
             .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
             .putExtra(PostActivity.POST_ID, postId)
-            .putExtra(MapActivity.POI_KEY, poi.uid)
         startActivity(intent)
     }
 

@@ -15,15 +15,24 @@ class FeedViewModel: PostListViewModel(), PoiServiceViewModel {
     override var nbCurrentRequests: Int = 0
     override var lastUserLocation: LatLng? = null
 
+    private var databaseInitialized = false
+
     override fun onSuccessPoiReceived(poiList: List<PointOfInterest>) {
         super.onSuccessPoiReceived(poiList)
-        super.database.onDestroy()
-        super.initDatabase(FirestoreDatabase("forum", Post::class.java) { collectionReference ->
-            val nearestPoiKeys = poiList.sortedBy {
-                computeDistanceBetween(it.getLatLng(), lastUserLocation!!)
-            }.take(MAX_EQUALITY_CLAUSES).map { it.uid }
 
-            collectionReference.whereIn(Post.POI_KEY_FIELD, nearestPoiKeys)
-        })
+        val nearestPoiKeys = poiList.sortedBy {
+            computeDistanceBetween(it.getLatLng(), lastUserLocation!!)
+        }.take(MAX_EQUALITY_CLAUSES).map { it.uid }
+
+        if (nearestPoiKeys.isNotEmpty()) {
+            if (databaseInitialized) {
+                super.database.onDestroy()
+            }
+
+            super.initDatabase(FirestoreDatabase("forum", Post::class.java) {
+                it.whereIn(Post.POI_KEY_FIELD, nearestPoiKeys)
+            })
+            databaseInitialized = true
+        }
     }
 }

@@ -39,7 +39,6 @@ class PostActivity : AppCompatActivity() {
     private lateinit var addCommentButton : Button
 
     private lateinit var postId: String
-    private lateinit var poiKey: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +46,6 @@ class PostActivity : AppCompatActivity() {
 
         val post: Post = intent.getParcelableExtra(Post.TAG)!!
         postId = intent.getStringExtra(POST_ID)!!
-        poiKey = intent.getStringExtra(MapActivity.POI_KEY)!!
 
         initViews(post)
 
