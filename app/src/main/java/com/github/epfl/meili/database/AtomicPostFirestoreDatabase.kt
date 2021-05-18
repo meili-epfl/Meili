@@ -1,8 +1,13 @@
 package com.github.epfl.meili.database
 
 import com.github.epfl.meili.models.Post
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Query
 
-class AtomicPostFirestoreDatabase(path: String) : FirestoreDatabase<Post>(path, Post::class.java) {
+class AtomicPostFirestoreDatabase(
+    path: String,
+    query: (CollectionReference) -> Query = { it }
+) : FirestoreDatabase<Post>(path, Post::class.java, query) {
     companion object {
         private const val upVoters = "upvoters"
         private const val downVoters = "downvoters"
@@ -13,11 +18,11 @@ class AtomicPostFirestoreDatabase(path: String) : FirestoreDatabase<Post>(path, 
      */
     @Suppress("UNCHECKED_CAST")
     fun upDownVote(key: String, userUid: String, isUpvote: Boolean) {
-        val sfDocRef = ref.document(key)
+        val sfDocRef = collectionReference.document(key)
         databaseProvider().runTransaction { transaction ->
             val snapshot = transaction.get(sfDocRef)
-            val fieldName: String = if(isUpvote) upVoters else downVoters
-            val otherFieldName: String = if(isUpvote) downVoters else upVoters
+            val fieldName: String = if (isUpvote) upVoters else downVoters
+            val otherFieldName: String = if (isUpvote) downVoters else upVoters
             val voters = ArrayList(snapshot.get(fieldName)!! as List<String>)
             val otherVoters = ArrayList(snapshot.get(otherFieldName)!! as List<String>)
             if (voters.contains(userUid)) {
@@ -29,10 +34,8 @@ class AtomicPostFirestoreDatabase(path: String) : FirestoreDatabase<Post>(path, 
                 voters.add(userUid)
             }
 
-            //update to new up/downvoters list
             transaction.update(sfDocRef, fieldName, voters)
             transaction.update(sfDocRef, otherFieldName, otherVoters)
         }
     }
-
 }

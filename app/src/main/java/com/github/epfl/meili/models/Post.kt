@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Post(
+    var poiKey: String = "",
     var author: String = "",
     var title: String = "",
     val timestamp: Long = -1,
@@ -15,5 +16,6 @@ data class Post(
 ) : Parcelable {
     companion object {
         const val TAG = "Post"
+        const val POI_KEY_FIELD = "poiKey"
     }
 }
