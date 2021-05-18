@@ -1,4 +1,4 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.posts
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,14 +10,13 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 
-class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) :
+class PostListRecyclerAdapter(private val viewModel: PostListViewModel) :
     MeiliRecyclerAdapter<Post>() {
     private var userId: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         PostViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false),
-            forumViewModel
         )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
@@ -27,7 +26,7 @@ class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) :
         userId = uid
     }
 
-    class PostViewHolder(itemView: View, private val forumViewModel: ForumViewModel) :
+    inner class PostViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         private val author: TextView = itemView.findViewById(R.id.post_author)
         private val title: TextView = itemView.findViewById(R.id.post_title)
@@ -77,8 +76,8 @@ class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel) :
                     downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
                 }
             }
-            upvoteButton.setOnClickListener { forumViewModel.upvote(postId, userId) }
-            downvoteButton.setOnClickListener { forumViewModel.downvote(postId, userId) }
+            upvoteButton.setOnClickListener { viewModel.upvote(postId, userId) }
+            downvoteButton.setOnClickListener { viewModel.downvote(postId, userId) }
         }
     }
 }

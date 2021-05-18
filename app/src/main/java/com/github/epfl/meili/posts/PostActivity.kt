@@ -1,4 +1,4 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.posts
 
 import android.net.Uri
 import android.os.Bundle
@@ -8,27 +8,25 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.MeiliViewModel
-import com.github.epfl.meili.util.TopSpacingItemDecoration
+import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
 import com.squareup.picasso.Picasso
 
 class PostActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "PostActivity"
-        private val DEFAULT_URI = Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
+        private val DEFAULT_URI =
+            Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
         const val POST_ID = "Post_ID"
-        private const val COMMENTS_PADDING: Int = 20
     }
 
     private lateinit var recyclerAdapter: CommentsRecyclerAdapter
@@ -37,10 +35,9 @@ class PostActivity : AppCompatActivity() {
     private lateinit var imageView: ImageView
     private lateinit var commentButton: Button
     private lateinit var editText: EditText
-    private lateinit var addCommentButton : Button
+    private lateinit var addCommentButton: Button
 
     private lateinit var postId: String
-    private lateinit var poiKey: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,21 +45,20 @@ class PostActivity : AppCompatActivity() {
 
         val post: Post = intent.getParcelableExtra(Post.TAG)!!
         postId = intent.getStringExtra(POST_ID)!!
-        poiKey = intent.getStringExtra(MapActivity.POI_KEY)!!
 
         initViews(post)
 
         FirebaseStorageService.getDownloadUrl(
-                "images/forum/$postId",
-                { uri -> getDownloadUrlCallback(uri)},
-                { exception ->
-                    Log.e(TAG,"Image not found", exception)
-                    getDownloadUrlCallback(DEFAULT_URI)
-                }
+            "images/forum/$postId",
+            { uri -> getDownloadUrlCallback(uri) },
+            { exception ->
+                Log.e(TAG, "Image not found", exception)
+                getDownloadUrlCallback(DEFAULT_URI)
+            }
         )
 
         initViewModel()
-        initRecyclerView()
+        initRecyclerAdapter()
         initLoggedInListener()
     }
 
@@ -89,23 +85,20 @@ class PostActivity : AppCompatActivity() {
 
     private fun initViewModel() {
         @Suppress("UNCHECKED_CAST")
-        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
+        viewModel =
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
 
-        viewModel.initDatabase(FirestoreDatabase("forum/$poiKey/posts/$postId/comments", Comment::class.java))
+        viewModel.initDatabase(FirestoreDatabase("forum/$postId/comments", Comment::class.java))
         viewModel.getElements().observe(this, { map ->
             recyclerAdapter.submitList(map.toList())
             recyclerAdapter.notifyDataSetChanged()
         })
     }
 
-    private fun initRecyclerView() {
+    private fun initRecyclerAdapter() {
         recyclerAdapter = CommentsRecyclerAdapter(viewModel)
         val recyclerView: RecyclerView = findViewById(R.id.comments_recycler_view)
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@PostActivity)
-            addItemDecoration(TopSpacingItemDecoration(COMMENTS_PADDING))
-            adapter = recyclerAdapter
-        }
+        initRecyclerView(recyclerAdapter, recyclerView,this)
         ViewCompat.setNestedScrollingEnabled(recyclerView, false);
     }
 

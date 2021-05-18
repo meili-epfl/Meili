@@ -25,6 +25,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.contains
 import org.mockito.Mockito
 
 
@@ -34,7 +36,7 @@ class ChatLogMenuButtonsTest {
     companion object {
         private const val TEST_UID = "UID"
         private const val TEST_USERNAME = "AUTHOR"
-        private val TEST_POST = Post(TEST_USERNAME, "TITLE", -1,"TEXT")
+        private val TEST_POST = Post("fakepoi2", TEST_USERNAME, "TITLE", -1, "TEXT")
         private const val MOCK_PATH = "POI/mock-poi"
         private const val fake_message = "fake_text"
         private const val fake_id = "fake_id"
@@ -69,17 +71,19 @@ class ChatLogMenuButtonsTest {
     private fun setupMocks() {
         Mockito.`when`(mockFirestore.collection((ArgumentMatchers.any())))
             .thenReturn(mockCollection)
-        Mockito.`when`(mockCollection.addSnapshotListener(ArgumentMatchers.any()))
-            .thenAnswer { invocation ->
-                Mockito.mock(ListenerRegistration::class.java)
-            }
-        Mockito.`when`(mockCollection.document(ArgumentMatchers.contains(TEST_UID)))
-            .thenReturn(mockDocument)
+        val mockQuery = Mockito.mock(Query::class.java)
+        Mockito.`when`(mockCollection.whereEqualTo(anyString(), anyString())).thenReturn(mockQuery)
+        Mockito.`when`(mockCollection.addSnapshotListener(ArgumentMatchers.any())).thenAnswer {
+            Mockito.mock(ListenerRegistration::class.java)
+        }
+        Mockito.`when`(mockQuery.addSnapshotListener(ArgumentMatchers.any())).thenAnswer {
+            Mockito.mock(ListenerRegistration::class.java)
+        }
+
+        Mockito.`when`(mockCollection.document(contains(TEST_UID))).thenReturn(mockDocument)
 
         Mockito.`when`(mockSnapshotBeforeAddition.documents)
             .thenReturn(ArrayList<DocumentSnapshot>())
-
-
 
         val mockDocumentSnapshot: DocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
         Mockito.`when`(mockDocumentSnapshot.id).thenReturn(TEST_UID)
@@ -87,9 +91,7 @@ class ChatLogMenuButtonsTest {
             .thenReturn(TEST_POST)
         Mockito.`when`(mockSnapshotAfterAddition.documents).thenReturn(listOf(mockDocumentSnapshot))
 
-
         UiThreadStatement.runOnUiThread {
-
 
             Mockito.`when`(mockAuth.getCurrentUser())
                 .thenReturn(User("fake_uid", "fake_name", "fake_email"))
@@ -121,7 +123,6 @@ class ChatLogMenuButtonsTest {
     fun releaseIntents() {
         Intents.release()
     }
-
 
     @Test
     fun clickForumMenuButton() {
