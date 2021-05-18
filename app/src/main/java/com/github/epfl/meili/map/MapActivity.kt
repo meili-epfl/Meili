@@ -16,11 +16,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.poi.PoiServiceCached
+import com.github.epfl.meili.posts.forum.ForumActivity
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
 import com.github.epfl.meili.util.LocationService.requestLocationPermission
@@ -153,7 +153,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
     private fun setUpClusterer() {
         LocationService.listenToLocationChanges(applicationContext, viewModel)
-        viewModel.setPoiService(PoiServiceCached())
+        viewModel.initPoiService(PoiServiceCached())
 
         val currentUser = Auth.getCurrentUser()
         if (currentUser != null) {
@@ -224,7 +224,6 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         if (isLocationPermissionGranted(this)) {
             getDeviceLocationAndSetCameraPosition()
             setUpClusterer()
-            LocationService.listenToLocationChanges(applicationContext, viewModel)
         }
     }
 
@@ -241,7 +240,6 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
         if (isLocationPermissionGranted(this)) {
             getDeviceLocationAndSetCameraPosition()
-
             setUpClusterer()
         } else {
             requestLocationPermission(this)
