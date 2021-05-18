@@ -49,14 +49,8 @@
     <string name="enter_message">Enter Message…</string>
     <string name="send">Send</string>
     <string name="my_feed">My Feed</string>
-    <string name="title_70_characters_max">Title (70 characters max.)</string>
-    <string name="text_500_characters_max">Text (500 characters max.)</string>
     <string name="forum_image">Forum image</string>
-    <string name="use_camera">Use camera</string>
-    <string name="use_gallery">Use gallery</string>
-    <string name="cancel">Cancel</string>
-    <string name="sort_by">Sort by:</string>
-    <string name="create_post">Create post</string>
+
     <string name="add_friend">Add Friend</string>
     <string name="sign_in_to_use_the_map">Sign In to use the map</string>
     <string name="sign_in">Sign In</string>
@@ -108,4 +102,14 @@
     <string name="profile">Profile</string>
     <string name="map">Map</string>
     <string name="feed">Feed</string>
+    <string name="favorite">Favorite</string>
+    <string name="title_70_characters_max">Title (70 characters max.)</string>
+    <string name="text_500_characters_max">Text (500 characters max.)</string>
+    <string name="images">Images</string>
+    <string name="use_camera">Use camera</string>
+    <string name="use_gallery">Use gallery</string>
+    <string name="create_post">Create post</string>
+    <string name="cancel">Cancel</string>
+    <string name="sort_by">Sort by:</string>
+
 </resources>

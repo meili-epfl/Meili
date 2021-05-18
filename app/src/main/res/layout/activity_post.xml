@@ -2,7 +2,7 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".forum.PostActivity"
+    tools:context=".posts.PostActivity"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 

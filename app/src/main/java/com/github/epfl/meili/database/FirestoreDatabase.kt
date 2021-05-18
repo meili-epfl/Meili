@@ -12,6 +12,8 @@ open class FirestoreDatabase<T : Any>(
     companion object {
         private const val TAG: String = "FirestoreDatabase"
 
+        const val MAX_EQUALITY_CLAUSES = 10
+
         var databaseProvider: () -> FirebaseFirestore = { FirebaseFirestore.getInstance() }
     }
 

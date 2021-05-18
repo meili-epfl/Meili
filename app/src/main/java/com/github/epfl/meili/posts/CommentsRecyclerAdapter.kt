@@ -1,4 +1,4 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.posts
 
 import android.view.LayoutInflater
 import android.view.View
@@ -25,9 +25,6 @@ class CommentsRecyclerAdapter :
         private val author: TextView = itemView.findViewById(R.id.comment_author)
         private val text: TextView = itemView.findViewById(R.id.comment_text)
 
-        /**
-         * Binds the comment contained in `pair` to its viewholder
-         */
         fun bind(pair: Pair<String, Comment>) {
             val comment = pair.second
             author.text = comment.author

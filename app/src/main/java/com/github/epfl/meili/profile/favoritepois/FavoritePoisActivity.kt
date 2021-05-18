@@ -3,30 +3,26 @@ package com.github.epfl.meili.profile.favoritepois
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.*
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.posts.forum.ForumActivity
 import com.github.epfl.meili.profile.ProfileActivity.Companion.USER_KEY
 import com.github.epfl.meili.util.MeiliViewModel
-import com.github.epfl.meili.util.TopSpacingItemDecoration
-import java.util.*
+import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
 
 
 class FavoritePoisActivity : AppCompatActivity() {
     companion object {
-        private const val CARD_PADDING: Int = 30
         private const val ACTIVITY_TITLE = "Favorite POIs"
         const val DB_PATH = "poi-favorite/%s/poi-favorite"
     }
 
-    private lateinit var radapter: FavoritePoisRecyclerAdapter
+    private val recyclerAdapter = FavoritePoisRecyclerAdapter()
     private lateinit var viewModel: MeiliViewModel<PointOfInterest>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,8 +32,13 @@ class FavoritePoisActivity : AppCompatActivity() {
         title = ACTIVITY_TITLE
 
         val userKey = intent.getStringExtra(USER_KEY)
-        initRecyclerView()
+
         initViewModel(userKey!!)
+        initRecyclerView(
+            recyclerAdapter,
+            findViewById(R.id.favorite_pois_recycler_view),
+            this
+        )
     }
 
     override fun onDestroy() {
@@ -71,17 +72,7 @@ class FavoritePoisActivity : AppCompatActivity() {
     }
 
     private fun favoritePoisMapListener(map: Map<String, PointOfInterest>) {
-        radapter.submitList(map.toList())
-        radapter.notifyDataSetChanged()
-    }
-
-    private fun initRecyclerView() {
-        val recycler: RecyclerView = findViewById(R.id.favorite_pois_recycler_view)
-        radapter = FavoritePoisRecyclerAdapter()
-        recycler.apply {
-            layoutManager = LinearLayoutManager(this@FavoritePoisActivity)
-            addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
-            adapter = radapter
-        }
+        recyclerAdapter.submitList(map.toList())
+        recyclerAdapter.notifyDataSetChanged()
     }
 }

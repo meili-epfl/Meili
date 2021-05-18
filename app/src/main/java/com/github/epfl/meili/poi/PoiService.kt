@@ -7,7 +7,6 @@ import com.google.android.gms.maps.model.LatLng
 interface PoiService {
     fun requestPois(latLng: LatLng?, onSuccess: ((List<PointOfInterest>) -> Unit)?, onError: ((Error) -> Unit)?)
 
-
     /**
      * @param userPosition: location of the user in coordinates
      * @param poiList: list of POIs that we know of

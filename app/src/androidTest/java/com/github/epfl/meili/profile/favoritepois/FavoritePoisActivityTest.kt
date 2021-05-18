@@ -17,8 +17,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.forum.ForumActivity
+
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.posts.forum.ForumActivity
 import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.firebase.firestore.*
