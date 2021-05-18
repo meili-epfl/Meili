@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
-import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.map.MapActivity
@@ -36,7 +35,7 @@ class FavoritePoisActivity : AppCompatActivity() {
 
         title = ACTIVITY_TITLE
 
-        var userKey = intent.getStringExtra(USER_KEY)
+        val userKey = intent.getStringExtra(USER_KEY)
         initRecyclerView()
         initViewModel(userKey!!)
     }

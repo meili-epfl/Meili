@@ -325,12 +325,10 @@ class ForumActivityTest {
         transactionFunctionCaptor.value.apply(mockTransaction)
     }
 
-        @Test
-        fun useCameraIntentsTest() {
-            mockAuthenticationService.signInIntent(null)
-            database.onEvent(mockSnapshotBeforeAddition, null)
-
-            onView(withId(R.id.create_post)).perform(click())
+    @Test
+    fun useCameraIntentsTest() {
+        mockAuthenticationService.signInIntent(null)
+        database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.create_post)).perform(click())
 
