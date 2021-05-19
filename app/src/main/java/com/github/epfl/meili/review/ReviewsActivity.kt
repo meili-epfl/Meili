@@ -5,8 +5,6 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
@@ -18,11 +16,10 @@ import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.UserProfileLinker
 import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.*
+import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
 
 class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, UserProfileLinker<Review> {
     companion object {
-        private const val CARD_PADDING: Int = 30
-
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
         private const val EDIT_BUTTON_DRAWABLE = android.R.drawable.ic_menu_edit
         private const val TAG = "ReviewsActivity"
@@ -64,7 +61,11 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
         val poiKey = poi.uid
         showListReviewsView()
         initReviewEditView()
-        initRecyclerView()
+        initRecyclerView(
+                recyclerAdapter,
+                findViewById(R.id.reviews_recycler_view),
+                this
+        )
         initViewModel(poiKey)
         initLoggedInListener()
     }
@@ -100,8 +101,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
         val title = editTitleView.text.toString()
         val summary = editSummaryView.text.toString()
 
-        val userKey = Auth.getCurrentUser()!!.uid
-        viewModel.addElement(userKey, Review(rating, title, summary))
+        val key = Auth.getCurrentUser()!!.uid + poi.uid
+        viewModel.addElement(key, Review(poi.uid, rating, title, summary))
     }
 
     private fun editReviewButtonListener() {
@@ -127,9 +128,12 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
 
         @Suppress("UNCHECKED_CAST")
         viewModel =
-            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
+                ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
-        viewModel.initDatabase(FirestoreDatabase("review/$poiKey/reviews", Review::class.java))
+        viewModel.initDatabase(FirestoreDatabase("reviews", Review::class.java) {
+            it.whereEqualTo(Review.POI_KEY_FIELD, poiKey)
+        })
+
         viewModel.getElements().observe(this, { map ->
             reviewsMapListener(map)
         })
@@ -152,17 +156,6 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
         serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, map) },
                 { Log.d(TAG, "Error when fetching users information") })
         averageRatingView.text = getString(R.string.average_rating_format).format(Review.averageRating(map))
-    }
-
-
-    private fun initRecyclerView() {
-        recyclerAdapter = ReviewsRecyclerAdapter(this)
-        val recyclerView: RecyclerView = findViewById(R.id.reviews_recycler_view)
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@ReviewsActivity)
-            addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
-            adapter = recyclerAdapter
-        }
     }
 
     private fun initLoggedInListener() {

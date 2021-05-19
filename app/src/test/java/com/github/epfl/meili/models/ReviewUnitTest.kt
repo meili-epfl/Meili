@@ -6,7 +6,7 @@ import org.junit.Test
 class ReviewUnitTest {
 
     companion object {
-        private const val TEST_RATING: Float = 3f
+        private const val TEST_POI_KEY = "POI"
         private const val TEST_TITLE : String = "Beach Too Sandy"
         private const val TEST_SUMMARY: String = "Water Too Wet"
     }
@@ -14,12 +14,12 @@ class ReviewUnitTest {
     @Test
     fun averageRatingCalculationTest() {
         val reviewMap: MutableMap<String, Review> = HashMap()
-        val range: IntRange = IntRange(1, 5)
+        val range = IntRange(1, 5)
 
-        var averageRating: Float = 0f
+        var averageRating = 0f
 
         for (i in range) {
-            reviewMap[i.toString()] = Review(i.toFloat(), TEST_TITLE, TEST_SUMMARY)
+            reviewMap[i.toString()] = Review(TEST_POI_KEY, i.toFloat(), TEST_TITLE, TEST_SUMMARY)
             averageRating += i.toFloat()
         }
 

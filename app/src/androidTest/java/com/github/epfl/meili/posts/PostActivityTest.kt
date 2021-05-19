@@ -1,4 +1,4 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.posts
 
 
 import android.content.Intent
@@ -56,7 +56,7 @@ class PostActivityTest {
         private const val TEST_ID = "ID"
         private const val TEST_AUTHOR_UID = "test uid"
         private const val TEST_USERNAME = "Test username"
-        private val TEST_POST = Post(TEST_AUTHOR_UID, "TITLE", -1,"TEXT")
+        private val TEST_POST = Post(TEST_POI_KEY, TEST_AUTHOR_UID, "TITLE", -1,"TEXT")
         private val TEST_COMMENT = Comment("AUTHOR_COMMENT", "TEXT_COMMENT")
     }
 
@@ -110,7 +110,7 @@ class PostActivityTest {
     }
 
     private fun setupMocks() {
-        Mockito.`when`(mockFirestore.collection("forum/${TEST_POI_KEY}/posts"))
+        Mockito.`when`(mockFirestore.collection("forum"))
             .thenReturn(mockCollection)
         Mockito.`when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
             database = invocation.arguments[0] as AtomicPostFirestoreDatabase
@@ -119,7 +119,7 @@ class PostActivityTest {
         Mockito.`when`(mockCollection.document(ArgumentMatchers.contains(TEST_ID)))
             .thenReturn(mockDocument)
 
-        Mockito.`when`(mockFirestore.collection("forum/${TEST_POI_KEY}/posts/${TEST_ID}/comments"))
+        Mockito.`when`(mockFirestore.collection("forum/${TEST_ID}/comments"))
             .thenReturn(mockComments)
         Mockito.`when`(mockComments.addSnapshotListener(any())).thenAnswer { invocation ->
             commentsDatabase = invocation.arguments[0] as FirestoreDatabase<Comment>

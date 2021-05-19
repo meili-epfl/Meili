@@ -1,4 +1,4 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.posts
 
 import android.view.LayoutInflater
 import android.view.View
@@ -12,16 +12,15 @@ import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
-import de.hdodenhof.circleimageview.CircleImageView
 
-class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel, private val listener: ClickListener) :
+class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private val listener: ClickListener) :
         MeiliRecyclerAdapter<Pair<Post, User>>() {
     private var userId: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             PostViewHolder(
                     LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false),
-                    forumViewModel, listener
+                    viewModel, listener
             )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
@@ -31,8 +30,8 @@ class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel, private v
         userId = uid
     }
 
-    class PostViewHolder(itemView: View, private val forumViewModel: ForumViewModel, listener: ClickListener) :
-            MeiliWithUserRecyclerViewHolder<Post>(itemView, listener){
+    class PostViewHolder(itemView: View, private val viewModel: PostListViewModel, listener: ClickListener) :
+            MeiliWithUserRecyclerViewHolder<Post>(itemView, listener) {
 
         private val title: TextView = itemView.findViewById(R.id.post_title)
         private val postId: TextView = itemView.findViewById(R.id.post_id)
@@ -45,7 +44,7 @@ class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel, private v
         }
 
         fun bind(user: User, post: Post, userId: String?) {
-            super.bind(user,post)
+            super.bind(user, post)
             postId.text = user.uid
 
             title.text = post.title
@@ -84,8 +83,8 @@ class ForumRecyclerAdapter(private val forumViewModel: ForumViewModel, private v
                     downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
                 }
             }
-            upvoteButton.setOnClickListener { forumViewModel.upvote(postId, userId) }
-            downvoteButton.setOnClickListener { forumViewModel.downvote(postId, userId) }
+            upvoteButton.setOnClickListener { viewModel.upvote(postId, userId) }
+            downvoteButton.setOnClickListener { viewModel.downvote(postId, userId) }
         }
     }
 }

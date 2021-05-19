@@ -1,4 +1,4 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.posts
 
 import android.content.Intent
 import android.net.Uri
@@ -29,6 +29,7 @@ import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.profile.friends.UserInfoService
+import com.github.epfl.meili.posts.forum.ForumActivity
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
@@ -57,12 +58,13 @@ import org.mockito.Mockito.mock
 @Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class ForumActivityTest {
-
     companion object {
         private const val TEST_UID = "UID"
         private const val TEST_USERNAME = "AUTHOR"
-        private val TEST_POST = Post(TEST_UID, "TITLE", -1, "TEXT")
-        private val TEST_POI_KEY = PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2")
+        private const val TEST_AUTHOR_ID = "author id"
+        private val TEST_POST = Post(TEST_UID, TEST_AUTHOR_ID, "TITLE", -1, "TEXT")
+        private const val TEST_POI_KEY = "lorem_ipsum2"
+        private val TEST_POI = PointOfInterest(100.0, 100.0, "lorem_ipsum1", TEST_POI_KEY)
     }
 
     private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
@@ -87,10 +89,9 @@ class ForumActivityTest {
     private lateinit var poiDatabase: FirestoreDatabase<PointOfInterest>
 
     private val intent = Intent(
-            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
-            ForumActivity::class.java
-    )
-            .putExtra(MapActivity.POI_KEY, TEST_POI_KEY)
+        InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
+        ForumActivity::class.java
+    ).putExtra(MapActivity.POI_KEY, TEST_POI)
 
     @get:Rule
     var rule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(intent)
@@ -134,17 +135,19 @@ class ForumActivityTest {
     }
 
     private fun setupMocks() {
-        `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts")).thenReturn(
-                mockCollection
-        )
+        `when`(mockFirestore.collection("forum")).thenReturn(mockCollection)
 
-        `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
+        val mockQuery = mock(Query::class.java)
+        `when`(mockCollection.whereEqualTo(Post.POI_KEY_FIELD, TEST_POI_KEY)).thenReturn(mockQuery)
+
+        `when`(mockQuery.addSnapshotListener(any())).thenAnswer { invocation ->
             database = invocation.arguments[0] as AtomicPostFirestoreDatabase
             mock(ListenerRegistration::class.java)
         }
+
         `when`(mockCollection.document(contains(TEST_UID))).thenReturn(mockDocument)
 
-        `when`(mockFirestore.collection("forum/${TEST_POI_KEY.uid}/posts/${TEST_UID}/comments")).thenReturn(mockComments)
+        `when`(mockFirestore.collection("forum/${TEST_UID}/comments")).thenReturn(mockComments)
         `when`(mockComments.addSnapshotListener(any())).thenAnswer { invocation ->
             commentsDatabase = invocation.arguments[0] as FirestoreDatabase<Comment>
             mock(ListenerRegistration::class.java)
@@ -159,12 +162,16 @@ class ForumActivityTest {
         `when`(mockSnapshotAfterAddition.documents).thenReturn(listOf(mockDocumentSnapshot))
 
         // Mock poi history
-        `when`(mockFirestore.collection("poi-history/${TEST_UID}/poi-history")).thenReturn(mockPoiHistory)
+        `when`(mockFirestore.collection("poi-history/${TEST_UID}/poi-history")).thenReturn(
+            mockPoiHistory
+        )
         `when`(mockPoiHistory.addSnapshotListener(any())).thenAnswer { invocation ->
             poiDatabase = invocation.arguments[0] as FirestoreDatabase<PointOfInterest>
             mock(ListenerRegistration::class.java)
         }
-        `when`(mockPoiHistory.document(ArgumentMatchers.matches(TEST_POI_KEY.uid))).thenReturn(mockDocument)
+        `when`(mockPoiHistory.document(ArgumentMatchers.matches(TEST_POI_KEY))).thenReturn(
+            mockDocument
+        )
 
         mockAuthenticationService.setMockUid(TEST_UID)
         mockAuthenticationService.setUsername(TEST_USERNAME)
@@ -322,7 +329,7 @@ class ForumActivityTest {
     fun clickOnSortingButtonTest() {
         mockAuthenticationService.signInIntent()
         database.onEvent(mockSnapshotBeforeAddition, null)
-        onView(withId(R.id.spinner)).perform(click())
+        onView(withId(R.id.sort_spinner)).perform(click())
     }
 
     @Test

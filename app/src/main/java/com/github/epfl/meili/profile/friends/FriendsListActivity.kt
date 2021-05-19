@@ -7,32 +7,25 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
-import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.profile.UserProfileLinker
-import com.github.epfl.meili.profile.friends.NearbyActivity
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliViewModel
-import com.github.epfl.meili.util.TopSpacingItemDecoration
+import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
 
 class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinker<Friend> {
     companion object {
-        private const val FRIENDS_PADDING: Int = 15
         private const val TAG: String = "FriendListActivity"
         private const val TITLE: String = "My Friends"
         private const val DEFAULT_MEILI_FRIEND_UID = "OP7VVymi3ZOfTr0akvMnh5HEa2a2"
         const val FRIEND_KEY = "FRIEND_KEY"
-
 
         var serviceProvider: () -> UserInfoService = { UserInfoService() }
         var getFriendsDatabasePath: (String) -> String = { uid -> "friends/$uid/friends" }
@@ -48,10 +41,14 @@ class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinke
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_friends_list)
 
+        initViews()
 
         initViewModel()
-        initRecyclerView()
-        initViews()
+        initRecyclerView(
+                recyclerAdapter,
+                findViewById(R.id.friends_list_recycler_view),
+                this
+        )
 
         supportActionBar?.title = TITLE
     }
@@ -78,16 +75,6 @@ class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinke
 
     private fun initViews() {
         addFriendsButton = findViewById(R.id.add_friend_button)
-    }
-
-    private fun initRecyclerView() {
-        recyclerAdapter = FriendsListRecyclerAdapter(this)
-        val recyclerView: RecyclerView = findViewById(R.id.friends_list_recycler_view)
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@FriendsListActivity)
-            addItemDecoration(TopSpacingItemDecoration(FRIENDS_PADDING))
-            adapter = recyclerAdapter
-        }
     }
 
     private fun onFriendsUpdateReceived(map: Map<String, Friend>) {

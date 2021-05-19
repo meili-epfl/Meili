@@ -49,7 +49,8 @@ class ReviewsActivityTest {
         private const val TEST_USERNAME = "MrPerfect"
         private const val TEST_UID = "test uid"
 
-        private val TEST_POI_KEY = PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2")
+        private const val TEST_POI_KEY = "lorem_ipsum2"
+        private val TEST_POI = PointOfInterest(100.0,100.0,"lorem_ipsum1", TEST_POI_KEY)
         private const val TEST_TITLE = "Beach too sandy"
         private const val TEST_SUMMARY = "Water too wet"
 
@@ -100,8 +101,10 @@ class ReviewsActivityTest {
     }
 
     private fun setupMocks() {
-        `when`(mockFirestore.collection("review/${TEST_POI_KEY.uid}/reviews")).thenReturn(mockCollection)
-        `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
+        `when`(mockFirestore.collection("reviews")).thenReturn(mockCollection)
+        val mockQuery = mock(Query::class.java)
+        `when`(mockCollection.whereEqualTo(Review.POI_KEY_FIELD, TEST_POI_KEY)).thenReturn(mockQuery)
+        `when`(mockQuery.addSnapshotListener(any())).thenAnswer { invocation ->
             database = invocation.arguments[0] as FirestoreDatabase<Review>
             mock(ListenerRegistration::class.java)
         }
@@ -128,13 +131,13 @@ class ReviewsActivityTest {
     private fun editedReviewDocumentSnapshot(): DocumentSnapshot {
         testAverageRatingAfterEdition = (NUM_REVIEWS_BEFORE_ADDITION * testAverageRatingBeforeAddition + EDITED_REVIEW_RATING) /
                 (NUM_REVIEWS_BEFORE_ADDITION + 1)
-        return getMockDocumentSnapshot(TEST_UID, Review(EDITED_REVIEW_RATING, TEST_EDITED_TITLE, TEST_SUMMARY))
+        return getMockDocumentSnapshot(TEST_UID, Review(TEST_POI_KEY, EDITED_REVIEW_RATING, TEST_EDITED_TITLE, TEST_SUMMARY))
     }
 
     private fun addedReviewDocumentSnapshot(): DocumentSnapshot {
         testAverageRatingAfterAddition = (NUM_REVIEWS_BEFORE_ADDITION * testAverageRatingBeforeAddition + ADDED_REVIEW_RATING) /
                 (NUM_REVIEWS_BEFORE_ADDITION + 1)
-        return getMockDocumentSnapshot(TEST_UID, Review(ADDED_REVIEW_RATING, TEST_ADDED_TITLE, TEST_SUMMARY))
+        return getMockDocumentSnapshot(TEST_UID, Review(TEST_POI_KEY, ADDED_REVIEW_RATING, TEST_ADDED_TITLE, TEST_SUMMARY))
     }
 
     private fun beforeAdditionList(): MutableList<DocumentSnapshot> {
@@ -142,7 +145,7 @@ class ReviewsActivityTest {
         val documentList: MutableList<DocumentSnapshot> = ArrayList()
 
         for (i in 1..NUM_REVIEWS_BEFORE_ADDITION) {
-            val review = Review(i.toFloat() / 2, TEST_TITLE, TEST_SUMMARY)
+            val review = Review(TEST_POI_KEY, i.toFloat() / 2, TEST_TITLE, TEST_SUMMARY)
             reviews[i.toString()] = review
             documentList.add(getMockDocumentSnapshot(i.toString(), review))
         }
@@ -159,7 +162,7 @@ class ReviewsActivityTest {
     }
 
     private val intent = Intent(getInstrumentation().targetContext.applicationContext, ReviewsActivity::class.java)
-            .putExtra("POI_KEY", TEST_POI_KEY)
+                            .putExtra("POI_KEY", TEST_POI)
 
     @get:Rule
     var rule: ActivityScenarioRule<ReviewsActivity> = ActivityScenarioRule(intent)

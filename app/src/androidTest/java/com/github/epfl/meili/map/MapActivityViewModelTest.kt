@@ -105,7 +105,7 @@ class MapActivityViewModelTest {
             }
 
         UiThreadStatement.runOnUiThread {
-            viewModel.setPoiService(mockPoiService)
+            viewModel.initPoiService(mockPoiService)
 
             viewModel.setDatabase(mockDatabase as Database<PointOfInterest>)
 
@@ -150,7 +150,7 @@ class MapActivityViewModelTest {
             }
 
         UiThreadStatement.runOnUiThread {
-            viewModel.setPoiService(mockPoiService)
+            viewModel.initPoiService(mockPoiService)
 
             viewModel.setDatabase(mockDatabase as Database<PointOfInterest>)
 
@@ -219,7 +219,7 @@ class MapActivityViewModelTest {
             .thenReturn(reachablePoiList)
 
         UiThreadStatement.runOnUiThread {
-            viewModel.setPoiService(mockPoiService)
+            viewModel.initPoiService(mockPoiService)
 
             viewModel.setDatabase(mockDatabase as Database<PointOfInterest>)
 
@@ -258,7 +258,7 @@ class MapActivityViewModelTest {
 
         UiThreadStatement.runOnUiThread {
             viewModel.setDatabase(mockDatabase as Database<PointOfInterest>)
-            viewModel.setPoiService(mockPoiService)
+            viewModel.initPoiService(mockPoiService)
             viewModel.onLocationChanged(mockLocation)
             viewModel.update(null, null)
 
@@ -313,7 +313,7 @@ class MapActivityViewModelTest {
             .thenReturn(reachablePoiList)
 
         runOnUiThread {
-            viewModel.setPoiService(mockPoiService)
+            viewModel.initPoiService(mockPoiService)
 
             viewModel.setDatabase(mockDatabase as Database<PointOfInterest>)
 
