@@ -28,7 +28,7 @@
         android:theme="@style/Theme.Meili"
         android:allowBackup="true">
 
-        <activity android:name=".feed.FeedActivity" />
+        <activity android:name=".posts.feed.FeedActivity" />
         <activity
             android:name=".util.NavigableActivity"
             tools:ignore="Instantiatable" />
@@ -59,11 +59,11 @@
         <activity
             android:name=".photo.CameraActivity"
             android:noHistory="true"
-            android:parentActivityName=".forum.ForumActivity" />
+            android:parentActivityName=".posts.forum.ForumActivity" />
         <activity
             android:name=".messages.ChatLogActivity"/>
         <activity
-            android:name=".forum.ForumActivity"/>
+            android:name=".posts.forum.ForumActivity"/>
         <activity
             android:name=".review.ReviewsActivity"/>
         <activity
@@ -76,8 +76,8 @@
 
         <activity android:name=".profile.ProfileActivity" />
         <activity
-            android:name=".forum.PostActivity"
-            android:parentActivityName=".forum.ForumActivity" />
+            android:name=".posts.PostActivity"
+            android:parentActivityName=".posts.forum.ForumActivity" />
         <activity
             android:name=".profile.favoritepois.FavoritePoisActivity"
             android:parentActivityName=".profile.ProfileActivity" />
