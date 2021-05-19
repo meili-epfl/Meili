@@ -14,6 +14,7 @@ import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.poi.PoiActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
 import com.github.epfl.meili.util.DateAuxiliary
 import com.github.epfl.meili.util.MenuActivity
@@ -34,6 +35,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     private var messageSet = HashSet<ChatMessage>()
 
     private var isGroupChat = false
+    private var poi: PointOfInterest? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +60,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
             val databasePath: String
 
             if (poi != null) {
+                this.poi = poi
 
                 supportActionBar?.title = poi.name
                 chatId = poi.uid
@@ -141,7 +144,6 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
         ChatMessageViewModel.messages.observe(this, groupMessageObserver)
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

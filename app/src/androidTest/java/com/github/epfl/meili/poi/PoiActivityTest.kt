@@ -78,9 +78,6 @@ class PoiActivityTest {
 
     @Test
     fun poiActivityTest() {
-        onView(withId(R.id.pager)).perform(swipeLeft())
-        onView(withId(R.id.pager)).perform(swipeLeft())
-        pressBack()
-        pressBack()
+        //TODO: check buttons for forum + different views displayed
     }
 }

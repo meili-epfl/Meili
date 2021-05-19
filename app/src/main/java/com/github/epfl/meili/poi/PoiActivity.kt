@@ -10,14 +10,9 @@ import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.util.MenuActivity
 
-class PoiActivity : MenuActivity(R.menu.nav_chat_menu) {
-    //TODO: set parent of this to map and set this as parent of chat, review, forum
-    //TODO: decide on good way to display the menus on top (since there are too many
-
+class PoiActivity : MenuActivity(R.menu.nav_poi_info_menu) {
     companion object {
-        private const val NUM_PAGES = 3
-        private const val INDEX_INFO = 0
-        private const val INDEX_FORUM = 1
+        private const val NUM_PAGES = 1
     }
 
     // View to swipe between info, forum and chat
@@ -36,25 +31,10 @@ class PoiActivity : MenuActivity(R.menu.nav_chat_menu) {
         viewPager.setPageTransformer(ZoomOutPageTransformer())
     }
 
-
-    override fun onBackPressed() {
-        if (viewPager.currentItem == INDEX_INFO) {
-            // return to map
-            super.onBackPressed()
-        } else {
-            viewPager.currentItem = viewPager.currentItem - 1
-        }
-    }
-
     private inner class PoiPagerAdapter(aca: AppCompatActivity) : FragmentStateAdapter(aca) {
         override fun getItemCount(): Int = Companion.NUM_PAGES
 
-        override fun createFragment(position: Int): Fragment =
-            when (position) {
-                INDEX_INFO -> PoiInfoFragment(poi)
-                INDEX_FORUM -> PoiFragment(R.layout.forum_activity_placeholder)
-                else -> PoiFragment(R.layout.chat_activity_placeholder)
-            }
+        override fun createFragment(position: Int): Fragment =  PoiInfoFragment(poi)
     }
 
 }
