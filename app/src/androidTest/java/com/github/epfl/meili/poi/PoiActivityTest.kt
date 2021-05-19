@@ -50,7 +50,7 @@ class PoiActivityTest {
         val placeBuilder = Place.builder()
         placeBuilder.address = "mockAddress"
         placeBuilder.phoneNumber = "mockPhone"
-        placeBuilder.websiteUri = Uri.EMPTY
+        placeBuilder.websiteUri = Uri.parse("http://epfl.ch")
         placeBuilder.utcOffsetMinutes = 30
         placeBuilder.openingHours = OpeningHours.builder().build()
         placeBuilder.photoMetadatas = listOf(PhotoMetadata.builder("a").build())
