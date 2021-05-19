@@ -1,6 +1,5 @@
 package com.github.epfl.meili.poi
 
-
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -39,7 +38,7 @@ import org.mockito.Mockito.`when`
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class PoiActivityTest {
-    private val fake_poi: PointOfInterest =
+    private val fakePoi: PointOfInterest =
             PointOfInterest(10.0, 10.0, "art_brut", "ChIJAAAAAAAAAAARg4pb6XR5bo0")
 
     private val mockPlaces: PlacesClientService = Mockito.mock(PlacesClientService::class.java)
@@ -78,7 +77,7 @@ class PoiActivityTest {
     private val intent = Intent(
             InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
             PoiActivity::class.java
-    ).putExtra("POI_KEY", fake_poi)
+    ).putExtra("POI_KEY", fakePoi)
 
     @get:Rule
     var mActivityTestRule: ActivityScenarioRule<PoiActivity> = ActivityScenarioRule(intent)
@@ -95,7 +94,7 @@ class PoiActivityTest {
 
     @Test
     fun poiActivityTest() {
-        onView(withId(R.id.poi_name)).check(matches(ViewMatchers.withText(fake_poi.name)))
+        onView(withId(R.id.poi_name)).check(matches(ViewMatchers.withText(fakePoi.name)))
         onView(withId(R.id.openStatusTextView)).check(matches(ViewMatchers.withText("CLOSED")))
         onView(withId(R.id.call_poi_button)).check(matches(isDisplayed()))
         onView(withId(R.id.take_me_there_button)).check(matches(isDisplayed()))
