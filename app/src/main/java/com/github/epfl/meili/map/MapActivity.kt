@@ -11,7 +11,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -39,7 +38,6 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.maps.android.clustering.ClusterManager
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapReadyCallback {
@@ -72,8 +70,6 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
     private lateinit var viewModel: MapActivityViewModel
 
-    private lateinit var switchModeButton: FloatingActionButton
-
     private val poiItems: HashMap<String, PoiItem> = HashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,17 +80,17 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         initLensViews()
         setupLandmarkDetection()
         setupLensCamera()
-        checkTheme(UserPreferences(this).darkMode)
-        switchModeButton = findViewById(R.id.switch_mode)
-        switchModeButton.setOnClickListener{changeMode()}
 
+        val preferences = UserPreferences(this)
+        preferences.checkTheme(preferences.darkMode)
 
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
         placesClient = Places.createClient(this)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
         // Initialize map
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
+        val mapFragment =
+            supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
     }
 
@@ -211,35 +207,13 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         for (entry in map.entries) {
             val poiItem = if (poiItems.containsKey(entry.key)) {
                 poiItems[entry.key]!!
-            } else { PoiItem(viewModel.mPointsOfInterest.value?.get(entry.key)!!) }
+            } else {
+                PoiItem(viewModel.mPointsOfInterest.value?.get(entry.key)!!)
+            }
             newMap[poiItem] = entry.value
         }
 
         clusterRenderer.renderClusterItems(newMap)
-    }
-
-    private fun checkTheme(chosen: Int) {
-        when (chosen) {
-            0 -> { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) }
-            1 -> { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO) }
-            2 -> { AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES) } }
-        delegate.applyDayNight()
-    }
-
-    private fun changeMode(){
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Choose Mode")
-        val styles = arrayOf("System default","Light","Dark")
-
-        val checkedItem = UserPreferences(this).darkMode
-
-        builder.setSingleChoiceItems(styles, checkedItem) { dialog, which ->
-            checkTheme(which)
-            UserPreferences(this).darkMode = which
-            dialog.dismiss() }
-
-        val dialog = builder.create()
-        dialog.show()
     }
 
     override fun onRequestPermissionsResult(
@@ -262,7 +236,12 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
             Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED ->
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
             Configuration.UI_MODE_NIGHT_YES ->
-                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_dark))
+                googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        this,
+                        R.raw.map_style_dark
+                    )
+                )
         }
 
         updateMapUI()
