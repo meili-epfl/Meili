@@ -39,6 +39,7 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
      * Get intent to launch post activity
      */
     fun getPostActivityIntent(view: View): Intent {
+        Log.d(TAG, view.toString())
         val postId: String = (view as TextView).text.toString()
         return Intent(getActivity(), PostActivity::class.java)
                 .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))

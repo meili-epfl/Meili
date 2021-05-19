@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -37,9 +38,6 @@ import java.util.concurrent.Executors
 
 class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
     companion object {
-        private const val CARD_PADDING: Int = 30
-        private const val NEWEST = "Newest"
-        private const val OLDEST = "Oldest"
         private const val TAG = "ForumActivity"
 
         var serviceProvider: () -> UserInfoService = { UserInfoService() }
@@ -126,6 +124,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
 
     fun onClick(view: View) {
         UIUtility.hideSoftKeyboard(this)
+        Log.d(TAG, view.toString())
         when (view) {
             createPostButton -> showEditPostView()
             favoriteButton -> (viewModel as ForumViewModel).addFavoritePoi(poi)
