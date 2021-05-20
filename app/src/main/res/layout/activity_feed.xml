@@ -16,15 +16,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:text="Sort by:"/>
+            android:text="Sort by:" />
 
         <Spinner
             android:id="@+id/sort_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/sort_by"
-            android:layout_alignParentTop="true"
-            />
+            android:layout_alignParentTop="true" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/feed_recycler_view"
@@ -32,8 +31,7 @@
             android:layout_height="match_parent"
             android:layout_below="@id/sort_spinner"
             tools:layout_editor_absoluteX="12dp"
-            tools:layout_editor_absoluteY="33dp"
-            />
+            tools:layout_editor_absoluteY="33dp" />
     </RelativeLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

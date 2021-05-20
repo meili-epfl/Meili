@@ -25,6 +25,7 @@ import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
 import com.github.epfl.meili.util.LocationService.requestLocationPermission
 import com.github.epfl.meili.util.NavigableActivity
+import com.github.epfl.meili.util.UserPreferences
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
@@ -78,6 +79,9 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         initLensViews()
         setupLandmarkDetection()
         setupLensCamera()
+
+        val preferences = UserPreferences(this)
+        preferences.checkTheme(preferences.darkMode)
 
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
         placesClient = Places.createClient(this)
@@ -194,9 +198,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
             true
         }
 
-        viewModel.mPointsOfInterestStatus.observe(this) {
-            addItems(it)
-        }
+        viewModel.mPointsOfInterestStatus.observe(this) { addItems(it) }
     }
 
     private fun addItems(map: Map<String, PointOfInterestStatus>) {
@@ -233,7 +235,12 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
             Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED ->
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
             Configuration.UI_MODE_NIGHT_YES ->
-                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_dark))
+                googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        this,
+                        R.raw.map_style_dark
+                    )
+                )
         }
 
         updateMapUI()
