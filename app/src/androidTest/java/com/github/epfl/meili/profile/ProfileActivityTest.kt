@@ -230,4 +230,5 @@ class ProfileActivityTest {
     fun changeModeTest(){
         onView(withId(R.id.switch_mode)).perform(click())
     }
+
 }

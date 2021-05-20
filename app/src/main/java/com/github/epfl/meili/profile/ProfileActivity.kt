@@ -93,18 +93,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         nameEditView = findViewById(R.id.profile_edit_name)
         bioEditView = findViewById(R.id.profile_edit_bio)
 
-        profileEditButton = findViewById(R.id.profile_edit_button)
-        saveButton = findViewById(R.id.save)
-        cancelButton = findViewById(R.id.cancel)
-        seeFriendsButton = findViewById(R.id.list_friends_button)
-        signInButton = findViewById(R.id.sign_in)
-        facebookSignInButton = findViewById(R.id.facebook_sign_in)
-        signOutButton = findViewById(R.id.sign_out)
-        commentsButton = findViewById(R.id.profile_comments_button)
-        postsButton = findViewById(R.id.profile_posts_button)
-        reviewsButton = findViewById(R.id.profile_reviews_button)
-        favoritePoisButton = findViewById(R.id.profile_poi_history_button)
-        lightdarkModeButton = findViewById(R.id.switch_mode)
+        initializeButtons()
 
         signedInView = findViewById(R.id.signed_in)
 
@@ -119,37 +108,28 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         profileEditView = findViewById(R.id.profile_edit_container)
     }
 
+    private fun initializeButtons() {
+        profileEditButton = findViewById(R.id.profile_edit_button)
+        saveButton = findViewById(R.id.save)
+        cancelButton = findViewById(R.id.cancel)
+        seeFriendsButton = findViewById(R.id.list_friends_button)
+        signInButton = findViewById(R.id.sign_in)
+        facebookSignInButton = findViewById(R.id.facebook_sign_in)
+        signOutButton = findViewById(R.id.sign_out)
+        commentsButton = findViewById(R.id.profile_comments_button)
+        postsButton = findViewById(R.id.profile_posts_button)
+        reviewsButton = findViewById(R.id.profile_reviews_button)
+        favoritePoisButton = findViewById(R.id.profile_poi_history_button)
+        lightdarkModeButton = findViewById(R.id.switch_mode)
+    }
+
     private fun registerFacebookCallBack() {
         callbackManager = CallbackManager.Factory.create()
 
         facebookSignInButton.setPermissions("email")
         facebookSignInButton.registerCallback(
-            callbackManager,
-            object : FacebookCallback<LoginResult> {
-                private lateinit var profileTracker: ProfileTracker
-
-                override fun onSuccess(loginResult: LoginResult?) {
-                    if (Profile.getCurrentProfile() == null) {
-                        profileTracker = object : ProfileTracker() {
-                            override fun onCurrentProfileChanged(
-                                oldProfile: Profile?,
-                                currentProfile: Profile
-                            ) {
-                                Auth.setAuthenticationService(FacebookAuthenticationService())
-                                profileTracker.stopTracking()
-                            }
-                        }
-                    } else {
-                        Auth.setAuthenticationService(FacebookAuthenticationService())
-                    }
-                }
-
-                override fun onCancel() {
-                }
-
-                override fun onError(exception: FacebookException) {
-                }
-            })
+            callbackManager, facebookCallback
+        )
     }
 
 
@@ -271,5 +251,31 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
         val dialog = builder.create()
         dialog.show()
+    }
+}
+
+private val facebookCallback = object : FacebookCallback<LoginResult> {
+    private lateinit var profileTracker: ProfileTracker
+
+    override fun onSuccess(loginResult: LoginResult?) {
+        if (Profile.getCurrentProfile() == null) {
+            profileTracker = object : ProfileTracker() {
+                override fun onCurrentProfileChanged(
+                    oldProfile: Profile?,
+                    currentProfile: Profile
+                ) {
+                    Auth.setAuthenticationService(FacebookAuthenticationService())
+                    profileTracker.stopTracking()
+                }
+            }
+        } else {
+            Auth.setAuthenticationService(FacebookAuthenticationService())
+        }
+    }
+
+    override fun onCancel() {
+    }
+
+    override fun onError(exception: FacebookException) {
     }
 }
