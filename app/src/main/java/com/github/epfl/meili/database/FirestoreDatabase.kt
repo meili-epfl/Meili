@@ -26,6 +26,8 @@ open class FirestoreDatabase<T: Any>(path: String, private val ofClass: Class<T>
     }
 
     override fun updateElement(key: String, element: T?) {
+        ref.document(key).delete().addOnSuccessListener {  }
+            .addOnCanceledListener {  }
         ref.document(key).delete().addOnSuccessListener {
             addElement(key, element)
         }

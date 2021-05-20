@@ -212,7 +212,9 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.onDestroy()
+        if(this::viewModel.isInitialized){
+            viewModel.onDestroy()
+        }
     }
 }
 
