@@ -5,24 +5,34 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.facebook.AccessTokenCreator
 import com.facebook.Profile
 import com.github.epfl.meili.models.User
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.runners.MethodSorters
 
 @RunWith(AndroidJUnit4::class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+
 class FacebookAuthenticationServiceTest {
     private lateinit var fauth: FacebookAuthenticationService
 
+    @Before
+    fun before() {
+        fauth = FacebookAuthenticationService()
+    }
+
     @Test
-    fun test() {
+    fun testA() {
+        assert(fauth.getCurrentUser() == null)
+    }
+
+    @Test
+    fun testB() {
         UiThreadStatement.runOnUiThread {
-            //Injecting authentication Service
-            val mockProfile = Profile("id", "", "", "", "Haziz", null)
+            val mockProfile = Profile(TEST_ID, "", "", "", TEST_NAME, null)
 
-
-            fauth = FacebookAuthenticationService()
-            assert(fauth.getCurrentUser() == null)
             fauth.setProfile(mockProfile)
             fauth.setAccessToken(AccessTokenCreator.createToken(listOf()))
             Auth.setAuthenticationService(fauth)
@@ -31,10 +41,14 @@ class FacebookAuthenticationServiceTest {
             Auth.isLoggedIn.value = false
             Auth.email = null
             Auth.name = null
-            assertEquals(fauth.getCurrentUser(), User("id", "Haziz", "", " "))
+            assertEquals(fauth.getCurrentUser(), User(TEST_ID, TEST_NAME, "", " "))
             fauth.signInIntent()
-
         }
+    }
+
+    companion object {
+        private const val TEST_ID = "id"
+        private const val TEST_NAME = "Haziz"
     }
 
 

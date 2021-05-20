@@ -19,6 +19,9 @@ internal object LoginClientCreator {
         )
     }
 
+    /**
+     * Used for testing the facebook sign in, creates a login result
+     */
     fun createResult(): Result {
         val request: Request = createRequest()
         return Result(request, Result.Code.SUCCESS, createToken(request.permissions), null, null)

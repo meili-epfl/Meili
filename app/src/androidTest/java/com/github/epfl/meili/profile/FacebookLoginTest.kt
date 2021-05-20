@@ -1,4 +1,4 @@
-package com.github.epfl.meili.home
+package com.github.epfl.meili.profile
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -14,7 +14,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.facebook.FacebookActivity
 import com.facebook.login.LoginClientCreator
 import com.github.epfl.meili.R
-import com.github.epfl.meili.profile.ProfileActivity
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

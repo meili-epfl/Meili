@@ -126,7 +126,6 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private fun registerFacebookCallBack() {
         callbackManager = CallbackManager.Factory.create()
 
-        facebookSignInButton.setPermissions("email")
         facebookSignInButton.registerCallback(
             callbackManager, facebookCallback
         )

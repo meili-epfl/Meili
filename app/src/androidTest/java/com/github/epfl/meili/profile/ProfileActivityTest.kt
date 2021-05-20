@@ -1,23 +1,16 @@
 package com.github.epfl.meili.profile
 
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Intent
 import android.location.LocationManager
 import android.net.Uri
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
-import com.facebook.FacebookActivity
-import com.facebook.login.LoginClientCreator
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
@@ -64,7 +57,7 @@ class ProfileActivityTest {
     var testRule = ActivityScenarioRule(ProfileActivity::class.java)
 
     private val listenerCaptor: ArgumentCaptor<OnSuccessListener<DocumentSnapshot>> =
-            ArgumentCaptor.forClass(OnSuccessListener::class.java) as ArgumentCaptor<OnSuccessListener<DocumentSnapshot>>
+        ArgumentCaptor.forClass(OnSuccessListener::class.java) as ArgumentCaptor<OnSuccessListener<DocumentSnapshot>>
     private lateinit var mockDocumentSnapshot1: DocumentSnapshot
     private lateinit var mockDocumentSnapshot2: DocumentSnapshot
 
@@ -76,12 +69,12 @@ class ProfileActivityTest {
     }
 
     @Before
-    fun initIntents(){
+    fun initIntents() {
         Intents.init()
     }
 
     @After
-    fun releaseIntents(){
+    fun releaseIntents() {
         Intents.release()
     }
 
@@ -114,7 +107,7 @@ class ProfileActivityTest {
 
     private fun setupMapMocks() {
         val mockFirestore = mock(FirebaseFirestore::class.java)
-        val mockCollection =  mock(CollectionReference::class.java)
+        val mockCollection = mock(CollectionReference::class.java)
         `when`(mockFirestore.collection(anyString())).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { mock(ListenerRegistration::class.java) }
 
@@ -130,7 +123,9 @@ class ProfileActivityTest {
         `when`(mockReference.putBytes(ArgumentMatchers.any())).thenReturn(mockUploadTask)
 
         val mockStorageTask = mock(StorageTask::class.java)
-        `when`(mockUploadTask.addOnSuccessListener(ArgumentMatchers.any())).thenReturn(mockStorageTask as StorageTask<UploadTask.TaskSnapshot>?)
+        `when`(mockUploadTask.addOnSuccessListener(ArgumentMatchers.any())).thenReturn(
+            mockStorageTask as StorageTask<UploadTask.TaskSnapshot>?
+        )
 
         val mockTask = mock(Task::class.java)
         `when`(mockReference.downloadUrl).thenReturn(mockTask as Task<Uri>?)
@@ -177,8 +172,16 @@ class ProfileActivityTest {
         onView(withId(R.id.profile_edit_button)).perform(click())
         onView(withId(R.id.photo_edit)).check(matches(isDisplayed()))
 
-        onView(withId(R.id.profile_edit_name)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
-        onView(withId(R.id.profile_edit_bio)).perform(clearText(), typeText(TEST_BIO), closeSoftKeyboard())
+        onView(withId(R.id.profile_edit_name)).perform(
+            clearText(),
+            typeText(TEST_USERNAME),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.profile_edit_bio)).perform(
+            clearText(),
+            typeText(TEST_BIO),
+            closeSoftKeyboard()
+        )
         onView(withId(R.id.save)).perform(click())
 
         runOnUiThread {
@@ -200,8 +203,16 @@ class ProfileActivityTest {
 
         onView(withId(R.id.profile_edit_button)).perform(click())
 
-        onView(withId(R.id.profile_edit_name)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
-        onView(withId(R.id.profile_edit_bio)).perform(clearText(), typeText(TEST_BIO), closeSoftKeyboard())
+        onView(withId(R.id.profile_edit_name)).perform(
+            clearText(),
+            typeText(TEST_USERNAME),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.profile_edit_bio)).perform(
+            clearText(),
+            typeText(TEST_BIO),
+            closeSoftKeyboard()
+        )
         onView(withId(R.id.cancel)).perform(click())
 
         onView(withId(R.id.profile_name)).check(matches(withText(MOCK_USERNAME)))
@@ -234,7 +245,7 @@ class ProfileActivityTest {
     }
 
     @Test
-    fun changeModeTest(){
+    fun changeModeTest() {
         onView(withId(R.id.switch_mode)).perform(click())
     }
 
