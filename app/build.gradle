@@ -92,7 +92,6 @@ dependencies {
 
     implementation 'io.github.ponnamkarthik:richlinkpreview:1.0.9'
     implementation 'org.jsoup:jsoup:1.12.2'
-    implementation 'com.squareup.picasso:picasso:2.71828'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'androidx.test:core:1.3.0'
