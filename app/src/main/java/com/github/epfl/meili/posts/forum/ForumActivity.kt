@@ -144,7 +144,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         val title = editTitleView.text.toString()
         val text = editTextVIew.text.toString()
 
-        viewModel.addElement(postId, Post(postId, poi.uid, user.username, title, timestamp, text))
+        viewModel.addElement(postId, Post(postId, poi.uid, user.uid, title, timestamp, text))
 
         if (bitmap != null) {
             executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }

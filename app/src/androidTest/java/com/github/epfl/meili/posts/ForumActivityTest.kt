@@ -111,7 +111,7 @@ class ForumActivityTest {
     @Before
     fun startUserInfoService() {
         val testFriendMap = HashMap<String, User>()
-        testFriendMap[TEST_UID] = User(TEST_UID, TEST_USERNAME)
+        testFriendMap[TEST_AUTHOR_ID] = User(TEST_AUTHOR_ID, TEST_USERNAME)
 
         `when`(mockUserInfoService.getUserInformation(Mockito.anyList(), Mockito.any(), Mockito.any())).then {
             val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)

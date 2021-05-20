@@ -122,7 +122,6 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
             newUsers.add(post.authorUid)
         }
 
-
         serviceProvider().getUserInformation(newUsers, { onUsersInfoReceived(it, postMap) },
                 { Log.d(TAG, "Error when fetching users information") })
     }
