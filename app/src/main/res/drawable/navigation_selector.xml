@@ -2,10 +2,10 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_selected="true"
-        android:color="@color/dark_blue"
+        android:color="@color/teal_200"
         />
     <item
         android:state_selected="false"
-        android:color="@color/black"
+        android:color="@color/purple_500"
         />
 </selector>
