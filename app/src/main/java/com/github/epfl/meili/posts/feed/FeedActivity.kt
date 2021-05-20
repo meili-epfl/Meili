@@ -20,6 +20,8 @@ class FeedActivity : NavigableActivity(R.layout.activity_feed, R.id.feed), PostL
     override lateinit var viewModel: PostListViewModel
 
     override var usersMap: Map<String, User> = HashMap()
+    override var postsMap: Map<String, Post> = HashMap()
+    override var sortOrder: Boolean = true
 
     override fun getActivity(): AppCompatActivity = this
 

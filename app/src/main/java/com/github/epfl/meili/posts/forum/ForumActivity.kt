@@ -38,7 +38,10 @@ import java.util.concurrent.Executors
 class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
     override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Post, User>>
     override lateinit var viewModel: PostListViewModel
+
     override var usersMap: Map<String, User> = HashMap()
+    override var postsMap: Map<String, Post> = HashMap()
+    override var sortOrder: Boolean = true
 
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView

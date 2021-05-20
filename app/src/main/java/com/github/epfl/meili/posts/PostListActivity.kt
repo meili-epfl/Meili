@@ -36,6 +36,9 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
 
     var viewModel: PostListViewModel
 
+    var sortOrder: Boolean
+    var postsMap: Map<String, Post>
+
     fun getActivity(): AppCompatActivity
 
     /**
@@ -103,7 +106,9 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
     }
 
     override fun onUsersInfoReceived(users: Map<String, User>, postMap: Map<String, Post>) {
+        this.postsMap = postMap
         usersMap = HashMap(usersMap) + users
+
         val postsAndUsersMap = HashMap<String, Pair<Post, User>>()
         for ((postId, post) in postMap) {
             val user = usersMap[post.authorUid]
@@ -112,7 +117,7 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
             }
         }
 
-        recyclerAdapter.submitList(postsAndUsersMap.toList())
+        recyclerAdapter.submitList(orderPosts(postsAndUsersMap.toList()))
         recyclerAdapter.notifyDataSetChanged()
     }
 
@@ -127,17 +132,18 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
     }
 
     private fun sortPosts(b: Boolean) {
-        viewModel.getElements().removeObservers(getActivity())
-        viewModel.getElements().observe(getActivity(), { map ->
-            postListener(map.toList().sortedBy { pair ->
-                if (b)
-                    -pair.second.timestamp
-                else
-                    pair.second.timestamp
-            }.toMap())
-        })
+        sortOrder = b
+        onUsersInfoReceived(HashMap(), postsMap)
     }
 
+    private fun orderPosts(postList: List<Pair<String, Pair<Post, User>>>):List<Pair<String, Pair<Post, User>>>{
+        return postList.sortedBy { pair ->
+            if (sortOrder)
+                -pair.second.first.timestamp
+            else
+                pair.second.first.timestamp
+        }
+    }
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
         when (parent?.getItemAtPosition(pos)) {
             NEWEST -> sortPosts(true)
