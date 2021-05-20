@@ -10,12 +10,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.profile.UserProfileLinker
 import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.RecyclerViewInitializer
@@ -104,12 +102,12 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
         sortSpinner.onItemSelectedListener = this
     }
 
-    override fun onUsersInfoReceived(users: Map<String, User>, postMap: Map<String, Post>) {
-        this.postsMap = postMap
+    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Post>) {
+        this.postsMap = map
         usersMap = HashMap(usersMap) + users
 
         val postsAndUsersMap = HashMap<String, Pair<Post, User>>()
-        for ((postId, post) in postMap) {
+        for ((postId, post) in map) {
             val user = usersMap[post.authorUid]
             if (user != null) {
                 postsAndUsersMap[postId] = Pair(post, user)
@@ -122,7 +120,7 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
 
     private fun postListener(postMap: Map<String, Post>) {
         val newUsers = ArrayList<String>()
-        for ((postId, post) in postMap) {
+        for ((_, post) in postMap) {
             newUsers.add(post.authorUid)
         }
 
