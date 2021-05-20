@@ -5,6 +5,7 @@ import android.net.Uri
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -39,7 +40,9 @@ import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.containsString
 import org.hamcrest.TypeSafeMatcher
+import org.hamcrest.core.IsAnything.anything
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -51,6 +54,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.contains
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+
 
 @Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
@@ -311,6 +315,8 @@ class ForumActivityTest {
         mockAuthenticationService.signInIntent()
         database.onEvent(mockSnapshotBeforeAddition, null)
         onView(withId(R.id.sort_spinner)).perform(click())
+        onData(anything()).atPosition(1).perform(click())
+        onView(withId(R.id.sort_spinner)).check(matches(withSpinnerText(containsString("Oldest"))))
     }
 
     @Test
