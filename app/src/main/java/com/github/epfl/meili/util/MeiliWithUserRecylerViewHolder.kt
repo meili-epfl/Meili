@@ -13,6 +13,10 @@ abstract class MeiliWithUserRecyclerViewHolder<T>(itemView: View, private val li
     private val authorImage: CircleImageView = itemView.findViewById(R.id.userImage)
     private lateinit var user: User
 
+    init {
+        itemView.findViewById<TextView>(R.id.userName).setOnClickListener(this)
+    }
+
     open fun bind(user: User, other: T) {
         this.user = user
         author.text = user.username

@@ -30,10 +30,6 @@ class CommentsRecyclerAdapter(private val listener: ClickListener) :
 
         private val text: TextView = itemView.findViewById(R.id.comment_text)
 
-        init {
-            itemView.findViewById<TextView>(R.id.userName).setOnClickListener(this)
-        }
-
         override fun bind(user: User, other: Comment) {
             super.bind(user, other)
 

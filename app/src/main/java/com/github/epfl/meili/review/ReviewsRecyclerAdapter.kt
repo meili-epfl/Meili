@@ -26,9 +26,6 @@ class ReviewsRecyclerAdapter(private val clickListener: ClickListener) : MeiliRe
         private val title: TextView = itemView.findViewById(R.id.review_title)
         private val summary: TextView = itemView.findViewById(R.id.review_summary)
 
-        init {
-            itemView.findViewById<TextView>(R.id.userName).setOnClickListener(this)
-        }
 
         override fun bind(user: User, other: Review) {
             super.bind(user, other)
