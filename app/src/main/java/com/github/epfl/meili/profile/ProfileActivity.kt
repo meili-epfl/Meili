@@ -73,7 +73,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         profileUid = intent.getStringExtra(USER_KEY)
         if (profileUid == null) {
             if (!Auth.isLoggedIn.value!!) {
-                Auth.signIn(this)
+                Auth.signInIntent(this)
             } else {
                 profileUid = Auth.getCurrentUser()!!.uid // By default profile we are seeing is ours
             }
