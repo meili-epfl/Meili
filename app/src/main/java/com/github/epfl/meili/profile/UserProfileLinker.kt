@@ -17,7 +17,7 @@ interface UserProfileLinker<T> : ClickListener {
     fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, T>) {
         Log.d("UserProfileLinker", users.toString())
         Log.d("UserProfileLinker", map.toString())
-        usersMap = HashMap(users)
+        usersMap = usersMap + HashMap(users)
         val reviewsAndUsersMap = HashMap<String, Pair<T, User>>()
         for ((uid, user) in users) {
             val value = map[uid]

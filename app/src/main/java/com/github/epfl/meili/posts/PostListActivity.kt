@@ -1,7 +1,6 @@
 package com.github.epfl.meili.posts
 
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -13,24 +12,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Post
-import com.github.epfl.meili.models.User
-import com.github.epfl.meili.posts.forum.ForumActivity
-import com.github.epfl.meili.profile.UserProfileLinker
-import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.RecyclerViewInitializer
 
 /**
  * To be implemented by all activities which display a list of posts
  * Performs basic initialization and sorting
  */
-interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLinker<Post> {
+interface PostListActivity : AdapterView.OnItemSelectedListener {
     companion object {
         private const val NEWEST = "Newest"
         private const val OLDEST = "Oldest"
-        private const val TAG = "PostListsActivity"
     }
 
-    override var recyclerAdapter: MeiliRecyclerAdapter<Pair<Post, User>>
+    var recyclerAdapter: PostListRecyclerAdapter
     var viewModel: PostListViewModel
 
     fun getActivity(): AppCompatActivity
@@ -39,7 +33,6 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
      * Get intent to launch post activity
      */
     fun getPostActivityIntent(view: View): Intent {
-        Log.d(TAG, view.toString())
         val postId: String = (view as TextView).text.toString()
         return Intent(getActivity(), PostActivity::class.java)
                 .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
@@ -63,14 +56,14 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
 
     fun initViewModel(viewModelClass: Class<out PostListViewModel>) {
         viewModel = ViewModelProvider(getActivity()).get(viewModelClass)
-
-        viewModel.getElements().observe(getActivity(), { map ->
-            postsMapListener(map)
-        })
+        viewModel.getElements().observe(getActivity()) {
+            recyclerAdapter.submitList(it.toList())
+            recyclerAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun initRecyclerAdapter(recyclerView: RecyclerView) {
-        recyclerAdapter = PostListRecyclerAdapter(viewModel, this)
+        recyclerAdapter = PostListRecyclerAdapter(viewModel)
         RecyclerViewInitializer.initRecyclerView(
                 recyclerAdapter,
                 recyclerView,
@@ -81,7 +74,7 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
     fun initLoggedInListener() {
         Auth.isLoggedIn.observe(getActivity(), { loggedIn ->
             if (loggedIn && Auth.getCurrentUser() != null) {
-                (recyclerAdapter as PostListRecyclerAdapter).submitUserInfo(Auth.getCurrentUser()!!.uid)
+                recyclerAdapter.submitUserInfo(Auth.getCurrentUser()!!.uid)
                 recyclerAdapter.notifyDataSetChanged()
             }
         })
@@ -101,35 +94,18 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
         sortSpinner.onItemSelectedListener = this
     }
 
-
-    private fun postsMapListener(map: Map<String, Post>) {
-        Log.d(TAG, map.toString())
-
-        val userUidToPost = HashMap<String, Post>()
-        val userIds = ArrayList<String>()
-        for ((key, value) in map) {
-            userIds.add(value.authorUid)
-            userUidToPost[value.authorUid] = value
-        }
-
-        val newUsersList = userIds.minus(usersMap.keys.toList())
-
-        ForumActivity.serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, userUidToPost) },
-                { Log.d(TAG, "Error when fetching users information") })
-    }
-
     private fun sortPosts(b: Boolean) {
         viewModel.getElements().removeObservers(getActivity())
         viewModel.getElements().observe(getActivity(), { map ->
-            postsMapListener(map.toList().sortedBy { pair ->
+            recyclerAdapter.submitList(map.toList().sortedBy { pair ->
                 if (b)
                     -pair.second.timestamp
                 else
                     pair.second.timestamp
-            }.toMap())
+            })
+            recyclerAdapter.notifyDataSetChanged()
         })
     }
-
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
         when (parent?.getItemAtPosition(pos)) {

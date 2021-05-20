@@ -31,6 +31,10 @@ open class UserInfoService {
             if (responsesRemaining != 0) {
                 onError(Error("Response is currently being processed"))
             } else {
+                if (uids.isEmpty()){
+                    onSuccess(HashMap())
+                }
+                
                 val uidsSet = uids.toSet()
                 Log.d("UsersInfoService", uidsSet.toString())
                 responsesRemaining = uidsSet.size

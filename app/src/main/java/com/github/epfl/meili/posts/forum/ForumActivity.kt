@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -23,12 +22,11 @@ import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.posts.PostListActivity
+import com.github.epfl.meili.posts.PostListRecyclerAdapter
 import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
-import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
-import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.UIUtility
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -37,16 +35,8 @@ import java.util.concurrent.Executors
 
 
 class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
-    companion object {
-        private const val TAG = "ForumActivity"
-
-        var serviceProvider: () -> UserInfoService = { UserInfoService() }
-    }
-
-    override var usersMap: Map<String, User> = HashMap()
-    override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Post, User>>
+    override lateinit var recyclerAdapter: PostListRecyclerAdapter
     override lateinit var viewModel: PostListViewModel
-
 
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView
@@ -67,6 +57,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
             }
     private val launchGallery =
             registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it) }
+
     private lateinit var useCameraButton: ImageView
     private lateinit var useGalleryButton: ImageView
     private lateinit var displayImageView: ImageView
@@ -124,7 +115,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
 
     fun onClick(view: View) {
         UIUtility.hideSoftKeyboard(this)
-        Log.d(TAG, view.toString())
         when (view) {
             createPostButton -> showEditPostView()
             favoriteButton -> (viewModel as ForumViewModel).addFavoritePoi(poi)
@@ -152,7 +142,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         val title = editTitleView.text.toString()
         val text = editTextVIew.text.toString()
 
-        viewModel.addElement(postId, Post(poi.uid, user.uid, title, timestamp, text))
+        viewModel.addElement(postId, Post(postId, poi.uid, user.username, title, timestamp, text))
 
         if (bitmap != null) {
             executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }
