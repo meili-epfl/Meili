@@ -323,4 +323,15 @@
         android:onClick="onProfileButtonClick"
         android:text="@string/sign_out" />
 
+    <ImageButton
+        android:id="@+id/switch_mode"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:background="@drawable/ic_baseline_change_mode_24"
+        android:onClick="onProfileButtonClick"
+        android:contentDescription="@string/dark_light_mode_button" />
+
 </RelativeLayout>
