@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".forum.ForumActivity">
+    tools:context=".posts.forum.ForumActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -67,7 +67,7 @@
                     android:layout_width="100dp"
                     android:layout_height="50dp"
                     app:srcCompat="@android:drawable/ic_menu_camera"
-                    android:onClick="onForumButtonClick"
+                    android:onClick="onClick"
                     />
 
                 <ImageView
@@ -75,7 +75,7 @@
                     android:layout_width="100dp"
                     android:layout_height="50dp"
                     app:srcCompat="@android:drawable/ic_menu_gallery"
-                    android:onClick="onForumButtonClick"
+                    android:onClick="onClick"
                     />
 
             </LinearLayout>
@@ -84,7 +84,7 @@
                 android:id="@+id/submit_post"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onForumButtonClick"
+                android:onClick="onClick"
                 style="@style/Theme.Meili.button"
                 android:theme="@style/Theme.Meili.button"
                 android:text="Create post"
@@ -94,30 +94,18 @@
                 android:id="@+id/cancel_post"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="onForumButtonClick"
+                android:onClick="onClick"
                 style="@style/Theme.Meili.button"
                 android:theme="@style/Theme.Meili.button"
                 android:text="Cancel"/>
 
         </LinearLayout>
-
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/list_posts">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/forum_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/spinner"
-            tools:layout_editor_absoluteX="12dp"
-            tools:layout_editor_absoluteY="33dp"
-            />
 
         <TextView
             android:id="@+id/sort_by"
@@ -127,11 +115,20 @@
             android:text="Sort by:"/>
 
         <Spinner
-            android:id="@+id/spinner"
+            android:id="@+id/sort_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/sort_by"
+            android:layout_toEndOf="@+id/sort_by"
             android:layout_alignParentTop="true"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/forum_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/sort_spinner"
+            tools:layout_editor_absoluteX="12dp"
+            tools:layout_editor_absoluteY="33dp"
             />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -142,8 +139,20 @@
             android:layout_marginEnd="16dp"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="onForumButtonClick"
+            android:onClick="onClick"
             app:srcCompat="@android:drawable/ic_input_add" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="onClick"
+            app:srcCompat="@android:drawable/btn_star_big_on" />
     </RelativeLayout>
 
 </RelativeLayout>

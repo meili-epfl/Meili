@@ -3,7 +3,6 @@ package com.github.epfl.meili.map
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Camera
 import android.location.Location
 import android.os.Bundle
 import android.view.View
@@ -17,15 +16,16 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.forum.ForumActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.poi.PoiServiceCached
+import com.github.epfl.meili.posts.forum.ForumActivity
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
 import com.github.epfl.meili.util.LocationService.requestLocationPermission
 import com.github.epfl.meili.util.NavigableActivity
+import com.github.epfl.meili.util.UserPreferences
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
@@ -79,6 +79,9 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         initLensViews()
         setupLandmarkDetection()
         setupLensCamera()
+
+        val preferences = UserPreferences(this)
+        preferences.checkTheme(preferences.darkMode)
 
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
         placesClient = Places.createClient(this)
@@ -154,7 +157,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
     private fun setUpClusterer() {
         LocationService.listenToLocationChanges(applicationContext, viewModel)
-        viewModel.setPoiService(PoiServiceCached())
+        viewModel.initPoiService(PoiServiceCached())
 
         val currentUser = Auth.getCurrentUser()
         if (currentUser != null) {
@@ -195,9 +198,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
             true
         }
 
-        viewModel.mPointsOfInterestStatus.observe(this) {
-            addItems(it)
-        }
+        viewModel.mPointsOfInterestStatus.observe(this) { addItems(it) }
     }
 
     private fun addItems(map: Map<String, PointOfInterestStatus>) {
@@ -225,7 +226,6 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         if (isLocationPermissionGranted(this)) {
             getDeviceLocationAndSetCameraPosition()
             setUpClusterer()
-            LocationService.listenToLocationChanges(applicationContext, viewModel)
         }
     }
 
@@ -235,14 +235,18 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
             Configuration.UI_MODE_NIGHT_NO, Configuration.UI_MODE_NIGHT_UNDEFINED ->
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
             Configuration.UI_MODE_NIGHT_YES ->
-                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style_dark))
+                googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        this,
+                        R.raw.map_style_dark
+                    )
+                )
         }
 
         updateMapUI()
 
         if (isLocationPermissionGranted(this)) {
             getDeviceLocationAndSetCameraPosition()
-
             setUpClusterer()
         } else {
             requestLocationPermission(this)

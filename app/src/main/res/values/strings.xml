@@ -14,4 +14,24 @@
     <string name="facebook_app_id">1155284924987862</string>
     <string name="fb_login_protocol_scheme">fb1155284924987862</string>
 
+    <string name="button_to_change_profile_picture">Button to change profile picture</string>
+    <string name="button_to_edit_profile">Button to edit profile</string>
+    <string name="my_friends">My Friends</string>
+    <string name="profile_comments_button">Profile comments button</string>
+    <string name="profile_comments_textview">Comments</string>
+    <string name="profile_posts_button">Profile posts button</string>
+    <string name="profile_posts_textview">Posts</string>
+    <string name="profile_reviews_button">Profile reviews button</string>
+    <string name="profile_reviews_textview">Reviews</string>
+    <string name="profile_poi_history_button">Profile POI history button</string>
+    <string name="profile_poi_history_textview">POI</string>
+    <string name="profile_name_edit_textview">Name:</string>
+    <string name="profile_name_edit_edittext">Your Name</string>
+    <string name="profile_bio_edit_textview">About Me:</string>
+    <string name="profile_bio_edit_edittext">Hi ! I am using Meili !</string>
+    <string name="save_my_profile">Save My Profile</string>
+    <string name="profile_edit_cancel">Cancel</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="dark_light_mode_button">Dark / light mode button</string>
 </resources>

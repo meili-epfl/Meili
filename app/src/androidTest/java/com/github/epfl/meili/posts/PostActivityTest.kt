@@ -1,4 +1,4 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.posts
 
 
 import android.content.Intent
@@ -17,12 +17,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
-import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.Comment
+import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
@@ -30,7 +30,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
@@ -53,7 +52,7 @@ class PostActivityTest {
     companion object {
         private const val TEST_POI_KEY = "POI_KEY"
         private const val TEST_ID = "ID"
-        private val TEST_POST = Post("AUTHOR", "TITLE", -1,"TEXT")
+        private val TEST_POST = Post(TEST_POI_KEY,"AUTHOR", "TITLE", -1,"TEXT")
         private val TEST_COMMENT = Comment("AUTHOR_COMMENT", "TEXT_COMMENT")
     }
 
@@ -90,7 +89,7 @@ class PostActivityTest {
     }
 
     private fun setupMocks() {
-        Mockito.`when`(mockFirestore.collection("forum/${TEST_POI_KEY}/posts"))
+        Mockito.`when`(mockFirestore.collection("forum"))
             .thenReturn(mockCollection)
         Mockito.`when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
             database = invocation.arguments[0] as AtomicPostFirestoreDatabase
@@ -99,7 +98,7 @@ class PostActivityTest {
         Mockito.`when`(mockCollection.document(ArgumentMatchers.contains(TEST_ID)))
             .thenReturn(mockDocument)
 
-        Mockito.`when`(mockFirestore.collection("forum/${TEST_POI_KEY}/posts/${TEST_ID}/comments"))
+        Mockito.`when`(mockFirestore.collection("forum/${TEST_ID}/comments"))
             .thenReturn(mockComments)
         Mockito.`when`(mockComments.addSnapshotListener(any())).thenAnswer { invocation ->
             commentsDatabase = invocation.arguments[0] as FirestoreDatabase<Comment>

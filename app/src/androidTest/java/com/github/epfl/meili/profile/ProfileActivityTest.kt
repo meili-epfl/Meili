@@ -15,10 +15,10 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDocumentService
-import com.github.epfl.meili.feed.FeedActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.posts.feed.FeedActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.MockAuthenticationService
@@ -133,24 +133,72 @@ class ProfileActivityTest {
     }
 
     @Test
+    fun canEditOwnedProfile() {
+        runOnUiThread {
+            listenerCaptor.value!!.onSuccess(mockDocumentSnapshot1)
+        }
+
+        onView(withId(R.id.profile_name)).check(matches(withText(MOCK_USERNAME)))
+        onView(withId(R.id.profile_bio)).check(matches(withText(MOCK_BIO)))
+        onView(withId(R.id.photo)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.photo_edit)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.save)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.cancel)).check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.profile_edit_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.list_friends_button)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.profile_comments_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.profile_posts_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.profile_reviews_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.profile_poi_history_button)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
+        onView(withId(R.id.sign_in)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
     fun profileEditSaveTest() {
         runOnUiThread {
             listenerCaptor.value!!.onSuccess(mockDocumentSnapshot1)
         }
-        onView(withId(R.id.name)).check(matches(withText(MOCK_USERNAME)))
-        onView(withId(R.id.bio)).check(matches(withText(MOCK_BIO)))
+        onView(withId(R.id.profile_name)).check(matches(withText(MOCK_USERNAME)))
+        onView(withId(R.id.profile_bio)).check(matches(withText(MOCK_BIO)))
         onView(withId(R.id.photo)).check(matches(isDisplayed()))
 
-        onView(withId(R.id.name)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
-        onView(withId(R.id.bio)).perform(clearText(), typeText(TEST_BIO), closeSoftKeyboard())
+        onView(withId(R.id.profile_edit_button)).perform(click())
+        onView(withId(R.id.photo_edit)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.profile_edit_name)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
+        onView(withId(R.id.profile_edit_bio)).perform(clearText(), typeText(TEST_BIO), closeSoftKeyboard())
         onView(withId(R.id.save)).perform(click())
 
         runOnUiThread {
             listenerCaptor.value!!.onSuccess(mockDocumentSnapshot2)
         }
 
-        onView(withId(R.id.name)).check(matches(withText(TEST_USERNAME)))
-        onView(withId(R.id.bio)).check(matches(withText(TEST_BIO)))
+        onView(withId(R.id.profile_name)).check(matches(withText(TEST_USERNAME)))
+        onView(withId(R.id.profile_bio)).check(matches(withText(TEST_BIO)))
+    }
+
+    @Test
+    fun profileEditCancelTest() {
+        runOnUiThread {
+            listenerCaptor.value!!.onSuccess(mockDocumentSnapshot1)
+        }
+        onView(withId(R.id.profile_name)).check(matches(withText(MOCK_USERNAME)))
+        onView(withId(R.id.profile_bio)).check(matches(withText(MOCK_BIO)))
+        onView(withId(R.id.photo)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.profile_edit_button)).perform(click())
+
+        onView(withId(R.id.profile_edit_name)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
+        onView(withId(R.id.profile_edit_bio)).perform(clearText(), typeText(TEST_BIO), closeSoftKeyboard())
+        onView(withId(R.id.cancel)).perform(click())
+
+        onView(withId(R.id.profile_name)).check(matches(withText(MOCK_USERNAME)))
+        onView(withId(R.id.profile_bio)).check(matches(withText(MOCK_BIO)))
     }
 
     @Test
@@ -176,5 +224,10 @@ class ProfileActivityTest {
     fun goToFeedTest() {
         onView(withId(R.id.feed)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(FeedActivity::class.qualifiedName))
+    }
+
+    @Test
+    fun changeModeTest(){
+        onView(withId(R.id.switch_mode)).perform(click())
     }
 }
