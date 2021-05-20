@@ -47,6 +47,7 @@ class ReviewsActivityTest {
 
     companion object {
         private const val TEST_AUTHOR_USERNAME = "MrPerfect"
+        private const val TEST_OTHER_AUTHOR_USERNAME = "MrPerfect2"
         private const val TEST_REVIEW_ID = "test uid"
 
         private const val TEST_POI_KEY = "lorem_ipsum2"
@@ -54,6 +55,7 @@ class ReviewsActivityTest {
         private const val TEST_TITLE = "Beach too sandy"
         private const val TEST_SUMMARY = "Water too wet"
         private const val TEST_AUTHOR_ID = "author id"
+        private const val TEST_OTHER_AUTHOR_ID = "author id2"
 
         private const val AVERAGE_FORMAT = "%.2f"
 
@@ -90,6 +92,7 @@ class ReviewsActivityTest {
     fun startUserInfoService() {
         val testFriendMap = HashMap<String, User>()
         testFriendMap[TEST_AUTHOR_ID] = User(TEST_AUTHOR_ID, TEST_AUTHOR_USERNAME)
+        testFriendMap[TEST_OTHER_AUTHOR_ID] = User(TEST_OTHER_AUTHOR_ID, TEST_OTHER_AUTHOR_USERNAME)
 
         `when`(
             mockUserInfoService.getUserInformation(
@@ -149,7 +152,7 @@ class ReviewsActivityTest {
         return getMockDocumentSnapshot(
             TEST_REVIEW_ID,
             Review(
-                TEST_AUTHOR_ID,
+                TEST_OTHER_AUTHOR_ID,
                 TEST_POI_KEY,
                 EDITED_REVIEW_RATING,
                 TEST_EDITED_TITLE,
@@ -165,7 +168,7 @@ class ReviewsActivityTest {
         return getMockDocumentSnapshot(
             TEST_REVIEW_ID,
             Review(
-                TEST_AUTHOR_ID,
+                TEST_OTHER_AUTHOR_ID,
                 TEST_POI_KEY,
                 ADDED_REVIEW_RATING,
                 TEST_ADDED_TITLE,
@@ -180,7 +183,13 @@ class ReviewsActivityTest {
 
         for (i in 1..NUM_REVIEWS_BEFORE_ADDITION) {
             val review =
-                Review(TEST_AUTHOR_ID, TEST_POI_KEY, i.toFloat() / 2, TEST_TITLE, TEST_SUMMARY)
+                Review(
+                    TEST_AUTHOR_ID,
+                    TEST_POI_KEY,
+                    i.toFloat() / 2,
+                    TEST_TITLE,
+                    TEST_SUMMARY
+                )
             reviews[i.toString()] = review
             documentList.add(getMockDocumentSnapshot(i.toString(), review))
         }
@@ -298,13 +307,13 @@ class ReviewsActivityTest {
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
                     hasDescendant(
                         withText(
-                            TEST_AUTHOR_USERNAME
+                            TEST_OTHER_AUTHOR_USERNAME
                         )
                     )
                 )
             )
 
-        onView(withText(TEST_AUTHOR_USERNAME)).check(matches(isDisplayed()))
+        onView(textViewContainsText(TEST_OTHER_AUTHOR_USERNAME)).check(matches(isDisplayed()))
         onView(textViewContainsText(TEST_ADDED_TITLE)).check(matches(isDisplayed()))
 
         onView(withId(R.id.average_rating)).check(
@@ -351,13 +360,13 @@ class ReviewsActivityTest {
                 RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
                     hasDescendant(
                         withText(
-                            TEST_AUTHOR_USERNAME
+                            TEST_OTHER_AUTHOR_USERNAME
                         )
                     )
                 )
             )
 
-        onView(withText(TEST_AUTHOR_USERNAME)).check(matches(isDisplayed()))
+        onView(withText(TEST_OTHER_AUTHOR_USERNAME)).check(matches(isDisplayed()))
         onView(textViewContainsText(TEST_EDITED_TITLE)).check(matches(isDisplayed()))
 
         onView(withText(TEST_ADDED_TITLE)).check(doesNotExist())
