@@ -32,8 +32,7 @@ import kotlin.math.roundToInt
  * each POI will have a different status between VISITED, VISIBLE and REACHABLE
  */
 class MapActivityViewModel(application: Application) :
-    AndroidViewModel(application), PoiServiceViewModel, Observer
-{
+    AndroidViewModel(application), PoiServiceViewModel, Observer {
     companion object {
         private const val SENSOR_DELAY = 500_000 // microseconds
         private const val FIELD_OF_VIEW = 25.0 // degrees

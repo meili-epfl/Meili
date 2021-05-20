@@ -81,6 +81,8 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
 
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
 
+        supportActionBar?.title = poi.name
+
         initViews()
 
         initActivity(

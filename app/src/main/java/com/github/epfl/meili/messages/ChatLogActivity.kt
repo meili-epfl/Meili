@@ -34,6 +34,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     private var messageSet = HashSet<ChatMessage>()
 
     private var isGroupChat = false
+    private var poi: PointOfInterest? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +59,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
             val databasePath: String
 
             if (poi != null) {
+                this.poi = poi
 
                 supportActionBar?.title = poi.name
                 chatId = poi.uid
@@ -129,8 +131,8 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
             val newMessages = list.minus(messageSet)
             newMessages.filter { message -> message.toId == chatID }.forEach { message ->
-                    Log.d(TAG, "loading message: ${message.text}")
-                    adapter.add(ChatItem(message, message.fromId == currentUser!!.uid, isGroupChat))
+                Log.d(TAG, "loading message: ${message.text}")
+                adapter.add(ChatItem(message, message.fromId == currentUser!!.uid, isGroupChat))
             }
 
             messageSet.addAll(newMessages)
@@ -141,7 +143,6 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
         ChatMessageViewModel.messages.observe(this, groupMessageObserver)
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
