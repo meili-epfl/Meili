@@ -37,7 +37,11 @@ Despite this last task taking me more than expected, I am really happy with the 
 
 ## Thomas
 
-TODO
+This week I first worked on finishing the favorite POIs activity from last week. I then finished fixing the remarks from the code review. Finally, I managed to test the Facebook login functionality.
+ 
+I am glad that I mocked the Facebook login with success, and that I managed to work through all of the remarks from the code review. I was efficient in my work so I have to keep that going.
+
+However, same as last week, I had some problems with tests which passed locally but not on cirrus. This time it was because I changed the gradle version. So I am continuing to learn more things which can go wrong with cirrus.
 
 ## Yingxuan
 
