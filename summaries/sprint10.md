@@ -49,4 +49,6 @@ This sprint, the team implemented features that drastically improve the User exp
  
 We are getting very good at refactoring and making more and more general tools as the project gets bigger. This is very helpful and drastically reduces the amount of time features take to implement.
  
+As usual, the team communication is smooth, we are helping each other often and the work gets done!
+ 
 We also have our first official user, Ewan's little sister, who used the app as a normal user to help him with this week's demo.
