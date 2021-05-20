@@ -23,7 +23,7 @@ class MyPostsActivity : AppCompatActivity(), PostListActivity {
         val userKey = intent.getStringExtra(ProfileActivity.USER_KEY)
 
         initActivity(
-            MyPostsViewModel::class.java,
+            PostListViewModel::class.java,
             findViewById(R.id.my_posts_recycler_view),
             findViewById(R.id.sort_spinner)
         )
