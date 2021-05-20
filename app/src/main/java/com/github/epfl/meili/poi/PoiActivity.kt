@@ -29,6 +29,9 @@ class PoiActivity : MenuActivity(R.menu.nav_poi_info_menu) {
         private val DEFAULT_SERVICE = { PlacesClientService() }
         private const val REQUEST_CODE = 1000
         private const val NO_INFO_TEXT = "No information found for this point of interest :("
+        private const val GOOGLE_MAPS_URL_FOR_INTENT = "google.navigation:q="
+        private const val GOOGLE_MAPS_INTENT_PACKAGE = "com.google.android.apps.maps"
+        private const val CALLING_URL_FOR_INTENT = "tel:"
         var placesClientService: () -> PlacesClientService = DEFAULT_SERVICE
     }
 
@@ -114,9 +117,9 @@ class PoiActivity : MenuActivity(R.menu.nav_poi_info_menu) {
 
             takeMeThereButton.setOnClickListener {
                 val gmmIntentUri =
-                    Uri.parse("google.navigation:q=${place.address}")
+                    Uri.parse("${GOOGLE_MAPS_URL_FOR_INTENT}${place.address}")
                 val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-                mapIntent.setPackage("com.google.android.apps.maps")
+                mapIntent.setPackage(GOOGLE_MAPS_INTENT_PACKAGE)
                 startActivity(mapIntent)
             }
 
@@ -154,7 +157,7 @@ class PoiActivity : MenuActivity(R.menu.nav_poi_info_menu) {
                 )
             } else {
                 val callIntent = Intent(Intent.ACTION_CALL)
-                callIntent.data = Uri.parse("tel:${phoneNumber}")
+                callIntent.data = Uri.parse("${CALLING_URL_FOR_INTENT}${phoneNumber}")
                 startActivity(callIntent)
             }
         }

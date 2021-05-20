@@ -17,12 +17,10 @@ import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
-import com.github.epfl.meili.map.MapActivity.Companion.POI_KEY
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
-
 import com.github.epfl.meili.posts.PostListActivity
 import com.github.epfl.meili.posts.PostListRecyclerAdapter
 import com.github.epfl.meili.posts.PostListViewModel

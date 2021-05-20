@@ -2,7 +2,6 @@ package com.github.epfl.meili.util
 
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +14,7 @@ import com.github.epfl.meili.posts.forum.ForumActivity
 import com.github.epfl.meili.review.ReviewsActivity
 
 
-open class MenuActivity(private val menuRes: Int): AppCompatActivity() {
+open class MenuActivity(private val menuRes: Int) : AppCompatActivity() {
     private var showMenu = true
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         this.menuInflater.inflate(menuRes, menu)
@@ -30,17 +29,18 @@ open class MenuActivity(private val menuRes: Int): AppCompatActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         var item = menu.findItem(R.id.menu_reviews)
-        if(item!=null){
+        if (item != null) {
             item.isVisible = showMenu
         }
         item = menu.findItem(R.id.menu_forum)
-        if(item != null){
+        if (item != null) {
             item.isVisible = showMenu
         }
 
         return super.onPrepareOptionsMenu(menu)
     }
-    private fun getIntentFromMenuItem(activity: Activity, item: MenuItem): Intent{
+
+    private fun getIntentFromMenuItem(activity: Activity, item: MenuItem): Intent {
         val launchedActivityClass = when (item.itemId) {
             R.id.menu_reviews -> ReviewsActivity::class.java
             R.id.menu_chat -> ChatLogActivity::class.java
@@ -48,15 +48,16 @@ open class MenuActivity(private val menuRes: Int): AppCompatActivity() {
             else -> PoiActivity::class.java
         }
         val poi = intent.getParcelableExtra<PointOfInterest>(
-                MapActivity.POI_KEY
+            MapActivity.POI_KEY
         )
-        Log.d("Menu Activity", poi.toString())
+
         return Intent(activity, launchedActivityClass)
-                .putExtra(
-                    MapActivity.POI_KEY, poi
-                )
+            .putExtra(
+                MapActivity.POI_KEY, poi
+            )
     }
-    protected fun setShowMenu(showMenu: Boolean){
+
+    protected fun setShowMenu(showMenu: Boolean) {
         this.showMenu = showMenu
     }
 }
