@@ -124,25 +124,25 @@ class MapActivityTest {
         device.findObject(UiSelector().textContains(text)).click()
     }
 
-
-    @Test
-    fun locationButtonClickableAfterPermissionGrant() {
-        PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
-        val imageView = onView(
-            allOf(
-                withContentDescription("My Location"),
-                childAtPosition(
-                    childAtPosition(
-                        withClassName(`is`("android.widget.FrameLayout")),
-                        2
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
-        imageView.perform(click())
-    }
+//
+//    @Test
+//    fun locationButtonClickableAfterPermissionGrant() {
+//        PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
+//        val imageView = onView(
+//            allOf(
+//                withContentDescription("My Location"),
+//                childAtPosition(
+//                    childAtPosition(
+//                        withClassName(`is`("android.widget.FrameLayout")),
+//                        2
+//                    ),
+//                    0
+//                ),
+//                isDisplayed()
+//            )
+//        )
+//        imageView.perform(click())
+//    }
 //
 //    @Test
 //    fun goToProfileTest() {
