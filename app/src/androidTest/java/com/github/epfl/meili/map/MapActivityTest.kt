@@ -124,6 +124,11 @@ class MapActivityTest {
         device.findObject(UiSelector().textContains(text)).click()
     }
 
+    @Test
+    fun test() {
+
+    }
+
 //
 //    @Test
 //    fun locationButtonClickableAfterPermissionGrant() {

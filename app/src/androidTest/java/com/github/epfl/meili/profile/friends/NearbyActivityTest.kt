@@ -92,6 +92,11 @@ class NearbyActivityTest {
     @get:Rule
     var rule: ActivityScenarioRule<NearbyActivity> = ActivityScenarioRule(NearbyActivity::class.java)
 
+    @Test
+    fun test() {
+
+    }
+
 //    @Test
 //    fun testNearbyConnection() {
 //        onView(withId(R.id.find_my_friend)).perform(click())
