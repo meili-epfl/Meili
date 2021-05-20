@@ -2,6 +2,7 @@ package com.github.epfl.meili.models
 
 import com.google.android.gms.maps.model.LatLng
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 
 class PointOfInterestTest {
@@ -24,5 +25,10 @@ class PointOfInterestTest {
     @Test
     fun getLatLngTest() {
         assertEquals(poi1.getLatLng(), LatLng(poi1.latitude, poi1.longitude))
+    }
+
+    @Test
+    fun hashCodeTest() {
+        assertNotEquals(poi1.hashCode(), poi2.hashCode())
     }
 }
