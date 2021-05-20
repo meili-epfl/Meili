@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
@@ -17,6 +18,7 @@ import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.util.UIUtility
+import com.github.epfl.meili.util.UserPreferences
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -43,6 +45,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var postsButton: ImageButton
     private lateinit var reviewsButton: ImageButton
     private lateinit var favoritePoisButton: ImageButton
+    private lateinit var lightdarkModeButton: ImageButton
 
     private lateinit var signedInView: View
     private lateinit var profileView: View
@@ -63,16 +66,17 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        profileUid = intent.getStringExtra(USER_KEY)
-        if (profileUid == null) {
-            profileUid = Auth.getCurrentUser()!!.uid // By default profile we are seeing is ours
-        }
-
         Auth.isLoggedIn.observe(this) {
             verifyAndUpdateUserIsLoggedIn()
         }
-        if (!Auth.isLoggedIn.value!!) {
-            Auth.signInIntent(this)
+
+        profileUid = intent.getStringExtra(USER_KEY)
+        if (profileUid == null) {
+            if (!Auth.isLoggedIn.value!!) {
+                Auth.signIn(this)
+            } else {
+                profileUid = Auth.getCurrentUser()!!.uid // By default profile we are seeing is ours
+            }
         }
 
         initializeViews()
@@ -96,6 +100,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         postsButton = findViewById(R.id.profile_posts_button)
         reviewsButton = findViewById(R.id.profile_reviews_button)
         favoritePoisButton = findViewById(R.id.profile_poi_history_button)
+        lightdarkModeButton = findViewById(R.id.switch_mode)
 
         signedInView = findViewById(R.id.signed_in)
         profileView = findViewById(R.id.profile_container)
@@ -133,6 +138,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             signOutButton -> Auth.signOut()
             profileEditButton -> showEditMode()
             favoritePoisButton -> showProfileOwnersInfo(FavoritePoisActivity::class.java)
+            lightdarkModeButton -> changeMode()
         }
     }
 
@@ -205,5 +211,22 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         val intent = Intent(this, activityClass)
             .putExtra(USER_KEY, profileUid)
         startActivity(intent)
+    }
+
+    private fun changeMode() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Choose Mode")
+        val styles = arrayOf("System default", "Light", "Dark")
+
+        val preferences = UserPreferences(this)
+
+        builder.setSingleChoiceItems(styles, preferences.darkMode) { dialog, which ->
+            preferences.checkTheme(which)
+            preferences.darkMode = which
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 }

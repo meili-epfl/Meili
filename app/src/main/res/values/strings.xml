@@ -112,4 +112,5 @@
     <string name="cancel">Cancel</string>
     <string name="sort_by">Sort by:</string>
 
+    <string name="dark_light_mode_button">Dark / light mode button</string>
 </resources>
