@@ -30,4 +30,5 @@
     <string name="profile_edit_cancel">Cancel</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_out">Sign Out</string>
+    <string name="dark_light_mode_button">Dark / light mode button</string>
 </resources>

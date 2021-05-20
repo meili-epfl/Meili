@@ -1,4 +1,4 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.posts
 
 import android.content.Intent
 import android.net.Uri
@@ -27,6 +27,7 @@ import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.photo.CameraActivity
+import com.github.epfl.meili.posts.forum.ForumActivity
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
@@ -309,7 +310,7 @@ class ForumActivityTest {
     fun clickOnSortingButtonTest() {
         mockAuthenticationService.signInIntent()
         database.onEvent(mockSnapshotBeforeAddition, null)
-        onView(withId(R.id.spinner)).perform(click())
+        onView(withId(R.id.sort_spinner)).perform(click())
     }
 
     @Test

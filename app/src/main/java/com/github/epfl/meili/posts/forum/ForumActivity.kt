@@ -1,16 +1,16 @@
-package com.github.epfl.meili.forum
+package com.github.epfl.meili.posts.forum
 
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
@@ -21,26 +21,22 @@ import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
+import com.github.epfl.meili.posts.PostListActivity
+import com.github.epfl.meili.posts.PostListRecyclerAdapter
+import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
 import com.github.epfl.meili.util.MenuActivity
-import com.github.epfl.meili.util.TopSpacingItemDecoration
 import com.github.epfl.meili.util.UIUtility
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSelectedListener {
-    companion object {
-        private const val CARD_PADDING: Int = 30
-        private const val NEWEST = "Newest"
-        private const val OLDEST = "Oldest"
-    }
-
-    private lateinit var recyclerAdapter: ForumRecyclerAdapter
-    private lateinit var viewModel: ForumViewModel
+class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
+    override lateinit var recyclerAdapter: PostListRecyclerAdapter
+    override lateinit var viewModel: PostListViewModel
 
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView
@@ -51,7 +47,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
     private lateinit var editTextVIew: EditText
     private lateinit var submitButton: Button
     private lateinit var cancelButton: Button
-    private lateinit var filterSpinner: Spinner
 
     // image choice and upload
     private val launchCameraActivity =
@@ -62,6 +57,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         }
     private val launchGallery =
         registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it) }
+
     private lateinit var useCameraButton: ImageView
     private lateinit var useGalleryButton: ImageView
     private lateinit var displayImageView: ImageView
@@ -70,6 +66,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
 
     private lateinit var poi: PointOfInterest
 
+    override fun getActivity(): AppCompatActivity = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,9 +77,12 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
 
         initViews()
-        initViewModel()
-        initRecyclerView()
-        initLoggedInListener()
+
+        initActivity(
+            ForumViewModel::class.java,
+            findViewById(R.id.forum_recycler_view),
+            findViewById(R.id.sort_spinner)
+        )
 
         showListPostsView()
     }
@@ -101,23 +101,10 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         useCameraButton = findViewById(R.id.post_use_camera)
         useGalleryButton = findViewById(R.id.post_use_gallery)
         displayImageView = findViewById(R.id.post_display_image)
-        filterSpinner = findViewById(R.id.spinner)
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(
-            this, R.array.sort_array,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            filterSpinner.adapter = adapter
-        }
-        filterSpinner.onItemSelectedListener = this
 
         if (Auth.getCurrentUser() == null) {
             favoriteButton.visibility = View.GONE
         }
-
     }
 
     override fun onDestroy() {
@@ -126,11 +113,11 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         executor.shutdown()
     }
 
-    fun onForumButtonClick(view: View) {
+    fun onClick(view: View) {
         UIUtility.hideSoftKeyboard(this)
         when (view) {
             createPostButton -> showEditPostView()
-            favoriteButton -> viewModel.addFavoritePoi(poi)
+            favoriteButton -> (viewModel as ForumViewModel).addFavoritePoi(poi)
             submitButton -> addPost()
             cancelButton -> showListPostsView()
             useGalleryButton -> launchGallery.launch("image/*")
@@ -138,17 +125,8 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
                 Intent(this, CameraActivity::class.java)
                     .putExtra(CameraActivity.EDIT_PHOTO, true)
             )
-            else -> openPost(view.findViewById(R.id.post_id))
+            else -> startActivity(getPostActivityIntent(view.findViewById(R.id.post_id)))
         }
-    }
-
-    private fun openPost(view: View) {
-        val postId: String = (view as TextView).text.toString()
-        val intent: Intent = Intent(this, PostActivity::class.java)
-            .putExtra(Post.TAG, viewModel.getElements().value?.get(postId))
-            .putExtra(PostActivity.POST_ID, postId)
-            .putExtra(MapActivity.POI_KEY, poi.uid)
-        startActivity(intent)
     }
 
     private fun addPost() {
@@ -173,50 +151,31 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         showListPostsView()
     }
 
-    private fun initViewModel() {
-        @Suppress("UNCHECKED_CAST")
-        viewModel = ViewModelProvider(this).get(ForumViewModel::class.java)
+    override fun initViewModel(viewModelClass: Class<out PostListViewModel>) {
+        super.initViewModel(viewModelClass)
+
         viewModel.initDatabase(AtomicPostFirestoreDatabase("forum") {
             it.whereEqualTo(Post.POI_KEY_FIELD, poi.uid)
         })
         if (Auth.getCurrentUser() != null) {
-            viewModel.initFavoritePoisDatabase(
+            (viewModel as ForumViewModel).initFavoritePoisDatabase(
                 FirestoreDatabase( // add to poi favorites
                     String.format(FavoritePoisActivity.DB_PATH, Auth.getCurrentUser()!!.uid),
                     PointOfInterest::class.java
                 )
             )
         }
-        viewModel.getElements().observe(this, { map ->
-            recyclerAdapter.submitList(map.toList())
-            recyclerAdapter.notifyDataSetChanged()
-        })
     }
 
-    private fun initRecyclerView() {
-        recyclerAdapter = ForumRecyclerAdapter(viewModel)
-        val recyclerView: RecyclerView = findViewById(R.id.forum_recycler_view)
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@ForumActivity)
-            addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
-            adapter = recyclerAdapter
-        }
-    }
+    override fun initLoggedInListener() {
+        super.initLoggedInListener()
 
-    private fun initLoggedInListener() {
         Auth.isLoggedIn.observe(this, { loggedIn ->
-            //If the user is logged in he can create a new post
             createPostButton.isEnabled = loggedIn
             createPostButton.visibility = if (loggedIn)
                 View.VISIBLE
             else
                 View.GONE
-
-            //and upvote/downvote
-            if (loggedIn && Auth.getCurrentUser() != null) {
-                recyclerAdapter.submitUserInfo(Auth.getCurrentUser()!!.uid)
-                recyclerAdapter.notifyDataSetChanged()
-            }
         })
     }
 
@@ -230,20 +189,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
         editPostView.visibility = View.GONE
     }
 
-    private fun sortPosts(b: Boolean) {
-        viewModel.getElements().removeObservers(this)
-        viewModel.getElements().observe(this, { map ->
-            recyclerAdapter.submitList(map.toList().sortedBy { pair ->
-                if (b)
-                    -pair.second.timestamp
-                else
-                    pair.second.timestamp
-            })
-            recyclerAdapter.notifyDataSetChanged()
-        })
-    }
-
-
     private fun loadImage(filePath: Uri) {
         executor.execute {
             val bitmap = getBitmapFromFilePath(contentResolver, filePath)
@@ -254,13 +199,4 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), AdapterView.OnItemSel
             }
         }
     }
-
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
-        when (parent?.getItemAtPosition(pos)) {
-            NEWEST -> sortPosts(true)
-            OLDEST -> sortPosts(false)
-        }
-    }
-
-    override fun onNothingSelected(p0: AdapterView<*>?) {}
 }

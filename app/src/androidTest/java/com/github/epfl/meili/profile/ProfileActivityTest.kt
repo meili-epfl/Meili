@@ -15,10 +15,10 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDocumentService
-import com.github.epfl.meili.feed.FeedActivity
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.posts.feed.FeedActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.MockAuthenticationService
@@ -224,5 +224,10 @@ class ProfileActivityTest {
     fun goToFeedTest() {
         onView(withId(R.id.feed)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(FeedActivity::class.qualifiedName))
+    }
+
+    @Test
+    fun changeModeTest(){
+        onView(withId(R.id.switch_mode)).perform(click())
     }
 }
