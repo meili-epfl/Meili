@@ -66,16 +66,17 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        profileUid = intent.getStringExtra(USER_KEY)
-        if (profileUid == null) {
-            profileUid = Auth.getCurrentUser()!!.uid // By default profile we are seeing is ours
-        }
-
         Auth.isLoggedIn.observe(this) {
             verifyAndUpdateUserIsLoggedIn()
         }
-        if (!Auth.isLoggedIn.value!!) {
-            Auth.signIn(this)
+
+        profileUid = intent.getStringExtra(USER_KEY)
+        if (profileUid == null) {
+            if (!Auth.isLoggedIn.value!!) {
+                Auth.signIn(this)
+            } else {
+                profileUid = Auth.getCurrentUser()!!.uid // By default profile we are seeing is ours
+            }
         }
 
         initializeViews()
