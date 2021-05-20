@@ -29,7 +29,7 @@ import io.github.ponnamkarthik.richlinkpreview.ViewListener
 /**
  * Fragment to be displayed inside of PoiActivity and which contains basic info about POI
  */
-class PoiInfoFragment(val poi: PointOfInterest) : Fragment() { //TODO verify that everything working properly when better connection
+class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
     companion object {
         private const val TAG = "PoiInfoFragment"
         private val DEFAULT_SERVICE = { PlacesClientService() }
