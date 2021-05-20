@@ -11,8 +11,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.facebook.*
+import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
 import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.home.FacebookAuthenticationService
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.NavigableActivity
@@ -39,6 +43,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var cancelButton: Button
     private lateinit var seeFriendsButton: ImageButton
     private lateinit var signInButton: Button
+    private lateinit var facebookSignInButton: LoginButton
     private lateinit var signOutButton: Button
     private lateinit var commentsButton: ImageButton
     private lateinit var postsButton: ImageButton
@@ -52,6 +57,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
     private lateinit var viewModel: ProfileViewModel
 
+    private lateinit var callbackManager: CallbackManager
     private var isProfileOwner = false
     private var profileUid: String? = null
 
@@ -71,9 +77,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
         profileUid = intent.getStringExtra(USER_KEY)
         if (profileUid == null) {
-            if (!Auth.isLoggedIn.value!!) {
-                Auth.signIn(this)
-            } else {
+            if (Auth.isLoggedIn.value!!) {
                 profileUid = Auth.getCurrentUser()!!.uid // By default profile we are seeing is ours
             }
         }
@@ -89,22 +93,44 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         nameEditView = findViewById(R.id.profile_edit_name)
         bioEditView = findViewById(R.id.profile_edit_bio)
 
+        initializeButtons()
+
+        signedInView = findViewById(R.id.signed_in)
+
+        registerFacebookCallBack()
+
+        Auth.isLoggedIn.observe(this) {
+            verifyAndUpdateUserIsLoggedIn()
+        }
+
+
+        profileView = findViewById(R.id.profile_container)
+        profileEditView = findViewById(R.id.profile_edit_container)
+    }
+
+    private fun initializeButtons() {
         profileEditButton = findViewById(R.id.profile_edit_button)
         saveButton = findViewById(R.id.save)
         cancelButton = findViewById(R.id.cancel)
         seeFriendsButton = findViewById(R.id.list_friends_button)
         signInButton = findViewById(R.id.sign_in)
+        facebookSignInButton = findViewById(R.id.facebook_sign_in)
         signOutButton = findViewById(R.id.sign_out)
         commentsButton = findViewById(R.id.profile_comments_button)
         postsButton = findViewById(R.id.profile_posts_button)
         reviewsButton = findViewById(R.id.profile_reviews_button)
         favoritePoisButton = findViewById(R.id.profile_poi_history_button)
         lightdarkModeButton = findViewById(R.id.switch_mode)
-
-        signedInView = findViewById(R.id.signed_in)
-        profileView = findViewById(R.id.profile_container)
-        profileEditView = findViewById(R.id.profile_edit_container)
     }
+
+    private fun registerFacebookCallBack() {
+        callbackManager = CallbackManager.Factory.create()
+
+        facebookSignInButton.registerCallback(
+            callbackManager, facebookCallback
+        )
+    }
+
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(profileUid!!))
@@ -115,6 +141,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             bioView.text = user.bio
 
             if (nameView.text.isEmpty()) {
+
                 nameView.text = Auth.getCurrentUser()!!.username
             }
         }
@@ -175,6 +202,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Auth.onActivityResult(this, requestCode, resultCode, data)
+        callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun verifyAndUpdateUserIsLoggedIn() {
@@ -182,6 +210,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             supportActionBar?.title = SUPPORT_ACTIONBAR_SIGNED_IN
             signedInView.visibility = View.VISIBLE
             signInButton.visibility = View.GONE
+            facebookSignInButton.visibility = View.GONE
 
             setupViewModel()
             updateIsProfileOwner()
@@ -190,6 +219,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             supportActionBar?.title = SUPPORT_ACTIONBAR_NOT_SIGNED_IN
             signedInView.visibility = View.GONE
             signInButton.visibility = View.VISIBLE
+            facebookSignInButton.visibility = View.VISIBLE
             signOutButton.visibility = View.GONE
         }
     }
@@ -220,5 +250,31 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
         val dialog = builder.create()
         dialog.show()
+    }
+}
+
+private val facebookCallback = object : FacebookCallback<LoginResult> {
+    private lateinit var profileTracker: ProfileTracker
+
+    override fun onSuccess(loginResult: LoginResult?) {
+        if (Profile.getCurrentProfile() == null) {
+            profileTracker = object : ProfileTracker() {
+                override fun onCurrentProfileChanged(
+                    oldProfile: Profile?,
+                    currentProfile: Profile
+                ) {
+                    Auth.setAuthenticationService(FacebookAuthenticationService())
+                    profileTracker.stopTracking()
+                }
+            }
+        } else {
+            Auth.setAuthenticationService(FacebookAuthenticationService())
+        }
+    }
+
+    override fun onCancel() {
+    }
+
+    override fun onError(exception: FacebookException) {
     }
 }

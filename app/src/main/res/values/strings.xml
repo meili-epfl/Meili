@@ -11,6 +11,9 @@
     <string name="lens_poi_distance">%d meters away</string>
     <string name="no_poi_found">No Point of Interest found</string>
     <string name="no_landmark_detected">No landmark found in the picture</string>
+    <string name="facebook_app_id">1155284924987862</string>
+    <string name="fb_login_protocol_scheme">fb1155284924987862</string>
+
     <string name="button_to_change_profile_picture">Button to change profile picture</string>
     <string name="button_to_edit_profile">Button to edit profile</string>
     <string name="my_friends">My Friends</string>
@@ -31,4 +34,9 @@
     <string name="sign_in">Sign In</string>
     <string name="sign_out">Sign Out</string>
     <string name="dark_light_mode_button">Dark / light mode button</string>
+    <string name="missing_name">Missing Name</string>
+    <string name="no_info">No Info</string>
+    <string name="take_me_there">Take Me There</string>
+    <string name="user_image">user image</string>
+    <string name="call">call</string>
 </resources>
