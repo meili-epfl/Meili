@@ -113,4 +113,9 @@
     <string name="sort_by">Sort by:</string>
 
     <string name="dark_light_mode_button">Dark / light mode button</string>
+    <string name="missing_name">Missing Name</string>
+    <string name="no_info">No Info</string>
+    <string name="take_me_there">Take Me There</string>
+    <string name="user_image">user image</string>
+    <string name="call">call</string>
 </resources>

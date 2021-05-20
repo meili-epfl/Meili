@@ -1,12 +1,16 @@
 package com.github.epfl.meili.poi
 
-
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.action.ViewActions.swipeLeft
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasPackage
+import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -21,6 +25,8 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPhotoResponse
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.PlacesClient
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,7 +39,8 @@ import org.mockito.Mockito.`when`
 @RunWith(AndroidJUnit4::class)
 class PoiActivityTest {
     private val fakePoi: PointOfInterest =
-        PointOfInterest(10.0, 10.0, "art_brut", "ChIJAAAAAAAAAAARg4pb6XR5bo0")
+
+            PointOfInterest(10.0, 10.0, "art_brut", "ChIJAAAAAAAAAAARg4pb6XR5bo0")
 
     private val mockPlaces: PlacesClientService = Mockito.mock(PlacesClientService::class.java)
     private val mockPlacesClient: PlacesClient = Mockito.mock(PlacesClient::class.java)
@@ -43,7 +50,7 @@ class PoiActivityTest {
         val placeBuilder = Place.builder()
         placeBuilder.address = "mockAddress"
         placeBuilder.phoneNumber = "mockPhone"
-        placeBuilder.websiteUri = Uri.EMPTY
+        placeBuilder.websiteUri = Uri.parse("http://epfl.ch")
         placeBuilder.utcOffsetMinutes = 30
         placeBuilder.openingHours = OpeningHours.builder().build()
         placeBuilder.photoMetadatas = listOf(PhotoMetadata.builder("a").build())
@@ -64,7 +71,7 @@ class PoiActivityTest {
 
         `when`(mockPlaces.getPlacesClient(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(mockPlacesClient)
 
-        PoiInfoFragment.placesClientService = { mockPlaces }
+        PoiActivity.placesClientService = { mockPlaces }
     }
 
 
@@ -76,12 +83,34 @@ class PoiActivityTest {
     @get:Rule
     var mActivityTestRule: ActivityScenarioRule<PoiActivity> = ActivityScenarioRule(intent)
 
+    @Before
+    fun initIntents() {
+        Intents.init()
+    }
+
+    @After
+    fun releaseIntents() {
+        Intents.release()
+    }
+
     @Test
     fun poiActivityTest() {
-        onView(withId(R.id.pager)).perform(swipeLeft())
-        onView(withId(R.id.pager)).perform(swipeLeft())
-        pressBack()
-        pressBack()
+        onView(withId(R.id.poi_name)).check(matches(ViewMatchers.withText(fakePoi.name)))
+        onView(withId(R.id.openStatusTextView)).check(matches(ViewMatchers.withText("CLOSED")))
+        onView(withId(R.id.call_poi_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.take_me_there_button)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun takeMeThereButtonTest() {
+        onView(withId(R.id.take_me_there_button)).perform(click())
+        Intents.intended(hasPackage("com.google.android.apps.maps"))
+    }
+
+    @Test
+    fun callButtonTest() {
+        onView(withId(R.id.call_poi_button)).perform(click())
+        Intents.intended(toPackage("com.android.server.telecom"))
     }
 
     object MockitoHelper {
@@ -93,3 +122,4 @@ class PoiActivityTest {
         fun <T> uninitialized(): T =  null as T
     }
 }
+

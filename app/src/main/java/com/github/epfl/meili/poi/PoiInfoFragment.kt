@@ -81,11 +81,11 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() {
 
             val poiImageView = view.findViewById<ImageView>(R.id.poiImageView)
 
-            val metada = place.photoMetadatas
-            if (!(metada == null || metada.isEmpty())) {
+            val metadata = place.photoMetadatas
+            if (!(metadata == null || metadata.isEmpty())) {
 
 
-                val photoMetadata = metada.first()
+                val photoMetadata = metadata.first()
 
                 val photoRequest = FetchPhotoRequest.builder(photoMetadata)
                     .setMaxWidth(PHOTO_WIDTH)

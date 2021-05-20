@@ -50,6 +50,9 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         editReviewView = findViewById(R.id.edit_review)
 
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
+
+        supportActionBar?.title = poi.name
+
         val poiKey = poi.uid
         showListReviewsView()
         initReviewEditView()
@@ -168,4 +171,5 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         listReviewsView.visibility = View.VISIBLE
         editReviewView.visibility = View.GONE
     }
+
 }
