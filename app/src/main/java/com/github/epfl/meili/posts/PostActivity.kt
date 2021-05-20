@@ -94,9 +94,9 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         commentButton.setOnClickListener { showEditCommentView() }
         addCommentButton.setOnClickListener { addComment() }
 
-        /*val singletonList = ArrayList<String>()
+        val singletonList = ArrayList<String>()
         singletonList.add(post.authorUid)
-        serviceProvider().getUserInformation(singletonList, { onAuthorInfoReceived(it) }) {}*/
+        serviceProvider().getUserInformation(singletonList, { onAuthorInfoReceived(it) }) {}
     }
 
     private fun onAuthorInfoReceived(users: Map<String, User>) {
@@ -130,12 +130,16 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
     }
 
     override fun onUsersInfoReceived(users: Map<String, User>, commentsMap: Map<String, Comment>) {
+        Log.d(TAG, "on users info received")
+        Log.d(TAG, commentsMap.toString())
+        Log.d(TAG, users.toString())
         usersMap = HashMap(usersMap) + users
         val commentsAndUsersMap = HashMap<String, Pair<Comment, User>>()
         for ((commentId, comment) in commentsMap) {
             val user = usersMap[comment.authorUid]
+            Log.d(TAG, user.toString())
             if (user != null) {
-                commentsAndUsersMap[postId] = Pair(comment, user)
+                commentsAndUsersMap[commentId] = Pair(comment, user)
             }
         }
 
