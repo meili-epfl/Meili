@@ -149,11 +149,11 @@ class MapActivityTest {
 //        imageView.perform(click())
 //    }
 //
-//    @Test
-//    fun goToProfileTest() {
-//        onView(withId(R.id.profile)).perform(click())
-//        Intents.intended(IntentMatchers.hasComponent(ProfileActivity::class.qualifiedName))
-//    }
+    @Test
+    fun goToProfileTest() {
+        onView(withId(R.id.profile)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(ProfileActivity::class.qualifiedName))
+    }
 //
 //    @Test
 //    fun goToFeedTest() {
