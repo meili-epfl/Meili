@@ -1,6 +1,7 @@
 package com.github.epfl.meili.review
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
@@ -11,21 +12,23 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
-import com.github.epfl.meili.util.MeiliViewModel
-import com.github.epfl.meili.util.MenuActivity
+import com.github.epfl.meili.models.User
+import com.github.epfl.meili.profile.UserProfileLinker
+import com.github.epfl.meili.profile.friends.UserInfoService
+import com.github.epfl.meili.util.*
 import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
-import com.github.epfl.meili.util.UIUtility
 
-
-class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
+class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, UserProfileLinker<Review> {
     companion object {
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
         private const val EDIT_BUTTON_DRAWABLE = android.R.drawable.ic_menu_edit
+        private const val TAG = "ReviewsActivity"
+
+        var serviceProvider: () -> UserInfoService = { UserInfoService() }
     }
 
     private var currentUserReview: Review? = null
 
-    private val recyclerAdapter = ReviewsRecyclerAdapter()
     private lateinit var viewModel: MeiliViewModel<Review>
 
     private lateinit var listReviewsView: View
@@ -40,6 +43,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
     private lateinit var submitButton: Button
     private lateinit var cancelButton: Button
 
+    override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Review, User>>
+    override lateinit var usersMap: Map<String, User>
     private lateinit var poi: PointOfInterest
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,14 +54,18 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         listReviewsView = findViewById(R.id.list_reviews)
         editReviewView = findViewById(R.id.edit_review)
 
+
+        usersMap = HashMap()
+
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
         val poiKey = poi.uid
         showListReviewsView()
         initReviewEditView()
+        recyclerAdapter = ReviewsRecyclerAdapter(this)
         initRecyclerView(
-            recyclerAdapter,
-            findViewById(R.id.reviews_recycler_view),
-            this
+                recyclerAdapter,
+                findViewById(R.id.reviews_recycler_view),
+                this
         )
         initViewModel(poiKey)
         initLoggedInListener()
@@ -120,7 +129,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
 
         @Suppress("UNCHECKED_CAST")
         viewModel =
-            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
+                ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
         viewModel.initDatabase(FirestoreDatabase("reviews", Review::class.java) {
             it.whereEqualTo(Review.POI_KEY_FIELD, poiKey)
@@ -143,10 +152,11 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
             }
         }
 
-        averageRatingView.text =
-            getString(R.string.average_rating_format).format(Review.averageRating(map))
-        recyclerAdapter.submitList(map.toList())
-        recyclerAdapter.notifyDataSetChanged()
+        val newUsersList = map.keys.toList().minus(usersMap.keys.toList())
+
+        serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, map) },
+                { Log.d(TAG, "Error when fetching users information") })
+        averageRatingView.text = getString(R.string.average_rating_format).format(Review.averageRating(map))
     }
 
     private fun initLoggedInListener() {

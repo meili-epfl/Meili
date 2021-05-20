@@ -1,5 +1,6 @@
 package com.github.epfl.meili.profile.friends
 
+import android.util.Log
 import com.github.epfl.meili.database.FirestoreDocumentService
 import com.github.epfl.meili.models.User
 
@@ -30,32 +31,44 @@ open class UserInfoService {
             if (responsesRemaining != 0) {
                 onError(Error("Response is currently being processed"))
             } else {
-                responsesRemaining = uids.size
-                for (uid in uids) {
-                    getSingleUserInfo(uid, onSuccess, onError)
+                if (uids.isEmpty()){
+                    onSuccess(HashMap())
+                }
+                
+                val uidsSet = uids.toSet()
+                responsesRemaining = uidsSet.size
+
+                for (uid in uidsSet) {
+                    getSingleUserInfo(uid, onSuccess)
                 }
             }
         }
     }
 
-    private fun getSingleUserInfo(uid: String, onSuccess: ((Map<String, User>) -> Unit), onError: ((Error) -> Unit)) {
+    private fun getSingleUserInfo(uid: String, onSuccess: ((Map<String, User>) -> Unit)) {
         documentService().getDocument(getUserPath(uid)).addOnSuccessListener {
             if (it.exists()) {
                 val user = it.toObject(User::class.java)
-                if (user == null) {
-                    onError(Error("Error fetching response"))
-                    responsesRemaining = 0
-                } else {
+
+                if (user != null){
                     usersInfo[user.uid] = user
-                    if (responsesRemaining == 1) {
-                        onSuccess(usersInfo)
-                        usersInfo.clear()
-                        responsesRemaining = 0
-                    } else {
-                        responsesRemaining--
-                    }
                 }
+
+                checkIfDone(onSuccess)
+            }else{
+                checkIfDone(onSuccess)
             }
+        }
+    }
+
+    private fun checkIfDone(onSuccess: ((Map<String, User>) -> Unit)){
+        if (responsesRemaining == 1) {
+            onSuccess(usersInfo)
+            usersInfo = HashMap()
+            responsesRemaining = 0
+        } else {
+            Log.d("getSingleUserInfo", responsesRemaining.toString())
+            responsesRemaining--
         }
     }
 }

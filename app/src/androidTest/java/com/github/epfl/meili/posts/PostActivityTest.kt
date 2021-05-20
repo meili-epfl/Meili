@@ -23,6 +23,10 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.models.User
+import com.github.epfl.meili.profile.friends.FriendsListActivity
+import com.github.epfl.meili.profile.friends.FriendsListActivityTest
+import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
@@ -51,9 +55,13 @@ class PostActivityTest {
 
     companion object {
         private const val TEST_POI_KEY = "POI_KEY"
-        private const val TEST_ID = "ID"
-        private val TEST_POST = Post(TEST_POI_KEY,"AUTHOR", "TITLE", -1,"TEXT")
-        private val TEST_COMMENT = Comment("AUTHOR_COMMENT", "TEXT_COMMENT")
+        private const val TEST_POST_ID = "ID"
+        private const val TEST_POST_AUTHOR_ID = "AUTHOR POST ID"
+        private const val TEST_POST_AUTHOR_NAME = "AUTHOR NAME POST"
+        private val TEST_POST = Post(TEST_POST_ID, TEST_POI_KEY, TEST_POST_AUTHOR_ID, "TITLE", -1,"TEXT")
+        private const val TEST_AUTHOR_NAME = "Author Name"
+        private const val TEST_AUTHOR_ID = "Auhtor id"
+        private val TEST_COMMENT = Comment(TEST_AUTHOR_ID, "TEXT_COMMENT")
     }
 
     private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
@@ -71,7 +79,7 @@ class PostActivityTest {
 
     private val intent = Intent(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext, PostActivity::class.java)
             .putExtra(Post.TAG, TEST_POST)
-            .putExtra(PostActivity.POST_ID, TEST_ID)
+            .putExtra(PostActivity.POST_ID, TEST_POST_ID)
             .putExtra(MapActivity.POI_KEY, TEST_POI_KEY)
 
     @get:Rule
@@ -86,37 +94,55 @@ class PostActivityTest {
     init {
         setupMocks()
         setupPostActivityMocks()
+        setupUserServiceInfo()
+    }
+
+    private fun setupUserServiceInfo(){
+        val testFriendMap = HashMap<String, User>()
+        testFriendMap[TEST_AUTHOR_ID] = User(TEST_AUTHOR_ID, TEST_AUTHOR_NAME)
+        testFriendMap[TEST_POST_AUTHOR_ID] = User(TEST_POST_AUTHOR_ID, TEST_POST_AUTHOR_NAME)
+
+        val mockUserInfoService = Mockito.mock(UserInfoService::class.java)
+        Mockito.`when`(mockUserInfoService.getUserInformation(Mockito.anyList(), Mockito.any(), Mockito.any())).then {
+            val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)
+
+            onSuccess(testFriendMap)
+
+            return@then null
+        }
+
+        PostActivity.serviceProvider = { mockUserInfoService }
     }
 
     private fun setupMocks() {
         Mockito.`when`(mockFirestore.collection("forum"))
-            .thenReturn(mockCollection)
+                .thenReturn(mockCollection)
         Mockito.`when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
             database = invocation.arguments[0] as AtomicPostFirestoreDatabase
             Mockito.mock(ListenerRegistration::class.java)
         }
-        Mockito.`when`(mockCollection.document(ArgumentMatchers.contains(TEST_ID)))
-            .thenReturn(mockDocument)
+        Mockito.`when`(mockCollection.document(ArgumentMatchers.contains(TEST_POST_ID)))
+                .thenReturn(mockDocument)
 
-        Mockito.`when`(mockFirestore.collection("forum/${TEST_ID}/comments"))
-            .thenReturn(mockComments)
+        Mockito.`when`(mockFirestore.collection("forum/${TEST_POST_ID}/comments"))
+                .thenReturn(mockComments)
         Mockito.`when`(mockComments.addSnapshotListener(any())).thenAnswer { invocation ->
             commentsDatabase = invocation.arguments[0] as FirestoreDatabase<Comment>
             Mockito.mock(ListenerRegistration::class.java)
         }
-        Mockito.`when`(mockComments.document(ArgumentMatchers.contains(TEST_ID)))
-            .thenReturn(mockDocument)
+        Mockito.`when`(mockComments.document(ArgumentMatchers.contains(TEST_POST_ID)))
+                .thenReturn(mockDocument)
 
         Mockito.`when`(mockSnapshotBeforeAddition.documents).thenReturn(ArrayList<DocumentSnapshot>())
 
         val mockDocumentSnapshot: DocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
-        Mockito.`when`(mockDocumentSnapshot.id).thenReturn(TEST_ID)
+        Mockito.`when`(mockDocumentSnapshot.id).thenReturn(TEST_POST_ID)
         Mockito.`when`(mockDocumentSnapshot.toObject(Comment::class.java))
-            .thenReturn(TEST_COMMENT)
+                .thenReturn(TEST_COMMENT)
         Mockito.`when`(mockSnapshotAfterAddition.documents).thenReturn(listOf(mockDocumentSnapshot))
 
-        mockAuthenticationService.setMockUid(TEST_ID)
-        mockAuthenticationService.setUsername(TEST_ID)
+        mockAuthenticationService.setMockUid(TEST_POST_ID)
+        mockAuthenticationService.setUsername(TEST_POST_ID)
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
@@ -146,7 +172,7 @@ class PostActivityTest {
     fun checkPostShown() {
         commentsDatabase.onEvent(mockSnapshotBeforeAddition, null)
 
-        onView(withId(R.id.post_author)).check(matches(withText(containsString(TEST_POST.author))))
+        onView(withId(R.id.userName)).check(matches(withText(containsString(TEST_POST_AUTHOR_NAME))))
         onView(withId(R.id.post_title)).check(matches(withText(containsString(TEST_POST.title))))
         onView(withId(R.id.post_text)).check(matches(withText(containsString(TEST_POST.text))))
         onView(withId(R.id.comments_recycler_view)).check(matches(isEnabled()))
@@ -157,7 +183,7 @@ class PostActivityTest {
         mockAuthenticationService.signOut()
         commentsDatabase.onEvent(mockSnapshotBeforeAddition, null)
 
-        onView(withId(R.id.post_author)).check(matches(withText(containsString(TEST_POST.author))))
+        onView(withId(R.id.userName)).check(matches(withText(containsString(TEST_POST_AUTHOR_NAME))))
         onView(withId(R.id.post_title)).check(matches(withText(containsString(TEST_POST.title))))
         onView(withId(R.id.post_text)).check(matches(withText(containsString(TEST_POST.text))))
 
@@ -172,7 +198,7 @@ class PostActivityTest {
         mockAuthenticationService.signInIntent()
         commentsDatabase.onEvent(mockSnapshotBeforeAddition, null)
 
-        onView(withId(R.id.post_author)).check(matches(withText(containsString(TEST_POST.author))))
+        onView(withId(R.id.userName)).check(matches(withText(containsString(TEST_POST_AUTHOR_NAME))))
         onView(withId(R.id.post_title)).check(matches(withText(containsString(TEST_POST.title))))
         onView(withId(R.id.post_text)).check(matches(withText(containsString(TEST_POST.text))))
 
@@ -212,13 +238,13 @@ class PostActivityTest {
         onView(withId(R.id.comment_button)).check(matches(isDisplayed()))
 
         onView(withId(R.id.comments_recycler_view))
-            .check(matches(isDisplayed()))
-            .perform(
-                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(
-                    TEST_COMMENT.text))))
+                .check(matches(isDisplayed()))
+                .perform(
+                        RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(
+                                TEST_COMMENT.text))))
 
         onView(textViewContainsText(TEST_COMMENT.text)).check(matches(isDisplayed()))
-        onView(textViewContainsText(TEST_COMMENT.author)).check(matches(isDisplayed()))
+        onView(textViewContainsText(TEST_AUTHOR_NAME)).check(matches(isDisplayed()))
 
         // Check edit text clears after having posted comment
         onView(withId(R.id.comment_button)).perform(click())

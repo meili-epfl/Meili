@@ -27,6 +27,7 @@ import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
+import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.UIUtility
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -35,8 +36,12 @@ import java.util.concurrent.Executors
 
 
 class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
-    override lateinit var recyclerAdapter: PostListRecyclerAdapter
+    override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Post, User>>
     override lateinit var viewModel: PostListViewModel
+
+    override var usersMap: Map<String, User> = HashMap()
+    override var postsMap: Map<String, Post> = HashMap()
+    override var sortOrder: Boolean = true
 
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView
@@ -50,13 +55,13 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
 
     // image choice and upload
     private val launchCameraActivity =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
-                loadImage(result.data!!.data!!)
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
+                    loadImage(result.data!!.data!!)
+                }
             }
-        }
     private val launchGallery =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it) }
+            registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it) }
 
     private lateinit var useCameraButton: ImageView
     private lateinit var useGalleryButton: ImageView
@@ -79,9 +84,9 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         initViews()
 
         initActivity(
-            ForumViewModel::class.java,
-            findViewById(R.id.forum_recycler_view),
-            findViewById(R.id.sort_spinner)
+                ForumViewModel::class.java,
+                findViewById(R.id.forum_recycler_view),
+                findViewById(R.id.sort_spinner)
         )
 
         showListPostsView()
@@ -122,8 +127,8 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
             cancelButton -> showListPostsView()
             useGalleryButton -> launchGallery.launch("image/*")
             useCameraButton -> launchCameraActivity.launch(
-                Intent(this, CameraActivity::class.java)
-                    .putExtra(CameraActivity.EDIT_PHOTO, true)
+                    Intent(this, CameraActivity::class.java)
+                            .putExtra(CameraActivity.EDIT_PHOTO, true)
             )
             else -> startActivity(getPostActivityIntent(view.findViewById(R.id.post_id)))
         }
@@ -142,7 +147,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         val title = editTitleView.text.toString()
         val text = editTextVIew.text.toString()
 
-        viewModel.addElement(postId, Post(poi.uid, user.username, title, timestamp, text))
+        viewModel.addElement(postId, Post(postId, poi.uid, user.uid, title, timestamp, text))
 
         if (bitmap != null) {
             executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }
@@ -159,10 +164,10 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         })
         if (Auth.getCurrentUser() != null) {
             (viewModel as ForumViewModel).initFavoritePoisDatabase(
-                FirestoreDatabase( // add to poi favorites
-                    String.format(FavoritePoisActivity.DB_PATH, Auth.getCurrentUser()!!.uid),
-                    PointOfInterest::class.java
-                )
+                    FirestoreDatabase( // add to poi favorites
+                            String.format(FavoritePoisActivity.DB_PATH, Auth.getCurrentUser()!!.uid),
+                            PointOfInterest::class.java
+                    )
             )
         }
     }
