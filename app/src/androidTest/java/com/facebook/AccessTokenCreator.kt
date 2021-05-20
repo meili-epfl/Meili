@@ -1,7 +1,4 @@
-package com.github.epfl.meili.home
-
-import com.facebook.AccessToken
-import com.facebook.AccessTokenSource
+package com.facebook
 
 object AccessTokenCreator {
     fun createToken(grantedPermissions: Collection<String?>?): AccessToken {

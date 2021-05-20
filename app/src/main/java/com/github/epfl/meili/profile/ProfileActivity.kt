@@ -77,9 +77,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
         profileUid = intent.getStringExtra(USER_KEY)
         if (profileUid == null) {
-            if (!Auth.isLoggedIn.value!!) {
-                Auth.signIn(this)
-            } else {
+            if (Auth.isLoggedIn.value!!) {
                 profileUid = Auth.getCurrentUser()!!.uid // By default profile we are seeing is ours
             }
         }
@@ -116,9 +114,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             verifyAndUpdateUserIsLoggedIn()
         }
 
-        if (!Auth.isLoggedIn.value!!) {
-            Auth.signIn(this)
-        }
+
         profileView = findViewById(R.id.profile_container)
         profileEditView = findViewById(R.id.profile_edit_container)
     }
