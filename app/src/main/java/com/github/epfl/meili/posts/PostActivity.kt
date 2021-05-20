@@ -27,7 +27,8 @@ import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
 class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListener {
-    //TODO: add info about current post user
+    //TODO: fix comment text not getting displayed
+    //TODO: fix poi activity test
     companion object {
         private const val TAG = "PostActivity"
         private val DEFAULT_URI =
@@ -93,9 +94,9 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         commentButton.setOnClickListener { showEditCommentView() }
         addCommentButton.setOnClickListener { addComment() }
 
-        val singletonList = ArrayList<String>()
+        /*val singletonList = ArrayList<String>()
         singletonList.add(post.authorUid)
-        serviceProvider().getUserInformation(singletonList, { onAuthorInfoReceived(it) }) {}
+        serviceProvider().getUserInformation(singletonList, { onAuthorInfoReceived(it) }) {}*/
     }
 
     private fun onAuthorInfoReceived(users: Map<String, User>) {

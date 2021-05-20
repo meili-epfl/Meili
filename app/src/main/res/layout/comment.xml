@@ -26,7 +26,8 @@
                 android:id="@+id/comment_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                app:layout_constraintTop_toBottomOf="@id/userName" />
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
