@@ -16,7 +16,16 @@ It was a lot of fun working on this feature and it's great that we can now imple
 
 
 ## Ewan (Scrum Master)
-TODO
+ 
+This week, I was very busy with other projects and I had to wait a little for other PRs to be done, as they implemented tools I wanted to use in my "My Posts" feature.
+
+I managed to finish the feature I was assigned to in little time (about 5h), but as mentioned above, I didn't have time to do any extra work which would have made me do 8h. No particular problems were encountered.
+
+I also helped with the dark/light mode UI, which only took me 30 min.
+ 
+While preparing for the demo, I noticed a few bugs that I put in the backlog. As I am not able to be on campus, my little sister used the app to help me mwith the demo.
+ 
+For the first time, I vastly overestimated the amount of work it would take me (5h instead of 8h). This is because the team implemented tools that facilitated the implementation of my feature. I will also make sure I work for more than 8h next sprint to compensate the hours lost this week.
 
 
 ## Marcel 
@@ -36,4 +45,8 @@ TODO
 
 ## Overall team
 
-TODO
+This sprint, the team implemented features that drastically improve the User experience, such as being able to change between light and dark mode in app, being able to click on other user's profiles to see their information, and notifications.
+ 
+We are getting very good at refactoring and making more and more general tools as the project gets bigger. This is very helpful and drastically reduces the amount of time features take to implement.
+ 
+We also have our first official user, Ewan's little sister, who used the app as a normal user to help him with this week's demo.
