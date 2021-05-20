@@ -70,7 +70,7 @@ class PoiActivityTest {
 
         `when`(mockPlaces.getPlacesClient(any(), any())).thenReturn(mockPlacesClient)
 
-        PoiInfoFragment.placesClientService = { mockPlaces }
+        PoiActivity.placesClientService = { mockPlaces }
     }
 
 
