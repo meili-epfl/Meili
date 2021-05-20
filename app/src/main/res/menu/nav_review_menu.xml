@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/menu_forum"
+    <item
+        android:id="@+id/menu_forum"
         android:title="Forum"
-        app:showAsAction="always"/>
-    <item android:id="@+id/menu_chat"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_chat"
         android:title="Chat"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 </menu>

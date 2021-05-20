@@ -176,11 +176,6 @@ class MapActivityTest {
     }
 
     @Test
-    fun changeModeTest(){
-        onView(withId(R.id.switch_mode)).perform(click())
-    }
-
-    @Test
     fun landmarksTest() {
         onView(withId(R.id.lens_dismiss_landmark)).check(matches(not(isDisplayed())))
 

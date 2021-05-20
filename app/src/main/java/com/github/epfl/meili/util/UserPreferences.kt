@@ -1,6 +1,5 @@
 package com.github.epfl.meili.util
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
