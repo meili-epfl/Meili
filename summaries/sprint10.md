@@ -45,7 +45,10 @@ However, same as last week, I had some problems with tests which passed locally 
 
 ## Yingxuan
 
-TODO
+This week I began by addressing reviews of my last PR and discussed with the team about the functionality and the placement of switching button, we had different versions of it and finally placed it in the profile. Thanks to Ewan's explanation, I improved the button's view by adding a icon with vector asset. Then I added a new way to sort posts: by votes counting. And I wrote tests to have full coverage on it.
+I also made the buttons and navigation bar more visible under dark theme, but I did not merge this task, because I want to fix the artifact for up voting button and there are new features coming at the end of this sprint, for example the POI, which's UI can be improved with night mode.
+
+I spent less time than expected on the sorting, but it took me some time to merge the precedent PR due to a missunderstanding. It's interesting to polish the dark mode, and I'm glad that I learned new things.
 
 ## Overall team
 
