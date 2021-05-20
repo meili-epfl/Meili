@@ -15,6 +15,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
+import com.github.epfl.meili.profile.myposts.MyPostsActivity
 import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.util.UIUtility
 import com.github.epfl.meili.util.UserPreferences
@@ -132,6 +133,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             signInButton -> Auth.signIn(this)
             signOutButton -> Auth.signOut()
             profileEditButton -> showEditMode()
+            postsButton -> showProfileOwnersInfo(MyPostsActivity::class.java)
             favoritePoisButton -> showProfileOwnersInfo(FavoritePoisActivity::class.java)
             lightdarkModeButton -> changeMode()
         }

@@ -4,13 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
     tools:context=".profile.myposts.MyPostsActivity">
+
+    <TextView
+        android:id="@+id/sort_by"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="Sort by:"/>
+
+    <Spinner
+        android:id="@+id/sort_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/sort_by"
+        android:layout_alignParentTop="true"
+        />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/my_posts_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/sort_spinner"/>
 
 </RelativeLayout>
