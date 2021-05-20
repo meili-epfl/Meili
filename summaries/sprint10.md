@@ -4,9 +4,7 @@
 
 this week I worked on implementing a notification service (only when a user receives a direct message for the moment). I used the Firebase Console Messaging to send out the notifications. No existing api call was there to send notifications it was only available from the web's firebase console. I therefore implemented a service to send out these requests to the web. I then used the FirebaseMessagingService to customize the recevied notifications. For instance, the title of the notification is customized to be "from <name of the user>" and the body of the notifications is the message itself; moreover when you click on the notification you go to the chat.
  
- This feature took more time then expected since it was ridded with new challenges and I felt like the notification service wasn't really well documented so I had to resort to a lot of external sources like stack overflow. The testing of this feature has been as hard since most of the added code is just overrided private functions so I had to get creative to run these codes while also running mocked services and not the real ones...
-
-TODO
+ This feature took more time then expected since it was ridded with new challenges and I felt like the notification service wasn't really well documented so I had to resort to a lot of external sources like stack overflow. The testing of this feature has been as hard since most of the added code is just overrided private functions so I had to get creative to run these codes while also running mocked services and not the real ones. I will need to look further into that.
 
 ## Aman
 
