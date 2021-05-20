@@ -24,12 +24,12 @@ class FacebookAuthenticationServiceTest {
     }
 
     @Test
-    fun testA() {
+    fun testANullUser() {
         assert(fauth.getCurrentUser() == null)
     }
 
     @Test
-    fun testB() {
+    fun testNonNullUser() {
         UiThreadStatement.runOnUiThread {
             val mockProfile = Profile(TEST_ID, "", "", "", TEST_NAME, null)
 
