@@ -1,4 +1,4 @@
-package com.github.epfl.meili.notification
+package com.github.epfl.meili.notifications
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -17,9 +17,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.messages.ChatLogActivity
-import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlin.random.Random
@@ -44,7 +42,6 @@ class FirebaseNotificationService : FirebaseMessagingService() {
 
     override fun onNewToken(newToken: String) {
         super.onNewToken(newToken)
-        Log.d("notif","here")
         token = newToken
     }
 
@@ -53,9 +50,9 @@ class FirebaseNotificationService : FirebaseMessagingService() {
 
 
         //intent to be launched when we click on the notificaiton
-/*        val intent = Intent(this, ChatLogActivity::class.java)
-            .putExtra(FRIEND_KEY,Auth.getCurrentUser())*/
-        val intent = Intent(this, MapActivity::class.java)
+       val intent = Intent(this, ChatLogActivity::class.java)
+            .putExtra(FRIEND_KEY, Auth.getCurrentUser())
+        //val intent = Intent(this, MapActivity::class.java)
         //clearing all intents (start fresh)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         //intent can only be used once
@@ -72,7 +69,7 @@ class FirebaseNotificationService : FirebaseMessagingService() {
         //build notification
         val notification =  NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(message.data["title"])
-            .setContentTitle(message.data["message"])
+            .setContentText(message.data["message"])
             .setSmallIcon(R.mipmap.meili_launcher_foreground)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)

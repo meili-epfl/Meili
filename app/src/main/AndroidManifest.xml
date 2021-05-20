@@ -83,7 +83,7 @@
             android:name=".forum.PostActivity"
             android:parentActivityName=".forum.ForumActivity"/>
 
-        <service android:name=".notification.FirebaseNotificationService"
+        <service android:name=".notifications.FirebaseNotificationService"
                 android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>

@@ -1,4 +1,4 @@
-package com.github.epfl.meili.notification
+package com.github.epfl.meili.notifications
 
 import com.github.epfl.meili.models.NotificationData.Companion.BASE_URL
 import retrofit2.Retrofit

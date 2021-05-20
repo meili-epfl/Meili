@@ -1,4 +1,4 @@
-package com.github.epfl.meili.notification
+package com.github.epfl.meili.notifications
 
 import com.github.epfl.meili.models.NotificationData.Companion.CONTENT_TYPE
 import com.github.epfl.meili.models.NotificationData.Companion.SERVER_KEY
