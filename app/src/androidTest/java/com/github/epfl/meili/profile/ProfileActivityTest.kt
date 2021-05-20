@@ -238,13 +238,4 @@ class ProfileActivityTest {
         onView(withId(R.id.switch_mode)).perform(click())
     }
 
-    @Test
-    fun signupWithFacebook() {
-        val resultData = Intent()
-        resultData.putExtra("com.facebook.LoginFragment:Result", LoginClientCreator.createResult())
-        Intents.intending(IntentMatchers.hasComponent(FacebookActivity::class.java.name))
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, resultData))
-        onView(withId(R.id.facebook_sign_in)).check(matches(isClickable())).perform(click())
-    }
-
 }
