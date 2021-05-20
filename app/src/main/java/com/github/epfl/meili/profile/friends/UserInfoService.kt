@@ -36,7 +36,6 @@ open class UserInfoService {
                 }
                 
                 val uidsSet = uids.toSet()
-                Log.d("UsersInfoService", uidsSet.toString())
                 responsesRemaining = uidsSet.size
 
                 for (uid in uidsSet) {
