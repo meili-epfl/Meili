@@ -7,14 +7,20 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.models.User
 import com.github.epfl.meili.posts.PostListActivity
 import com.github.epfl.meili.posts.PostListRecyclerAdapter
 import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.profile.ProfileActivity
+import com.github.epfl.meili.util.MeiliRecyclerAdapter
 
 class MyPostsActivity : AppCompatActivity(), PostListActivity {
-    override lateinit var recyclerAdapter: PostListRecyclerAdapter
+    override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Post, User>>
     override lateinit var viewModel: PostListViewModel
+
+    override var usersMap: Map<String, User> = HashMap()
+    override var postsMap: Map<String, Post> = HashMap()
+    override var sortOrder: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
