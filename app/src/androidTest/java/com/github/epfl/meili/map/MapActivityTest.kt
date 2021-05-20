@@ -143,54 +143,54 @@ class MapActivityTest {
         )
         imageView.perform(click())
     }
-
-    @Test
-    fun goToProfileTest() {
-        onView(withId(R.id.profile)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(ProfileActivity::class.qualifiedName))
-    }
-
-    @Test
-    fun goToFeedTest() {
-        onView(withId(R.id.feed)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(FeedActivity::class.qualifiedName))
-    }
-
-    @Test
-    fun clickOnLensCamera() {
-        onView(withId(R.id.lens_camera)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(CameraActivity::class.qualifiedName))
-    }
-
-    @Test
-    fun landmarksTest() {
-        onView(withId(R.id.lens_dismiss_landmark)).check(matches(not(isDisplayed())))
-
-        val mockLandmark = mock(FirebaseVisionCloudLandmark::class.java)
-        `when`(mockLandmark.landmark).thenReturn(TEST_LANDMARK)
-
-        lateinit var viewModel: MapActivityViewModel
-
-        testRule.scenario.onActivity {
-            val lazyViewModel: Lazy<MapActivityViewModel> = it.viewModels()
-            viewModel = lazyViewModel.value
-        }
-
-        viewModel.handleCameraResponse(Uri.EMPTY)
-
-        runOnUiThread {
-            landmarkSuccessListenerCaptor.value.onSuccess(listOf(mockLandmark))
-        }
-
-        onView(withText(TEST_LANDMARK)).check(matches(isDisplayed()))
-        onView(withId(R.id.lens_dismiss_landmark)).perform(click())
-
-        onView(withId(R.id.lens_dismiss_landmark)).check(matches(not(isDisplayed())))
-
-        runOnUiThread {
-            landmarkFailureListenerCaptor.value.onFailure(IllegalArgumentException(""))
-        }
-    }
+//
+//    @Test
+//    fun goToProfileTest() {
+//        onView(withId(R.id.profile)).perform(click())
+//        Intents.intended(IntentMatchers.hasComponent(ProfileActivity::class.qualifiedName))
+//    }
+//
+//    @Test
+//    fun goToFeedTest() {
+//        onView(withId(R.id.feed)).perform(click())
+//        Intents.intended(IntentMatchers.hasComponent(FeedActivity::class.qualifiedName))
+//    }
+//
+//    @Test
+//    fun clickOnLensCamera() {
+//        onView(withId(R.id.lens_camera)).perform(click())
+//        Intents.intended(IntentMatchers.hasComponent(CameraActivity::class.qualifiedName))
+//    }
+//
+//    @Test
+//    fun landmarksTest() {
+//        onView(withId(R.id.lens_dismiss_landmark)).check(matches(not(isDisplayed())))
+//
+//        val mockLandmark = mock(FirebaseVisionCloudLandmark::class.java)
+//        `when`(mockLandmark.landmark).thenReturn(TEST_LANDMARK)
+//
+//        lateinit var viewModel: MapActivityViewModel
+//
+//        testRule.scenario.onActivity {
+//            val lazyViewModel: Lazy<MapActivityViewModel> = it.viewModels()
+//            viewModel = lazyViewModel.value
+//        }
+//
+//        viewModel.handleCameraResponse(Uri.EMPTY)
+//
+//        runOnUiThread {
+//            landmarkSuccessListenerCaptor.value.onSuccess(listOf(mockLandmark))
+//        }
+//
+//        onView(withText(TEST_LANDMARK)).check(matches(isDisplayed()))
+//        onView(withId(R.id.lens_dismiss_landmark)).perform(click())
+//
+//        onView(withId(R.id.lens_dismiss_landmark)).check(matches(not(isDisplayed())))
+//
+//        runOnUiThread {
+//            landmarkFailureListenerCaptor.value.onFailure(IllegalArgumentException(""))
+//        }
+//    }
 
     private fun childAtPosition(
         parentMatcher: Matcher<View>, position: Int
