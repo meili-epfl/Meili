@@ -1,16 +1,23 @@
 package com.github.epfl.meili.profile
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
 import android.location.LocationManager
 import android.net.Uri
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
+import com.facebook.FacebookActivity
+import com.facebook.login.LoginClientCreator
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
@@ -229,6 +236,15 @@ class ProfileActivityTest {
     @Test
     fun changeModeTest(){
         onView(withId(R.id.switch_mode)).perform(click())
+    }
+
+    @Test
+    fun signupWithFacebook() {
+        val resultData = Intent()
+        resultData.putExtra("com.facebook.LoginFragment:Result", LoginClientCreator.createResult())
+        Intents.intending(IntentMatchers.hasComponent(FacebookActivity::class.java.name))
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, resultData))
+        onView(withId(R.id.facebook_sign_in)).check(matches(isClickable())).perform(click())
     }
 
 }

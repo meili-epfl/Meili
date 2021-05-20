@@ -9,12 +9,18 @@ import com.facebook.GraphResponse
 import com.facebook.Profile
 import com.facebook.login.LoginManager
 import com.github.epfl.meili.models.User
+import com.google.firebase.auth.FirebaseAuth
 import org.json.JSONException
 import org.json.JSONObject
 
 class FacebookAuthenticationService : AuthenticationService {
+    private var profile: Profile? = null
+    private var accessToken: AccessToken? = null
+
     override fun getCurrentUser(): User? {
-        val loggedOut = AccessToken.getCurrentAccessToken() == null
+        if (accessToken == null)
+            accessToken = AccessToken.getCurrentAccessToken()
+        val loggedOut = accessToken == null
         return if (loggedOut) {
             null
         } else {
@@ -22,28 +28,19 @@ class FacebookAuthenticationService : AuthenticationService {
         }
     }
 
+    fun setProfile(profile: Profile) {
+        this.profile = profile
+    }
+
+    fun setAccessToken(accessToken: AccessToken?) {
+        this.accessToken = accessToken
+    }
+
     private fun fetchUser(): User {
-        val profile = Profile.getCurrentProfile()
-        var email = ""
+        if (profile == null)
+            profile = Profile.getCurrentProfile()
 
-        val request = GraphRequest.newMeRequest(
-            AccessToken.getCurrentAccessToken()
-        ) { jsonObject: JSONObject, _: GraphResponse ->
-            try {
-                email = jsonObject.getString("email")
-            } catch (e: JSONException) {
-            }
-        }
-
-        val parameters = Bundle()
-        parameters.putString("fields", "email")
-        request.parameters = parameters
-
-        val t = Thread(request::executeAndWait)
-        t.start()
-        t.join()
-
-        return User(profile.id, profile.name, email, " ")
+        return User(profile!!.id, profile!!.name, "", " ")
     }
 
     override fun signInIntent(): Intent {
