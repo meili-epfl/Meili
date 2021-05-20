@@ -18,10 +18,10 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObjectNotFoundException
 import androidx.test.uiautomator.UiSelector
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDocumentService
-import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.posts.feed.FeedActivity
 import com.github.epfl.meili.profile.ProfileActivity
@@ -68,7 +68,8 @@ class MapActivityTest {
         ArgumentCaptor.forClass(OnSuccessListener::class.java) as
                 ArgumentCaptor<OnSuccessListener<List<FirebaseVisionCloudLandmark>>>
 
-    private val landmarkFailureListenerCaptor = ArgumentCaptor.forClass(OnFailureListener::class.java)
+    private val landmarkFailureListenerCaptor =
+        ArgumentCaptor.forClass(OnFailureListener::class.java)
 
     init {
         setupMocks()
@@ -77,15 +78,20 @@ class MapActivityTest {
 
     private fun setupLandmarkServiceMocks() {
         val mockTask = mock(Task::class.java) as Task<List<FirebaseVisionCloudLandmark>>
-        `when`(mockTask.addOnSuccessListener(landmarkSuccessListenerCaptor.capture())).thenReturn(mockTask)
-        `when`(mockTask.addOnFailureListener(landmarkFailureListenerCaptor.capture())).thenReturn(mockTask)
+        `when`(mockTask.addOnSuccessListener(landmarkSuccessListenerCaptor.capture())).thenReturn(
+            mockTask
+        )
+        `when`(mockTask.addOnFailureListener(landmarkFailureListenerCaptor.capture())).thenReturn(
+            mockTask
+        )
 
         val mockFirebaseVision = mock(FirebaseVision::class.java)
         val mockLandmarkDetector = mock(FirebaseVisionCloudLandmarkDetector::class.java)
         `when`(mockFirebaseVision.visionCloudLandmarkDetector).thenReturn(mockLandmarkDetector)
         `when`(mockLandmarkDetector.detectInImage(any())).thenReturn(mockTask)
 
-        LandmarkDetectionService.firebaseVisionImage = { _, _ -> mock(FirebaseVisionImage::class.java) }
+        LandmarkDetectionService.firebaseVisionImage =
+            { _, _ -> mock(FirebaseVisionImage::class.java) }
         LandmarkDetectionService.firebaseVision = { mockFirebaseVision }
     }
 
@@ -125,77 +131,71 @@ class MapActivityTest {
     }
 
     @Test
-    fun test() {
-
+    fun locationButtonClickableAfterPermissionGrant() {
+        PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
+        val imageView = onView(
+            allOf(
+                withContentDescription("My Location"),
+                childAtPosition(
+                    childAtPosition(
+                        withClassName(`is`("android.widget.FrameLayout")),
+                        2
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        imageView.perform(click())
     }
 
-//
-//    @Test
-//    fun locationButtonClickableAfterPermissionGrant() {
-//        PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
-//        val imageView = onView(
-//            allOf(
-//                withContentDescription("My Location"),
-//                childAtPosition(
-//                    childAtPosition(
-//                        withClassName(`is`("android.widget.FrameLayout")),
-//                        2
-//                    ),
-//                    0
-//                ),
-//                isDisplayed()
-//            )
-//        )
-//        imageView.perform(click())
-//    }
-//
     @Test
     fun goToProfileTest() {
         onView(withId(R.id.profile)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(ProfileActivity::class.qualifiedName))
     }
-//
-//    @Test
-//    fun goToFeedTest() {
-//        onView(withId(R.id.feed)).perform(click())
-//        Intents.intended(IntentMatchers.hasComponent(FeedActivity::class.qualifiedName))
-//    }
-//
-//    @Test
-//    fun clickOnLensCamera() {
-//        onView(withId(R.id.lens_camera)).perform(click())
-//        Intents.intended(IntentMatchers.hasComponent(CameraActivity::class.qualifiedName))
-//    }
-//
-//    @Test
-//    fun landmarksTest() {
-//        onView(withId(R.id.lens_dismiss_landmark)).check(matches(not(isDisplayed())))
-//
-//        val mockLandmark = mock(FirebaseVisionCloudLandmark::class.java)
-//        `when`(mockLandmark.landmark).thenReturn(TEST_LANDMARK)
-//
-//        lateinit var viewModel: MapActivityViewModel
-//
-//        testRule.scenario.onActivity {
-//            val lazyViewModel: Lazy<MapActivityViewModel> = it.viewModels()
-//            viewModel = lazyViewModel.value
-//        }
-//
-//        viewModel.handleCameraResponse(Uri.EMPTY)
-//
-//        runOnUiThread {
-//            landmarkSuccessListenerCaptor.value.onSuccess(listOf(mockLandmark))
-//        }
-//
-//        onView(withText(TEST_LANDMARK)).check(matches(isDisplayed()))
-//        onView(withId(R.id.lens_dismiss_landmark)).perform(click())
-//
-//        onView(withId(R.id.lens_dismiss_landmark)).check(matches(not(isDisplayed())))
-//
-//        runOnUiThread {
-//            landmarkFailureListenerCaptor.value.onFailure(IllegalArgumentException(""))
-//        }
-//    }
+
+    @Test
+    fun goToFeedTest() {
+        onView(withId(R.id.feed)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(FeedActivity::class.qualifiedName))
+    }
+
+    @Test
+    fun clickOnLensCamera() {
+        onView(withId(R.id.lens_camera)).perform(click())
+        Intents.intended(IntentMatchers.hasComponent(CameraActivity::class.qualifiedName))
+    }
+
+    @Test
+    fun landmarksTest() {
+        onView(withId(R.id.lens_dismiss_landmark)).check(matches(not(isDisplayed())))
+
+        val mockLandmark = mock(FirebaseVisionCloudLandmark::class.java)
+        `when`(mockLandmark.landmark).thenReturn(TEST_LANDMARK)
+
+        lateinit var viewModel: MapActivityViewModel
+
+        testRule.scenario.onActivity {
+            val lazyViewModel: Lazy<MapActivityViewModel> = it.viewModels()
+            viewModel = lazyViewModel.value
+        }
+
+        viewModel.handleCameraResponse(Uri.EMPTY)
+
+        runOnUiThread {
+            landmarkSuccessListenerCaptor.value.onSuccess(listOf(mockLandmark))
+        }
+
+        onView(withText(TEST_LANDMARK)).check(matches(isDisplayed()))
+        onView(withId(R.id.lens_dismiss_landmark)).perform(click())
+
+        onView(withId(R.id.lens_dismiss_landmark)).check(matches(not(isDisplayed())))
+
+        runOnUiThread {
+            landmarkFailureListenerCaptor.value.onFailure(IllegalArgumentException(""))
+        }
+    }
 
     private fun childAtPosition(
         parentMatcher: Matcher<View>, position: Int

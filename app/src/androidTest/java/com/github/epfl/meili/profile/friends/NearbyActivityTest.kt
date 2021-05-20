@@ -93,38 +93,33 @@ class NearbyActivityTest {
     var rule: ActivityScenarioRule<NearbyActivity> = ActivityScenarioRule(NearbyActivity::class.java)
 
     @Test
-    fun test() {
+    fun testNearbyConnection() {
+        onView(withId(R.id.find_my_friend)).perform(click())
+        onView(withId(R.id.find_my_friend)).check(matches(isNotEnabled()))
 
+        endpointDiscoveryCallbackCaptor.value.onEndpointFound(MOCK_ENDPOINT_ID, DiscoveredEndpointInfo("", ""))
+
+        val connectionLifecycleCallback = connectionLifecycleCallbackCaptor.value
+        runOnUiThread {
+            connectionLifecycleCallback.onConnectionInitiated(
+                MOCK_ENDPOINT_ID, ConnectionInfo(
+                    MOCK_FRIEND_USERNAME, "", false))
+        }
+
+        onView(withText("Accept")).inRoot(isDialog()).perform(click())
+
+        runOnUiThread {
+            connectionLifecycleCallback.onConnectionResult(MOCK_ENDPOINT_ID, ConnectionResolution(Status(ConnectionsStatusCodes.STATUS_OK)))
+        }
+
+        onView(withId(R.id.find_my_friend)).check(matches(isEnabled()))
+
+        val uidPayload = Payload.fromBytes(MOCK_FRIEND_UID.toByteArray())
+        val ackPayload = Payload.fromBytes(ACK.toByteArray())
+
+        runOnUiThread {
+            payloadCallbackCaptor.value.onPayloadReceived(MOCK_ENDPOINT_ID, uidPayload)
+            payloadCallbackCaptor.value.onPayloadReceived(MOCK_FRIEND_UID, ackPayload)
+        }
     }
-
-//    @Test
-//    fun testNearbyConnection() {
-//        onView(withId(R.id.find_my_friend)).perform(click())
-//        onView(withId(R.id.find_my_friend)).check(matches(isNotEnabled()))
-//
-//        endpointDiscoveryCallbackCaptor.value.onEndpointFound(MOCK_ENDPOINT_ID, DiscoveredEndpointInfo("", ""))
-//
-//        val connectionLifecycleCallback = connectionLifecycleCallbackCaptor.value
-//        runOnUiThread {
-//            connectionLifecycleCallback.onConnectionInitiated(
-//                MOCK_ENDPOINT_ID, ConnectionInfo(
-//                    MOCK_FRIEND_USERNAME, "", false))
-//        }
-//
-//        onView(withText("Accept")).inRoot(isDialog()).perform(click())
-//
-//        runOnUiThread {
-//            connectionLifecycleCallback.onConnectionResult(MOCK_ENDPOINT_ID, ConnectionResolution(Status(ConnectionsStatusCodes.STATUS_OK)))
-//        }
-//
-//        onView(withId(R.id.find_my_friend)).check(matches(isEnabled()))
-//
-//        val uidPayload = Payload.fromBytes(MOCK_FRIEND_UID.toByteArray())
-//        val ackPayload = Payload.fromBytes(ACK.toByteArray())
-//
-//        runOnUiThread {
-//            payloadCallbackCaptor.value.onPayloadReceived(MOCK_ENDPOINT_ID, uidPayload)
-//            payloadCallbackCaptor.value.onPayloadReceived(MOCK_FRIEND_UID, ackPayload)
-//        }
-//    }
 }
