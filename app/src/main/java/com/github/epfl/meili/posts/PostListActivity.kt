@@ -22,6 +22,7 @@ interface PostListActivity : AdapterView.OnItemSelectedListener {
     companion object {
         private const val NEWEST = "Newest"
         private const val OLDEST = "Oldest"
+        private const val POPULAR= "Popularity"
     }
 
     var recyclerAdapter: PostListRecyclerAdapter
@@ -94,7 +95,7 @@ interface PostListActivity : AdapterView.OnItemSelectedListener {
         sortSpinner.onItemSelectedListener = this
     }
 
-    private fun sortPosts(b: Boolean) {
+    private fun sortPostsByTime(b: Boolean) {
         viewModel.getElements().removeObservers(getActivity())
         viewModel.getElements().observe(getActivity(), { map ->
             recyclerAdapter.submitList(map.toList().sortedBy { pair ->
@@ -107,10 +108,21 @@ interface PostListActivity : AdapterView.OnItemSelectedListener {
         })
     }
 
+    private fun sortPostsByPopularity(){
+        viewModel.getElements().removeObservers(getActivity())
+        viewModel.getElements().observe(getActivity(), { map ->
+            recyclerAdapter.submitList(map.toList().sortedBy { pair ->
+                    -(pair.second.upvoters.size-pair.second.downvoters.size)
+            })
+            recyclerAdapter.notifyDataSetChanged()
+        })
+    }
+
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
         when (parent?.getItemAtPosition(pos)) {
-            NEWEST -> sortPosts(true)
-            OLDEST -> sortPosts(false)
+            NEWEST -> sortPostsByTime(true)
+            OLDEST -> sortPostsByTime(false)
+            POPULAR-> sortPostsByPopularity()
         }
     }
 
