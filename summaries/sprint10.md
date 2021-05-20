@@ -23,7 +23,7 @@ I managed to finish the feature I was assigned to in little time (about 5h), but
 
 I also helped with the dark/light mode UI, which only took me 30 min.
  
-While preparing for the demo, I noticed a few bugs that I put in the backlog. As I am not able to be on campus, my little sister used the app to help me mwith the demo.
+While preparing for the demo, I noticed a few bugs that I put in the backlog. As I am not able to be on campus, my little sister used the app to help me with the demo.
  
 For the first time, I vastly overestimated the amount of work it would take me (5h instead of 8h). This is because the team implemented tools that facilitated the implementation of my feature. I will also make sure I work for more than 8h next sprint to compensate the hours lost this week.
 
