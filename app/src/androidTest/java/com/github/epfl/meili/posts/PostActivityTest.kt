@@ -1,6 +1,7 @@
 package com.github.epfl.meili.posts
 
 
+import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.runner.AndroidJUnitRunner
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirebaseStorageService
@@ -49,14 +51,14 @@ import org.mockito.Mockito
 
 
 @RunWith(AndroidJUnit4::class)
-class PostActivityTest {
+class PostActivityTest : AndroidJUnitRunner(){
 
     companion object {
         private const val TEST_POI_KEY = "POI_KEY"
         private const val TEST_ID = "ID"
         private const val TEST_AUTHOR_UID = "test uid"
         private const val TEST_USERNAME = "Test username"
-        private val TEST_POST = Post(TEST_ID, TEST_POI_KEY, TEST_AUTHOR_UID, "TITLE", -1,"TEXT")
+        private val TEST_POST = Post(TEST_ID, TEST_POI_KEY, TEST_AUTHOR_UID, "TITLE", -1, "TEXT")
         private val TEST_COMMENT = Comment("AUTHOR_COMMENT", "TEXT_COMMENT")
     }
 
@@ -82,11 +84,7 @@ class PostActivityTest {
     @get:Rule
     var testRule: ActivityScenarioRule<PostActivity> = ActivityScenarioRule(intent)
 
-    @Before
-    fun initIntents() = Intents.init()
-
-    @Before
-    fun startUserInfoService() {
+    override fun callApplicationOnCreate(app: Application?) {
         val testFriendMap = HashMap<String, User>()
         testFriendMap[TEST_AUTHOR_UID] = User(TEST_AUTHOR_UID, TEST_USERNAME)
 
@@ -99,6 +97,15 @@ class PostActivityTest {
         }
 
         PostActivity.serviceProvider = { mockUserInfoService }
+        PostListActivity.serviceProvider = {mockUserInfoService}
+        super.callApplicationOnCreate(app)
+    }
+    @Before
+    fun initIntents() = Intents.init()
+
+    @Before
+    fun startUserInfoService() {
+
     }
 
     @After
@@ -235,8 +242,8 @@ class PostActivityTest {
         onView(withId(R.id.comments_recycler_view))
             .check(matches(isDisplayed()))
             .perform(
-                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(
-                    TEST_COMMENT.text))))
+                    RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(
+                            TEST_COMMENT.text))))
 
         onView(textViewContainsText(TEST_COMMENT.text)).check(matches(isDisplayed()))
         onView(textViewContainsText(TEST_USERNAME)).check(matches(isDisplayed()))
