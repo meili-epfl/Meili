@@ -56,7 +56,7 @@ class PostActivityTest {
         private const val TEST_ID = "ID"
         private const val TEST_AUTHOR_UID = "test uid"
         private const val TEST_USERNAME = "Test username"
-        private val TEST_POST = Post(TEST_POI_KEY, TEST_AUTHOR_UID, "TITLE", -1,"TEXT")
+        private val TEST_POST = Post(TEST_ID, TEST_POI_KEY, TEST_AUTHOR_UID, "TITLE", -1,"TEXT")
         private val TEST_COMMENT = Comment("AUTHOR_COMMENT", "TEXT_COMMENT")
     }
 

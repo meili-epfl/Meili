@@ -25,6 +25,7 @@ import com.github.epfl.meili.util.RecyclerViewInitializer
  * Performs basic initialization and sorting
  */
 interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLinker<Post> {
+    //todo: FIX ORDER OF POSTS (just add boolean)
     companion object {
         private const val NEWEST = "Newest"
         private const val OLDEST = "Oldest"

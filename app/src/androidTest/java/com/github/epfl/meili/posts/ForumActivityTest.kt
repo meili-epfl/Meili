@@ -62,8 +62,8 @@ class ForumActivityTest {
         private const val TEST_UID = "UID"
         private const val TEST_USERNAME = "AUTHOR"
         private const val TEST_AUTHOR_ID = "author id"
-        private val TEST_POST = Post(TEST_UID, TEST_AUTHOR_ID, "TITLE", -1, "TEXT")
         private const val TEST_POI_KEY = "lorem_ipsum2"
+        private val TEST_POST = Post( TEST_UID, TEST_POI_KEY,  TEST_AUTHOR_ID, "TITLE", -1, "TEXT")
         private val TEST_POI = PointOfInterest(100.0, 100.0, "lorem_ipsum1", TEST_POI_KEY)
     }
 
@@ -120,7 +120,7 @@ class ForumActivityTest {
 
             return@then null
         }
-        ForumActivity.serviceProvider = { mockUserInfoService }
+        PostListActivity.serviceProvider = { mockUserInfoService }
     }
 
     private fun setupTransactionMocks() {

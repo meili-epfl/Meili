@@ -61,6 +61,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener, Use
         val poiKey = poi.uid
         showListReviewsView()
         initReviewEditView()
+        recyclerAdapter = ReviewsRecyclerAdapter(this)
         initRecyclerView(
                 recyclerAdapter,
                 findViewById(R.id.reviews_recycler_view),

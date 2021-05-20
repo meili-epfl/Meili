@@ -44,6 +44,8 @@ class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinke
         initViews()
 
         initViewModel()
+        recyclerAdapter = FriendsListRecyclerAdapter(this)
+
         initRecyclerView(
                 recyclerAdapter,
                 findViewById(R.id.friends_list_recycler_view),
