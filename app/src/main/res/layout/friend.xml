@@ -18,17 +18,17 @@
 
         <include layout="@layout/user"/>
 
+
         <Button
             android:id="@+id/friend_chat_button"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginEnd="20dp"
             app:icon="@android:drawable/stat_notify_chat"
             app:iconTint="@color/design_default_color_secondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginEnd="20dp"
             android:elevation="10dp"/>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

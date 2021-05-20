@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:onClick="onFavoritePoisButtonClick"
     app:cardCornerRadius="2dp"
     app:cardElevation="10dp"
-    app:cardPreventCornerOverlap="false"
-    android:onClick="onFavoritePoisButtonClick"
-    android:clickable="true"
-    android:focusable="true">
+    app:cardPreventCornerOverlap="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/poi_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/poi_layout">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,11 +31,10 @@
                 android:textSize="15sp" />
 
             <TextView
+                android:id="@+id/poi_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/poi_id"
-                android:visibility="invisible"
-                />
+                android:visibility="invisible" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
