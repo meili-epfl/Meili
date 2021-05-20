@@ -1,11 +1,9 @@
 package com.github.epfl.meili.profile
 
-import android.app.Activity
 import android.content.Intent
 import android.util.Log
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
-import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
@@ -21,7 +19,7 @@ interface UserProfileLinker<T> : ClickListener {
         val reviewsAndUsersMap = HashMap<String, Pair<T, User>>()
         for ((uid, user) in users) {
             val value = map[uid]
-            if(value != null) {
+            if (value != null) {
                 reviewsAndUsersMap[uid] = Pair(value, user)
             }
         }
@@ -31,7 +29,10 @@ interface UserProfileLinker<T> : ClickListener {
 
     fun openUserProfile(friendUid: String) {
         val intent =
-                Intent(MainApplication.applicationContext(), ProfileActivity::class.java).putExtra(ProfileActivity.USER_KEY, friendUid)
+            Intent(MainApplication.applicationContext(), ProfileActivity::class.java).putExtra(
+                ProfileActivity.USER_KEY,
+                friendUid
+            )
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK;
         MainApplication.applicationContext().startActivity(intent)
     }
