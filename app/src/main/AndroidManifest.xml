@@ -61,11 +61,14 @@
             android:noHistory="true"
             android:parentActivityName=".posts.forum.ForumActivity" />
         <activity
-            android:name=".messages.ChatLogActivity"/>
+            android:name=".messages.ChatLogActivity"
+            android:parentActivityName=".map.MapActivity"/>
         <activity
-            android:name=".posts.forum.ForumActivity"/>
+            android:name=".posts.forum.ForumActivity"
+            android:parentActivityName=".map.MapActivity"/>
         <activity
-            android:name=".review.ReviewsActivity"/>
+            android:name=".review.ReviewsActivity"
+            android:parentActivityName=".map.MapActivity"/>
         <activity
             android:name=".poi.PoiActivity"
             android:parentActivityName=".map.MapActivity" />

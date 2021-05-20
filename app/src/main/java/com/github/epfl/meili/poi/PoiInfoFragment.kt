@@ -1,6 +1,8 @@
 package com.github.epfl.meili.poi
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +14,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.PointOfInterest
 import com.google.android.libraries.places.api.model.Place
@@ -28,6 +33,7 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() { //TODO verify tha
     companion object {
         private const val TAG = "PoiInfoFragment"
         private val DEFAULT_SERVICE = { PlacesClientService() }
+        private const val REQUEST_CODE = 1000
         var placesClientService: () -> PlacesClientService = DEFAULT_SERVICE
     }
 
@@ -105,9 +111,7 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() { //TODO verify tha
 
                 val callButton = view.findViewById<FloatingActionButton>(R.id.call_poi_button)
                 callButton.setOnClickListener {
-                    val callIntent = Intent(Intent.ACTION_CALL)
-                    callIntent.data = Uri.parse("tel:${place.phoneNumber}")
-                    startActivity(callIntent)
+                    launchCallIntent(place.phoneNumber)
                 }
 
                 takeMeThereButton.visibility = VISIBLE
@@ -140,6 +144,18 @@ class PoiInfoFragment(val poi: PointOfInterest) : Fragment() { //TODO verify tha
                             }
                 }
             }
+
+    private fun launchCallIntent(phoneNumber: String?) {
+        if (phoneNumber != null) {
+            if (ContextCompat.checkSelfPermission(MainApplication.applicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CALL_PHONE), REQUEST_CODE)
+            } else {
+                val callIntent = Intent(Intent.ACTION_CALL)
+                callIntent.data = Uri.parse("tel:${phoneNumber}")
+                startActivity(callIntent)
+            }
+        }
+    }
 
     private fun urlToHttps(url: String): String {
         if (url.startsWith("https://")) {
