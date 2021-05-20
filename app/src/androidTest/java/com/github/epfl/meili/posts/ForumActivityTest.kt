@@ -317,6 +317,14 @@ class ForumActivityTest {
         onView(withId(R.id.sort_spinner)).perform(click())
         onData(anything()).atPosition(1).perform(click())
         onView(withId(R.id.sort_spinner)).check(matches(withSpinnerText(containsString("Oldest"))))
+
+        onView(withId(R.id.sort_spinner)).perform(click())
+        onData(anything()).atPosition(2).perform(click())
+        onView(withId(R.id.sort_spinner)).check(matches(withSpinnerText(containsString("Popularity"))))
+
+        onView(withId(R.id.sort_spinner)).perform(click())
+        onData(anything()).atPosition(0).perform(click())
+        onView(withId(R.id.sort_spinner)).check(matches(withSpinnerText(containsString("Newest"))))
     }
 
     @Test
