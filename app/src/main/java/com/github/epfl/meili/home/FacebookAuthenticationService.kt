@@ -3,7 +3,10 @@ package com.github.epfl.meili.home
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import com.facebook.*
+import com.facebook.AccessToken
+import com.facebook.GraphRequest
+import com.facebook.GraphResponse
+import com.facebook.Profile
 import com.facebook.login.LoginManager
 import com.github.epfl.meili.models.User
 import org.json.JSONException
@@ -11,11 +14,11 @@ import org.json.JSONObject
 
 class FacebookAuthenticationService : AuthenticationService {
 
-    companion object{
-        fun fetchFacebookUser(accessToken: AccessToken?, profile: Profile): User?{
-            if(accessToken == null){
+    companion object {
+        fun fetchFacebookUser(accessToken: AccessToken?, profile: Profile): User? {
+            if (accessToken == null) {
                 return null
-            }else{
+            } else {
                 var email = ""
 
                 val request = GraphRequest.newMeRequest(
@@ -39,6 +42,7 @@ class FacebookAuthenticationService : AuthenticationService {
             }
         }
     }
+
     override fun getCurrentUser(): User? {
         return fetchFacebookUser(AccessToken.getCurrentAccessToken(), Profile.getCurrentProfile())
     }
