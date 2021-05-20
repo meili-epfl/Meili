@@ -19,13 +19,15 @@ import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.UserProfileLinker
 import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.ClickListener
+import com.github.epfl.meili.util.ImageSetter
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
 import com.squareup.picasso.Picasso
+import de.hdodenhof.circleimageview.CircleImageView
 
 class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListener {
-
+    //TODO: add info about current post user
     companion object {
         private const val TAG = "PostActivity"
         private val DEFAULT_URI =
@@ -46,6 +48,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
     private lateinit var addCommentButton: Button
 
     private lateinit var postId: String
+    private lateinit var post: Post
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,20 +80,31 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
     }
 
     private fun initViews(post: Post) {
-        val authorView: TextView = findViewById(R.id.post_author)
+        this.post = post
         val titleView: TextView = findViewById(R.id.post_title)
         val textView: TextView = findViewById(R.id.post_text)
-        authorView.text = post.authorUid
         titleView.text = post.title
         textView.text = post.text
 
         imageView = findViewById(R.id.post_image)
-
         commentButton = findViewById(R.id.comment_button)
         editText = findViewById(R.id.edit_comment)
         addCommentButton = findViewById(R.id.add_comment)
         commentButton.setOnClickListener { showEditCommentView() }
         addCommentButton.setOnClickListener { addComment() }
+
+        val singletonList = ArrayList<String>()
+        singletonList.add(post.authorUid)
+        serviceProvider().getUserInformation(singletonList, { onAuthorInfoReceived(it) }) {}
+    }
+
+    private fun onAuthorInfoReceived(users: Map<String, User>) {
+        val author = users[post.authorUid]
+        val authorView: TextView = findViewById(R.id.userName)
+        val imageAuthor: CircleImageView = findViewById(R.id.userImage)
+
+        authorView.text = author?.username
+        ImageSetter.setImageInto(author!!.uid, imageAuthor)
     }
 
     private fun initViewModel() {
@@ -100,15 +114,32 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
 
         viewModel.initDatabase(FirestoreDatabase("forum/$postId/comments", Comment::class.java))
         viewModel.getElements().observe(this, { map ->
-            onCommentsReceived(map)
+            commentListener(map)
         })
     }
 
-    private fun onCommentsReceived(commentsMap: Map<String, Comment>) {
-        val newUsersList = commentsMap.keys.toList().minus(usersMap.keys.toList())
+    private fun commentListener(commentsMap: Map<String, Comment>) {
+        val newUsers = ArrayList<String>()
+        for ((commentId, comment) in commentsMap) {
+            newUsers.add(comment.authorUid)
+        }
 
-        serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, commentsMap) },
+        serviceProvider().getUserInformation(newUsers, { onUsersInfoReceived(it, commentsMap) },
                 { Log.d(TAG, "Error when fetching users information") })
+    }
+
+    override fun onUsersInfoReceived(users: Map<String, User>, commentsMap: Map<String, Comment>) {
+        usersMap = HashMap(usersMap) + users
+        val commentsAndUsersMap = HashMap<String, Pair<Comment, User>>()
+        for ((commentId, comment) in commentsMap) {
+            val user = usersMap[comment.authorUid]
+            if (user != null) {
+                commentsAndUsersMap[postId] = Pair(comment, user)
+            }
+        }
+
+        recyclerAdapter.submitList(commentsAndUsersMap.toList())
+        recyclerAdapter.notifyDataSetChanged()
     }
 
     private fun initRecyclerAdapter() {
@@ -150,7 +181,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         val commentId = "${user.uid}${System.currentTimeMillis()}"
         val text = editText.text.toString()
 
-        viewModel.addElement(commentId, Comment(user.username, text))
+        viewModel.addElement(commentId, Comment(user.uid, text))
 
         hideEditCommentView()
     }

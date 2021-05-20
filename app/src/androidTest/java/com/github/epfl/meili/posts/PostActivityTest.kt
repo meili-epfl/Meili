@@ -239,7 +239,7 @@ class PostActivityTest {
                     TEST_COMMENT.text))))
 
         onView(textViewContainsText(TEST_COMMENT.text)).check(matches(isDisplayed()))
-        onView(textViewContainsText(TEST_COMMENT.author)).check(matches(isDisplayed()))
+        onView(textViewContainsText(TEST_COMMENT.authorUid)).check(matches(isDisplayed()))
 
         // Check edit text clears after having posted comment
         onView(withId(R.id.comment_button)).perform(click())
