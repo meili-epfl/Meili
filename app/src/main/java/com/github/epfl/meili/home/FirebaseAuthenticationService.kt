@@ -24,9 +24,9 @@ class FirebaseAuthenticationService : AuthenticationService {
         val context = MainApplication.applicationContext()
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(context.getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
+            .requestIdToken(context.getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
         googleSignInClient = GoogleSignIn.getClient(context, gso)
 
         // Initialize Firebase Auth
@@ -58,12 +58,22 @@ class FirebaseAuthenticationService : AuthenticationService {
         googleSignInClient.signOut()
     }
 
-    private fun firebaseAuthWithGoogle(activity: Activity, idToken: String, onComplete: () -> Unit) {
+    private fun firebaseAuthWithGoogle(
+        activity: Activity,
+        idToken: String,
+        onComplete: () -> Unit
+    ) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential).addOnCompleteListener(activity) { onComplete() }
     }
 
-    override fun onActivityResult(activity: Activity, requestCode: Int, result: Int, data: Intent?, onComplete: () -> Unit) {
+    override fun onActivityResult(
+        activity: Activity,
+        requestCode: Int,
+        result: Int,
+        data: Intent?,
+        onComplete: () -> Unit
+    ) {
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
