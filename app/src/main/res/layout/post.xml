@@ -24,12 +24,7 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/post_author"
-                android:textSize="15sp"
-                />
+            <include layout="@layout/user"/>
 
             <TextView
                 android:layout_width="match_parent"

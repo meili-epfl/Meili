@@ -27,6 +27,7 @@ import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
+import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.UIUtility
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -35,8 +36,9 @@ import java.util.concurrent.Executors
 
 
 class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
-    override lateinit var recyclerAdapter: PostListRecyclerAdapter
+    override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Post, User>>
     override lateinit var viewModel: PostListViewModel
+    override var usersMap: Map<String, User> = HashMap()
 
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView
