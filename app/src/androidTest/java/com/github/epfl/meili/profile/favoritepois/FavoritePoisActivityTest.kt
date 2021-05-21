@@ -18,6 +18,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.poi.PoiActivity
 import com.github.epfl.meili.posts.forum.ForumActivity
 import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.util.MockAuthenticationService
@@ -129,7 +130,7 @@ class FavoritePoisActivityTest {
 
         Intents.intended(
             CoreMatchers.allOf(
-                IntentMatchers.hasComponent(ForumActivity::class.java.name)
+                IntentMatchers.hasComponent(PoiActivity::class.java.name)
             )
         )
 
