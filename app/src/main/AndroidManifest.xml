@@ -92,6 +92,9 @@
         <activity
             android:name=".profile.favoritepois.FavoritePoisActivity"
             android:parentActivityName=".profile.ProfileActivity" />
+        <activity
+            android:name=".profile.myposts.MyPostsActivity"
+            android:parentActivityName=".profile.ProfileActivity" />
     </application>
 
 </manifest>
