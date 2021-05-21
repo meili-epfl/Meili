@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/friend_card"
+    android:id="@+id/user_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
     app:cardCornerRadius="2dp"
-    app:cardElevation="10dp"
+    app:cardElevation="0dp"
     app:cardPreventCornerOverlap="false">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,19 +16,25 @@
         android:paddingTop="5dp"
         android:paddingBottom="5dp">
 
-        <include layout="@layout/user"/>
-
-
-        <Button
-            android:id="@+id/friend_chat_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/userImage"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginEnd="20dp"
-            app:icon="@android:drawable/stat_notify_chat"
-            app:iconTint="@color/design_default_color_secondary"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@mipmap/meili_launcher"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:elevation="10dp"/>
+            android:layout_marginStart="10dp"
+            />
+
+        <TextView
+            android:id="@+id/userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            app:layout_constraintStart_toEndOf="@+id/userImage"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="12dp"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
