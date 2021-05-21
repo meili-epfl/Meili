@@ -5,18 +5,22 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.viewpager2.widget.ViewPager2
+import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
+import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.MenuActivity
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.*
@@ -36,9 +40,10 @@ class PoiActivity : MenuActivity(R.menu.nav_poi_info_menu) {
     }
 
     // View to swipe between info, forum and chat
-    private lateinit var viewPager: ViewPager2
     private lateinit var poi: PointOfInterest
     private lateinit var takeMeThereButton: Button
+    private lateinit var favoriteButton: ToggleButton
+    private lateinit var viewModel: MeiliViewModel<PointOfInterest>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +52,11 @@ class PoiActivity : MenuActivity(R.menu.nav_poi_info_menu) {
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
         title = poi.name
 
+        initViewModel()
 
         // Initialize Places API entry point
         val placesClient = placesClientService()
-                .getPlacesClient(this, getString(R.string.google_maps_key))
+            .getPlacesClient(this, getString(R.string.google_maps_key))
 
         val placeId = poi.uid
 
@@ -67,6 +73,8 @@ class PoiActivity : MenuActivity(R.menu.nav_poi_info_menu) {
         takeMeThereButton = findViewById(R.id.take_me_there_button)
         takeMeThereButton.visibility = View.GONE
 
+        initFavoriteButton()
+
         findViewById<TextView>(R.id.poi_name).text = poi.name
 
         val request = FetchPlaceRequest.newInstance(placeId, placeFields)
@@ -76,6 +84,43 @@ class PoiActivity : MenuActivity(R.menu.nav_poi_info_menu) {
                 val infoTextView = findViewById<TextView>(R.id.infoTextView)
                 infoTextView.text = NO_INFO_TEXT
             }
+    }
+
+    private fun initFavoriteButton() {
+        favoriteButton = findViewById(R.id.favorite_button)
+        if (Auth.getCurrentUser() == null) {
+            favoriteButton.visibility = View.GONE
+        }
+
+        if (viewModel.getElements().value != null && viewModel.getElements().value!!.containsKey(poi.uid))
+            favoriteButton.isChecked = true
+
+
+        favoriteButton.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked)
+                viewModel.addElement(poi.uid, poi)
+            else
+                viewModel.removeElement(poi.uid)
+        }
+    }
+
+    private fun initViewModel() {
+        @Suppress("UNCHECKED_CAST")
+        viewModel =
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<PointOfInterest>
+
+        if (Auth.getCurrentUser() != null) {
+            viewModel.initDatabase(
+                FirestoreDatabase(
+                    String.format(FavoritePoisActivity.DB_PATH, Auth.getCurrentUser()!!.uid),
+                    PointOfInterest::class.java
+                )
+            )
+        }
+        viewModel.getElements().observe(this, { map ->
+            if (map.containsKey(poi.uid))
+                favoriteButton.isChecked = true
+        })
     }
 
     private fun getOnSuccessListener(

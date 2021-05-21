@@ -17,7 +17,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.libraries.places.api.model.OpeningHours
 import com.google.android.libraries.places.api.model.PhotoMetadata
@@ -25,24 +28,46 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPhotoResponse
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 
 
+@Suppress("UNCHECKED_CAST")
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class PoiActivityTest {
+
+    companion object {
+        private const val TEST_USERNAME = "AUTHOR"
+        private const val TEST_TIMESTAMP = -1L
+        private const val TEST_AUTHOR_ID = "author id"
+        private const val TEST_UID = TEST_AUTHOR_ID + TEST_TIMESTAMP.toString()
+        private const val TEST_POI_KEY = "lorem_ipsum2"
+    }
+
+
     private val fakePoi: PointOfInterest =
-            PointOfInterest(10.0, 10.0, "art_brut", "ChIJAAAAAAAAAAARg4pb6XR5bo0")
+        PointOfInterest(10.0, 10.0, "art_brut", "ChIJAAAAAAAAAAARg4pb6XR5bo0")
 
     private val mockPlaces: PlacesClientService = Mockito.mock(PlacesClientService::class.java)
     private val mockPlacesClient: PlacesClient = Mockito.mock(PlacesClient::class.java)
+    private val mockPoiHistory: CollectionReference = Mockito.mock(CollectionReference::class.java)
+
+    private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
+    private lateinit var poiDatabase: FirestoreDatabase<PointOfInterest>
+    private val mockDocument: DocumentReference = Mockito.mock(DocumentReference::class.java)
+    private val mockAuthenticationService = MockAuthenticationService()
 
 
     init {
@@ -70,13 +95,30 @@ class PoiActivityTest {
 
         `when`(mockPlaces.getPlacesClient(any(), any())).thenReturn(mockPlacesClient)
 
+        // Mock poi history
+        `when`(mockFirestore.collection("poi-history/${TEST_UID}/poi-history")).thenReturn(
+            mockPoiHistory
+        )
+        `when`(mockPoiHistory.addSnapshotListener(any())).thenAnswer { invocation ->
+            poiDatabase = invocation.arguments[0] as FirestoreDatabase<PointOfInterest>
+            Mockito.mock(ListenerRegistration::class.java)
+        }
+        `when`(mockPoiHistory.document(ArgumentMatchers.matches(TEST_POI_KEY))).thenReturn(
+            mockDocument
+        )
+
+        mockAuthenticationService.setMockUid(TEST_UID)
+        mockAuthenticationService.setUsername(TEST_USERNAME)
+
         PoiActivity.placesClientService = { mockPlaces }
+        FirestoreDatabase.databaseProvider = { mockFirestore }
+        Auth.authService = mockAuthenticationService
     }
 
 
     private val intent = Intent(
-            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
-            PoiActivity::class.java
+        InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
+        PoiActivity::class.java
     ).putExtra("POI_KEY", fakePoi)
 
     @get:Rule

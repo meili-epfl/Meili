@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.github.epfl.meili.database.Database
 import java.util.*
 
-open class MeiliViewModel<T>: ViewModel(), Observer {
+open class MeiliViewModel<T> : ViewModel(), Observer {
 
     private val mElements: MutableLiveData<Map<String, T>> = MutableLiveData()
 
@@ -20,6 +20,8 @@ open class MeiliViewModel<T>: ViewModel(), Observer {
     fun getElements(): LiveData<Map<String, T>> = mElements
 
     fun addElement(id: String, element: T) = database.addElement(id, element)
+
+    fun removeElement(id: String) = database.removeElement(id)
 
     override fun update(o: Observable?, arg: Any?) {
         val reviews: Map<String, T> = database.elements
