@@ -11,22 +11,23 @@
 
     <uses-feature android:name="android.hardware.camera.any" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:name=".MainApplication"
+        android:allowBackup="true"
         android:fullBackupOnly="true"
         android:icon="@mipmap/meili_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/meili_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Meili"
-        android:allowBackup="true">
+        android:theme="@style/Theme.Meili">
+
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
         <activity android:name=".posts.feed.FeedActivity" />
@@ -63,13 +64,13 @@
             android:parentActivityName=".posts.forum.ForumActivity" />
         <activity
             android:name=".messages.ChatLogActivity"
-            android:parentActivityName=".map.MapActivity"/>
+            android:parentActivityName=".map.MapActivity" />
         <activity
             android:name=".posts.forum.ForumActivity"
-            android:parentActivityName=".map.MapActivity"/>
+            android:parentActivityName=".map.MapActivity" />
         <activity
             android:name=".review.ReviewsActivity"
-            android:parentActivityName=".map.MapActivity"/>
+            android:parentActivityName=".map.MapActivity" />
         <activity
             android:name=".poi.PoiActivity"
             android:parentActivityName=".map.MapActivity" />
@@ -84,6 +85,9 @@
             android:parentActivityName=".posts.forum.ForumActivity" />
         <activity
             android:name=".profile.favoritepois.FavoritePoisActivity"
+            android:parentActivityName=".profile.ProfileActivity" />
+        <activity
+            android:name=".profile.myposts.MyPostsActivity"
             android:parentActivityName=".profile.ProfileActivity" />
     </application>
 
