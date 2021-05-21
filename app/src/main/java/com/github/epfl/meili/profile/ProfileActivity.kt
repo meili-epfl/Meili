@@ -2,6 +2,7 @@ package com.github.epfl.meili.profile
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -243,9 +244,10 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         val preferences = UserPreferences(this)
 
         builder.setSingleChoiceItems(styles, preferences.darkMode) { dialog, which ->
-            preferences.checkTheme(which)
+            Log.e("MODE", which.toString())
             preferences.darkMode = which
             dialog.dismiss()
+            preferences.applyTheme()
         }
 
         val dialog = builder.create()
