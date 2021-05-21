@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
+import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.home.FirebaseAuthenticationService
 import com.github.epfl.meili.home.GoogleSignInActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.util.UserPreferences
@@ -18,6 +20,8 @@ class LogoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_logo)
 
         supportActionBar?.hide()
+
+        Auth.setAuthenticationService(FirebaseAuthenticationService())
 
         val preferences = UserPreferences(this)
         preferences.applyMode()
