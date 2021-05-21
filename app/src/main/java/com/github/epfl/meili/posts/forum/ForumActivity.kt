@@ -144,15 +144,15 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         val user: User = Auth.getCurrentUser()!!
         val timestamp = System.currentTimeMillis()
 
-        val postId = "${user.uid}${timestamp}"
-
         val title = editTitleView.text.toString()
         val text = editTextVIew.text.toString()
 
-        viewModel.addElement(postId, Post(postId, poi.uid, user.uid, title, timestamp, text))
+        val post = Post(poi.uid, user.uid, title, timestamp, text)
+
+        viewModel.addElement(post.postId(), post)
 
         if (bitmap != null) {
-            executor.execute { compressAndUploadToFirebase("images/forum/$postId", bitmap!!) }
+            executor.execute { compressAndUploadToFirebase("images/forum/${post.postId()}", bitmap!!) }
         }
 
         showListPostsView()

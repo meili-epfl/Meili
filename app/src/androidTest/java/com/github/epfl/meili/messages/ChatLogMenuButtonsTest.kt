@@ -36,7 +36,7 @@ class ChatLogMenuButtonsTest {
     companion object {
         private const val TEST_UID = "UID"
         private const val TEST_USERNAME = "AUTHOR"
-        private val TEST_POST = Post("fakepostid","fakepoi2", TEST_USERNAME, "TITLE", -1, "TEXT")
+        private val TEST_POST = Post("fakepoi2", TEST_USERNAME, "TITLE", -1, "TEXT")
         private const val MOCK_PATH = "POI/mock-poi"
         private const val fake_message = "fake_text"
         private const val fake_id = "fake_id"
@@ -56,10 +56,10 @@ class ChatLogMenuButtonsTest {
     private lateinit var database: FirestoreDatabase<Post>
 
     private val intent = Intent(
-        InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
-        ChatLogActivity::class.java
+            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
+            ChatLogActivity::class.java
     )
-        .putExtra("POI_KEY", fake_poi)
+            .putExtra("POI_KEY", fake_poi)
 
     @get:Rule
     var rule: ActivityScenarioRule<ChatLogActivity> = ActivityScenarioRule(intent)
@@ -70,7 +70,7 @@ class ChatLogMenuButtonsTest {
 
     private fun setupMocks() {
         Mockito.`when`(mockFirestore.collection((ArgumentMatchers.any())))
-            .thenReturn(mockCollection)
+                .thenReturn(mockCollection)
         val mockQuery = Mockito.mock(Query::class.java)
         Mockito.`when`(mockCollection.whereEqualTo(anyString(), anyString())).thenReturn(mockQuery)
         Mockito.`when`(mockCollection.addSnapshotListener(ArgumentMatchers.any())).thenAnswer {
@@ -83,18 +83,18 @@ class ChatLogMenuButtonsTest {
         Mockito.`when`(mockCollection.document(contains(TEST_UID))).thenReturn(mockDocument)
 
         Mockito.`when`(mockSnapshotBeforeAddition.documents)
-            .thenReturn(ArrayList<DocumentSnapshot>())
+                .thenReturn(ArrayList<DocumentSnapshot>())
 
         val mockDocumentSnapshot: DocumentSnapshot = Mockito.mock(DocumentSnapshot::class.java)
         Mockito.`when`(mockDocumentSnapshot.id).thenReturn(TEST_UID)
         Mockito.`when`(mockDocumentSnapshot.toObject(Post::class.java))
-            .thenReturn(TEST_POST)
+                .thenReturn(TEST_POST)
         Mockito.`when`(mockSnapshotAfterAddition.documents).thenReturn(listOf(mockDocumentSnapshot))
 
         UiThreadStatement.runOnUiThread {
 
             Mockito.`when`(mockAuth.getCurrentUser())
-                .thenReturn(User("fake_uid", "fake_name", "fake_email"))
+                    .thenReturn(User("fake_uid", "fake_name", "fake_email"))
 
             Mockito.`when`(mockAuth.signInIntent()).thenReturn(intent)
             Auth.setAuthenticationService(mockAuth)
@@ -127,9 +127,9 @@ class ChatLogMenuButtonsTest {
     @Test
     fun clickForumMenuButton() {
         onView(
-            allOf(
-                withId(R.id.menu_forum), withText("Forum"),
-            )
+                allOf(
+                        withId(R.id.menu_forum), withText("Forum"),
+                )
         ).perform(click())
     }
 
@@ -137,9 +137,9 @@ class ChatLogMenuButtonsTest {
     @Test
     fun clickReviewMenuButton() {
         onView(
-            allOf(
-                withId(R.id.menu_reviews), withText("Reviews"),
-            )
+                allOf(
+                        withId(R.id.menu_reviews), withText("Reviews"),
+                )
         ).perform(click())
     }
 

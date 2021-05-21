@@ -43,7 +43,7 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
         fun bind(user: User, post: Post, userId: String?) {
             super.bind(user, post)
 
-            postId.text = post.postId
+            postId.text = post.postId()
             title.text = post.title
 
             //show or hide up/downvote depending on user status
@@ -55,7 +55,7 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
             upvoteButton.visibility = visibility
             downvoteButton.visibility = visibility
             if (userId != null) {
-                setupButtons(post.upvoters, post.downvoters, userId, post.postId)
+                setupButtons(post.upvoters, post.downvoters, userId, post.postId())
             }
             upvoteCount.text = (post.upvoters.size - post.downvoters.size).toString()
         }

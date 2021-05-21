@@ -21,7 +21,7 @@ class ReviewUnitTest {
 
         for (i in range) {
             reviewMap[i.toString()] =
-                Review(TEST_AUTHOR_ID, TEST_POI_KEY, i.toFloat(), TEST_TITLE, TEST_SUMMARY)
+                    Review(TEST_AUTHOR_ID, TEST_POI_KEY, i.toFloat(), TEST_TITLE, TEST_SUMMARY)
             averageRating += i.toFloat()
         }
 
