@@ -31,10 +31,10 @@ open class UserInfoService {
             if (responsesRemaining != 0) {
                 onError(Error("Response is currently being processed"))
             } else {
-                if (uids.isEmpty()){
+                if (uids.isEmpty()) {
                     onSuccess(HashMap())
                 }
-                
+
                 val uidsSet = uids.toSet()
                 responsesRemaining = uidsSet.size
 
@@ -50,18 +50,18 @@ open class UserInfoService {
             if (it.exists()) {
                 val user = it.toObject(User::class.java)
 
-                if (user != null){
+                if (user != null) {
                     usersInfo[user.uid] = user
                 }
 
                 checkIfDone(onSuccess)
-            }else{
+            } else {
                 checkIfDone(onSuccess)
             }
         }
     }
 
-    private fun checkIfDone(onSuccess: ((Map<String, User>) -> Unit)){
+    private fun checkIfDone(onSuccess: ((Map<String, User>) -> Unit)) {
         if (responsesRemaining == 1) {
             onSuccess(usersInfo)
             usersInfo = HashMap()

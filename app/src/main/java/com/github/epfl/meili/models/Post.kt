@@ -5,7 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Post(
-        var postId: String = "",
         var poiKey: String = "",
         var authorUid: String = "",
         var title: String = "",
@@ -19,5 +18,9 @@ data class Post(
         const val TAG = "Post"
         const val POI_KEY_FIELD = "poiKey"
         const val AUTHOR_UID_FIELD = "authorUid"
+    }
+
+    fun postId(): String {
+        return "$authorUid$timestamp"
     }
 }

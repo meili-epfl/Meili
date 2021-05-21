@@ -95,11 +95,11 @@ class ReviewsActivityTest {
         testFriendMap[TEST_OTHER_AUTHOR_ID] = User(TEST_OTHER_AUTHOR_ID, TEST_OTHER_AUTHOR_USERNAME)
 
         `when`(
-            mockUserInfoService.getUserInformation(
-                Mockito.anyList(),
-                Mockito.any(),
-                Mockito.any()
-            )
+                mockUserInfoService.getUserInformation(
+                        Mockito.anyList(),
+                        Mockito.any(),
+                        Mockito.any()
+                )
         ).then {
             val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)
 
@@ -114,17 +114,17 @@ class ReviewsActivityTest {
         `when`(mockFirestore.collection("reviews")).thenReturn(mockCollection)
         val mockQuery = mock(Query::class.java)
         `when`(
-            mockCollection.whereEqualTo(
-                Review.POI_KEY_FIELD,
-                TEST_POI_KEY
-            )
+                mockCollection.whereEqualTo(
+                        Review.POI_KEY_FIELD,
+                        TEST_POI_KEY
+                )
         ).thenReturn(mockQuery)
         `when`(mockQuery.addSnapshotListener(any())).thenAnswer { invocation ->
             database = invocation.arguments[0] as FirestoreDatabase<Review>
             mock(ListenerRegistration::class.java)
         }
         `when`(mockCollection.document(ArgumentMatchers.matches(TEST_REVIEW_ID))).thenReturn(
-            mockDocument
+                mockDocument
         )
 
         val mockDocumentList = beforeAdditionList()
@@ -147,33 +147,33 @@ class ReviewsActivityTest {
 
     private fun editedReviewDocumentSnapshot(): DocumentSnapshot {
         testAverageRatingAfterEdition =
-            (NUM_REVIEWS_BEFORE_ADDITION * testAverageRatingBeforeAddition + EDITED_REVIEW_RATING) /
-                    (NUM_REVIEWS_BEFORE_ADDITION + 1)
+                (NUM_REVIEWS_BEFORE_ADDITION * testAverageRatingBeforeAddition + EDITED_REVIEW_RATING) /
+                        (NUM_REVIEWS_BEFORE_ADDITION + 1)
         return getMockDocumentSnapshot(
-            TEST_REVIEW_ID,
-            Review(
-                TEST_OTHER_AUTHOR_ID,
-                TEST_POI_KEY,
-                EDITED_REVIEW_RATING,
-                TEST_EDITED_TITLE,
-                TEST_SUMMARY
-            )
+                TEST_REVIEW_ID,
+                Review(
+                        TEST_OTHER_AUTHOR_ID,
+                        TEST_POI_KEY,
+                        EDITED_REVIEW_RATING,
+                        TEST_EDITED_TITLE,
+                        TEST_SUMMARY
+                )
         )
     }
 
     private fun addedReviewDocumentSnapshot(): DocumentSnapshot {
         testAverageRatingAfterAddition =
-            (NUM_REVIEWS_BEFORE_ADDITION * testAverageRatingBeforeAddition + ADDED_REVIEW_RATING) /
-                    (NUM_REVIEWS_BEFORE_ADDITION + 1)
+                (NUM_REVIEWS_BEFORE_ADDITION * testAverageRatingBeforeAddition + ADDED_REVIEW_RATING) /
+                        (NUM_REVIEWS_BEFORE_ADDITION + 1)
         return getMockDocumentSnapshot(
-            TEST_REVIEW_ID,
-            Review(
-                TEST_OTHER_AUTHOR_ID,
-                TEST_POI_KEY,
-                ADDED_REVIEW_RATING,
-                TEST_ADDED_TITLE,
-                TEST_SUMMARY
-            )
+                TEST_REVIEW_ID,
+                Review(
+                        TEST_OTHER_AUTHOR_ID,
+                        TEST_POI_KEY,
+                        ADDED_REVIEW_RATING,
+                        TEST_ADDED_TITLE,
+                        TEST_SUMMARY
+                )
         )
     }
 
@@ -183,13 +183,13 @@ class ReviewsActivityTest {
 
         for (i in 1..NUM_REVIEWS_BEFORE_ADDITION) {
             val review =
-                Review(
-                    TEST_AUTHOR_ID,
-                    TEST_POI_KEY,
-                    i.toFloat() / 2,
-                    TEST_TITLE,
-                    TEST_SUMMARY
-                )
+                    Review(
+                            TEST_AUTHOR_ID,
+                            TEST_POI_KEY,
+                            i.toFloat() / 2,
+                            TEST_TITLE,
+                            TEST_SUMMARY
+                    )
             reviews[i.toString()] = review
             documentList.add(getMockDocumentSnapshot(i.toString(), review))
         }
@@ -206,8 +206,8 @@ class ReviewsActivityTest {
     }
 
     private val intent =
-        Intent(getInstrumentation().targetContext.applicationContext, ReviewsActivity::class.java)
-            .putExtra("POI_KEY", TEST_POI)
+            Intent(getInstrumentation().targetContext.applicationContext, ReviewsActivity::class.java)
+                    .putExtra("POI_KEY", TEST_POI)
 
     @get:Rule
     var rule: ActivityScenarioRule<ReviewsActivity> = ActivityScenarioRule(intent)
@@ -221,13 +221,13 @@ class ReviewsActivityTest {
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.average_rating)).check(
-            matches(
-                textViewContainsText(
-                    AVERAGE_FORMAT.format(
-                        testAverageRatingBeforeAddition
-                    )
+                matches(
+                        textViewContainsText(
+                                AVERAGE_FORMAT.format(
+                                        testAverageRatingBeforeAddition
+                                )
+                        )
                 )
-            )
         )
 
         onView(withId(R.id.fab_add_edit_review)).check(matches(isNotEnabled()))
@@ -243,13 +243,13 @@ class ReviewsActivityTest {
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.average_rating)).check(
-            matches(
-                textViewContainsText(
-                    AVERAGE_FORMAT.format(
-                        testAverageRatingBeforeAddition
-                    )
+                matches(
+                        textViewContainsText(
+                                AVERAGE_FORMAT.format(
+                                        testAverageRatingBeforeAddition
+                                )
+                        )
                 )
-            )
         )
 
         onView(withId(R.id.fab_add_edit_review)).check(matches(isEnabled()))
@@ -283,14 +283,14 @@ class ReviewsActivityTest {
 
         onView(withId(R.id.rating_bar)).perform(setRating(ADDED_REVIEW_RATING))
         onView(withId(R.id.review_edit_title)).perform(
-            clearText(),
-            typeText(TEST_ADDED_TITLE),
-            closeSoftKeyboard()
+                clearText(),
+                typeText(TEST_ADDED_TITLE),
+                closeSoftKeyboard()
         )
         onView(withId(R.id.review_edit_summary)).perform(
-            clearText(),
-            typeText(TEST_SUMMARY),
-            closeSoftKeyboard()
+                clearText(),
+                typeText(TEST_SUMMARY),
+                closeSoftKeyboard()
         )
 
         onView(withId(R.id.submit_review)).perform(click())
@@ -302,28 +302,28 @@ class ReviewsActivityTest {
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.reviews_recycler_view))
-            .check(matches(isDisplayed()))
-            .perform(
-                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(
-                        withText(
-                            TEST_OTHER_AUTHOR_USERNAME
+                .check(matches(isDisplayed()))
+                .perform(
+                        RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
+                                hasDescendant(
+                                        withText(
+                                                TEST_OTHER_AUTHOR_USERNAME
+                                        )
+                                )
                         )
-                    )
                 )
-            )
 
         onView(textViewContainsText(TEST_OTHER_AUTHOR_USERNAME)).check(matches(isDisplayed()))
         onView(textViewContainsText(TEST_ADDED_TITLE)).check(matches(isDisplayed()))
 
         onView(withId(R.id.average_rating)).check(
-            matches(
-                textViewContainsText(
-                    AVERAGE_FORMAT.format(
-                        testAverageRatingAfterAddition
-                    )
+                matches(
+                        textViewContainsText(
+                                AVERAGE_FORMAT.format(
+                                        testAverageRatingAfterAddition
+                                )
+                        )
                 )
-            )
         )
     }
 
@@ -342,9 +342,9 @@ class ReviewsActivityTest {
         // edit review
         onView(withId(R.id.rating_bar)).perform(setRating(EDITED_REVIEW_RATING))
         onView(withId(R.id.review_edit_title)).perform(
-            clearText(),
-            typeText(TEST_EDITED_TITLE),
-            closeSoftKeyboard()
+                clearText(),
+                typeText(TEST_EDITED_TITLE),
+                closeSoftKeyboard()
         )
         onView(withId(R.id.submit_review)).perform(click())
 
@@ -355,16 +355,16 @@ class ReviewsActivityTest {
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.reviews_recycler_view))
-            .check(matches(isDisplayed()))
-            .perform(
-                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(
-                        withText(
-                            TEST_OTHER_AUTHOR_USERNAME
+                .check(matches(isDisplayed()))
+                .perform(
+                        RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
+                                hasDescendant(
+                                        withText(
+                                                TEST_OTHER_AUTHOR_USERNAME
+                                        )
+                                )
                         )
-                    )
                 )
-            )
 
         onView(withText(TEST_OTHER_AUTHOR_USERNAME)).check(matches(isDisplayed()))
         onView(textViewContainsText(TEST_EDITED_TITLE)).check(matches(isDisplayed()))
@@ -372,13 +372,13 @@ class ReviewsActivityTest {
         onView(withText(TEST_ADDED_TITLE)).check(doesNotExist())
 
         onView(withId(R.id.average_rating)).check(
-            matches(
-                textViewContainsText(
-                    AVERAGE_FORMAT.format(
-                        testAverageRatingAfterEdition
-                    )
+                matches(
+                        textViewContainsText(
+                                AVERAGE_FORMAT.format(
+                                        testAverageRatingAfterEdition
+                                )
+                        )
                 )
-            )
         )
     }
 

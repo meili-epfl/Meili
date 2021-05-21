@@ -12,8 +12,6 @@ import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
-import de.hdodenhof.circleimageview.CircleImageView
-import org.w3c.dom.Text
 
 class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private val listener: ClickListener) :
         MeiliRecyclerAdapter<Pair<Post, User>>() {
@@ -26,7 +24,7 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
             )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-            (holder as PostViewHolder).bind( items[position].second.second, items[position].second.first, userId)
+            (holder as PostViewHolder).bind(items[position].second.second, items[position].second.first, userId)
 
     fun submitUserInfo(uid: String) {
         userId = uid
@@ -43,7 +41,7 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
         fun bind(user: User, post: Post, userId: String?) {
             super.bind(user, post)
 
-            postId.text = post.postId
+            postId.text = post.postId()
             title.text = post.title
 
             //show or hide up/downvote depending on user status
@@ -55,7 +53,7 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
             upvoteButton.visibility = visibility
             downvoteButton.visibility = visibility
             if (userId != null) {
-                setupButtons(post.upvoters, post.downvoters, userId, post.postId)
+                setupButtons(post.upvoters, post.downvoters, userId, post.postId())
             }
             upvoteCount.text = (post.upvoters.size - post.downvoters.size).toString()
         }
