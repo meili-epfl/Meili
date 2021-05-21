@@ -8,38 +8,40 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
+import com.github.epfl.meili.models.User
+import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
+import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
 
-class PostListRecyclerAdapter(private val viewModel: PostListViewModel) :
-    MeiliRecyclerAdapter<Post>() {
+class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private val listener: ClickListener) :
+        MeiliRecyclerAdapter<Pair<Post, User>>() {
     private var userId: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        PostViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false),
-        )
+            PostViewHolder(
+                    LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false),
+                    listener
+            )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-        (holder as PostViewHolder).bind(items[position], userId)
+            (holder as PostViewHolder).bind(items[position].second.second, items[position].second.first, userId)
 
     fun submitUserInfo(uid: String) {
         userId = uid
     }
 
-    inner class PostViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
-        private val author: TextView = itemView.findViewById(R.id.post_author)
+    inner class PostViewHolder(itemView: View, listener: ClickListener) :
+            MeiliWithUserRecyclerViewHolder<Post>(itemView, listener) {
         private val title: TextView = itemView.findViewById(R.id.post_title)
         private val postId: TextView = itemView.findViewById(R.id.post_id)
         private val upvoteButton: ImageButton = itemView.findViewById(R.id.upvote_button)
         private val downvoteButton: ImageButton = itemView.findViewById(R.id.downovte_button)
         private val upvoteCount: TextView = itemView.findViewById(R.id.upvote_count)
 
-        fun bind(pair: Pair<String, Post>, userId: String?) {
-            postId.text = pair.first
+        fun bind(user: User, post: Post, userId: String?) {
+            super.bind(user, post)
 
-            val post = pair.second
-            author.text = post.author
+            postId.text = post.postId()
             title.text = post.title
 
             //show or hide up/downvote depending on user status
@@ -51,16 +53,16 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel) :
             upvoteButton.visibility = visibility
             downvoteButton.visibility = visibility
             if (userId != null) {
-                setupButtons(post.upvoters, post.downvoters, userId, pair.first)
+                setupButtons(post.upvoters, post.downvoters, userId, post.postId())
             }
             upvoteCount.text = (post.upvoters.size - post.downvoters.size).toString()
         }
 
         private fun setupButtons(
-            upvoters: ArrayList<String>,
-            downvoters: ArrayList<String>,
-            userId: String,
-            postId: String
+                upvoters: ArrayList<String>,
+                downvoters: ArrayList<String>,
+                userId: String,
+                postId: String
         ) {
             when {
                 upvoters.contains(userId) -> {
