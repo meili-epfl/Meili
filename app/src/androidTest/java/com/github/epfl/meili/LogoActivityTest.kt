@@ -27,8 +27,8 @@ class LogoActivityTest {
     }
 
     @Test
-    fun activityLaunches() {
-        Thread.sleep(1000)
+    fun launchingTriggersIntent() {
+        Thread.sleep(1000) // logo activity purposefully delays a little
         Intents.intended(IntentMatchers.isInternal())
     }
 }
