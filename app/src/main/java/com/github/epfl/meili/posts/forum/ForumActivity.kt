@@ -31,6 +31,7 @@ import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.UIUtility
+import com.github.epfl.meili.util.WritingPolicy
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -116,10 +117,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         if (Auth.getCurrentUser() == null) {
             favoriteButton.visibility = View.GONE
         }
-
-        if(Auth.getCurrentUser() == null || !addPostAllowed()){
-            createPostButton.visibility = View.GONE
-        }
     }
 
     override fun onDestroy() {
@@ -142,10 +139,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
             )
             else -> startActivity(getPostActivityIntent(view.findViewById(R.id.post_id)))
         }
-    }
-
-    private fun addPostAllowed():Boolean{
-        return poiStatus == PointOfInterestStatus.REACHABLE || poiStatus == PointOfInterestStatus.VISITED
     }
 
     private fun addPost() {
@@ -190,8 +183,8 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         super.initLoggedInListener()
 
         Auth.isLoggedIn.observe(this, { loggedIn ->
-            createPostButton.isEnabled = loggedIn
-            createPostButton.visibility = if (loggedIn)
+            createPostButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn , poiStatus)
+            createPostButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn , poiStatus))
                 View.VISIBLE
             else
                 View.GONE
