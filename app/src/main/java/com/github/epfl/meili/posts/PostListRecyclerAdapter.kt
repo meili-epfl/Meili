@@ -12,8 +12,6 @@ import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
-import de.hdodenhof.circleimageview.CircleImageView
-import org.w3c.dom.Text
 
 class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private val listener: ClickListener) :
         MeiliRecyclerAdapter<Pair<Post, User>>() {
@@ -26,7 +24,7 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
             )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-            (holder as PostViewHolder).bind( items[position].second.second, items[position].second.first, userId)
+            (holder as PostViewHolder).bind(items[position].second.second, items[position].second.first, userId)
 
     fun submitUserInfo(uid: String) {
         userId = uid

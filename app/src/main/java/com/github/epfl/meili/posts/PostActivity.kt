@@ -30,7 +30,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
     companion object {
         private const val TAG = "PostActivity"
         private val DEFAULT_URI =
-            Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
+                Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
         const val POST_ID = "Post_ID"
 
         var serviceProvider: () -> UserInfoService = { UserInfoService() }
@@ -59,12 +59,12 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         initViews(post)
 
         FirebaseStorageService.getDownloadUrl(
-            "images/forum/$postId",
-            { uri -> getDownloadUrlCallback(uri) },
-            { exception ->
-                Log.e(TAG, "Image not found", exception)
-                getDownloadUrlCallback(DEFAULT_URI)
-            }
+                "images/forum/$postId",
+                { uri -> getDownloadUrlCallback(uri) },
+                { exception ->
+                    Log.e(TAG, "Image not found", exception)
+                    getDownloadUrlCallback(DEFAULT_URI)
+                }
         )
 
         usersMap = HashMap()
@@ -113,7 +113,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
     private fun initViewModel() {
         @Suppress("UNCHECKED_CAST")
         viewModel =
-            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
+                ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
 
         viewModel.initDatabase(FirestoreDatabase("forum/$postId/comments", Comment::class.java))
         viewModel.getElements().observe(this, { map ->
@@ -128,7 +128,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         }
 
         serviceProvider().getUserInformation(newUsers, { onUsersInfoReceived(it, commentsMap) },
-            { Log.d(TAG, "Error when fetching users information") })
+                { Log.d(TAG, "Error when fetching users information") })
     }
 
     override fun onUsersInfoReceived(users: Map<String, User>, commentsMap: Map<String, Comment>) {
@@ -153,7 +153,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         recyclerAdapter = CommentsRecyclerAdapter(this)
         val recyclerView: RecyclerView = findViewById(R.id.comments_recycler_view)
         initRecyclerView(recyclerAdapter, recyclerView, this)
-        ViewCompat.setNestedScrollingEnabled(recyclerView, false);
+        ViewCompat.setNestedScrollingEnabled(recyclerView, false)
     }
 
     private fun initLoggedInListener() {
