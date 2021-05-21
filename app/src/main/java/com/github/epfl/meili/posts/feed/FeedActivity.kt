@@ -8,6 +8,7 @@ import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.poi.PoiServiceCached
 import com.github.epfl.meili.posts.PostListActivity
+import com.github.epfl.meili.posts.PostListActivity.Companion.NORMAL
 import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
 import com.github.epfl.meili.util.LocationService.listenToLocationChanges
@@ -21,7 +22,7 @@ class FeedActivity : NavigableActivity(R.layout.activity_feed, R.id.feed), PostL
 
     override var usersMap: Map<String, User> = HashMap()
     override var postsMap: Map<String, Post> = HashMap()
-    override var sortOrder: Boolean = true
+    override var sortOrder: String = NORMAL
 
     override fun getActivity(): AppCompatActivity = this
 

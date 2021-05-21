@@ -24,8 +24,11 @@ import com.github.epfl.meili.util.RecyclerViewInitializer
  */
 interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLinker<Post> {
     companion object {
-        private const val NEWEST = "Newest"
-        private const val OLDEST = "Oldest"
+        const val NEWEST = "Newest"
+        const val OLDEST = "Oldest"
+        const val NORMAL = "Normal"
+        const val POPULAR = "Popularity"
+
         private const val TAG = "PostListActivity"
 
         var serviceProvider: () -> UserInfoService = { UserInfoService() }
@@ -33,7 +36,7 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
 
     var viewModel: PostListViewModel
 
-    var sortOrder: Boolean
+    var sortOrder: String
     var postsMap: Map<String, Post>
 
     fun getActivity(): AppCompatActivity
@@ -128,24 +131,26 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
                 { Log.d(TAG, "Error when fetching users information") })
     }
 
-    private fun sortPosts(b: Boolean) {
-        sortOrder = b
+    private fun sortPosts(order: String) {
+        sortOrder = order
         onUsersInfoReceived(HashMap(), postsMap)
     }
 
-    private fun orderPosts(postList: List<Pair<String, Pair<Post, User>>>):List<Pair<String, Pair<Post, User>>>{
+    private fun orderPosts(postList: List<Pair<String, Pair<Post, User>>>): List<Pair<String, Pair<Post, User>>> {
+        if (sortOrder == NORMAL) return postList
+
         return postList.sortedBy { pair ->
-            if (sortOrder)
-                -pair.second.first.timestamp
-            else
-                pair.second.first.timestamp
+            var comp = when (sortOrder) {
+                NEWEST -> -pair.second.first.timestamp
+                OLDEST -> pair.second.first.timestamp
+                else -> (-(pair.second.first.upvoters.size - pair.second.first.downvoters.size)).toLong()
+            }
+            comp
         }
     }
+
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
-        when (parent?.getItemAtPosition(pos)) {
-            NEWEST -> sortPosts(true)
-            OLDEST -> sortPosts(false)
-        }
+        sortPosts(parent?.getItemAtPosition(pos) as String)
     }
 
 
