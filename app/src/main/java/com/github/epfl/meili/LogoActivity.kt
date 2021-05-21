@@ -10,7 +10,7 @@ import com.github.epfl.meili.util.UserPreferences
 
 class LogoActivity : AppCompatActivity() {
     companion object {
-        private const val LOGO_DISPLAY_TIME = 1000L // milliseconds
+        private const val LOGO_DISPLAY_TIME = 500L // milliseconds
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +22,7 @@ class LogoActivity : AppCompatActivity() {
         val preferences = UserPreferences(this)
         preferences.applyMode()
 
-        val firstActivityClass: Class<out AppCompatActivity> = if (preferences.firstUse) {
+        val firstActivityClass: Class<out AppCompatActivity> = if (preferences.firstTime) {
             GoogleSignInActivity::class.java
         } else {
             MapActivity::class.java

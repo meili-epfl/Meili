@@ -18,7 +18,7 @@ class UserPreferences(private val context: AppCompatActivity) {
     var darkMode = preferences.getInt(DARK_STATUS, 0)
         set(value) = preferences.edit().putInt(DARK_STATUS, value).apply()
 
-    var firstUse = preferences.getBoolean(FIRST_TIME, true)
+    var firstTime = preferences.getBoolean(FIRST_TIME, true)
         set(value) = preferences.edit().putBoolean(FIRST_TIME, value).apply()
 
     /** Applies the correct theme to the given context */
