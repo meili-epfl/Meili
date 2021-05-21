@@ -1,9 +1,10 @@
-package com.github.epfl.meili.home
+package com.github.epfl.meili.auth
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.facebook.AccessTokenCreator
 import com.facebook.Profile
+import com.github.epfl.meili.home.FacebookAuthenticationService
 import com.github.epfl.meili.models.User
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -22,14 +23,8 @@ class FacebookAuthenticationServiceTest {
     fun before() {
         fauth = FacebookAuthenticationService()
     }
-
     @Test
-    fun testANullUser() {
-        assert(fauth.getCurrentUser() == null)
-    }
-
-    @Test
-    fun testNonNullUser() {
+    fun testUser() {
         UiThreadStatement.runOnUiThread {
             val mockProfile = Profile(TEST_ID, "", "", "", TEST_NAME, null)
 
@@ -42,7 +37,7 @@ class FacebookAuthenticationServiceTest {
             Auth.email = null
             Auth.name = null
             assertEquals(fauth.getCurrentUser(), User(TEST_ID, TEST_NAME, "", " "))
-            fauth.signInIntent()
+            fauth.signInIntent(null)
         }
     }
 
