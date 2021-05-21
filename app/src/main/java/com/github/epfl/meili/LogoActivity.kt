@@ -20,7 +20,7 @@ class LogoActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         val preferences = UserPreferences(this)
-        preferences.applyTheme()
+        preferences.applyMode()
 
         val firstActivityClass: Class<out AppCompatActivity> = if (preferences.firstUse) {
             GoogleSignInActivity::class.java
