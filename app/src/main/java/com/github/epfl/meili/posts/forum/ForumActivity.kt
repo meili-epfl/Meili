@@ -17,6 +17,7 @@ import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
@@ -70,6 +71,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
     private var bitmap: Bitmap? = null
 
     private lateinit var poi: PointOfInterest
+    private lateinit var poiStatus: PointOfInterestStatus
 
     override fun getActivity(): AppCompatActivity = this
 
@@ -80,6 +82,8 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         executor = Executors.newSingleThreadExecutor()
 
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
+
+        poiStatus = intent.getSerializableExtra(MapActivity.POI_STATUS_KEY) as PointOfInterestStatus
 
         supportActionBar?.title = poi.name
 
@@ -112,6 +116,10 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         if (Auth.getCurrentUser() == null) {
             favoriteButton.visibility = View.GONE
         }
+
+        if(Auth.getCurrentUser() == null || !addPostAllowed()){
+            createPostButton.visibility = View.GONE
+        }
     }
 
     override fun onDestroy() {
@@ -134,6 +142,10 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
             )
             else -> startActivity(getPostActivityIntent(view.findViewById(R.id.post_id)))
         }
+    }
+
+    private fun addPostAllowed():Boolean{
+        return poiStatus == PointOfInterestStatus.REACHABLE || poiStatus == PointOfInterestStatus.VISITED
     }
 
     private fun addPost() {
