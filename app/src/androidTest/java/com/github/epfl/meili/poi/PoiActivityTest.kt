@@ -151,17 +151,17 @@ class PoiActivityTest {
         onView(withId(R.id.take_me_there_button)).check(matches(isDisplayed()))
     }
 
-//    @Test
-//    fun takeMeThereButtonTest() {
-//        onView(withId(R.id.take_me_there_button)).perform(click())
-//        Intents.intended(hasPackage("com.google.android.apps.maps"))
-//    }
-//
-//    @Test
-//    fun callButtonTest() {
-//        onView(withId(R.id.call_poi_button)).perform(click())
-//        Intents.intended(toPackage("com.android.server.telecom"))
-//    }
+    @Test
+    fun takeMeThereButtonTest() {
+        onView(withId(R.id.take_me_there_button)).perform(click())
+        Intents.intended(hasPackage("com.google.android.apps.maps"))
+    }
+
+    @Test
+    fun callButtonTest() {
+        onView(withId(R.id.call_poi_button)).perform(click())
+        Intents.intended(toPackage("com.android.server.telecom"))
+    }
 
     @Test
     fun favoriteButtonTestSignedIn() {
