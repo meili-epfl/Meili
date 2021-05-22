@@ -51,7 +51,7 @@ open class PoiGoogleRetriever : ResponseFetcher<List<PointOfInterest>> {
         }
     }
 
-    fun queryGooglePlacesAPI(
+    private fun queryGooglePlacesAPI(
         query: String,
         onSuccess: (List<PointOfInterest>) -> Unit,
         onError: (Error) -> Unit
@@ -77,7 +77,7 @@ open class PoiGoogleRetriever : ResponseFetcher<List<PointOfInterest>> {
         }
     }
 
-    fun customOnErrorFrom(onError: ((Error) -> Unit)): (VolleyError) -> Unit {
+    private fun customOnErrorFrom(onError: ((Error) -> Unit)): (VolleyError) -> Unit {
         return { error ->
             onError(Error(error.message))
         }
@@ -129,24 +129,14 @@ data class PlacesPointOfInterest(
     val openingHours: PoiOpeningHours? = null
 ) {
     fun toStandardPoi(): PointOfInterest {
-        if (openingHours != null) {
-            return PointOfInterest(
-                geometry!!.latLng!!.latitude!!,
-                geometry.latLng!!.longitude!!,
-                name!!,
-                uid!!,
-                icon!!,
-                poiTypes!!,
-                openingHours.openNow
-            )
-        }
         return PointOfInterest(
             geometry!!.latLng!!.latitude!!,
             geometry.latLng!!.longitude!!,
             name!!,
             uid!!,
             icon!!,
-            poiTypes!!
+            poiTypes!!,
+            openingHours?.openNow
         )
     }
 }

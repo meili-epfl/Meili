@@ -27,7 +27,7 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
             (holder as PostViewHolder).bind(items[position].second.second, items[position].second.first, userId)
 
     /**
-     * Sets the user
+     * Update recycler view with user's info
      */
     fun submitUserInfo(uid: String) {
         userId = uid
