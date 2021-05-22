@@ -51,7 +51,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     }
 
     /**
-     * Depending on `isLoggedIn`, starts a group/private chat or not
+     * Start the chat if the user is logged in
      */
     fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
         if (isLoggedIn) {
