@@ -40,7 +40,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_log)
 
-        findViewById<RecyclerView>(R.id.recycleview_chat_log).adapter = adapter
+        findViewById<RecyclerView>(R.id.recyclerview_chat_log).adapter = adapter
 
         Auth.isLoggedIn.observe(this) {
             Log.d(TAG, "value received $it")
@@ -141,7 +141,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
             messageSet.addAll(newMessages)
             //scroll down
             val lastItemPos = adapter.itemCount - 1
-            findViewById<RecyclerView>(R.id.recycleview_chat_log).scrollToPosition(lastItemPos)
+            findViewById<RecyclerView>(R.id.recyclerview_chat_log).scrollToPosition(lastItemPos)
         }
 
         ChatMessageViewModel.messages.observe(this, groupMessageObserver)

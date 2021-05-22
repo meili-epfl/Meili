@@ -50,14 +50,14 @@
     <string name="take_photo">Take photo</string>
     <string name="switch_camera">Switch camera</string>
     <string name="enter_message">Enter Message…</string>
-    <string name="send">Send</string>
+    <string name="send_message">Send</string>
     <string name="my_feed">My Feed</string>
     <string name="forum_image">Forum image</string>
 
     <string name="add_friend">Add Friend</string>
-    <string name="sign_in_to_use_the_map">Sign In to use the map</string>
+    <string name="google_sign_in_prompt">Sign In to get access to all features!</string>
     <string name="sign_in">Sign In</string>
-    <string name="meili_nlimited_functionality">Meili\nLimited Functionality</string>
+    <string name="access_no_sign_in">Meili\nLimited Functionality</string>
     <string name="launcher">Launcher</string>
     <string name="meili_lens">Meili Lens</string>
     <string name="lens">Lens</string>
@@ -73,11 +73,11 @@
     <string name="filters">Filters</string>
     <string name="text">Text</string>
     <string name="add_text">Add Text</string>
-    <string name="none">None</string>
-    <string name="sepia">Sepia</string>
-    <string name="saturate">Saturate</string>
-    <string name="sharpen">Sharpen</string>
-    <string name="fish_eye">Fish Eye</string>
+    <string name="filter_none">None</string>
+    <string name="filter_sepia">Sepia</string>
+    <string name="filter_saturate">Saturate</string>
+    <string name="filter_sharpen">Sharpen</string>
+    <string name="filter_fish_eye">Fish Eye</string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
     <string name="finish_edit">Finish edit</string>
@@ -100,8 +100,8 @@
     <string name="map">Map</string>
     <string name="feed">Feed</string>
     <string name="favorite">Favorite</string>
-    <string name="title_70_characters_max">Title (70 characters max.)</string>
-    <string name="text_500_characters_max">Text (500 characters max.)</string>
+    <string name="post_edit_title_hint">Title (70 characters max.)</string>
+    <string name="post_edit_text_hint">Text (500 characters max.)</string>
     <string name="images">Images</string>
     <string name="use_camera">Use camera</string>
     <string name="use_gallery">Use gallery</string>

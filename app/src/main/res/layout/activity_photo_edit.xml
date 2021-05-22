@@ -78,7 +78,7 @@
     <!-- Filters window -->
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button_addText"
+        android:id="@+id/add_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -88,7 +88,7 @@
         android:textColor="#FFFFFF"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/photoEditorView"
-        app:layout_constraintEnd_toStartOf="@+id/et_text"
+        app:layout_constraintEnd_toStartOf="@+id/enter_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
@@ -108,7 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
-            android:text="@string/none"
+            android:text="@string/filter_none"
             android:textColor="#FFFFFF" />
 
         <TextView
@@ -117,7 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
-            android:text="@string/sepia"
+            android:text="@string/filter_sepia"
             android:textColor="#FFFFFF" />
 
         <TextView
@@ -126,7 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
-            android:text="@string/saturate"
+            android:text="@string/filter_saturate"
             android:textColor="#FFFFFF" />
 
         <TextView
@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
-            android:text="@string/sharpen"
+            android:text="@string/filter_sharpen"
             android:textColor="#FFFFFF" />
 
         <TextView
@@ -144,7 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
-            android:text="@string/fish_eye"
+            android:text="@string/filter_fish_eye"
             android:textColor="#FFFFFF" />
     </LinearLayout>
 
@@ -176,7 +176,7 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/finish_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -190,7 +190,7 @@
 
 
     <EditText
-        android:id="@+id/et_text"
+        android:id="@+id/enter_text"
         android:layout_width="256dp"
         android:layout_height="44dp"
         android:layout_marginBottom="3dp"
@@ -199,7 +199,7 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/photoEditorView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button_addText"
+        app:layout_constraintStart_toEndOf="@+id/add_text"
         tools:layout_editor_absoluteX="59dp"
         android:autofillHints="" />
 
