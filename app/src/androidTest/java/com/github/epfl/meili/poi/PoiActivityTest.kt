@@ -7,8 +7,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasPackage
-import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -28,10 +26,8 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPhotoResponse
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.*
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -39,8 +35,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 
 
 @Suppress("UNCHECKED_CAST")
@@ -53,24 +49,47 @@ class PoiActivityTest {
         private const val TEST_TIMESTAMP = -1L
         private const val TEST_AUTHOR_ID = "author id"
         private const val TEST_UID = TEST_AUTHOR_ID + TEST_TIMESTAMP.toString()
-        private const val TEST_POI_KEY = "lorem_ipsum2"
+
     }
 
 
     private val fakePoi: PointOfInterest =
         PointOfInterest(10.0, 10.0, "art_brut", "ChIJAAAAAAAAAAARg4pb6XR5bo0")
 
-    private val mockPlaces: PlacesClientService = Mockito.mock(PlacesClientService::class.java)
-    private val mockPlacesClient: PlacesClient = Mockito.mock(PlacesClient::class.java)
-    private val mockPoiHistory: CollectionReference = Mockito.mock(CollectionReference::class.java)
+    private val mockPlaces: PlacesClientService = mock(PlacesClientService::class.java)
+    private val mockPlacesClient: PlacesClient = mock(PlacesClient::class.java)
 
-    private val mockFirestore: FirebaseFirestore = Mockito.mock(FirebaseFirestore::class.java)
-    private lateinit var poiDatabase: FirestoreDatabase<PointOfInterest>
-    private val mockDocument: DocumentReference = Mockito.mock(DocumentReference::class.java)
+    private val mockFirestore: FirebaseFirestore = mock(FirebaseFirestore::class.java)
+    private val mockDocument: DocumentReference = mock(DocumentReference::class.java)
     private val mockAuthenticationService = MockAuthenticationService()
+    private val mockSnapshot: QuerySnapshot = mock(QuerySnapshot::class.java)
+    private val mockCollection: CollectionReference = mock(CollectionReference::class.java)
+    private lateinit var database: FirestoreDatabase<PointOfInterest>
+    private val intent = Intent(
+        InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
+        PoiActivity::class.java
+    ).putExtra("POI_KEY", fakePoi)
 
+    @get:Rule
+    var mActivityTestRule: ActivityScenarioRule<PoiActivity> = ActivityScenarioRule(intent)
+
+    @Before
+    fun initIntents() {
+        Intents.init()
+    }
+
+    @After
+    fun releaseIntents() {
+        Intents.release()
+    }
 
     init {
+        setupMocks()
+        mockAuthenticationService.signInIntent()
+    }
+
+
+    private fun setupMocks() {
         val placeBuilder = Place.builder()
         placeBuilder.address = "mockAddress"
         placeBuilder.phoneNumber = "mockPhone"
@@ -95,44 +114,34 @@ class PoiActivityTest {
 
         `when`(mockPlaces.getPlacesClient(any(), any())).thenReturn(mockPlacesClient)
 
-        // Mock poi history
-        `when`(mockFirestore.collection("poi-history/${TEST_UID}/poi-history")).thenReturn(
-            mockPoiHistory
+        `when`(mockFirestore.collection(any())).thenReturn(
+            mockCollection
         )
-        `when`(mockPoiHistory.addSnapshotListener(any())).thenAnswer { invocation ->
-            poiDatabase = invocation.arguments[0] as FirestoreDatabase<PointOfInterest>
-            Mockito.mock(ListenerRegistration::class.java)
+        `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
+            database = invocation.arguments[0] as FirestoreDatabase<PointOfInterest>
+            mock(ListenerRegistration::class.java)
         }
-        `when`(mockPoiHistory.document(ArgumentMatchers.matches(TEST_POI_KEY))).thenReturn(
+        `when`(mockCollection.document(ArgumentMatchers.matches(fakePoi.uid))).thenReturn(
             mockDocument
         )
+
+        val mockDocumentSnapshot = mock(DocumentSnapshot::class.java)
+        `when`(mockDocumentSnapshot.id).thenReturn(fakePoi.uid)
+        `when`(mockDocumentSnapshot.toObject(PointOfInterest::class.java)).thenReturn(
+            fakePoi
+        )
+        `when`(mockSnapshot.documents).thenReturn(listOf(mockDocumentSnapshot))
+
 
         mockAuthenticationService.setMockUid(TEST_UID)
         mockAuthenticationService.setUsername(TEST_USERNAME)
 
+        // Inject dependencies
         PoiActivity.placesClientService = { mockPlaces }
         FirestoreDatabase.databaseProvider = { mockFirestore }
         Auth.authService = mockAuthenticationService
     }
 
-
-    private val intent = Intent(
-        InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
-        PoiActivity::class.java
-    ).putExtra("POI_KEY", fakePoi)
-
-    @get:Rule
-    var mActivityTestRule: ActivityScenarioRule<PoiActivity> = ActivityScenarioRule(intent)
-
-    @Before
-    fun initIntents() {
-        Intents.init()
-    }
-
-    @After
-    fun releaseIntents() {
-        Intents.release()
-    }
 
     @Test
     fun poiActivityTest() {
@@ -142,16 +151,26 @@ class PoiActivityTest {
         onView(withId(R.id.take_me_there_button)).check(matches(isDisplayed()))
     }
 
-    @Test
-    fun takeMeThereButtonTest() {
-        onView(withId(R.id.take_me_there_button)).perform(click())
-        Intents.intended(hasPackage("com.google.android.apps.maps"))
-    }
+//    @Test
+//    fun takeMeThereButtonTest() {
+//        onView(withId(R.id.take_me_there_button)).perform(click())
+//        Intents.intended(hasPackage("com.google.android.apps.maps"))
+//    }
+//
+//    @Test
+//    fun callButtonTest() {
+//        onView(withId(R.id.call_poi_button)).perform(click())
+//        Intents.intended(toPackage("com.android.server.telecom"))
+//    }
 
     @Test
-    fun callButtonTest() {
-        onView(withId(R.id.call_poi_button)).perform(click())
-        Intents.intended(toPackage("com.android.server.telecom"))
+    fun favoriteButtonTestSignedIn() {
+
+
+        database.onEvent(mockSnapshot, null)
+        onView(withId(R.id.favorite_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.favorite_button)).perform(click())
+        onView(withId(R.id.favorite_button)).perform(click())
     }
 }
 
