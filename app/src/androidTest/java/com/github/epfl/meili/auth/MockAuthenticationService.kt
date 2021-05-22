@@ -2,6 +2,7 @@ package com.github.epfl.meili.auth
 
 import android.app.Activity
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.models.User
 
 class MockAuthenticationService : AuthenticationService {
@@ -19,7 +20,7 @@ class MockAuthenticationService : AuthenticationService {
         }
     }
 
-    override fun signInIntent(activity: Activity?): Intent {
+    override fun signInIntent(activity: AppCompatActivity?): Intent {
         val intent = Intent()
         intent.putExtra("MOCK_SINGIN", 123)
         return intent

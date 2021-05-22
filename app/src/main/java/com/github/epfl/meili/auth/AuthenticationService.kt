@@ -2,6 +2,7 @@ package com.github.epfl.meili.auth
 
 import android.app.Activity
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.models.User
 
 
@@ -14,7 +15,7 @@ interface AuthenticationService {
     /**
      * Returns the sign in intent
      */
-    fun signInIntent(activity: Activity?): Intent
+    fun signInIntent(activity: AppCompatActivity?): Intent
 
     /**
      * Signs the user out

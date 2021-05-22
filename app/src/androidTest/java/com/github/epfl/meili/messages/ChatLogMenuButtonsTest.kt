@@ -12,9 +12,9 @@ import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
-import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.auth.AuthenticationService
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User

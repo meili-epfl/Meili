@@ -12,12 +12,10 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDocumentService
-
-import com.github.epfl.meili.auth.Auth
-
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.posts.feed.FeedActivity

@@ -1,7 +1,8 @@
-package com.github.epfl.meili.home
+package com.github.epfl.meili.auth
 
 import android.app.Activity
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import com.facebook.AccessToken
 import com.facebook.Profile
 import com.facebook.login.LoginManager
@@ -46,7 +47,7 @@ class FacebookAuthenticationService : AuthenticationService {
         return User(profile!!.id, profile!!.name, "", " ")
     }
 
-    override fun signInIntent(activity: Activity?): Intent {
+    override fun signInIntent(activity: AppCompatActivity?): Intent {
         return Intent()
     }
 

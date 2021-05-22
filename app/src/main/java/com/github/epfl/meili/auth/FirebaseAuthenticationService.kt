@@ -3,6 +3,7 @@ package com.github.epfl.meili.auth
 import android.app.Activity
 import android.content.Intent
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.User
@@ -29,7 +30,6 @@ class FirebaseAuthenticationService : AuthenticationService {
         googleSignInClient = GoogleSignIn.getClient(context, gso)
 
         auth = Firebase.auth
-
     }
 
     /**
@@ -49,7 +49,7 @@ class FirebaseAuthenticationService : AuthenticationService {
         }
     }
 
-    override fun signInIntent(activity: Activity?): Intent {
+    override fun signInIntent(activity: AppCompatActivity?): Intent {
         return googleSignInClient.signInIntent
     }
 

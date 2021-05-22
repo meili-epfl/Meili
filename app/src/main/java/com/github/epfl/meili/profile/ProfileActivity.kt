@@ -16,7 +16,7 @@ import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
-import com.github.epfl.meili.home.FacebookAuthenticationService
+import com.github.epfl.meili.auth.FacebookAuthenticationService
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.profile.myposts.MyPostsActivity

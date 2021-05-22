@@ -23,7 +23,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
 
-            <include layout="@layout/user"/>
+            <include layout="@layout/user" />
 
             <TextView
                 android:id="@+id/post_title"
@@ -49,28 +49,28 @@
                     android:layout_width="50dp"
                     android:layout_height="70dp"
                     android:background="@android:drawable/screen_background_light_transparent"
+                    android:contentDescription="@string/upvote"
                     android:scaleX="0.5"
                     android:scaleY="0.5"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@mipmap/upvote_empty_foreground"
-                    android:contentDescription="@string/upvote" />
+                    app:srcCompat="@mipmap/upvote_empty_foreground" />
 
                 <ImageButton
                     android:id="@+id/downovte_button"
                     android:layout_width="50dp"
                     android:layout_height="70dp"
                     android:background="@android:drawable/screen_background_light_transparent"
+                    android:contentDescription="@string/downvote"
                     android:scaleX="0.5"
                     android:scaleY="0.5"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/upvote_button"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@mipmap/downvote_empty_foreground"
-                    android:contentDescription="@string/downvote" />
+                    app:srcCompat="@mipmap/downvote_empty_foreground" />
 
                 <TextView
                     android:id="@+id/upvote_count"

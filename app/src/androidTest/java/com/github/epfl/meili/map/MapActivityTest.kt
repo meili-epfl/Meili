@@ -53,7 +53,6 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
 @Suppress("UNCHECKED_CAST")
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4::class)
 class MapActivityTest {
 

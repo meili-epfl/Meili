@@ -1,7 +1,6 @@
 package com.github.epfl.meili.profile.myposts
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
@@ -10,7 +9,6 @@ import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.posts.PostListActivity
 import com.github.epfl.meili.posts.PostListActivity.Companion.NORMAL
-import com.github.epfl.meili.posts.PostListRecyclerAdapter
 import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.util.MeiliRecyclerAdapter

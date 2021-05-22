@@ -2,6 +2,7 @@ package com.github.epfl.meili.auth
 
 import android.app.Activity
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.epfl.meili.models.User
@@ -29,7 +30,7 @@ object Auth : ViewModel(), AuthenticationService {
         return authService.getCurrentUser()
     }
 
-    override fun signInIntent(activity: Activity?): Intent {
+    override fun signInIntent(activity: AppCompatActivity?): Intent {
         val signInIntent = authService.signInIntent(activity)
 
         activity!!.startActivityForResult(signInIntent, RC_SIGN_IN)
