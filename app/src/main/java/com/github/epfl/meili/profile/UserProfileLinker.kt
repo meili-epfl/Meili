@@ -13,8 +13,6 @@ interface UserProfileLinker<T> : ClickListener {
     var usersMap: Map<String, User>
 
     fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, T>) {
-        Log.d("UserProfileLinker", users.toString())
-        Log.d("UserProfileLinker", map.toString())
         usersMap = usersMap + HashMap(users)
         val reviewsAndUsersMap = HashMap<String, Pair<T, User>>()
         for ((uid, user) in users) {
@@ -33,7 +31,7 @@ interface UserProfileLinker<T> : ClickListener {
                 ProfileActivity.USER_KEY,
                 friendUid
             )
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK;
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         MainApplication.applicationContext().startActivity(intent)
     }
 

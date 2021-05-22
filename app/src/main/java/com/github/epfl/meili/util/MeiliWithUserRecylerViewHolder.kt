@@ -25,7 +25,6 @@ abstract class MeiliWithUserRecyclerViewHolder<T>(itemView: View, private val li
     }
 
     override fun onClick(v: View) {
-        Log.d("Meili with user recycle", v.id.toString())
         listener.onClicked(v.id, user.uid)
     }
 }
