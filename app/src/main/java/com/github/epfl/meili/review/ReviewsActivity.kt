@@ -158,7 +158,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener,
         }
 
         val newUsersList = ArrayList<String>()
-        for ((reviewId, post) in map) {
+        for ((_, post) in map) {
             newUsersList.add(post.authorUid)
         }
 
@@ -168,11 +168,11 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener,
             getString(R.string.average_rating_format).format(Review.averageRating(map))
     }
 
-    override fun onUsersInfoReceived(users: Map<String, User>, reviewMap: Map<String, Review>) {
+    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Review>) {
         usersMap = HashMap(usersMap) + users
 
         val reviewsAndUsersMap = HashMap<String, Pair<Review, User>>()
-        for ((postId, review) in reviewMap) {
+        for ((postId, review) in map) {
             val user = usersMap[review.authorUid]
             if (user != null) {
                 reviewsAndUsersMap[postId] = Pair(review, user)
