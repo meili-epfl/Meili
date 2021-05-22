@@ -16,7 +16,6 @@
         android:paddingTop="4dp"
         android:paddingEnd="8dp"
         android:paddingBottom="4dp"
-        android:text="@string/june_10"
         android:textColor="#C0C0C0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +35,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="@string/john_grady_cole"
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/image_gchat_profile_other"
         app:layout_constraintTop_toBottomOf="@+id/text_chat_date" />
@@ -67,7 +65,6 @@
                 android:paddingLeft="12dp"
                 android:paddingTop="8dp"
                 android:paddingRight="12dp"
-                android:text="@string/message"
                 android:textColor="#000000"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -79,7 +76,6 @@
         android:id="@+id/text_chat_timestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/_8_00"
         android:textColor="#C0C0C0"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/card_gchat_message_other"

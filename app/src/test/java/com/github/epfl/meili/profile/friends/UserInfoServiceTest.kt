@@ -13,12 +13,14 @@ import org.mockito.Mockito
 
 @Suppress("UNCHECKED_CAST")
 class UserInfoServiceTest {
-    private val testUid = "TEST_ID"
-    private val testName = "TEST_NAME"
+    companion object {
+        private const val TEST_UID = "TEST_ID"
+        private const val TEST_NAME = "TEST_NAME"
+    }
 
     @Test
     fun getUserInformationTest() {
-        val testUser = User(testUid, testName)
+        val testUser = User(TEST_UID, TEST_NAME)
 
         val mockDocument = Mockito.mock(DocumentSnapshot::class.java)
         Mockito.`when`(mockDocument.exists()).thenReturn(true)
@@ -33,14 +35,15 @@ class UserInfoServiceTest {
         val mockDocumentReference = Mockito.mock(DocumentReference::class.java)
         Mockito.`when`(mockDocumentReference.get()).thenReturn(mockTask as Task<DocumentSnapshot>)
         val mockFirestore = Mockito.mock(FirebaseFirestore::class.java)
-        Mockito.`when`(mockFirestore.document(Mockito.anyString())).thenReturn(mockDocumentReference)
+        Mockito.`when`(mockFirestore.document(Mockito.anyString()))
+            .thenReturn(mockDocumentReference)
 
         FirestoreDocumentService.databaseProvider = { mockFirestore }
 
         val testList = ArrayList<String>()
-        testList.add(testUid)
+        testList.add(TEST_UID)
         val expectedResult = HashMap<String, User>()
-        expectedResult[testUid] = testUser
+        expectedResult[TEST_UID] = testUser
 
         val onSuccess = { it: Map<String, User> -> assertEquals(it, expectedResult) }
 
