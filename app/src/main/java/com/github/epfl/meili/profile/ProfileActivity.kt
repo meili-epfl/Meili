@@ -50,7 +50,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var postsButton: ImageButton
     private lateinit var reviewsButton: ImageButton
     private lateinit var favoritePoisButton: ImageButton
-    private lateinit var lightdarkModeButton: ImageButton
+    private lateinit var lightDarkModeButton: ImageButton
 
     private lateinit var signedInView: View
     private lateinit var profileView: View
@@ -121,7 +121,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         postsButton = findViewById(R.id.profile_posts_button)
         reviewsButton = findViewById(R.id.profile_reviews_button)
         favoritePoisButton = findViewById(R.id.profile_poi_history_button)
-        lightdarkModeButton = findViewById(R.id.switch_mode)
+        lightDarkModeButton = findViewById(R.id.switch_mode)
     }
 
     private fun registerFacebookCallBack() {
@@ -165,7 +165,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             profileEditButton -> showEditMode()
             postsButton -> showProfileOwnersInfo(MyPostsActivity::class.java)
             favoritePoisButton -> showProfileOwnersInfo(FavoritePoisActivity::class.java)
-            lightdarkModeButton -> changeMode()
+            lightDarkModeButton -> changeMode()
         }
     }
 
@@ -205,7 +205,6 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
 
         Auth.onActivityResult(this, requestCode, resultCode, data) {}

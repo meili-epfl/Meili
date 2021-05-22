@@ -41,5 +41,14 @@ data class PointOfInterest(
         return LatLng(latitude, longitude)
     }
 
-    override fun hashCode(): Int = Objects.hashCode(this)
+    override fun hashCode(): Int {
+        var result = latitude.hashCode()
+        result = 31 * result + longitude.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + uid.hashCode()
+        result = 31 * result + icon.hashCode()
+        result = 31 * result + poiTypes.hashCode()
+        result = 31 * result + (openNow?.hashCode() ?: 0)
+        return result
+    }
 }
