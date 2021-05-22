@@ -1,8 +1,7 @@
 package com.github.epfl.meili.map
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
@@ -12,14 +11,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.poi.PoiActivity
@@ -260,18 +257,9 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         }
     }
 
+    @SuppressLint("MissingPermission") // permission is checked, false warning
     private fun updateMapUI() {
         if (isLocationPermissionGranted(this)) {
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                requestLocationPermission(this)
-            }
             map.isMyLocationEnabled = true
             this.map.uiSettings?.isMyLocationButtonEnabled = true
         } else {
@@ -281,19 +269,10 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         }
     }
 
+    @SuppressLint("MissingPermission") // permission is checked, false warning
     private fun getDeviceLocationAndSetCameraPosition() {
         if (BuildConfig.DEBUG && !isLocationPermissionGranted(this)) {
             error("Assertion failed")
-        }
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestLocationPermission(this)
         }
         this.fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
             if (task.isSuccessful && task.result != null) {
