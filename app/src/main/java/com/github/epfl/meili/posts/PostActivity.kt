@@ -123,23 +123,20 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
 
     private fun commentListener(commentsMap: Map<String, Comment>) {
         val newUsers = ArrayList<String>()
-        for ((commentId, comment) in commentsMap) {
+        for ((_, comment) in commentsMap) {
             newUsers.add(comment.authorUid)
         }
 
         serviceProvider().getUserInformation(newUsers, { onUsersInfoReceived(it, commentsMap) },
-                { Log.d(TAG, "Error when fetching users information") })
+            { Log.e(TAG, "Error when fetching users information")
+        })
     }
 
-    override fun onUsersInfoReceived(users: Map<String, User>, commentsMap: Map<String, Comment>) {
-        Log.d(TAG, "on users info received")
-        Log.d(TAG, commentsMap.toString())
-        Log.d(TAG, users.toString())
+    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Comment>) {
         usersMap = HashMap(usersMap) + users
         val commentsAndUsersMap = HashMap<String, Pair<Comment, User>>()
-        for ((commentId, comment) in commentsMap) {
+        for ((commentId, comment) in map) {
             val user = usersMap[comment.authorUid]
-            Log.d(TAG, user.toString())
             if (user != null) {
                 commentsAndUsersMap[commentId] = Pair(comment, user)
             }

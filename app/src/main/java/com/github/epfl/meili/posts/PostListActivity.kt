@@ -105,12 +105,12 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
         sortSpinner.onItemSelectedListener = this
     }
 
-    override fun onUsersInfoReceived(users: Map<String, User>, postMap: Map<String, Post>) {
-        this.postsMap = postMap
+    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Post>) {
+        this.postsMap = map
         usersMap = HashMap(usersMap) + users
 
         val postsAndUsersMap = HashMap<String, Pair<Post, User>>()
-        for ((postId, post) in postMap) {
+        for ((postId, post) in map) {
             val user = usersMap[post.authorUid]
             if (user != null) {
                 postsAndUsersMap[postId] = Pair(post, user)
@@ -123,7 +123,7 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
 
     private fun postListener(postMap: Map<String, Post>) {
         val newUsers = ArrayList<String>()
-        for ((postId, post) in postMap) {
+        for ((_, post) in postMap) {
             newUsers.add(post.authorUid)
         }
 

@@ -17,6 +17,7 @@ data class Post(
     companion object {
         const val TAG = "Post"
         const val POI_KEY_FIELD = "poiKey"
+        const val AUTHOR_UID_FIELD = "authorUid"
     }
 
     fun postId(): String {
