@@ -27,9 +27,8 @@
         android:roundIcon="@mipmap/meili_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
         <activity
             android:name=".posts.feed.FeedActivity"
@@ -83,6 +82,7 @@
             android:name=".review.ReviewsActivity"
             android:parentActivityName=".map.MapActivity"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".poi.PoiActivity"
             android:parentActivityName=".map.MapActivity"
@@ -103,6 +103,11 @@
             android:name=".profile.favoritepois.FavoritePoisActivity"
             android:parentActivityName=".profile.ProfileActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".profile.myposts.MyPostsActivity"
+            android:parentActivityName=".profile.ProfileActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
