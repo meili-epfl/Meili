@@ -19,12 +19,12 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.photo.CameraActivity
-import com.github.epfl.meili.poi.PoiActivity
+import com.github.epfl.meili.poi.PoiInfoActivity
 import com.github.epfl.meili.poi.PoiServiceCached
+import com.github.epfl.meili.util.HomeActivity
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
 import com.github.epfl.meili.util.LocationService.requestLocationPermission
-import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.util.UserPreferences
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -39,7 +39,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.maps.android.clustering.ClusterManager
 
 
-class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapReadyCallback {
+class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMapReadyCallback {
     companion object {
         private const val DEFAULT_ZOOM = 15
         const val POI_KEY = "POI_KEY"
@@ -191,7 +191,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
     }
 
     private fun onPoiItemClicked(poiItem: PoiItem): Boolean {
-        val intent = Intent(this, PoiActivity::class.java)
+        val intent = Intent(this, PoiInfoActivity::class.java)
         intent.putExtra(POI_KEY, poiItem.poi)
 
         val statuses: Map<String, PointOfInterestStatus> =

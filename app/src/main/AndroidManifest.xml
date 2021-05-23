@@ -31,9 +31,6 @@
 
         <activity android:name=".posts.feed.FeedActivity" />
         <activity
-            android:name=".util.NavigableActivity"
-            tools:ignore="Instantiatable" />
-        <activity
             android:name=".profile.friends.FriendsListActivity"
             android:parentActivityName=".profile.ProfileActivity" />
         <activity
@@ -71,7 +68,7 @@
             android:name=".review.ReviewsActivity"
             android:parentActivityName=".map.MapActivity"/>
         <activity
-            android:name=".poi.PoiActivity"
+            android:name=".poi.PoiInfoActivity"
             android:parentActivityName=".map.MapActivity" />
 
         <meta-data

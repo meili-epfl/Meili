@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -24,7 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.github.ponnamkarthik.richlinkpreview.RichLinkViewSkype
 import io.github.ponnamkarthik.richlinkpreview.ViewListener
 
-class PoiActivity : MenuActivity(R.menu.nav_poi_info_menu) {
+class PoiInfoActivity : MenuActivity(R.menu.nav_poi_info_menu) {
     companion object {
         private val DEFAULT_SERVICE = { PlacesClientService() }
         private const val REQUEST_CODE = 1000
@@ -42,7 +41,7 @@ class PoiActivity : MenuActivity(R.menu.nav_poi_info_menu) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_poi)
+        setContentView(R.layout.activity_poi_info)
 
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
         title = poi.name

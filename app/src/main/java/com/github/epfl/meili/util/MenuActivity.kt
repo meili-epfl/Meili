@@ -9,7 +9,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.PointOfInterest
-import com.github.epfl.meili.poi.PoiActivity
+import com.github.epfl.meili.poi.PoiInfoActivity
 import com.github.epfl.meili.posts.forum.ForumActivity
 import com.github.epfl.meili.review.ReviewsActivity
 
@@ -45,7 +45,7 @@ open class MenuActivity(private val menuRes: Int) : AppCompatActivity() {
             R.id.menu_reviews -> ReviewsActivity::class.java
             R.id.menu_chat -> ChatLogActivity::class.java
             R.id.menu_forum -> ForumActivity::class.java
-            else -> PoiActivity::class.java
+            else -> PoiInfoActivity::class.java
         }
         val poi = intent.getParcelableExtra<PointOfInterest>(
             MapActivity.POI_KEY
