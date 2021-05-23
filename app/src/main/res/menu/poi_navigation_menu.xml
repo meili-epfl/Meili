@@ -7,7 +7,7 @@
         android:title="@string/poi_info_activity" />
     <item
         android:id="@+id/forum_activity"
-        android:icon="@drawable/ic_forum"
+        android:icon="@drawable/ic_outline_forum_24"
         android:title="@string/forum_activity" />
     <item
         android:id="@+id/chat_activity"

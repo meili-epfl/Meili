@@ -8,7 +8,7 @@ import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.poi.PoiServiceCached
 import com.github.epfl.meili.posts.PostListActivity
-import com.github.epfl.meili.posts.PostListActivity.Companion.NORMAL
+import com.github.epfl.meili.posts.PostListActivity.Companion.NEWEST
 import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.util.HomeActivity
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
@@ -20,9 +20,10 @@ class FeedActivity : HomeActivity(R.layout.activity_feed, R.id.feed_activity), P
     override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Post, User>>
     override lateinit var viewModel: PostListViewModel
 
+    override var sortOrder = NEWEST
+
     override var usersMap: Map<String, User> = HashMap()
     override var postsMap: Map<String, Post> = HashMap()
-    override var sortOrder: String = NORMAL
 
     override fun getActivity(): AppCompatActivity = this
 

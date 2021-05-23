@@ -22,7 +22,7 @@ import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.posts.PostListActivity
-import com.github.epfl.meili.posts.PostListActivity.Companion.NORMAL
+import com.github.epfl.meili.posts.PostListActivity.Companion.NEWEST
 import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
@@ -41,7 +41,7 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
 
     override var usersMap: Map<String, User> = HashMap()
     override var postsMap: Map<String, Post> = HashMap()
-    override var sortOrder: String = NORMAL
+    override var sortOrder = NEWEST
 
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView
