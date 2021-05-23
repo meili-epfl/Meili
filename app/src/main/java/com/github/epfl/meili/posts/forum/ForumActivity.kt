@@ -28,14 +28,14 @@ import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
-import com.github.epfl.meili.util.MenuActivity
+import com.github.epfl.meili.util.PoiActivity
 import com.github.epfl.meili.util.UIUtility
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
+class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity), PostListActivity {
     override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Post, User>>
     override lateinit var viewModel: PostListViewModel
 
@@ -75,7 +75,6 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_forum)
 
         executor = Executors.newSingleThreadExecutor()
 

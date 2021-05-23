@@ -16,14 +16,14 @@ import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
-import com.github.epfl.meili.util.MenuActivity
+import com.github.epfl.meili.util.PoiActivity
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.github.ponnamkarthik.richlinkpreview.RichLinkViewSkype
 import io.github.ponnamkarthik.richlinkpreview.ViewListener
 
-class PoiInfoActivity : MenuActivity(R.menu.nav_poi_info_menu) {
+class PoiInfoActivity : PoiActivity(R.layout.activity_poi_info, R.id.poi_info_activity) {
     companion object {
         private val DEFAULT_SERVICE = { PlacesClientService() }
         private const val REQUEST_CODE = 1000
@@ -41,7 +41,6 @@ class PoiInfoActivity : MenuActivity(R.menu.nav_poi_info_menu) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_poi_info)
 
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
         title = poi.name

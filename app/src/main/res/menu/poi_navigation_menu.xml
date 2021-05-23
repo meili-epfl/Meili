@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/poi_info_activity"
+        android:icon="@drawable/ic_outline_info_24"
+        android:title="@string/poi_info_activity" />
+    <item
+        android:id="@+id/forum_activity"
+        android:icon="@drawable/ic_forum"
+        android:title="@string/forum_activity" />
+    <item
+        android:id="@+id/chat_activity"
+        android:icon="@drawable/ic_outline_chat_24"
+        android:title="@string/chat_activity" />
+    <item
+        android:id="@+id/reviews_activity"
+        android:icon="@drawable/ic_outline_reviews_24"
+        android:title="@string/reviews_activity" />
+</menu>
