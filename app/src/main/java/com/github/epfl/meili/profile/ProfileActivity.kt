@@ -20,6 +20,7 @@ import com.github.epfl.meili.home.FacebookAuthenticationService
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.HomeActivity
+import com.github.epfl.meili.profile.myposts.MyPostsActivity
 import com.github.epfl.meili.util.UIUtility
 import com.github.epfl.meili.util.UserPreferences
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -159,6 +160,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
             signInButton -> Auth.signIn(this)
             signOutButton -> Auth.signOut()
             profileEditButton -> showEditMode()
+            postsButton -> showProfileOwnersInfo(MyPostsActivity::class.java)
             favoritePoisButton -> showProfileOwnersInfo(FavoritePoisActivity::class.java)
             lightdarkModeButton -> changeMode()
         }
