@@ -1,4 +1,4 @@
-package com.github.epfl.meili.util
+package com.github.epfl.meili.util.navigation
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

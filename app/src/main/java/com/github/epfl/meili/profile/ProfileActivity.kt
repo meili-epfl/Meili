@@ -19,7 +19,7 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.FacebookAuthenticationService
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
-import com.github.epfl.meili.util.HomeActivity
+import com.github.epfl.meili.util.navigation.HomeActivity
 import com.github.epfl.meili.profile.myposts.MyPostsActivity
 import com.github.epfl.meili.util.UIUtility
 import com.github.epfl.meili.util.UserPreferences

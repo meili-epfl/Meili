@@ -16,7 +16,7 @@ import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.PointOfInterest
-import com.github.epfl.meili.util.PoiActivity
+import com.github.epfl.meili.util.navigation.PoiActivity
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
