@@ -77,7 +77,6 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         viewModel = ViewModelProvider(this).get(MapActivityViewModel::class.java)
 
         initLensViews()
-        setupLandmarkDetection()
         setupLensCamera()
 
         val preferences = UserPreferences(this)
@@ -107,10 +106,12 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
     private fun setupLandmarkDetection() {
         viewModel.getPoiDist().observe(this) { poiDist ->
             if (poiDist != null) {
+                clusterRenderer.renderMeiliLensPoi(PoiItem(poiDist.first))
                 lensPoiNameText.text = poiDist.first.name
                 lensPoiDistText.text =
                         String.format(getString(R.string.lens_poi_distance), poiDist.second)
             } else {
+                clusterRenderer.renderMeiliLensPoi(null)
                 lensPoiNameText.text = getString(R.string.no_poi_found)
                 lensPoiDistText.text = ""
             }
@@ -188,6 +189,8 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         }
 
         viewModel.mPointsOfInterestStatus.observe(this) { addItems(it) }
+
+        setupLandmarkDetection()
     }
 
     private fun onPoiItemClicked(poiItem: PoiItem): Boolean {

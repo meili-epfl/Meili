@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
+import java.util.Collections.singleton
 
 /**
  * PoiRenderer is the class which renders POIs as Markers on the Map and also handles cluster rendering
@@ -41,6 +42,33 @@ open class PoiRenderer(context: Context?, map: GoogleMap?, private val clusterMa
         clusterManager.cluster()
 
         this.poiStatusMap = poiStatusMap
+    }
+
+    fun renderMeiliLensPoi(poi: PoiItem?) {
+        if (poi != meiliLensPoi) { // Update only if meili lens poi has changed
+
+            // Update value of Meili lens poi
+            val prevMeiliLensPoi = meiliLensPoi
+            meiliLensPoi = poi
+
+            updateStatusOfPoi(prevMeiliLensPoi)
+            updateStatusOfPoi(meiliLensPoi)
+        }
+    }
+
+    /**
+     * This function removes the poi passed as parameter and reinserts it again in the clusterer
+     * so that its ui is updated with the new value in case there has been a change
+     */
+    private fun updateStatusOfPoi(poi: PoiItem?) {
+        if (poi != null) {
+            clusterManager.removeItem(poi)
+
+            // Add previous meili lens poi now with the color corresponding to its status
+            clusterManager.addItems(singleton(poi))
+
+            clusterManager.cluster()
+        }
     }
 
     companion object {
