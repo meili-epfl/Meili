@@ -19,7 +19,7 @@ open class PoiRenderer(context: Context?, map: GoogleMap?, private val clusterMa
     private var meiliLensPoi: PoiItem? = null
 
     override fun onBeforeClusterItemRendered(item: PoiItem, markerOptions: MarkerOptions) {
-        val icon: BitmapDescriptor = if (meiliLensPoi == item) {
+        val icon: BitmapDescriptor = if (meiliLensPoi != null && meiliLensPoi!!.poi == item.poi) {
             MEILI_LENS_ICON
         } else if (poiStatusMap == null || !poiStatusMap!!.contains(item)) {
             DEFAULT_ICON
@@ -48,11 +48,9 @@ open class PoiRenderer(context: Context?, map: GoogleMap?, private val clusterMa
         if (poi != meiliLensPoi) { // Update only if meili lens poi has changed
 
             // Update value of Meili lens poi
-            val prevMeiliLensPoi = meiliLensPoi
             meiliLensPoi = poi
 
-            updateStatusOfPoi(prevMeiliLensPoi)
-            updateStatusOfPoi(meiliLensPoi)
+            renderClusterItems(this.poiStatusMap!!)
         }
     }
 
