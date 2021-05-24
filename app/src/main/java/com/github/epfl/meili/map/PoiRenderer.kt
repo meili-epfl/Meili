@@ -39,6 +39,9 @@ open class PoiRenderer(context: Context?, private val map: GoogleMap?, private v
         }
     }
 
+    /**
+     * Function to be called when received a new map with poi items and poi status
+     */
     fun renderClusterItems(poiStatusMap: Map<PoiItem, PointOfInterestStatus>) {
         clusterManager.clearItems()
 
@@ -49,6 +52,10 @@ open class PoiRenderer(context: Context?, private val map: GoogleMap?, private v
         clusterManager.cluster()
     }
 
+    /**
+     * Function to be called when there is a change in the POI being analyzed by Meili Lens
+     * so that its colour updates to one different than the rest
+     */
     fun renderMeiliLensPoi(poi: PoiItem?) {
         if (poi?.poi != meiliLensPoi?.poi) { // Update only if meili lens poi has changed
 
