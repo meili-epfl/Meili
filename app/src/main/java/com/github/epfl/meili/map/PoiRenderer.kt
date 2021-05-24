@@ -15,18 +15,14 @@ import java.util.Collections.singleton
 open class PoiRenderer(context: Context?, map: GoogleMap?, private val clusterManager: ClusterManager<PoiItem>)
     : DefaultClusterRenderer<PoiItem>(context, map, clusterManager) {
 
-    //TODO: problem I get poi visited instead of reachable in poi map
-
-    private var poiStatusMap: Map<PoiItem, PointOfInterestStatus>? = null
+    private var poiStatusMap: Map<PoiItem, PointOfInterestStatus> = HashMap()
     private var meiliLensPoi: PoiItem? = null
 
     override fun onBeforeClusterItemRendered(item: PoiItem, markerOptions: MarkerOptions) {
         val icon: BitmapDescriptor = if (meiliLensPoi?.poi == item.poi) {
             MEILI_LENS_ICON
-        } else if (poiStatusMap == null || !poiStatusMap!!.contains(item)) {
-            DEFAULT_ICON
         } else {
-            when (poiStatusMap!![item]) {
+            when (poiStatusMap[item]) {
                 PointOfInterestStatus.REACHABLE -> REACHABLE_ICON
                 PointOfInterestStatus.VISITED -> VISITED_ICON
                 PointOfInterestStatus.VISIBLE -> VISIBLE_ICON
@@ -43,7 +39,7 @@ open class PoiRenderer(context: Context?, map: GoogleMap?, private val clusterMa
 
         clusterManager.cluster()
 
-        this.poiStatusMap = poiStatusMap
+        this.poiStatusMap += poiStatusMap
     }
 
     fun renderMeiliLensPoi(poi: PoiItem?) {
