@@ -26,6 +26,12 @@
             <include layout="@layout/user"/>
 
             <TextView
+                android:id="@+id/ppoi_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25sp" />
+
+            <TextView
                 android:id="@+id/post_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

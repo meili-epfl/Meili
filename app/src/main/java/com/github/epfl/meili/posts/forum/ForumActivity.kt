@@ -147,7 +147,7 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         val title = editTitleView.text.toString()
         val text = editTextVIew.text.toString()
 
-        val post = Post(poi.uid, user.uid, title, timestamp, text)
+        val post = Post(poi.uid, user.uid, title, poi.name, timestamp, text)
 
         viewModel.addElement(post.postId(), post)
 
