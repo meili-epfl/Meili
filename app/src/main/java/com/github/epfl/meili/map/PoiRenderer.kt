@@ -15,11 +15,13 @@ import java.util.Collections.singleton
 open class PoiRenderer(context: Context?, map: GoogleMap?, private val clusterManager: ClusterManager<PoiItem>)
     : DefaultClusterRenderer<PoiItem>(context, map, clusterManager) {
 
+    //TODO: problem I get poi visited instead of reachable in poi map
+
     private var poiStatusMap: Map<PoiItem, PointOfInterestStatus>? = null
     private var meiliLensPoi: PoiItem? = null
 
     override fun onBeforeClusterItemRendered(item: PoiItem, markerOptions: MarkerOptions) {
-        val icon: BitmapDescriptor = if (meiliLensPoi != null && meiliLensPoi!!.poi == item.poi) {
+        val icon: BitmapDescriptor = if (meiliLensPoi?.poi == item.poi) {
             MEILI_LENS_ICON
         } else if (poiStatusMap == null || !poiStatusMap!!.contains(item)) {
             DEFAULT_ICON
@@ -45,12 +47,14 @@ open class PoiRenderer(context: Context?, map: GoogleMap?, private val clusterMa
     }
 
     fun renderMeiliLensPoi(poi: PoiItem?) {
-        if (poi != meiliLensPoi) { // Update only if meili lens poi has changed
+        if (poi?.poi != meiliLensPoi?.poi) { // Update only if meili lens poi has changed
 
             // Update value of Meili lens poi
+            val prevMeiliLensPoi = meiliLensPoi
             meiliLensPoi = poi
 
-            renderClusterItems(this.poiStatusMap!!)
+            updateStatusOfPoi(prevMeiliLensPoi)
+            updateStatusOfPoi(meiliLensPoi)
         }
     }
 
@@ -61,6 +65,8 @@ open class PoiRenderer(context: Context?, map: GoogleMap?, private val clusterMa
     private fun updateStatusOfPoi(poi: PoiItem?) {
         if (poi != null) {
             clusterManager.removeItem(poi)
+
+            clusterManager.cluster()
 
             // Add previous meili lens poi now with the color corresponding to its status
             clusterManager.addItems(singleton(poi))

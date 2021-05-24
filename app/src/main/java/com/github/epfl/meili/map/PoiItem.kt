@@ -20,4 +20,8 @@ class PoiItem(val poi: PointOfInterest) : ClusterItem {
     override fun getSnippet(): String? {
         return null
     }
+
+    override fun toString(): String {
+        return "PoiItem: $poi"
+    }
 }
