@@ -24,4 +24,12 @@ class PoiItem(val poi: PointOfInterest) : ClusterItem {
     override fun toString(): String {
         return "PoiItem: $poi"
     }
+
+    override fun equals(other: Any?): Boolean {
+        return other is PoiItem && other.poi == poi
+    }
+
+    override fun hashCode(): Int {
+        return poi.hashCode()
+    }
 }

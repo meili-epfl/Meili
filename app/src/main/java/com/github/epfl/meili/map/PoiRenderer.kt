@@ -4,22 +4,30 @@ import android.content.Context
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
-import java.util.Collections.singleton
 
 /**
  * PoiRenderer is the class which renders POIs as Markers on the Map and also handles cluster rendering
  */
-open class PoiRenderer(context: Context?, map: GoogleMap?, private val clusterManager: ClusterManager<PoiItem>)
+open class PoiRenderer(context: Context?, private val map: GoogleMap?, private val clusterManager: ClusterManager<PoiItem>)
     : DefaultClusterRenderer<PoiItem>(context, map, clusterManager) {
 
     private var poiStatusMap: Map<PoiItem, PointOfInterestStatus> = HashMap()
     private var meiliLensPoi: PoiItem? = null
 
     override fun onBeforeClusterItemRendered(item: PoiItem, markerOptions: MarkerOptions) {
-        val icon: BitmapDescriptor = if (meiliLensPoi?.poi == item.poi) {
+        markerOptions.icon(getIcon(item))
+    }
+
+    override fun onClusterItemRendered(item: PoiItem, marker: Marker) {
+        marker.setIcon(getIcon(item))
+    }
+
+    private fun getIcon(item: PoiItem): BitmapDescriptor {
+        return if (meiliLensPoi?.poi == item.poi) {
             MEILI_LENS_ICON
         } else {
             when (poiStatusMap[item]) {
@@ -29,17 +37,16 @@ open class PoiRenderer(context: Context?, map: GoogleMap?, private val clusterMa
                 else -> DEFAULT_ICON
             }
         }
-        markerOptions.icon(icon)
     }
 
     fun renderClusterItems(poiStatusMap: Map<PoiItem, PointOfInterestStatus>) {
         clusterManager.clearItems()
 
-        clusterManager.addItems(poiStatusMap.keys)
+        this.poiStatusMap += poiStatusMap
+
+        clusterManager.addItems(this.poiStatusMap.keys)
 
         clusterManager.cluster()
-
-        this.poiStatusMap += poiStatusMap
     }
 
     fun renderMeiliLensPoi(poi: PoiItem?) {
@@ -48,6 +55,7 @@ open class PoiRenderer(context: Context?, map: GoogleMap?, private val clusterMa
             // Update value of Meili lens poi
             val prevMeiliLensPoi = meiliLensPoi
             meiliLensPoi = poi
+
 
             updateStatusOfPoi(prevMeiliLensPoi)
             updateStatusOfPoi(meiliLensPoi)
@@ -60,13 +68,7 @@ open class PoiRenderer(context: Context?, map: GoogleMap?, private val clusterMa
      */
     private fun updateStatusOfPoi(poi: PoiItem?) {
         if (poi != null) {
-            clusterManager.removeItem(poi)
-
-            clusterManager.cluster()
-
-            // Add previous meili lens poi now with the color corresponding to its status
-            clusterManager.addItems(singleton(poi))
-
+            clusterManager.updateItem(poi)
             clusterManager.cluster()
         }
     }
