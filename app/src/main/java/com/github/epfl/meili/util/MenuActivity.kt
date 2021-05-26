@@ -2,11 +2,14 @@ package com.github.epfl.meili.util
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Parcelable
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiActivity
@@ -50,11 +53,20 @@ open class MenuActivity(private val menuRes: Int) : AppCompatActivity() {
         val poi = intent.getParcelableExtra<PointOfInterest>(
             MapActivity.POI_KEY
         )
+        val poiStatus = intent.getSerializableExtra(MapActivity.POI_STATUS_KEY) as PointOfInterestStatus
 
-        return Intent(activity, launchedActivityClass)
+
+        val intent = Intent(activity, launchedActivityClass)
             .putExtra(
                 MapActivity.POI_KEY, poi
             )
+
+        Log.d("MenuActivity", poiStatus.toString())
+        if(poiStatus != null){
+            intent.putExtra(MapActivity.POI_STATUS_KEY, poiStatus)
+        }
+
+        return intent
     }
 
     protected fun setShowMenu(showMenu: Boolean) {

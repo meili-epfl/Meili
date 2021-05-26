@@ -10,6 +10,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.models.User
@@ -47,6 +48,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener,
     override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Review, User>>
     override lateinit var usersMap: Map<String, User>
     private lateinit var poi: PointOfInterest
+    private lateinit var poiStatus: PointOfInterestStatus
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +61,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener,
         usersMap = HashMap()
 
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
+        poiStatus = intent.getSerializableExtra(MapActivity.POI_STATUS_KEY) as PointOfInterestStatus
 
         supportActionBar?.title = poi.name
 
@@ -185,8 +188,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener,
 
     private fun initLoggedInListener() {
         Auth.isLoggedIn.observe(this, { loggedIn ->
-            floatingActionButton.isEnabled = loggedIn
-            floatingActionButton.visibility = if (loggedIn)
+            floatingActionButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn , poiStatus)
+            floatingActionButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn , poiStatus))
                 View.VISIBLE
             else
                 View.GONE
