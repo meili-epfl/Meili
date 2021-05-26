@@ -27,20 +27,20 @@ class MarkerItemTest {
     }
 
     @Test
-    fun equalsTest(){
-        assertEquals(PoiItem(poi1).equals(null), false)
-        assertEquals(PoiItem(poi1) == PoiItem(poi2), false)
-        assertEquals(PoiItem(poi1) == PoiItem(poi1), true)
+    fun equalsTest() {
+        assertEquals(MarkerItem(poi1).equals(null), false)
+        assertEquals(MarkerItem(poi1) == MarkerItem(poi2), false)
+        assertEquals(MarkerItem(poi1) == MarkerItem(poi1), true)
     }
 
     @Test
-    fun hashCodeTest(){
-        assertEquals(PoiItem(poi1).hashCode(), PoiItem(poi1).hashCode())
-        assertEquals(PoiItem(poi1).hashCode()==PoiItem(poi2).hashCode(), false)
+    fun hashCodeTest() {
+        assertEquals(MarkerItem(poi1).hashCode(), MarkerItem(poi1).hashCode())
+        assertEquals(MarkerItem(poi1).hashCode() == MarkerItem(poi2).hashCode(), false)
     }
 
     @Test
-    fun toStringTest(){
-        assertEquals(PoiItem(poi1).toString(), "PoiItem: $poi1")
+    fun toStringTest() {
+        assertEquals(MarkerItem(poi1).toString(), "PoiItem: $poi1")
     }
 }
