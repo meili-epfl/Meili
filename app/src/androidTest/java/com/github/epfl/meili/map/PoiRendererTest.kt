@@ -16,23 +16,26 @@ import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
 class PoiRendererTest {
+    private lateinit var renderer: PoiRendererTester
+
+    private val poi1 = PoiItem(PointOfInterest(41.075000, 1.130870, "place1", "place1"))
+    private val poi2 = PoiItem(PointOfInterest(41.063563, 1.083658, "place2", "place2"))
 
     @Test
     fun generalTest() {
         MapsInitializer.initialize(MainApplication.applicationContext())
         Looper.prepare()
+
         val mockClusterManager = Mockito.mock(ClusterManager::class.java)
-        val renderer = PoiRendererTester(MainApplication.applicationContext(), null, mockClusterManager as ClusterManager<PoiItem>)
 
-
-        val poi1 = PoiItem(PointOfInterest(41.075000, 1.130870, "place1", "place1"))
-        val poi2 = PoiItem(PointOfInterest(41.063563, 1.083658, "place2", "place2"))
+        renderer = PoiRendererTester(MainApplication.applicationContext(), null, mockClusterManager as ClusterManager<PoiItem>)
 
         val poiStatusMap = HashMap<PoiItem, PointOfInterestStatus>()
 
-        poiStatusMap.put(poi1, PointOfInterestStatus.VISIBLE)
-        poiStatusMap.put(poi2, PointOfInterestStatus.REACHABLE)
+        poiStatusMap[poi1] = PointOfInterestStatus.VISIBLE
+        poiStatusMap[poi2] = PointOfInterestStatus.REACHABLE
 
+        // Test render cluster items
         renderer.renderClusterItems(poiStatusMap)
 
         val markerOptions = MarkerOptions()
@@ -44,8 +47,21 @@ class PoiRendererTest {
 
         assertEquals(markerOptions.icon, PoiRenderer.REACHABLE_ICON)
 
-        poiStatusMap.put(poi1, PointOfInterestStatus.VISITED)
+        poiStatusMap[poi1] = PointOfInterestStatus.VISITED
         renderer.renderClusterItems(poiStatusMap)
+        renderer.onBeforeClusterItemRenderedCaller(poi1, markerOptions)
+
+        assertEquals(markerOptions.icon, PoiRenderer.VISITED_ICON)
+
+        // Test Meili Lens Poi
+        renderer.renderMeiliLensPoi(poi1)
+
+        renderer.onBeforeClusterItemRenderedCaller(poi1, markerOptions)
+
+        assertEquals(markerOptions.icon, PoiRenderer.MEILI_LENS_ICON)
+
+        renderer.renderMeiliLensPoi(null)
+
         renderer.onBeforeClusterItemRenderedCaller(poi1, markerOptions)
 
         assertEquals(markerOptions.icon, PoiRenderer.VISITED_ICON)
