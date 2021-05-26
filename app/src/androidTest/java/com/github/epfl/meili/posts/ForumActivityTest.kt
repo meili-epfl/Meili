@@ -19,11 +19,12 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
@@ -95,6 +96,7 @@ class ForumActivityTest {
         InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
         ForumActivity::class.java
     ).putExtra(MapActivity.POI_KEY, TEST_POI)
+        .putExtra(MapActivity.POI_STATUS_KEY, PointOfInterestStatus.VISITED)
 
     @get:Rule
     var rule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(intent)
@@ -227,7 +229,7 @@ class ForumActivityTest {
 
     @Test
     fun signedInDisplayTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.list_posts)).check(matches(isDisplayed()))
@@ -239,7 +241,7 @@ class ForumActivityTest {
 
     @Test
     fun signedInCancelAddingTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.create_post)).perform(click())
@@ -257,7 +259,7 @@ class ForumActivityTest {
 
     @Test
     fun signedInAddPostTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.create_post)).perform(click())
@@ -325,7 +327,7 @@ class ForumActivityTest {
     @Test
 
     fun clickOnSortingButtonTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
         onView(withId(R.id.sort_spinner)).perform(click())
         onData(anything()).atPosition(1).perform(click())
@@ -342,7 +344,7 @@ class ForumActivityTest {
 
     @Test
     fun clickUpvoteDownvoteButtonsTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotAfterAddition, null)
 
         Thread.sleep(2000)
@@ -355,7 +357,7 @@ class ForumActivityTest {
 
     @Test
     fun useCameraIntentsTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.create_post)).perform(click())

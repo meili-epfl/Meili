@@ -27,13 +27,21 @@
         android:roundIcon="@mipmap/meili_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
+        <activity
+            android:name=".LogoActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
         <activity android:name=".posts.feed.FeedActivity" />
-        <activity
-            android:name=".util.NavigableActivity"
-            tools:ignore="Instantiatable" />
         <activity
             android:name=".profile.friends.FriendsListActivity"
             android:parentActivityName=".profile.ProfileActivity" />
@@ -47,13 +55,8 @@
             android:name=".profile.friends.NearbyActivity"
             android:parentActivityName=".profile.friends.FriendsListActivity" />
         <activity
-            android:name=".home.GoogleSignInActivity"
+            android:name=".auth.GoogleSignInActivity"
             android:label="Meili">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".map.MapActivity"
@@ -72,7 +75,7 @@
             android:name=".review.ReviewsActivity"
             android:parentActivityName=".map.MapActivity" />
         <activity
-            android:name=".poi.PoiActivity"
+            android:name=".poi.PoiInfoActivity"
             android:parentActivityName=".map.MapActivity" />
 
         <meta-data
@@ -81,8 +84,7 @@
 
         <activity android:name=".profile.ProfileActivity" />
         <activity
-            android:name=".posts.PostActivity"
-            android:parentActivityName=".posts.forum.ForumActivity" />
+            android:name=".posts.PostActivity" />
         <activity
             android:name=".profile.favoritepois.FavoritePoisActivity"
             android:parentActivityName=".profile.ProfileActivity" />

@@ -18,8 +18,10 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.models.User
@@ -207,7 +209,8 @@ class ReviewsActivityTest {
 
     private val intent =
             Intent(getInstrumentation().targetContext.applicationContext, ReviewsActivity::class.java)
-                    .putExtra("POI_KEY", TEST_POI)
+                    .putExtra(MapActivity.POI_KEY, TEST_POI)
+                    .putExtra(MapActivity.POI_STATUS_KEY, PointOfInterestStatus.VISITED)
 
     @get:Rule
     var rule: ActivityScenarioRule<ReviewsActivity> = ActivityScenarioRule(intent)
@@ -236,7 +239,7 @@ class ReviewsActivityTest {
 
     @Test
     fun signedInDisplayTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
@@ -258,7 +261,7 @@ class ReviewsActivityTest {
 
     @Test
     fun signedInCancelAddingTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())
@@ -276,7 +279,7 @@ class ReviewsActivityTest {
 
     @Test
     fun signedInAddReviewTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())
@@ -329,7 +332,7 @@ class ReviewsActivityTest {
 
     @Test
     fun signedInEditReviewTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotAfterAddition, null) // mock user has existing review
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())

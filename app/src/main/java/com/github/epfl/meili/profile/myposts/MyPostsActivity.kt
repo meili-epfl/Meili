@@ -1,7 +1,6 @@
 package com.github.epfl.meili.profile.myposts
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
@@ -9,8 +8,8 @@ import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.posts.PostListActivity
-import com.github.epfl.meili.posts.PostListActivity.Companion.NORMAL
-import com.github.epfl.meili.posts.PostListRecyclerAdapter
+
+import com.github.epfl.meili.posts.PostListActivity.Companion.NEWEST
 import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
@@ -21,7 +20,7 @@ class MyPostsActivity : AppCompatActivity(), PostListActivity {
 
     override var usersMap: Map<String, User> = HashMap()
     override var postsMap: Map<String, Post> = HashMap()
-    override var sortOrder: String = NORMAL
+    override var sortOrder = NEWEST
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

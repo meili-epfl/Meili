@@ -10,9 +10,9 @@ import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
@@ -29,8 +29,6 @@ import de.hdodenhof.circleimageview.CircleImageView
 class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListener {
     companion object {
         private const val TAG = "PostActivity"
-        private val DEFAULT_URI =
-                Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
         const val POST_ID = "Post_ID"
 
         var serviceProvider: () -> UserInfoService = { UserInfoService() }
@@ -60,11 +58,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
 
         FirebaseStorageService.getDownloadUrl(
                 "images/forum/$postId",
-                { uri -> getDownloadUrlCallback(uri) },
-                { exception ->
-                    Log.e(TAG, "Image not found", exception)
-                    getDownloadUrlCallback(DEFAULT_URI)
-                }
+                { uri -> getDownloadUrlCallback(uri) }
         )
 
         usersMap = HashMap()
