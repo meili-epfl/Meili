@@ -41,4 +41,8 @@
     <string name="user_image">user image</string>
     <string name="call">call</string>
     <string name="upvote_default_count">0</string>
+    <string name="poi_info_activity">Info</string>
+    <string name="forum_activity">Forum</string>
+    <string name="chat_activity">Chat</string>
+    <string name="reviews_activity">Reviews</string>
 </resources>
