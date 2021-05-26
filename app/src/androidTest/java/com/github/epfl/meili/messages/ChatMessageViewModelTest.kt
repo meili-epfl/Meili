@@ -10,14 +10,14 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ChatMessageViewModelTest {
-    var MOCK_PATH = "POI/tour-eiffel"
-    var mock_message1 = ChatMessage("Hi I am a Mock Message", "Meili", "tour-eiffel", 1234)
-    lateinit var db: MessageDatabase
+    private var mockPath = "POI/tour-eiffel"
+    private var mockMessage1 = ChatMessage("Hi I am a Mock Message", "Meili", "tour-eiffel", 1234)
+    private lateinit var db: MessageDatabase
 
     @Before
     fun init() {
         UiThreadStatement.runOnUiThread {
-            db = MockMessageDatabase(MOCK_PATH)
+            db = MockMessageDatabase(mockPath)
             ChatMessageViewModel.setMessageDatabase(db)
         }
     }
@@ -25,19 +25,19 @@ class ChatMessageViewModelTest {
     @Test
     fun addMessageTest() {
         UiThreadStatement.runOnUiThread {
-            val mock_message2 = ChatMessage("hi", "me", "you", 1234, "MyName")
+            val mockMessage2 = ChatMessage("hi", "me", "you", 1234, "MyName")
 
             ChatMessageViewModel.addMessage(
-                    mock_message2.text,
-                    mock_message2.fromId,
-                    mock_message2.toId,
-                    mock_message2.timestamp,
-                    mock_message2.fromName
+                    mockMessage2.text,
+                    mockMessage2.fromId,
+                    mockMessage2.toId,
+                    mockMessage2.timestamp,
+                    mockMessage2.fromName
             )
 
             val expectedMessageList = ArrayList<ChatMessage>()
-            expectedMessageList.add(mock_message1)
-            expectedMessageList.add(mock_message2)
+            expectedMessageList.add(mockMessage1)
+            expectedMessageList.add(mockMessage2)
 
             assertEquals(db.getMessages(), expectedMessageList)
         }
@@ -46,15 +46,15 @@ class ChatMessageViewModelTest {
     @Test
     fun viewModelIsObserving() {
         UiThreadStatement.runOnUiThread {
-            var expectedMessageList = ArrayList<ChatMessage>()
-            expectedMessageList.add(mock_message1)
+            val expectedMessageList = ArrayList<ChatMessage>()
+            expectedMessageList.add(mockMessage1)
 
             assertEquals(expectedMessageList, ChatMessageViewModel.messages.value)
 
-            var mock_message2 = ChatMessage("hi", "me", "you", 1234)
-            db.addMessageToDatabase(mock_message2)
+            val mockMessage2 = ChatMessage("hi", "me", "you", 1234)
+            db.addMessageToDatabase(mockMessage2)
 
-            expectedMessageList.add(mock_message2)
+            expectedMessageList.add(mockMessage2)
 
             assertEquals(expectedMessageList, db.getMessages())
             assertEquals(expectedMessageList, ChatMessageViewModel.messages.value)

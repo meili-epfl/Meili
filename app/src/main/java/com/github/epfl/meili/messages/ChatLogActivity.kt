@@ -6,22 +6,24 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
-import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
 import com.github.epfl.meili.util.DateAuxiliary
-import com.github.epfl.meili.util.MenuActivity
+import com.github.epfl.meili.util.navigation.PoiActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 
-class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
+class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activity) {
 
     companion object {
         private const val TAG: String = "ChatLogActivity"
@@ -36,20 +38,25 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     private var isGroupChat = false
     private var poi: PointOfInterest? = null
 
+    private lateinit var navigationBar: BottomNavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat_log)
 
-        findViewById<RecyclerView>(R.id.recycleview_chat_log).adapter = adapter
+        navigationBar = findViewById(R.id.navigation)
+
+        findViewById<RecyclerView>(R.id.recyclerview_chat_log).adapter = adapter
 
         Auth.isLoggedIn.observe(this) {
-            Log.d(TAG, "value received $it")
             verifyAndUpdateUserIsLoggedIn(it)
         }
 
         verifyAndUpdateUserIsLoggedIn(Auth.isLoggedIn.value!!)
     }
 
+    /**
+     * Start the chat if the user is logged in
+     */
     fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
         if (isLoggedIn) {
             currentUser = Auth.getCurrentUser()
@@ -95,23 +102,17 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
         } else {
             currentUser = null
-            supportActionBar?.title = "Not Signed In"
-            Auth.signIn(this)
+            supportActionBar?.title = getString(R.string.not_signed_in)
+            Auth.signInIntent(this)
         }
     }
 
     private fun setGroupChat(isGroupChat: Boolean) {
         this.isGroupChat = isGroupChat
         if (!isGroupChat) {
-            hideMenuButtons()
+            navigationBar.isVisible = false
         }
     }
-
-    private fun hideMenuButtons() {
-        setShowMenu(false)
-        invalidateOptionsMenu()
-    }
-
 
     private fun performSendMessage() {
         val text = findViewById<EditText>(R.id.edit_text_chat_log).text.toString()
@@ -138,7 +139,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
             messageSet.addAll(newMessages)
             //scroll down
             val lastItemPos = adapter.itemCount - 1
-            findViewById<RecyclerView>(R.id.recycleview_chat_log).scrollToPosition(lastItemPos)
+            findViewById<RecyclerView>(R.id.recyclerview_chat_log).scrollToPosition(lastItemPos)
         }
 
         ChatMessageViewModel.messages.observe(this, groupMessageObserver)
@@ -147,7 +148,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        Auth.onActivityResult(this, requestCode, resultCode, data)
+        Auth.onActivityResult(this, requestCode, resultCode, data) {}
     }
 }
 

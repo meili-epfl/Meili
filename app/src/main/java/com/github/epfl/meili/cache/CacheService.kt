@@ -12,47 +12,47 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
     // Service for fetching information
     private lateinit var fetcher: ResponseFetcher<T>
 
-    // Auxiliary service
-    private var internetConnectionService = InternetConnectionService()
-
     // Object for handling saving data locally on phone
-    protected var mPrefs = MainApplication.applicationContext().getSharedPreferences(sharedPreferencesKey, Context.MODE_PRIVATE)
+    protected var mPrefs: SharedPreferences = MainApplication.applicationContext()
+            .getSharedPreferences(sharedPreferencesKey, Context.MODE_PRIVATE)
     protected var gsonObject = Gson()
 
     // In-Object cached values
     var lastResponse: T? = null
     var responseTimestamp: Long = 0L
 
+    /**
+     * Sets the object for handling saving data locally on phone
+     */
     fun setSharedPreferences(sharedPreferences: SharedPreferences) {
         this.mPrefs = sharedPreferences
     }
 
+    /**
+     * Sets the service for fetching information
+     */
     fun setResponseFetcher(fetcher: ResponseFetcher<T>) {
         this.fetcher = fetcher
     }
 
-    fun setInternetConnectionServicce(internetConnectionService: InternetConnectionService) {
-        this.internetConnectionService = internetConnectionService
-    }
-
+    /**
+     * Tries to retrieve object from cache or from service if it is not in cache
+     */
     open fun getResponse(arg: Any?, onSuccess: ((T) -> Unit)?, onError: ((Error) -> Unit)?) {
         if (onSuccess != null && onError != null) {
             when {
                 isObjectDataValid() -> {
-                    // If data saved in object is valid then return it
 
                     Log.d(TAG, "Getting info from in-object")
                     onSuccess(lastResponse!!)
                 }
                 isCacheValid(retrieveTimeOfResponse()) -> {
-                    // If saved data locally is valid then return it
 
                     Log.d(TAG, "Getting info from shared preferences")
                     onSuccess(retrieveCachedResponse())
                 }
-                internetConnectionService.isConnectedToInternet(MainApplication.applicationContext()) -> {
+                internetConnectionServiceProvider().isConnectedToInternet(MainApplication.applicationContext()) -> {
                     // Data saved in the object and on the phone are not valid hence we need to fetch from the API
-                    // On data received save it in object and locally
 
                     Log.d(TAG, "Getting info from the API")
                     fetcher.fetchResponse(arg, onSuccessSaveResponse { onSuccess(it) }, onError)
@@ -69,7 +69,6 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
                             onSuccess(retrieveCachedResponse())
                         }
                         else -> {
-                            // Unfortunately there was no way to retrieve a response
                             Log.d(TAG, "Not possible to retrieve response")
                             onError(Error("No Internet Connection and no cached data"))
                         }
@@ -86,29 +85,27 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
         }
     }
 
+    /**
+     * Updates the in-Object cached values
+     */
     protected open fun saveResponse(response: T) {
-        // Save data both in object and in shared preferences
         saveTimeOfResponse()
 
-        // Save data in shared preferences
         val prefsEditor = mPrefs.edit()
         val jsonPoiList = gsonObject.toJson(response, classType)
         prefsEditor.putString(RESPONSE_KEY, jsonPoiList)
         prefsEditor.apply()
 
-        // Save data in object
         lastResponse = response
     }
 
     private fun saveTimeOfResponse() {
         val tsLong = System.currentTimeMillis() / 1000
 
-        // Save data in shared preferences
         val prefsEditor = mPrefs.edit()
         prefsEditor.putLong(TIMESTAMP_KEY, tsLong)
         prefsEditor.apply()
 
-        // Save data in object
         responseTimestamp = tsLong
     }
 
@@ -150,5 +147,6 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
         const val TIMESTAMP_KEY = "timestamp"
         const val CACHE_TIME_LIMIT = 60 * 60 // 1 hour in seconds
         const val TAG = "CacheService"
+        var internetConnectionServiceProvider: () -> InternetConnectionService = { InternetConnectionService() }
     }
 }

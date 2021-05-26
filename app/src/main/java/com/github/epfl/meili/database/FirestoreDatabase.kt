@@ -50,4 +50,8 @@ open class FirestoreDatabase<T : Any>(
     override fun onDestroy() {
         registration.remove()
     }
+
+    override fun removeElement(key: String) {
+        collectionReference.document(key).delete()
+    }
 }

@@ -80,15 +80,15 @@ class PhotoEditActivity : AppCompatActivity() {
     private fun setupText() {
         photoEditor.setOnPhotoEditorListener(object : OnPhotoEditorListener {
             override fun onEditTextChangeListener(rootView: View, text: String, colorCode: Int) {
-                photoEditor.editText(rootView, binding.etText.text.toString(), binding.colorSlider.color)
+                photoEditor.editText(rootView, binding.enterText.text.toString(), binding.colorSlider.color)
             }
             override fun onAddViewListener(p0: ViewType?, p1: Int) {}
             override fun onRemoveViewListener(p0: ViewType?, p1: Int) {}
             override fun onStartViewChangeListener(p0: ViewType?) {}
             override fun onStopViewChangeListener(p0: ViewType?) {}
         })
-        binding.buttonAddText.setOnClickListener {
-            photoEditor.addText(binding.etText.text.toString(), binding.colorSlider.color)
+        binding.addText.setOnClickListener {
+            photoEditor.addText(binding.enterText.text.toString(), binding.colorSlider.color)
         }
     }
 
@@ -111,7 +111,7 @@ class PhotoEditActivity : AppCompatActivity() {
     }
 
     private fun toggleText() {
-        if (!binding.etText.isVisible) {
+        if (!binding.enterText.isVisible) {
             stopDrawing()
             stopFilters()
             startText()
@@ -146,7 +146,7 @@ class PhotoEditActivity : AppCompatActivity() {
      */
     @SuppressLint("MissingPermission")
     private fun setFabListener() {
-        binding.fab.setOnClickListener {
+        binding.finishEdit.setOnClickListener {
             uri.path?.let { it1 ->
                 photoEditor.saveAsFile(it1, object : OnSaveListener {
                     override fun onSuccess(imagePath: String) {
@@ -182,9 +182,9 @@ class PhotoEditActivity : AppCompatActivity() {
     }
 
     private fun startText() {
-        binding.etText.visibility = View.VISIBLE
-        binding.buttonAddText.visibility = View.VISIBLE
-        binding.etText.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
+        binding.enterText.visibility = View.VISIBLE
+        binding.addText.visibility = View.VISIBLE
+        binding.enterText.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
         binding.textButton.setBackgroundColor(getColor(R.color.quantum_bluegrey100))
         binding.colorSlider.visibility = View.VISIBLE
     }
@@ -202,8 +202,8 @@ class PhotoEditActivity : AppCompatActivity() {
 
     private fun stopText() {
         binding.colorSlider.visibility = View.GONE
-        binding.etText.visibility = View.GONE
-        binding.buttonAddText.visibility = View.GONE
+        binding.enterText.visibility = View.GONE
+        binding.addText.visibility = View.GONE
         binding.textButton.setBackgroundColor(0)
     }
 

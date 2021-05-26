@@ -13,40 +13,38 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
-import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.posts.PostListActivity
-import com.github.epfl.meili.posts.PostListActivity.Companion.NORMAL
+import com.github.epfl.meili.posts.PostListActivity.Companion.NEWEST
 import com.github.epfl.meili.posts.PostListViewModel
-import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
-import com.github.epfl.meili.util.MenuActivity
 import com.github.epfl.meili.util.UIUtility
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.github.epfl.meili.util.WritingPolicy
+import com.github.epfl.meili.util.navigation.PoiActivity
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
+class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity), PostListActivity {
     override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Post, User>>
     override lateinit var viewModel: PostListViewModel
 
     override var usersMap: Map<String, User> = HashMap()
     override var postsMap: Map<String, Post> = HashMap()
-    override var sortOrder: String = NORMAL
+    override var sortOrder = NEWEST
 
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView
 
-    private lateinit var favoriteButton: FloatingActionButton
     private lateinit var editPostView: View
     private lateinit var editTitleView: EditText
     private lateinit var editTextVIew: EditText
@@ -55,13 +53,13 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
 
     // image choice and upload
     private val launchCameraActivity =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-                if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
-                    loadImage(result.data!!.data!!)
-                }
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
+                loadImage(result.data!!.data!!)
             }
+        }
     private val launchGallery =
-            registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it) }
+        registerForActivityResult(ActivityResultContracts.GetContent()) { loadImage(it) }
 
     private lateinit var useCameraButton: ImageView
     private lateinit var useGalleryButton: ImageView
@@ -70,25 +68,27 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
     private var bitmap: Bitmap? = null
 
     private lateinit var poi: PointOfInterest
+    private lateinit var poiStatus: PointOfInterestStatus
 
     override fun getActivity(): AppCompatActivity = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_forum)
 
         executor = Executors.newSingleThreadExecutor()
 
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
+
+        poiStatus = intent.getSerializableExtra(MapActivity.POI_STATUS_KEY) as PointOfInterestStatus
 
         supportActionBar?.title = poi.name
 
         initViews()
 
         initActivity(
-                ForumViewModel::class.java,
-                findViewById(R.id.forum_recycler_view),
-                findViewById(R.id.sort_spinner)
+            PostListViewModel::class.java,
+            findViewById(R.id.forum_recycler_view),
+            findViewById(R.id.sort_spinner)
         )
 
         showListPostsView()
@@ -104,14 +104,9 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         submitButton = findViewById(R.id.submit_post)
         cancelButton = findViewById(R.id.cancel_post)
 
-        favoriteButton = findViewById(R.id.favorite)
         useCameraButton = findViewById(R.id.post_use_camera)
         useGalleryButton = findViewById(R.id.post_use_gallery)
         displayImageView = findViewById(R.id.post_display_image)
-
-        if (Auth.getCurrentUser() == null) {
-            favoriteButton.visibility = View.GONE
-        }
     }
 
     override fun onDestroy() {
@@ -124,13 +119,12 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         UIUtility.hideSoftKeyboard(this)
         when (view) {
             createPostButton -> showEditPostView()
-            favoriteButton -> (viewModel as ForumViewModel).addFavoritePoi(poi)
             submitButton -> addPost()
             cancelButton -> showListPostsView()
             useGalleryButton -> launchGallery.launch("image/*")
             useCameraButton -> launchCameraActivity.launch(
-                    Intent(this, CameraActivity::class.java)
-                            .putExtra(CameraActivity.EDIT_PHOTO, true)
+                Intent(this, CameraActivity::class.java)
+                    .putExtra(CameraActivity.EDIT_PHOTO, true)
             )
             else -> startActivity(getPostActivityIntent(view.findViewById(R.id.post_id)))
         }
@@ -152,7 +146,12 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         viewModel.addElement(post.postId(), post)
 
         if (bitmap != null) {
-            executor.execute { compressAndUploadToFirebase("images/forum/${post.postId()}", bitmap!!) }
+            executor.execute {
+                compressAndUploadToFirebase(
+                    "images/forum/${post.postId()}",
+                    bitmap!!
+                )
+            }
         }
 
         showListPostsView()
@@ -164,22 +163,14 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
         viewModel.initDatabase(AtomicPostFirestoreDatabase("forum") {
             it.whereEqualTo(Post.POI_KEY_FIELD, poi.uid)
         })
-        if (Auth.getCurrentUser() != null) {
-            (viewModel as ForumViewModel).initFavoritePoisDatabase(
-                    FirestoreDatabase( // add to poi favorites
-                            String.format(FavoritePoisActivity.DB_PATH, Auth.getCurrentUser()!!.uid),
-                            PointOfInterest::class.java
-                    )
-            )
-        }
     }
 
     override fun initLoggedInListener() {
         super.initLoggedInListener()
 
         Auth.isLoggedIn.observe(this, { loggedIn ->
-            createPostButton.isEnabled = loggedIn
-            createPostButton.visibility = if (loggedIn)
+            createPostButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn, poiStatus)
+            createPostButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn, poiStatus))
                 View.VISIBLE
             else
                 View.GONE

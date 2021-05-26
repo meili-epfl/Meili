@@ -23,7 +23,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
 
-            <include layout="@layout/user"/>
+            <include layout="@layout/user" />
 
             <TextView
                 android:id="@+id/ppoi_name"
@@ -55,6 +55,7 @@
                     android:layout_width="50dp"
                     android:layout_height="70dp"
                     android:background="@android:drawable/screen_background_light_transparent"
+                    android:contentDescription="@string/upvote"
                     android:scaleX="0.5"
                     android:scaleY="0.5"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -68,6 +69,7 @@
                     android:layout_width="50dp"
                     android:layout_height="70dp"
                     android:background="@android:drawable/screen_background_light_transparent"
+                    android:contentDescription="@string/downvote"
                     android:scaleX="0.5"
                     android:scaleY="0.5"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -80,7 +82,7 @@
                     android:id="@+id/upvote_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 Upvotes"
+                    android:text="@string/no_upvotes"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/downovte_button"

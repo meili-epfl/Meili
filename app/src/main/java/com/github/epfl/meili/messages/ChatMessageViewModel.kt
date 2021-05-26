@@ -11,15 +11,21 @@ object ChatMessageViewModel : ViewModel(),
 
     private lateinit var database: MessageDatabase
 
-    private val _messages = MutableLiveData<List<ChatMessage>?>()
-    val messages: LiveData<List<ChatMessage>?> = _messages
+    private val mutable_messages = MutableLiveData<List<ChatMessage>?>()
+    val messages: LiveData<List<ChatMessage>?> = mutable_messages
 
 
+    /**
+     * Sets the database for messages
+     */
     fun setMessageDatabase(database: MessageDatabase) {
         this.database = database
         database.addObserver(this)
     }
 
+    /**
+     * Adds a message to the database
+     */
     fun addMessage(text: String, fromId: String, toId: String, timeStamp: Long, fromName: String) {
         val message = ChatMessage(
             text,
@@ -34,6 +40,6 @@ object ChatMessageViewModel : ViewModel(),
 
     override fun update(o: Observable?, arg: Any?) {
         //async
-        _messages.postValue(database.getMessages())
+        mutable_messages.postValue(database.getMessages())
     }
 }

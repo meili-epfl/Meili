@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_forum"
-        android:title="Forum"
+        android:title="@string/forum"
         app:showAsAction="always" />
     <item
         android:id="@+id/menu_reviews"
-        android:title="Reviews"
+        android:title="@string/reviews"
         app:showAsAction="ifRoom" />
+
 </menu>

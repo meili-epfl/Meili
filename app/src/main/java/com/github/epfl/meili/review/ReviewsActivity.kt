@@ -7,9 +7,10 @@ import android.widget.*
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
 import com.github.epfl.meili.models.User
@@ -17,8 +18,9 @@ import com.github.epfl.meili.profile.UserProfileLinker
 import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.*
 import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
+import com.github.epfl.meili.util.navigation.PoiActivity
 
-class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener,
+class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_activity), ClickListener,
     UserProfileLinker<Review> {
     companion object {
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
@@ -47,18 +49,18 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener,
     override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Review, User>>
     override lateinit var usersMap: Map<String, User>
     private lateinit var poi: PointOfInterest
+    private lateinit var poiStatus: PointOfInterestStatus
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reviews)
 
         listReviewsView = findViewById(R.id.list_reviews)
         editReviewView = findViewById(R.id.edit_review)
 
-
         usersMap = HashMap()
 
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
+        poiStatus = intent.getSerializableExtra(MapActivity.POI_STATUS_KEY) as PointOfInterestStatus
 
         supportActionBar?.title = poi.name
 
@@ -158,7 +160,7 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener,
         }
 
         val newUsersList = ArrayList<String>()
-        for ((reviewId, post) in map) {
+        for ((_, post) in map) {
             newUsersList.add(post.authorUid)
         }
 
@@ -168,11 +170,11 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener,
             getString(R.string.average_rating_format).format(Review.averageRating(map))
     }
 
-    override fun onUsersInfoReceived(users: Map<String, User>, reviewMap: Map<String, Review>) {
+    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Review>) {
         usersMap = HashMap(usersMap) + users
 
         val reviewsAndUsersMap = HashMap<String, Pair<Review, User>>()
-        for ((postId, review) in reviewMap) {
+        for ((postId, review) in map) {
             val user = usersMap[review.authorUid]
             if (user != null) {
                 reviewsAndUsersMap[postId] = Pair(review, user)
@@ -185,8 +187,8 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener,
 
     private fun initLoggedInListener() {
         Auth.isLoggedIn.observe(this, { loggedIn ->
-            floatingActionButton.isEnabled = loggedIn
-            floatingActionButton.visibility = if (loggedIn)
+            floatingActionButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn , poiStatus)
+            floatingActionButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn , poiStatus))
                 View.VISIBLE
             else
                 View.GONE
