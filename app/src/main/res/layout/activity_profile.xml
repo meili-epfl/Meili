@@ -96,19 +96,19 @@
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp">
+                        android:layout_marginStart="8dp">
 
                         <ImageButton
-                            android:id="@+id/profile_comments_button"
+                            android:id="@+id/profile_poi_history_button"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
                             android:adjustViewBounds="true"
                             android:background="@color/design_default_color_primary"
-                            android:contentDescription="@string/profile_comments_button"
+                            android:contentDescription="@string/profile_poi_history_button"
                             android:onClick="onProfileButtonClick"
                             android:padding="32dp"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/ic_comment" />
+                            android:src="@drawable/ic_location" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -118,7 +118,7 @@
                             android:paddingStart="8dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
-                            android:text="@string/profile_comments_textview"
+                            android:text="@string/profile_poi_history_textview"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                     </RelativeLayout>
@@ -149,72 +149,6 @@
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
                             android:text="@string/profile_posts_textview"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
-                    </RelativeLayout>
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp">
-
-                        <ImageButton
-                            android:id="@+id/profile_reviews_button"
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            android:adjustViewBounds="true"
-                            android:background="@color/design_default_color_primary"
-                            android:contentDescription="@string/profile_reviews_button"
-                            android:onClick="onProfileButtonClick"
-                            android:padding="32dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_review" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:paddingStart="8dp"
-                            android:paddingTop="8dp"
-                            android:paddingEnd="8dp"
-                            android:text="@string/profile_reviews_textview"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp">
-
-                        <ImageButton
-                            android:id="@+id/profile_poi_history_button"
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            android:adjustViewBounds="true"
-                            android:background="@color/design_default_color_primary"
-                            android:contentDescription="@string/profile_poi_history_button"
-                            android:onClick="onProfileButtonClick"
-                            android:padding="32dp"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_location" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:paddingStart="8dp"
-                            android:paddingTop="8dp"
-                            android:paddingEnd="8dp"
-                            android:text="@string/profile_poi_history_textview"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                     </RelativeLayout>
@@ -300,8 +234,8 @@
         android:id="@+id/facebook_sign_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_below="@id/switch_mode"/>
+        android:layout_below="@id/switch_mode"
+        android:layout_marginTop="50dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"

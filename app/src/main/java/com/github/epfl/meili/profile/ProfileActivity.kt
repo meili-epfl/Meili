@@ -46,9 +46,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var signInButton: Button
     private lateinit var facebookSignInButton: LoginButton
     private lateinit var signOutButton: Button
-    private lateinit var commentsButton: ImageButton
     private lateinit var postsButton: ImageButton
-    private lateinit var reviewsButton: ImageButton
     private lateinit var favoritePoisButton: ImageButton
     private lateinit var lightdarkModeButton: ImageButton
 
@@ -117,9 +115,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         signInButton = findViewById(R.id.sign_in)
         facebookSignInButton = findViewById(R.id.facebook_sign_in)
         signOutButton = findViewById(R.id.sign_out)
-        commentsButton = findViewById(R.id.profile_comments_button)
         postsButton = findViewById(R.id.profile_posts_button)
-        reviewsButton = findViewById(R.id.profile_reviews_button)
         favoritePoisButton = findViewById(R.id.profile_poi_history_button)
         lightdarkModeButton = findViewById(R.id.switch_mode)
     }
