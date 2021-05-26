@@ -81,9 +81,6 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
         setupLandmarkDetection()
         setupLensCamera()
 
-        val preferences = UserPreferences(this)
-        preferences.checkTheme(preferences.darkMode)
-
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
         placesClient = Places.createClient(this)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
