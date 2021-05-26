@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.github.epfl.meili">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -93,11 +92,9 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".poi.PoiActivity"
+            android:name=".poi.PoiInfoActivity"
             android:parentActivityName=".map.MapActivity"
             android:screenOrientation="portrait" />
-            android:name=".poi.PoiInfoActivity"
-            android:parentActivityName=".map.MapActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -109,7 +106,7 @@
         <activity
 
             android:name=".posts.PostActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".profile.favoritepois.FavoritePoisActivity"
             android:parentActivityName=".profile.ProfileActivity"
@@ -118,7 +115,7 @@
         <activity
             android:name=".profile.myposts.MyPostsActivity"
             android:parentActivityName=".profile.ProfileActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
