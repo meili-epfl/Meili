@@ -88,16 +88,15 @@
         android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_call"
-        android:contentDescription="@string/call" />
+        app:srcCompat="@android:drawable/ic_menu_call" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:itemIconTint="@drawable/navigation_selector"
         app:itemTextColor="@drawable/navigation_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/poi_navigation_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>
