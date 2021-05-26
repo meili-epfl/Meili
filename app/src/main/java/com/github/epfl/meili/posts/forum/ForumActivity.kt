@@ -17,6 +17,7 @@ import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
@@ -30,6 +31,7 @@ import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.navigation.PoiActivity
 import com.github.epfl.meili.util.UIUtility
+import com.github.epfl.meili.util.WritingPolicy
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -70,6 +72,7 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
     private var bitmap: Bitmap? = null
 
     private lateinit var poi: PointOfInterest
+    private lateinit var poiStatus: PointOfInterestStatus
 
     override fun getActivity(): AppCompatActivity = this
 
@@ -79,6 +82,8 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
         executor = Executors.newSingleThreadExecutor()
 
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
+
+        poiStatus = intent.getSerializableExtra(MapActivity.POI_STATUS_KEY) as PointOfInterestStatus
 
         supportActionBar?.title = poi.name
 
@@ -177,8 +182,8 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
         super.initLoggedInListener()
 
         Auth.isLoggedIn.observe(this, { loggedIn ->
-            createPostButton.isEnabled = loggedIn
-            createPostButton.visibility = if (loggedIn)
+            createPostButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn , poiStatus)
+            createPostButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn , poiStatus))
                 View.VISIBLE
             else
                 View.GONE

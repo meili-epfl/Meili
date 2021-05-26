@@ -43,6 +43,7 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
     companion object {
         private const val DEFAULT_ZOOM = 15
         const val POI_KEY = "POI_KEY"
+        const val POI_STATUS_KEY = "POI_STATUS_KEY"
     }
 
     private lateinit var lensPoiNameText: TextView
@@ -89,7 +90,7 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
 
         // Initialize map
         val mapFragment =
-                supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
+            supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
     }
 
@@ -109,7 +110,7 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
             if (poiDist != null) {
                 lensPoiNameText.text = poiDist.first.name
                 lensPoiDistText.text =
-                        String.format(getString(R.string.lens_poi_distance), poiDist.second)
+                    String.format(getString(R.string.lens_poi_distance), poiDist.second)
             } else {
                 lensPoiNameText.text = getString(R.string.no_poi_found)
                 lensPoiDistText.text = ""
@@ -118,26 +119,26 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
     }
 
     private val launchCameraActivity =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-                if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
-                    viewModel.handleCameraResponse(result.data!!.data!!)
-                }
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK && result.data != null && result.data!!.data != null) {
+                viewModel.handleCameraResponse(result.data!!.data!!)
             }
+        }
 
     private fun setupLensCamera() {
         lensCamera.setOnClickListener {
             launchCameraActivity.launch(
-                    Intent(this, CameraActivity::class.java)
-                            .putExtra(CameraActivity.EDIT_PHOTO, false)
+                Intent(this, CameraActivity::class.java)
+                    .putExtra(CameraActivity.EDIT_PHOTO, false)
             )
         }
 
         viewModel.getLandmarks().observe(this) { landmarks ->
             if (landmarks.isEmpty()) {
                 Toast.makeText(
-                        applicationContext,
-                        getString(R.string.no_landmark_detected),
-                        Toast.LENGTH_LONG
+                    applicationContext,
+                    getString(R.string.no_landmark_detected),
+                    Toast.LENGTH_LONG
                 ).show()
             } else {
                 lensDetectedLandmark.text = landmarks[0].landmark
@@ -162,10 +163,10 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
         val currentUser = Auth.getCurrentUser()
         if (currentUser != null) {
             viewModel.setDatabase(
-                    FirestoreDatabase(
-                            "users-poi-list/${currentUser.uid}/poi-list",
-                            PointOfInterest::class.java
-                    )
+                FirestoreDatabase(
+                    "users-poi-list/${currentUser.uid}/poi-list",
+                    PointOfInterest::class.java
+                )
             )
         }
 
@@ -193,9 +194,10 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
     private fun onPoiItemClicked(poiItem: PoiItem): Boolean {
         val intent = Intent(this, PoiInfoActivity::class.java)
         intent.putExtra(POI_KEY, poiItem.poi)
+        intent.putExtra(POI_STATUS_KEY, viewModel.mPointsOfInterestStatus.value!![poiItem.poi.uid])
 
         val statuses: Map<String, PointOfInterestStatus> =
-                viewModel.mPointsOfInterestStatus.value!!
+            viewModel.mPointsOfInterestStatus.value!!
 
         if (statuses[poiItem.poi.uid] == PointOfInterestStatus.REACHABLE) {
             viewModel.setPoiVisited(poiItem.poi)
@@ -220,9 +222,9 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         updateMapUI()
@@ -240,10 +242,10 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
                 googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
             Configuration.UI_MODE_NIGHT_YES ->
                 googleMap.setMapStyle(
-                        MapStyleOptions.loadRawResourceStyle(
-                                this,
-                                R.raw.map_style_dark
-                        )
+                    MapStyleOptions.loadRawResourceStyle(
+                        this,
+                        R.raw.map_style_dark
+                    )
                 )
         }
 
@@ -278,10 +280,10 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
             if (task.isSuccessful && task.result != null) {
                 location = task.result
                 map.moveCamera(
-                        newLatLngZoom(
-                                LatLng(location!!.latitude, location!!.longitude),
-                                DEFAULT_ZOOM.toFloat()
-                        )
+                    newLatLngZoom(
+                        LatLng(location!!.latitude, location!!.longitude),
+                        DEFAULT_ZOOM.toFloat()
+                    )
                 )
             }
         }

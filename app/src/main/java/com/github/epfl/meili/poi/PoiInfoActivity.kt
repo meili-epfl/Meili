@@ -15,6 +15,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.util.navigation.PoiActivity
 import com.google.android.libraries.places.api.model.Place
@@ -34,15 +35,15 @@ class PoiInfoActivity : PoiActivity(R.layout.activity_poi_info, R.id.poi_info_ac
         var placesClientService: () -> PlacesClientService = DEFAULT_SERVICE
     }
 
-    // View to swipe between info, forum and chat
-    private lateinit var viewPager: ViewPager2
     private lateinit var poi: PointOfInterest
+    private lateinit var poiStatus: PointOfInterestStatus
     private lateinit var takeMeThereButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
+        poiStatus = intent.getSerializableExtra(MapActivity.POI_STATUS_KEY) as PointOfInterestStatus
         title = poi.name
 
 
