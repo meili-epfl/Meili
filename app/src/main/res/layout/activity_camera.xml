@@ -19,7 +19,7 @@
         android:layout_height="@dimen/shutter_button_size"
         android:layout_marginBottom="@dimen/shutter_button_margin"
         android:background="@drawable/ic_shutter"
-        android:contentDescription="Take photo"
+        android:contentDescription="@string/take_photo"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -37,6 +37,6 @@
         app:srcCompat="@drawable/ic_switch"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:contentDescription="Switch camera" />
+        android:contentDescription="@string/switch_camera" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

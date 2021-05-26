@@ -26,6 +26,9 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
             (holder as PostViewHolder).bind(items[position].second.second, items[position].second.first, userId)
 
+    /**
+     * Update recycler view with user's info
+     */
     fun submitUserInfo(uid: String) {
         userId = uid
     }
@@ -38,6 +41,9 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
         private val downvoteButton: ImageButton = itemView.findViewById(R.id.downovte_button)
         private val upvoteCount: TextView = itemView.findViewById(R.id.upvote_count)
 
+        /*
+         * Binds the post contained in `pair` to its viewholder
+         */
         fun bind(user: User, post: Post, userId: String?) {
             super.bind(user, post)
 

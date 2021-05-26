@@ -16,10 +16,10 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.Post
@@ -47,7 +47,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 
-
+@Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class PostActivityTest {
 
@@ -193,7 +193,7 @@ class PostActivityTest {
 
     @Test
     fun signedInDisplayCheck() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         commentsDatabase.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.userName)).check(matches(withText(containsString(TEST_POST_AUTHOR_NAME))))
@@ -208,7 +208,7 @@ class PostActivityTest {
 
     @Test
     fun addCommentDisplayCheck() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         commentsDatabase.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.comment_button)).perform(click())
@@ -221,7 +221,7 @@ class PostActivityTest {
 
     @Test
     fun addCommentTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         commentsDatabase.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.comment_button)).perform(click())

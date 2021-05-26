@@ -9,8 +9,8 @@ object FirebaseStorageService: StorageService {
 
     override fun uploadBytes(remotePath: String, byteArray: ByteArray, onSuccessCallback: () -> Unit, onFailureCallback: () -> Unit) {
         storageProvider().getReference(remotePath).putBytes(byteArray)
-            .addOnSuccessListener { _ -> onSuccessCallback() }
-            .addOnFailureListener { _ -> onFailureCallback() }
+            .addOnSuccessListener { onSuccessCallback() }
+            .addOnFailureListener { onFailureCallback() }
     }
     override fun getDownloadUrl(remotePath: String, onSuccessListener: (Uri) -> Unit, onFailureListener: (Exception) -> Unit) {
         storageProvider().getReference(remotePath).downloadUrl

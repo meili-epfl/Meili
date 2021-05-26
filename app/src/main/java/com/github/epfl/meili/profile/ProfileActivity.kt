@@ -15,19 +15,19 @@ import com.facebook.*
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
 import com.github.epfl.meili.R
-import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.home.FacebookAuthenticationService
+import com.github.epfl.meili.auth.Auth
+import com.github.epfl.meili.auth.FacebookAuthenticationService
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
+import com.github.epfl.meili.util.navigation.HomeActivity
 import com.github.epfl.meili.profile.myposts.MyPostsActivity
-import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.util.UIUtility
 import com.github.epfl.meili.util.UserPreferences
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hdodenhof.circleimageview.CircleImageView
 
 
-class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profile) {
+class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_activity) {
     private val launchGallery = registerForActivityResult(ActivityResultContracts.GetContent())
     { viewModel.loadLocalImage(contentResolver, it) }
 
@@ -50,7 +50,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var postsButton: ImageButton
     private lateinit var reviewsButton: ImageButton
     private lateinit var favoritePoisButton: ImageButton
-    private lateinit var lightdarkModeButton: ImageButton
+    private lateinit var lightDarkModeButton: ImageButton
 
     private lateinit var signedInView: View
     private lateinit var profileView: View
@@ -121,7 +121,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         postsButton = findViewById(R.id.profile_posts_button)
         reviewsButton = findViewById(R.id.profile_reviews_button)
         favoritePoisButton = findViewById(R.id.profile_poi_history_button)
-        lightdarkModeButton = findViewById(R.id.switch_mode)
+        lightDarkModeButton = findViewById(R.id.switch_mode)
     }
 
     private fun registerFacebookCallBack() {
@@ -134,6 +134,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
 
     private fun setupViewModel() {
+
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(profileUid!!))
             .get(ProfileViewModel::class.java)
         viewModel.getUser().removeObservers(this)
@@ -153,16 +154,18 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     /** Buttons callback function */
     fun onProfileButtonClick(view: View) {
         when (view) {
+
             photoEditView -> launchGallery.launch(STORAGE_IMAGES_PATH)
             saveButton -> saveProfile()
             cancelButton -> showProfile()
+
             seeFriendsButton -> showProfileOwnersInfo(FriendsListActivity::class.java)
-            signInButton -> Auth.signIn(this)
+            signInButton -> Auth.signInIntent(this)
             signOutButton -> Auth.signOut()
             profileEditButton -> showEditMode()
             postsButton -> showProfileOwnersInfo(MyPostsActivity::class.java)
             favoritePoisButton -> showProfileOwnersInfo(FavoritePoisActivity::class.java)
-            lightdarkModeButton -> changeMode()
+            lightDarkModeButton -> changeMode()
         }
     }
 
@@ -203,7 +206,8 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Auth.onActivityResult(this, requestCode, resultCode, data)
+
+        Auth.onActivityResult(this, requestCode, resultCode, data) {}
         callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -218,6 +222,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             updateIsProfileOwner()
             showProfile()
         } else {
+
             supportActionBar?.title = SUPPORT_ACTIONBAR_NOT_SIGNED_IN
             signedInView.visibility = View.GONE
             signInButton.visibility = View.VISIBLE
@@ -225,6 +230,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             signOutButton.visibility = View.GONE
         }
     }
+
 
     private fun updateIsProfileOwner() {
         val authUser = Auth.getCurrentUser()!!
@@ -245,7 +251,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         val preferences = UserPreferences(this)
 
         builder.setSingleChoiceItems(styles, preferences.darkMode) { dialog, which ->
-            preferences.checkTheme(which)
+            preferences.applyMode(which)
             preferences.darkMode = which
             dialog.dismiss()
         }
@@ -253,30 +259,30 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         val dialog = builder.create()
         dialog.show()
     }
-}
 
-private val facebookCallback = object : FacebookCallback<LoginResult> {
-    private lateinit var profileTracker: ProfileTracker
+    private val facebookCallback = object : FacebookCallback<LoginResult> {
+        private lateinit var profileTracker: ProfileTracker
 
-    override fun onSuccess(loginResult: LoginResult?) {
-        if (Profile.getCurrentProfile() == null) {
-            profileTracker = object : ProfileTracker() {
-                override fun onCurrentProfileChanged(
-                    oldProfile: Profile?,
-                    currentProfile: Profile
-                ) {
-                    Auth.setAuthenticationService(FacebookAuthenticationService())
-                    profileTracker.stopTracking()
+        override fun onSuccess(loginResult: LoginResult?) {
+            if (Profile.getCurrentProfile() == null) {
+                profileTracker = object : ProfileTracker() {
+                    override fun onCurrentProfileChanged(
+                        oldProfile: Profile?,
+                        currentProfile: Profile
+                    ) {
+                        Auth.setAuthenticationService(FacebookAuthenticationService())
+                        profileTracker.stopTracking()
+                    }
                 }
+            } else {
+                Auth.setAuthenticationService(FacebookAuthenticationService())
             }
-        } else {
-            Auth.setAuthenticationService(FacebookAuthenticationService())
         }
-    }
 
-    override fun onCancel() {
-    }
+        override fun onCancel() {
+        }
 
-    override fun onError(exception: FacebookException) {
+        override fun onError(exception: FacebookException) {
+        }
     }
 }

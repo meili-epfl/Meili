@@ -27,15 +27,23 @@
         android:roundIcon="@mipmap/meili_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Meili">
+        <activity
+            android:name=".LogoActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
         <activity
             android:name=".posts.feed.FeedActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".util.NavigableActivity"
-            tools:ignore="Instantiatable" />
         <activity
             android:name=".profile.friends.FriendsListActivity"
             android:parentActivityName=".profile.ProfileActivity"
@@ -53,7 +61,7 @@
             android:parentActivityName=".profile.friends.FriendsListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".home.GoogleSignInActivity"
+            android:name=".auth.GoogleSignInActivity"
             android:label="Meili"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -61,6 +69,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".map.MapActivity"
@@ -87,6 +96,8 @@
             android:name=".poi.PoiActivity"
             android:parentActivityName=".map.MapActivity"
             android:screenOrientation="portrait" />
+            android:name=".poi.PoiInfoActivity"
+            android:parentActivityName=".map.MapActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -96,9 +107,9 @@
             android:name=".profile.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
+
             android:name=".posts.PostActivity"
-            android:parentActivityName=".posts.forum.ForumActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".profile.favoritepois.FavoritePoisActivity"
             android:parentActivityName=".profile.ProfileActivity"
