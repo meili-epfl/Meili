@@ -22,6 +22,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activity) {
 
@@ -33,7 +35,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
 
     private var currentUser: User? = null
     private lateinit var chatId: String
-    private var messageSet = HashSet<ChatMessage>()
+    private var messageList: ArrayList<ChatMessage> = ArrayList()
 
     private var isGroupChat = false
     private var poi: PointOfInterest? = null
@@ -130,13 +132,26 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
     private fun listenForMessages(chatID: String) {
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
-            val newMessages = list.minus(messageSet)
+            val newMessages = list.minus(messageList)
+            var prevMessage: ChatMessage? = if (messageList.isEmpty()) null else messageList.last()
             newMessages.filter { message -> message.toId == chatID }.forEach { message ->
-                Log.d(TAG, "loading message: ${message.text}")
-                adapter.add(ChatItem(message, message.fromId == currentUser!!.uid, isGroupChat))
+                val isDisplayingDate: Boolean = if (prevMessage != null) {
+                    !DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(message.timestamp))
+                        .equals(DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(prevMessage!!.timestamp)))
+                } else {
+                    true
+                }
+                Log.d(TAG,"loading message: ${message.text} should it show the date? : $isDisplayingDate prevmessage: ${prevMessage}")
+                adapter.add(ChatItem(message,
+                    message.fromId == currentUser!!.uid,
+                    isGroupChat,
+                    isDisplayingDate
+                ))
+
+                prevMessage = message
             }
 
-            messageSet.addAll(newMessages)
+            messageList.addAll(newMessages)
             //scroll down
             val lastItemPos = adapter.itemCount - 1
             findViewById<RecyclerView>(R.id.recyclerview_chat_log).scrollToPosition(lastItemPos)
@@ -155,7 +170,8 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
 class ChatItem(
     private val message: ChatMessage,
     private val isChatMessageFromCurrentUser: Boolean,
-    private val isGroupChat: Boolean
+    private val isGroupChat: Boolean,
+    private val isDisplayingDate: Boolean,
 ) :
     Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
