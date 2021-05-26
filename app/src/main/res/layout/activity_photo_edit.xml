@@ -14,7 +14,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="60dp"
         android:background="@android:color/transparent"
-        android:contentDescription="Draw on image"
+        android:contentDescription="@string/draw_on_image"
         android:onClick="onPhotoEditClick"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_edit"
@@ -56,7 +56,7 @@
         android:layout_marginBottom="68dp"
         android:background="?attr/selectableItemBackground"
         android:onClick="onPhotoEditClick"
-        android:text="Filters"
+        android:text="@string/filters"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/paint_mode_button" />
@@ -69,7 +69,7 @@
         android:layout_marginBottom="68dp"
         android:background="?attr/selectableItemBackground"
         android:onClick="onPhotoEditClick"
-        android:text="Text"
+        android:text="@string/text"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/filters" />
@@ -78,17 +78,17 @@
     <!-- Filters window -->
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button_addText"
+        android:id="@+id/add_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="25dp"
         android:background="?attr/selectableItemBackground"
-        android:text="Add Text"
+        android:text="@string/add_text"
         android:textColor="#FFFFFF"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/photoEditorView"
-        app:layout_constraintEnd_toStartOf="@+id/et_text"
+        app:layout_constraintEnd_toStartOf="@+id/enter_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
@@ -108,7 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
-            android:text="None"
+            android:text="@string/filter_none"
             android:textColor="#FFFFFF" />
 
         <TextView
@@ -117,7 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
-            android:text="Sepia"
+            android:text="@string/filter_sepia"
             android:textColor="#FFFFFF" />
 
         <TextView
@@ -126,7 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
-            android:text="Saturate"
+            android:text="@string/filter_saturate"
             android:textColor="#FFFFFF" />
 
         <TextView
@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
-            android:text="Sharpen"
+            android:text="@string/filter_sharpen"
             android:textColor="#FFFFFF" />
 
         <TextView
@@ -144,7 +144,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="?attr/selectableItemBackground"
-            android:text="Fish Eye"
+            android:text="@string/filter_fish_eye"
             android:textColor="#FFFFFF" />
     </LinearLayout>
 
@@ -155,7 +155,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="12dp"
         android:background="?attr/selectableItemBackground"
-        android:contentDescription="Undo"
+        android:contentDescription="@string/undo"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_revert"
         app:layout_constraintBottom_toTopOf="@+id/photoEditorView"
@@ -168,7 +168,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:background="?attr/selectableItemBackground"
-        android:contentDescription="Redo"
+        android:contentDescription="@string/redo"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_rotate"
         app:layout_constraintEnd_toEndOf="parent"
@@ -176,7 +176,7 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/finish_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -185,21 +185,23 @@
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/quantum_ic_arrow_back_grey600_24" />
+        app:srcCompat="@drawable/quantum_ic_arrow_back_grey600_24"
+        android:contentDescription="@string/finish_edit" />
 
 
     <EditText
-        android:id="@+id/et_text"
+        android:id="@+id/enter_text"
         android:layout_width="256dp"
         android:layout_height="44dp"
         android:layout_marginBottom="3dp"
-        android:hint="Enter your text"
+        android:hint="@string/enter_your_text"
         android:inputType="textShortMessage"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/photoEditorView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button_addText"
-        tools:layout_editor_absoluteX="59dp" />
+        app:layout_constraintStart_toEndOf="@+id/add_text"
+        tools:layout_editor_absoluteX="59dp"
+        android:autofillHints="" />
 
 
     <TextView
@@ -209,7 +211,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="68dp"
         android:background="?attr/selectableItemBackground"
-        android:text="Emojis"
+        android:text="@string/emojis"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/text_button" />

@@ -249,7 +249,9 @@
                     android:id="@+id/profile_edit_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/profile_name_edit_edittext" />
+                    android:hint="@string/profile_name_edit_edittext"
+                    android:autofillHints="name"
+                    android:inputType="textPersonName" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -260,7 +262,9 @@
                     android:id="@+id/profile_edit_bio"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/profile_bio_edit_edittext" />
+                    android:hint="@string/profile_bio_edit_edittext"
+                    android:autofillHints=""
+                    android:inputType="" />
             </LinearLayout>
 
             <Button
@@ -316,7 +320,7 @@
         android:layout_alignParentBottom="true"
         app:itemIconTint="@drawable/navigation_selector"
         app:itemTextColor="@drawable/navigation_selector"
-        app:menu="@menu/navigation_menu" />
+        app:menu="@menu/home_navigation_menu" />
 
     <Button
         android:id="@+id/sign_out"

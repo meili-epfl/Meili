@@ -9,13 +9,13 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.github.epfl.meili.R
-import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.home.AuthenticationService
+import com.github.epfl.meili.auth.Auth
+import com.github.epfl.meili.auth.AuthenticationService
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
 import org.hamcrest.Description
@@ -27,50 +27,52 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 
 
 @LargeTest
 class ChatLogActivityAndroidTest {
 
-    private val MOCK_PATH = "POI/mock-poi"
-    private val fake_message = "fake_text"
-    private val fake_id = "fake_id"
-    private val fake_name = "fake_name_sender"
-    private val fake_poi: PointOfInterest =
+    private val mockPath = "POI/mock-poi"
+    private val fakeMessage = "fake_text"
+    private val fakeId = "fake_id"
+    private val fakeName = "fake_name_sender"
+    private val fakePoi: PointOfInterest =
         PointOfInterest(10.0, 10.0, "fake_poi", "fake_poi")
 
-    @get:Rule
-    val mActivityTestRule: ActivityTestRule<ChatLogActivity> =
-        object : ActivityTestRule<ChatLogActivity>(ChatLogActivity::class.java) {
-            override fun getActivityIntent(): Intent {
-                val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-                val intent = Intent(targetContext, ChatLogActivity::class.java).apply {
-                    putExtra("POI_KEY", fake_poi)
-                }
+    private fun getIntent(): Intent {
+        val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-                UiThreadStatement.runOnUiThread {
-                    val mockAuth = Mockito.mock(AuthenticationService::class.java)
-
-                    Mockito.`when`(mockAuth.getCurrentUser())
-                        .thenReturn(User("fake_uid", "fake_name", "fake_email", " "))
-
-                    Mockito.`when`(mockAuth.signInIntent()).thenReturn(intent)
-                    Auth.setAuthenticationService(mockAuth)
-                }
-
-                return intent
-
-            }
+        val intent = Intent(targetContext, ChatLogActivity::class.java).apply {
+            putExtra("POI_KEY", fakePoi)
         }
+
+        UiThreadStatement.runOnUiThread {
+            val mockAuth = Mockito.mock(AuthenticationService::class.java)
+
+            Mockito.`when`(mockAuth.getCurrentUser())
+                .thenReturn(User("fake_uid", "fake_name", "fake_email", " "))
+
+            Mockito.`when`(mockAuth.signInIntent(any())).thenReturn(intent)
+            Auth.setAuthenticationService(mockAuth)
+        }
+
+        return intent
+    }
+
+    private val intent = getIntent()
+
+    @get:Rule
+    var mActivityTestRule: ActivityScenarioRule<ChatLogActivity> = ActivityScenarioRule(intent)
 
 
     @Before
     fun init() {
         UiThreadStatement.runOnUiThread {
-            ChatMessageViewModel.setMessageDatabase(MockMessageDatabase(MOCK_PATH))
-            ChatMessageViewModel.addMessage(fake_message, fake_id, fake_id, 10, fake_name)
+            ChatMessageViewModel.setMessageDatabase(MockMessageDatabase(mockPath))
+            ChatMessageViewModel.addMessage(fakeMessage, fakeId, fakeId, 10, fakeName)
         }
     }
 
@@ -101,7 +103,7 @@ class ChatLogActivityAndroidTest {
             )
         )
 
-        appCompatEditText3.perform(replaceText(fake_message))
+        appCompatEditText3.perform(replaceText(fakeMessage))
 
         val materialButton2 = onView(
             allOf(
@@ -123,8 +125,12 @@ class ChatLogActivityAndroidTest {
     fun verifyAndUpdateUserIsLoggedInTrue() {
         pressKey(KeyEvent.KEYCODE_ESCAPE)
         UiThreadStatement.runOnUiThread {
-            mActivityTestRule.activity.verifyAndUpdateUserIsLoggedIn(true)
-            assertThat(mActivityTestRule.activity.supportActionBar?.title, `is`("fake_poi"))
+            mActivityTestRule.scenario.onActivity { a ->
+                a.verifyAndUpdateUserIsLoggedIn(true)
+                assertThat(a.supportActionBar?.title, `is`("fake_poi"))
+            }
+
+
         }
     }
 
@@ -132,8 +138,10 @@ class ChatLogActivityAndroidTest {
     fun verifyAndUpdateUserIsLoggedInFalse() {
         pressKey(KeyEvent.KEYCODE_ESCAPE)
         UiThreadStatement.runOnUiThread {
-            mActivityTestRule.activity.verifyAndUpdateUserIsLoggedIn(false)
-            assertThat(mActivityTestRule.activity.supportActionBar?.title, `is`("Not Signed In"))
+            mActivityTestRule.scenario.onActivity { a ->
+                a.verifyAndUpdateUserIsLoggedIn(false)
+                assertThat(a.supportActionBar?.title, `is`("Not Signed In"))
+            }
         }
 
     }

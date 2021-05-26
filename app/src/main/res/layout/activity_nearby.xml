@@ -10,7 +10,7 @@
         android:id="@+id/find_my_friend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Find My Friend"
+        android:text="@string/find_my_friend"
         android:onClick="onNearbyButtonClick"
         style="@style/Theme.Meili.button"
         android:theme="@style/Theme.Meili.button"/>
