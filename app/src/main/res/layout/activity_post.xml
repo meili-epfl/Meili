@@ -37,7 +37,9 @@
             android:id="@+id/post_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            tools:srcCompat="@tools:sample/backgrounds/scenic"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"/>
 
         <LinearLayout
             android:id="@+id/new_comment_layout"

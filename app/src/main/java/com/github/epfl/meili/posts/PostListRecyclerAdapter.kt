@@ -1,21 +1,30 @@
 package com.github.epfl.meili.posts
 
+import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
+import com.squareup.picasso.Picasso
 
 class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private val listener: ClickListener) :
         MeiliRecyclerAdapter<Pair<Post, User>>() {
     private var userId: String? = null
+
+    companion object {
+        val TAG = "PostListRecyclerAdapter"
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             PostViewHolder(
@@ -37,6 +46,7 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
         private val upvoteButton: ImageButton = itemView.findViewById(R.id.upvote_button)
         private val downvoteButton: ImageButton = itemView.findViewById(R.id.downovte_button)
         private val upvoteCount: TextView = itemView.findViewById(R.id.upvote_count)
+        private val image: ImageView = itemView.findViewById(R.id.forum_post_image)
 
         fun bind(user: User, post: Post, userId: String?) {
             super.bind(user, post)
@@ -56,6 +66,16 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
                 setupButtons(post.upvoters, post.downvoters, userId, post.postId())
             }
             upvoteCount.text = (post.upvoters.size - post.downvoters.size).toString()
+
+            if (post.hasPhoto) {
+                FirebaseStorageService.getDownloadUrl(
+                    "images/forum/${post.postId()}",
+                    { uri -> getDownloadUrlCallback(uri) },
+                    { exception ->
+                        Log.e(TAG, "Image not found", exception)
+                    }
+                )
+            }
         }
 
         private fun setupButtons(
@@ -80,6 +100,10 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
             }
             upvoteButton.setOnClickListener { viewModel.upvote(postId, userId) }
             downvoteButton.setOnClickListener { viewModel.downvote(postId, userId) }
+        }
+
+        private fun getDownloadUrlCallback(uri: Uri) {
+            Picasso.get().load(uri).into(image)
         }
     }
 }
