@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".poi.PoiActivity">
+    tools:context=".poi.PoiInfoActivity">
 
 
     <TextView
@@ -49,11 +49,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:contentDescription="@string/user_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/poi_name"
-        android:contentDescription="@string/user_image" />
+        app:layout_constraintTop_toBottomOf="@id/poi_name" />
 
     <io.github.ponnamkarthik.richlinkpreview.RichLinkViewSkype
         android:id="@+id/richLinkView"
@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:text="@string/take_me_there"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteX="175dp"
@@ -84,9 +84,19 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="16dp"
         android:clickable="true"
+        android:contentDescription="@string/call"
         android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_call"
-        android:contentDescription="@string/call" />
+        app:srcCompat="@android:drawable/ic_menu_call" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:itemIconTint="@drawable/navigation_selector"
+        app:itemTextColor="@drawable/navigation_selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/poi_navigation_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

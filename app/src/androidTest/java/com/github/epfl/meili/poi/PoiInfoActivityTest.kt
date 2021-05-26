@@ -17,6 +17,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.libraries.places.api.model.OpeningHours
@@ -37,9 +39,9 @@ import org.mockito.Mockito.`when`
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class PoiActivityTest {
+class PoiInfoActivityTest {
     private val fakePoi: PointOfInterest =
-            PointOfInterest(10.0, 10.0, "art_brut", "ChIJAAAAAAAAAAARg4pb6XR5bo0")
+        PointOfInterest(10.0, 10.0, "art_brut", "ChIJAAAAAAAAAAARg4pb6XR5bo0")
 
     private val mockPlaces: PlacesClientService = Mockito.mock(PlacesClientService::class.java)
     private val mockPlacesClient: PlacesClient = Mockito.mock(PlacesClient::class.java)
@@ -70,17 +72,17 @@ class PoiActivityTest {
 
         `when`(mockPlaces.getPlacesClient(any(), any())).thenReturn(mockPlacesClient)
 
-        PoiActivity.placesClientService = { mockPlaces }
+        PoiInfoActivity.placesClientService = { mockPlaces }
     }
 
-
     private val intent = Intent(
-            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
-            PoiActivity::class.java
+        InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
+        PoiInfoActivity::class.java
     ).putExtra("POI_KEY", fakePoi)
+        .putExtra(MapActivity.POI_STATUS_KEY, PointOfInterestStatus.VISITED)
 
     @get:Rule
-    var mActivityTestRule: ActivityScenarioRule<PoiActivity> = ActivityScenarioRule(intent)
+    var mActivityTestRule: ActivityScenarioRule<PoiInfoActivity> = ActivityScenarioRule(intent)
 
     @Before
     fun initIntents() {

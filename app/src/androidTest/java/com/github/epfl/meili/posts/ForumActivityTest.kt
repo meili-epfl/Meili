@@ -24,6 +24,7 @@ import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
@@ -97,6 +98,7 @@ class ForumActivityTest {
             InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
             ForumActivity::class.java
     ).putExtra(MapActivity.POI_KEY, TEST_POI)
+        .putExtra(MapActivity.POI_STATUS_KEY, PointOfInterestStatus.VISITED)
 
     @get:Rule
     var rule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(intent)
