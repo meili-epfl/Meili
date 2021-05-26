@@ -23,6 +23,9 @@ abstract class PoiActivity(layout: Int, activityId: Int) : NavigableActivity(lay
         return Intent(this, activityClass).putExtra(
             MapActivity.POI_KEY,
             intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)
+        ).putExtra(
+            MapActivity.POI_STATUS_KEY,
+            intent.getSerializableExtra(MapActivity.POI_STATUS_KEY)
         )
     }
 }
