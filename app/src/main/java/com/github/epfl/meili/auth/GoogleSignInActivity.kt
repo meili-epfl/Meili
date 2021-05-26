@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.util.UserPreferences
 
 class GoogleSignInActivity : AppCompatActivity() {
 
@@ -26,8 +27,7 @@ class GoogleSignInActivity : AppCompatActivity() {
      * Launches the map activity, called when the user doesn't want to sign in and so has reduced functionality
      */
     fun onMapViewButtonClick(@Suppress("UNUSED_PARAMETER") view: View) {
-        val intent = Intent(this, MapActivity::class.java)
-        startActivity(intent)
+        goToMap()
     }
 
     /**
@@ -39,6 +39,13 @@ class GoogleSignInActivity : AppCompatActivity() {
         } else {
             signIn()
         }
+    }
+
+    private fun goToMap() {
+        val preferences = UserPreferences(this)
+        preferences.firstTime = false
+        startActivity(Intent(this, MapActivity::class.java))
+        finish()
     }
 
     private fun signIn() {
@@ -56,7 +63,7 @@ class GoogleSignInActivity : AppCompatActivity() {
         if (Auth.isLoggedIn.value!!) {
             message = String.format(getString(R.string.welcome_message), Auth.name!!)
             buttonMessage = getString(R.string.sign_out_button_message)
-            startActivity(Intent(this, MapActivity::class.java))
+            goToMap()
         }
 
         findViewById<TextView>(R.id.textFieldSignIn).text = message

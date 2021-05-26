@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Meili</string>
+    <string name="app_moto">Tourism Revolutionised</string>
+    <string name="activity_google_sign_in">Google Sign In</string>
     <string name="title_activity_map">Map</string>
     <string name="average_rating_format">%.2f</string>
     <string name="title_hint">Title</string>
