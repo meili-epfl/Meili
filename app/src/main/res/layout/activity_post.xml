@@ -35,7 +35,8 @@
             android:id="@+id/post_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            tools:srcCompat="@tools:sample/backgrounds/scenic"
+            android:contentDescription="@string/post_image" />
 
         <LinearLayout
             android:id="@+id/new_comment_layout"
@@ -52,24 +53,25 @@
                     android:id="@+id/comment_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Add comment"
+                    android:text="@string/add_comment"
                     android:visibility="visible" />
 
                 <EditText
                     android:id="@+id/edit_comment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Add your comment"
+                    android:hint="@string/add_your_comment"
                     android:inputType="textMultiLine"
                     android:maxLength="300"
-                    android:visibility="invisible" />
+                    android:visibility="invisible"
+                    android:autofillHints="" />
             </RelativeLayout>
 
             <Button
                 android:id="@+id/add_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Post comment"
+                android:text="@string/post_comment"
                 android:visibility="invisible" />
         </LinearLayout>
 

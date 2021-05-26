@@ -1,7 +1,6 @@
 package com.github.epfl.meili.profile
 
 import android.content.Intent
-import android.util.Log
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.User

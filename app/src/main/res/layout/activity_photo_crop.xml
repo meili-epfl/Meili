@@ -15,7 +15,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/crop_mode_button" />
+        app:layout_constraintTop_toBottomOf="@+id/crop_mode_button"
+        android:contentDescription="@string/image" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/effects"
@@ -27,7 +28,8 @@
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_outline_auto_awesome_30" />
+        app:srcCompat="@drawable/ic_outline_auto_awesome_30"
+        android:contentDescription="@string/effects" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/crop"
@@ -40,7 +42,8 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_outline_crop_free_24" />
+        app:srcCompat="@drawable/ic_outline_crop_free_24"
+        android:contentDescription="@string/crop_photo" />
 
     <!-- Cropper window -->
     <RelativeLayout
@@ -66,7 +69,7 @@
         android:layout_marginTop="46dp"
         android:layout_marginEnd="48dp"
         android:background="@android:color/transparent"
-        android:contentDescription="Draw on image"
+        android:contentDescription="@string/draw_on_image"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_crop"
         app:layout_constraintEnd_toEndOf="parent"
@@ -79,7 +82,7 @@
         android:layout_marginTop="48dp"
         android:layout_marginEnd="8dp"
         android:background="@android:color/transparent"
-        android:contentDescription="Draw on image"
+        android:contentDescription="@string/draw_on_image"
         android:scaleType="fitCenter"
         android:src="@android:drawable/ic_menu_rotate"
         app:layout_constraintEnd_toStartOf="@+id/crop_mode_button"

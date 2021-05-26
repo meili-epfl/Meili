@@ -41,6 +41,7 @@ import org.mockito.Mockito.`when`
 @RunWith(AndroidJUnit4::class)
 class PoiInfoActivityTest {
     private val fakePoi: PointOfInterest =
+
         PointOfInterest(10.0, 10.0, "art_brut", "ChIJAAAAAAAAAAARg4pb6XR5bo0")
 
     private val mockPlaces: PlacesClientService = Mockito.mock(PlacesClientService::class.java)
@@ -70,7 +71,7 @@ class PoiInfoActivityTest {
 
         `when`(mockPlacesClient.fetchPhoto(any())).thenReturn(tcs2.task)
 
-        `when`(mockPlaces.getPlacesClient(any(), any())).thenReturn(mockPlacesClient)
+        `when`(mockPlaces.getPlacesClient(MockitoHelper.anyObject(), MockitoHelper.anyObject())).thenReturn(mockPlacesClient)
 
         PoiInfoActivity.placesClientService = { mockPlaces }
     }
@@ -112,6 +113,16 @@ class PoiInfoActivityTest {
     fun callButtonTest() {
         onView(withId(R.id.call_poi_button)).perform(click())
         Intents.intended(toPackage("com.android.server.telecom"))
+    }
+
+    object MockitoHelper {
+        fun <T> anyObject(): T {
+            Mockito.any<T>()
+            return uninitialized()
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        fun <T> uninitialized(): T = null as T
     }
 }
 

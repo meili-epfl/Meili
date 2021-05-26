@@ -10,7 +10,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
-import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.ChatMessage
 import com.github.epfl.meili.models.PointOfInterest
@@ -45,7 +45,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
 
         navigationBar = findViewById(R.id.navigation)
 
-        findViewById<RecyclerView>(R.id.recycleview_chat_log).adapter = adapter
+        findViewById<RecyclerView>(R.id.recyclerview_chat_log).adapter = adapter
 
         Auth.isLoggedIn.observe(this) {
             verifyAndUpdateUserIsLoggedIn(it)
@@ -54,6 +54,9 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
         verifyAndUpdateUserIsLoggedIn(Auth.isLoggedIn.value!!)
     }
 
+    /**
+     * Start the chat if the user is logged in
+     */
     fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
         if (isLoggedIn) {
             currentUser = Auth.getCurrentUser()
@@ -99,8 +102,8 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
 
         } else {
             currentUser = null
-            supportActionBar?.title = "Not Signed In"
-            Auth.signIn(this)
+            supportActionBar?.title = getString(R.string.not_signed_in)
+            Auth.signInIntent(this)
         }
     }
 
@@ -136,7 +139,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
             messageSet.addAll(newMessages)
             //scroll down
             val lastItemPos = adapter.itemCount - 1
-            findViewById<RecyclerView>(R.id.recycleview_chat_log).scrollToPosition(lastItemPos)
+            findViewById<RecyclerView>(R.id.recyclerview_chat_log).scrollToPosition(lastItemPos)
         }
 
         ChatMessageViewModel.messages.observe(this, groupMessageObserver)
@@ -145,7 +148,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        Auth.onActivityResult(this, requestCode, resultCode, data)
+        Auth.onActivityResult(this, requestCode, resultCode, data) {}
     }
 }
 

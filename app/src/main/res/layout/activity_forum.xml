@@ -19,12 +19,13 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:gravity="start|top"
-            android:hint="Title (70 characters max.)"
+            android:hint="@string/post_edit_title_hint"
             android:inputType="textMultiLine"
             android:maxLength="70"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:autofillHints="" />
 
         <EditText
             android:id="@+id/post_edit_text"
@@ -32,13 +33,13 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:gravity="start|top"
-            android:hint="Text (500 characters max.)"
+            android:hint="@string/post_edit_text_hint"
             android:inputType="textMultiLine"
             android:maxLength="500"
             app:layout_constraintTop_toBottomOf="@id/post_edit_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            />
+            android:autofillHints="" />
 
         <ImageView
             android:id="@+id/post_display_image"
@@ -47,7 +48,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.5"
-            android:layout_height="0dp" />
+            android:layout_height="0dp"
+            android:contentDescription="@string/images" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,7 +72,7 @@
                     android:layout_height="50dp"
                     app:srcCompat="@android:drawable/ic_menu_camera"
                     android:onClick="onClick"
-                    />
+                    android:contentDescription="@string/use_camera" />
 
                 <ImageView
                     android:id="@+id/post_use_gallery"
@@ -77,7 +80,7 @@
                     android:layout_height="50dp"
                     app:srcCompat="@android:drawable/ic_menu_gallery"
                     android:onClick="onClick"
-                    />
+                    android:contentDescription="@string/use_gallery" />
 
             </LinearLayout>
 
@@ -88,7 +91,7 @@
                 android:onClick="onClick"
                 style="@style/Theme.Meili.button"
                 android:theme="@style/Theme.Meili.button"
-                android:text="Create post"
+                android:text="@string/create_post"
                 />
 
             <Button
@@ -98,7 +101,7 @@
                 android:onClick="onClick"
                 style="@style/Theme.Meili.button"
                 android:theme="@style/Theme.Meili.button"
-                android:text="Cancel"/>
+                android:text="@string/cancel"/>
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -115,7 +118,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:text="Sort by:"/>
+            android:text="@string/sort_by"/>
 
         <Spinner
             android:id="@+id/sort_spinner"
@@ -142,7 +145,9 @@
             android:clickable="true"
             android:focusable="true"
             android:onClick="onClick"
-            app:srcCompat="@android:drawable/ic_input_add" />
+            app:srcCompat="@android:drawable/ic_input_add"
+            android:contentDescription="@string/create_post"
+            tools:ignore="RelativeOverlap" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/favorite"
@@ -152,7 +157,8 @@
             android:clickable="true"
             android:focusable="true"
             android:onClick="onClick"
-            app:srcCompat="@android:drawable/btn_star_big_on" />
+            app:srcCompat="@android:drawable/btn_star_big_on"
+            android:contentDescription="@string/favorite" />
     </RelativeLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
