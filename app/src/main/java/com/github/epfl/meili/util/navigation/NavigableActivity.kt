@@ -1,4 +1,4 @@
-package com.github.epfl.meili.util
+package com.github.epfl.meili.util.navigation
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +9,7 @@ import com.github.epfl.meili.posts.feed.FeedActivity
 import com.github.epfl.meili.profile.ProfileActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-open class NavigableActivity(
+abstract class NavigableActivity(
     private val layout: Int,
     private val activityId: Int
 ) : AppCompatActivity() {
@@ -21,15 +21,12 @@ open class NavigableActivity(
         navigation.selectedItemId = activityId
 
         navigation.setOnNavigationItemSelectedListener {
-            val intent = when (it.itemId) {
-                R.id.map -> Intent(this, MapActivity::class.java)
-                R.id.profile -> Intent(this, ProfileActivity::class.java)
-                R.id.feed -> Intent(this, FeedActivity::class.java)
-                else -> Intent(this, MapActivity::class.java)
-            }
-            startActivity(intent)
+            startActivity(getNavigationIntent(it.itemId))
+            finish()
             overridePendingTransition(0, 0)
             true
         }
     }
+
+    abstract fun getNavigationIntent(id: Int): Intent
 }

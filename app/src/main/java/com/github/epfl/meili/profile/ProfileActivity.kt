@@ -19,15 +19,15 @@ import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.home.FacebookAuthenticationService
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
+import com.github.epfl.meili.util.navigation.HomeActivity
 import com.github.epfl.meili.profile.myposts.MyPostsActivity
-import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.util.UIUtility
 import com.github.epfl.meili.util.UserPreferences
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hdodenhof.circleimageview.CircleImageView
 
 
-class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profile) {
+class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_activity) {
     private val launchGallery = registerForActivityResult(ActivityResultContracts.GetContent())
     { viewModel.loadLocalImage(contentResolver, it) }
 
@@ -241,7 +241,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         val preferences = UserPreferences(this)
 
         builder.setSingleChoiceItems(styles, preferences.darkMode) { dialog, which ->
-            preferences.checkTheme(which)
+            preferences.applyMode(which)
             preferences.darkMode = which
             dialog.dismiss()
         }
@@ -249,30 +249,30 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         val dialog = builder.create()
         dialog.show()
     }
-}
 
-private val facebookCallback = object : FacebookCallback<LoginResult> {
-    private lateinit var profileTracker: ProfileTracker
+    private val facebookCallback = object : FacebookCallback<LoginResult> {
+        private lateinit var profileTracker: ProfileTracker
 
-    override fun onSuccess(loginResult: LoginResult?) {
-        if (Profile.getCurrentProfile() == null) {
-            profileTracker = object : ProfileTracker() {
-                override fun onCurrentProfileChanged(
-                    oldProfile: Profile?,
-                    currentProfile: Profile
-                ) {
-                    Auth.setAuthenticationService(FacebookAuthenticationService())
-                    profileTracker.stopTracking()
+        override fun onSuccess(loginResult: LoginResult?) {
+            if (Profile.getCurrentProfile() == null) {
+                profileTracker = object : ProfileTracker() {
+                    override fun onCurrentProfileChanged(
+                        oldProfile: Profile?,
+                        currentProfile: Profile
+                    ) {
+                        Auth.setAuthenticationService(FacebookAuthenticationService())
+                        profileTracker.stopTracking()
+                    }
                 }
+            } else {
+                Auth.setAuthenticationService(FacebookAuthenticationService())
             }
-        } else {
-            Auth.setAuthenticationService(FacebookAuthenticationService())
         }
-    }
 
-    override fun onCancel() {
-    }
+        override fun onCancel() {
+        }
 
-    override fun onError(exception: FacebookException) {
+        override fun onError(exception: FacebookException) {
+        }
     }
 }
