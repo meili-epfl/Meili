@@ -22,8 +22,8 @@ open class MeiliViewModel<T>: ViewModel(), Observer {
     fun addElement(id: String, element: T) = database.addElement(id, element)
 
     override fun update(o: Observable?, arg: Any?) {
-        val reviews: Map<String, T> = database.elements
-        mElements.postValue(reviews)
+        val elements: Map<String, T> = database.elements
+        mElements.postValue(elements)
     }
 
     fun onDestroy() {

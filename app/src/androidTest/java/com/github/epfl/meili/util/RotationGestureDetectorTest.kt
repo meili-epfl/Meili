@@ -3,7 +3,6 @@ package com.github.epfl.meili.util
 
 import android.os.SystemClock
 import android.view.MotionEvent.*
-import android.widget.ImageView
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -12,10 +11,9 @@ import org.mockito.Mockito.mock
 @RunWith(androidx.test.ext.junit.runners.AndroidJUnit4::class)
 class RotationGestureDetectorTest {
 
-    val mockImageView: ImageView = mock(ImageView::class.java)
-    val mockListener: RotationGestureDetector.OnRotationGestureListener =
+    private val mockListener: RotationGestureDetector.OnRotationGestureListener =
         mock(RotationGestureDetector.OnRotationGestureListener::class.java)
-    lateinit var gestureDetector: RotationGestureDetector
+    private lateinit var gestureDetector: RotationGestureDetector
 
     @Before
     fun setup() {

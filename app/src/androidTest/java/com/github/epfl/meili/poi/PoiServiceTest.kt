@@ -9,8 +9,8 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class PoiServiceTest {
-    val poiService: PoiService = PoiServiceCached()
-    val expectedList = ArrayList<PointOfInterest>()
+    private val poiService: PoiService = PoiServiceCached()
+    private val expectedList = ArrayList<PointOfInterest>()
 
     @Test
     fun getReachablePoiTest() {
