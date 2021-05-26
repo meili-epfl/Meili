@@ -12,7 +12,7 @@ import com.github.epfl.meili.util.UserPreferences
 
 class LogoActivity : AppCompatActivity() {
     companion object {
-        private const val LOGO_DISPLAY_TIME = 500L // milliseconds
+        private const val LOGO_DISPLAY_TIME = 1000L // milliseconds
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
