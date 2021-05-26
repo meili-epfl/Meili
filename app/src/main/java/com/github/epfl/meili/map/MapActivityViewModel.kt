@@ -39,7 +39,7 @@ class MapActivityViewModel(application: Application) :
         private const val LENS_MAX_DISTANCE = 500.0 // meters
         private const val AZIMUTH_TOLERANCE = 15.0 // degrees
 
-        private const val REACHABLE_DIST = 50.0 //meters
+        private const val REACHABLE_DIST = 500.0 //meters
 
         var getSensorManager: (application: Application) -> SensorManager =
             { getSystemService(it, SensorManager::class.java)!! }
