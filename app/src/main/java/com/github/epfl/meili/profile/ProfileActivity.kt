@@ -19,15 +19,15 @@ import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.auth.FacebookAuthenticationService
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
+import com.github.epfl.meili.util.navigation.HomeActivity
 import com.github.epfl.meili.profile.myposts.MyPostsActivity
-import com.github.epfl.meili.util.NavigableActivity
 import com.github.epfl.meili.util.UIUtility
 import com.github.epfl.meili.util.UserPreferences
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hdodenhof.circleimageview.CircleImageView
 
 
-class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profile) {
+class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_activity) {
     private val launchGallery = registerForActivityResult(ActivityResultContracts.GetContent())
     { viewModel.loadLocalImage(contentResolver, it) }
 

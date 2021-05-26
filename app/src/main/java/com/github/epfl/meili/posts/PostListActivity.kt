@@ -17,6 +17,8 @@ import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.UserProfileLinker
 import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.RecyclerViewInitializer
+import java.lang.Exception
+import java.lang.IllegalArgumentException
 
 /**
  * To be implemented by all activities which display a list of posts
@@ -26,7 +28,6 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
     companion object {
         const val NEWEST = "Newest"
         const val OLDEST = "Oldest"
-        const val NORMAL = "Normal"
         const val POPULAR = "Popularity"
 
         private const val TAG = "PostListActivity"
@@ -137,15 +138,13 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
     }
 
     private fun orderPosts(postList: List<Pair<String, Pair<Post, User>>>): List<Pair<String, Pair<Post, User>>> {
-        if (sortOrder == NORMAL) return postList
-
         return postList.sortedBy { pair ->
-            var comp = when (sortOrder) {
+            when (sortOrder) {
                 NEWEST -> -pair.second.first.timestamp
                 OLDEST -> pair.second.first.timestamp
-                else -> (-(pair.second.first.upvoters.size - pair.second.first.downvoters.size)).toLong()
+                POPULAR -> (-(pair.second.first.upvoters.size - pair.second.first.downvoters.size)).toLong()
+                else -> throw IllegalArgumentException()
             }
-            comp
         }
     }
 

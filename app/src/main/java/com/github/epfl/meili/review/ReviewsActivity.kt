@@ -18,8 +18,9 @@ import com.github.epfl.meili.profile.UserProfileLinker
 import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.*
 import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
+import com.github.epfl.meili.util.navigation.PoiActivity
 
-class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener,
+class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_activity), ClickListener,
     UserProfileLinker<Review> {
     companion object {
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
@@ -52,11 +53,9 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu), ClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reviews)
 
         listReviewsView = findViewById(R.id.list_reviews)
         editReviewView = findViewById(R.id.edit_review)
-
 
         usersMap = HashMap()
 

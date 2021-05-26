@@ -235,13 +235,13 @@ class ProfileActivityTest {
 
     @Test
     fun goToMapTest() {
-        onView(withId(R.id.map)).perform(click())
+        onView(withId(R.id.map_activity)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(MapActivity::class.qualifiedName))
     }
 
     @Test
     fun goToFeedTest() {
-        onView(withId(R.id.feed)).perform(click())
+        onView(withId(R.id.feed_activity)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(FeedActivity::class.qualifiedName))
     }
 
