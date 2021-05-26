@@ -149,16 +149,6 @@
             android:contentDescription="@string/create_post"
             tools:ignore="RelativeOverlap" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/favorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="onClick"
-            app:srcCompat="@android:drawable/btn_star_big_on"
-            android:contentDescription="@string/favorite" />
     </RelativeLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
