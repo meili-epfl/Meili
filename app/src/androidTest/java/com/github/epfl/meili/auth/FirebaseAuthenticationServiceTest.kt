@@ -17,20 +17,26 @@ import org.mockito.Mockito.mock
 @RunWith(AndroidJUnit4::class)
 class FirebaseAuthenticationServiceTest {
     private lateinit var fauth: FirebaseAuthenticationService
+    private var mockAuth: FirebaseAuth = mock(FirebaseAuth::class.java)
 
     @get:Rule
     var testRule: ActivityScenarioRule<GoogleSignInActivity?>? = ActivityScenarioRule(
-        GoogleSignInActivity::class.java
+            GoogleSignInActivity::class.java
     )
+
+    init {
+        `when`(mockAuth.currentUser).thenReturn(null)
+
+        FirebaseAuthenticationService.authProvider = { mockAuth }
+    }
 
     @Before
     fun before() {
         UiThreadStatement.runOnUiThread {
-            //Injecting authentication Service
+            //Injecting custom authentication Service
             fauth = FirebaseAuthenticationService()
             Auth.setAuthenticationService(fauth)
 
-            Auth.signOut()
             Auth.isLoggedIn.value = false
             Auth.email = null
             Auth.name = null
@@ -38,41 +44,33 @@ class FirebaseAuthenticationServiceTest {
     }
 
     @Test
-    fun getCurrentUserNullTest(){
-        val mockAuth = mock(FirebaseAuth::class.java)
-        `when`(mockAuth.currentUser).thenReturn(null)
-
-        fauth.setAuth(mockAuth)
-
+    fun getCurrentUserNullTest() {
         assert(fauth.getCurrentUser() == null)
     }
 
     @Test
-    fun getCurrentUserPresentTest(){
+    fun getCurrentUserPresentTest() {
         val user = User("fake_id", "fake_name", "fake_email", " ")
-        val mockAuth = mock(FirebaseAuth::class.java)
         val mockUser = mock(FirebaseUser::class.java)
         `when`(mockUser.uid).thenReturn(user.uid)
         `when`(mockUser.email).thenReturn(user.email)
         `when`(mockUser.displayName).thenReturn(user.username)
         `when`(mockAuth.currentUser).thenReturn(mockUser)
 
-        fauth.setAuth(mockAuth)
-
         assertEquals(fauth.getCurrentUser(), user)
     }
 
     @Test
-    fun onActivityResultWrongRequestCode(){
+    fun onActivityResultWrongRequestCode() {
         testRule!!.scenario.onActivity {
-            fauth.onActivityResult(it!!, 0, 0, null){}
+            fauth.onActivityResult(it!!, 0, 0, null) {}
         }
     }
 
     @Test
-    fun onActivityResultCorrectRequestCode(){
+    fun onActivityResultCorrectRequestCode() {
         testRule!!.scenario.onActivity {
-            fauth.onActivityResult(it!!, 9001, 0, null){}
+            fauth.onActivityResult(it!!, 9001, 0, null) {}
         }
     }
 }

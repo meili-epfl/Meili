@@ -21,22 +21,21 @@ class FirebaseAuthenticationService : AuthenticationService {
     private var auth: FirebaseAuth
     private val googleSignInClient: GoogleSignInClient
 
+    companion object {
+        private const val TAG = "GoogleActivity"
+        private const val RC_SIGN_IN = 9001
+        var authProvider: () -> FirebaseAuth = { Firebase.auth }
+    }
+
     init {
         val context = MainApplication.applicationContext()
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(context.getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
+                .requestIdToken(context.getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
         googleSignInClient = GoogleSignIn.getClient(context, gso)
 
-        auth = Firebase.auth
-    }
-
-    /**
-     * Sets the auth service
-     */
-    fun setAuth(authService: FirebaseAuth) {
-        auth = authService
+        auth = authProvider()
     }
 
     override fun getCurrentUser(): User? {
@@ -60,20 +59,20 @@ class FirebaseAuthenticationService : AuthenticationService {
     }
 
     private fun firebaseAuthWithGoogle(
-        activity: Activity,
-        idToken: String,
-        onComplete: () -> Unit
+            activity: Activity,
+            idToken: String,
+            onComplete: () -> Unit
     ) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential).addOnCompleteListener(activity) { onComplete() }
     }
 
     override fun onActivityResult(
-        activity: Activity,
-        requestCode: Int,
-        result: Int,
-        data: Intent?,
-        onComplete: () -> Unit
+            activity: Activity,
+            requestCode: Int,
+            result: Int,
+            data: Intent?,
+            onComplete: () -> Unit
     ) {
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
@@ -86,10 +85,5 @@ class FirebaseAuthenticationService : AuthenticationService {
                 Log.w(TAG, "Google sign in failed", e)
             }
         }
-    }
-
-    companion object {
-        private const val TAG = "GoogleActivity"
-        private const val RC_SIGN_IN = 9001
     }
 }
