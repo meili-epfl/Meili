@@ -151,9 +151,7 @@ class ProfileActivityTest {
         onView(withId(R.id.profile_edit_button)).check(matches(isDisplayed()))
         onView(withId(R.id.list_friends_button)).check(matches(isDisplayed()))
 
-        onView(withId(R.id.profile_comments_button)).check(matches(isDisplayed()))
         onView(withId(R.id.profile_posts_button)).check(matches(isDisplayed()))
-        onView(withId(R.id.profile_reviews_button)).check(matches(isDisplayed()))
         onView(withId(R.id.profile_poi_history_button)).check(matches(isDisplayed()))
 
         onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
