@@ -25,9 +25,9 @@
             android:layout_height="175dp"
             android:layout_above="@+id/profile_edit_container"
             android:layout_alignEnd="@id/photo"
+            android:contentDescription="@string/button_to_change_profile_picture"
             android:onClick="onProfileButtonClick"
-            app:srcCompat="@drawable/ic_baseline_add_photo_alternate_24"
-            android:contentDescription="@string/button_to_change_profile_picture" />
+            app:srcCompat="@drawable/ic_baseline_add_photo_alternate_24" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/profile_edit_button"
@@ -35,9 +35,9 @@
             android:layout_height="175dp"
             android:layout_alignEnd="@id/photo"
             android:layout_alignBottom="@id/photo"
+            android:contentDescription="@string/button_to_edit_profile"
             android:onClick="onProfileButtonClick"
-            app:srcCompat="@drawable/ic_baseline_edit_24"
-            android:contentDescription="@string/button_to_edit_profile" />
+            app:srcCompat="@drawable/ic_baseline_edit_24" />
 
         <ImageButton
             android:id="@+id/list_friends_button"
@@ -47,8 +47,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
             android:background="@drawable/ic_baseline_people_24"
-            android:onClick="onProfileButtonClick"
-            android:contentDescription="@string/my_friends" />
+            android:contentDescription="@string/my_friends"
+            android:onClick="onProfileButtonClick" />
 
 
         <RelativeLayout
@@ -102,13 +102,13 @@
                             android:id="@+id/profile_comments_button"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
-                            android:onClick="onProfileButtonClick"
-                            android:src="@drawable/ic_comment"
-                            android:background="@color/design_default_color_primary"
-                            android:padding="32dp"
                             android:adjustViewBounds="true"
+                            android:background="@color/design_default_color_primary"
+                            android:contentDescription="@string/profile_comments_button"
+                            android:onClick="onProfileButtonClick"
+                            android:padding="32dp"
                             android:scaleType="fitCenter"
-                            android:contentDescription="@string/profile_comments_button" />
+                            android:src="@drawable/ic_comment" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -132,13 +132,13 @@
                             android:id="@+id/profile_posts_button"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
-                            android:onClick="onProfileButtonClick"
-                            android:src="@drawable/ic_posts"
-                            android:background="@color/design_default_color_primary"
-                            android:padding="32dp"
                             android:adjustViewBounds="true"
+                            android:background="@color/design_default_color_primary"
+                            android:contentDescription="@string/profile_posts_button"
+                            android:onClick="onProfileButtonClick"
+                            android:padding="32dp"
                             android:scaleType="fitCenter"
-                            android:contentDescription="@string/profile_posts_button" />
+                            android:src="@drawable/ic_posts" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -168,13 +168,13 @@
                             android:id="@+id/profile_reviews_button"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
-                            android:onClick="onProfileButtonClick"
-                            android:src="@drawable/ic_review"
-                            android:background="@color/design_default_color_primary"
-                            android:padding="32dp"
                             android:adjustViewBounds="true"
+                            android:background="@color/design_default_color_primary"
+                            android:contentDescription="@string/profile_reviews_button"
+                            android:onClick="onProfileButtonClick"
+                            android:padding="32dp"
                             android:scaleType="fitCenter"
-                            android:contentDescription="@string/profile_reviews_button" />
+                            android:src="@drawable/ic_review" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -198,13 +198,13 @@
                             android:id="@+id/profile_poi_history_button"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
-                            android:onClick="onProfileButtonClick"
-                            android:src="@drawable/ic_location"
-                            android:background="@color/design_default_color_primary"
-                            android:padding="32dp"
                             android:adjustViewBounds="true"
+                            android:background="@color/design_default_color_primary"
+                            android:contentDescription="@string/profile_poi_history_button"
+                            android:onClick="onProfileButtonClick"
+                            android:padding="32dp"
                             android:scaleType="fitCenter"
-                            android:contentDescription="@string/profile_poi_history_button" />
+                            android:src="@drawable/ic_location" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -301,7 +301,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-/>
+        android:layout_below="@id/switch_mode"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
@@ -328,10 +328,10 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="16dp"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/ic_baseline_change_mode_24"
-        android:onClick="onProfileButtonClick"
-        android:contentDescription="@string/dark_light_mode_button" />
+        android:contentDescription="@string/dark_light_mode_button"
+        android:onClick="onProfileButtonClick" />
 
 </RelativeLayout>
