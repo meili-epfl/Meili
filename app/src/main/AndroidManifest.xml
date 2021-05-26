@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.github.epfl.meili">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -41,56 +40,82 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".posts.feed.FeedActivity" />
+        <activity
+            android:name=".posts.feed.FeedActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".profile.friends.FriendsListActivity"
-            android:parentActivityName=".profile.ProfileActivity" />
+            android:parentActivityName=".profile.ProfileActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".photo.PhotoCropActivity"
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".photo.PhotoEditActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".profile.friends.NearbyActivity"
-            android:parentActivityName=".profile.friends.FriendsListActivity" />
+            android:parentActivityName=".profile.friends.FriendsListActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".auth.GoogleSignInActivity"
-            android:label="Meili">
+            android:label="Meili"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
         </activity>
         <activity
             android:name=".map.MapActivity"
-            android:label="@string/title_activity_map" />
+            android:label="@string/title_activity_map"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".photo.CameraActivity"
             android:noHistory="true"
             android:parentActivityName=".posts.forum.ForumActivity" />
         <activity
             android:name=".messages.ChatLogActivity"
-            android:parentActivityName=".map.MapActivity" />
+            android:parentActivityName=".map.MapActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".posts.forum.ForumActivity"
-            android:parentActivityName=".map.MapActivity" />
+            android:parentActivityName=".map.MapActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".review.ReviewsActivity"
-            android:parentActivityName=".map.MapActivity" />
+            android:parentActivityName=".map.MapActivity"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".poi.PoiInfoActivity"
-            android:parentActivityName=".map.MapActivity" />
+            android:parentActivityName=".map.MapActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".profile.ProfileActivity" />
         <activity
-            android:name=".posts.PostActivity" />
+            android:name=".profile.ProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+
+            android:name=".posts.PostActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".profile.favoritepois.FavoritePoisActivity"
-            android:parentActivityName=".profile.ProfileActivity" />
+            android:parentActivityName=".profile.ProfileActivity"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".profile.myposts.MyPostsActivity"
-            android:parentActivityName=".profile.ProfileActivity" />
+            android:parentActivityName=".profile.ProfileActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
