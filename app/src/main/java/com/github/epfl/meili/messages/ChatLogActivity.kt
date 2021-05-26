@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
@@ -16,12 +17,13 @@ import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
 import com.github.epfl.meili.util.DateAuxiliary
-import com.github.epfl.meili.util.MenuActivity
+import com.github.epfl.meili.util.navigation.PoiActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 
-class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
+class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activity) {
 
     companion object {
         private const val TAG: String = "ChatLogActivity"
@@ -36,14 +38,16 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     private var isGroupChat = false
     private var poi: PointOfInterest? = null
 
+    private lateinit var navigationBar: BottomNavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat_log)
+
+        navigationBar = findViewById(R.id.navigation)
 
         findViewById<RecyclerView>(R.id.recycleview_chat_log).adapter = adapter
 
         Auth.isLoggedIn.observe(this) {
-            Log.d(TAG, "value received $it")
             verifyAndUpdateUserIsLoggedIn(it)
         }
 
@@ -103,15 +107,9 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     private fun setGroupChat(isGroupChat: Boolean) {
         this.isGroupChat = isGroupChat
         if (!isGroupChat) {
-            hideMenuButtons()
+            navigationBar.isVisible = false
         }
     }
-
-    private fun hideMenuButtons() {
-        setShowMenu(false)
-        invalidateOptionsMenu()
-    }
-
 
     private fun performSendMessage() {
         val text = findViewById<EditText>(R.id.edit_text_chat_log).text.toString()
