@@ -20,4 +20,16 @@ class MarkerItem(val poi: PointOfInterest) : ClusterItem {
     override fun getSnippet(): String? {
         return null
     }
+
+    override fun toString(): String {
+        return "PoiItem: $poi"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is MarkerItem && other.poi == poi
+    }
+
+    override fun hashCode(): Int {
+        return poi.hashCode()
+    }
 }

@@ -78,7 +78,6 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
 
         initLensViews()
-        setupLandmarkDetection()
         setupLensCamera()
 
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
@@ -104,10 +103,12 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
     private fun setupLandmarkDetection() {
         viewModel.getPoiDist().observe(this) { poiDist ->
             if (poiDist != null) {
+                clusterRenderer.renderMeiliLensPoi(MarkerItem(poiDist.first))
                 lensPoiNameText.text = poiDist.first.name
                 lensPoiDistText.text =
                         String.format(getString(R.string.lens_poi_distance), poiDist.second)
             } else {
+                clusterRenderer.renderMeiliLensPoi(null)
                 lensPoiNameText.text = getString(R.string.no_poi_found)
                 lensPoiDistText.text = ""
             }
@@ -182,6 +183,8 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
 
         viewModel.mPointsOfInterestStatus.observe(this) { addItems(it) }
+
+        setupLandmarkDetection()
     }
 
     private fun onPoiItemClicked(markerItem: MarkerItem): Boolean {
