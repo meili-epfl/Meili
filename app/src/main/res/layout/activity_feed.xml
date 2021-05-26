@@ -7,9 +7,9 @@
     tools:context=".posts.feed.FeedActivity">
 
     <RelativeLayout
+        android:id="@+id/list_posts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/list_posts">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/sort_by"
@@ -22,8 +22,8 @@
             android:id="@+id/sort_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/sort_by"
-            android:layout_alignParentTop="true" />
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/sort_by" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/feed_recycler_view"
