@@ -11,6 +11,8 @@ abstract class Database<T>: Observable() {
      */
     abstract fun addElement(key: String, element: T?)
 
+    abstract fun removeElement(key: String)
+
     private var observers: Set<Observer> = HashSet()
 
     override fun addObserver(o: Observer?) {
