@@ -12,6 +12,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiInfoActivity
@@ -41,6 +42,7 @@ class PoiActivityTest {
         InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
         PoiInfoActivity::class.java
     ).putExtra(MapActivity.POI_KEY, TEST_POI)
+        .putExtra(MapActivity.POI_STATUS_KEY, PointOfInterestStatus.VISITED)
 
     @get:Rule
     var testRule: ActivityScenarioRule<PoiInfoActivity> = ActivityScenarioRule(intent)
