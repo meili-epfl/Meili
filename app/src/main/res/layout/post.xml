@@ -19,9 +19,9 @@
             android:id="@+id/post_linear_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="10dp"
-            android:layout_weight="1">
+            android:padding="10dp">
 
             <include layout="@layout/user" />
 
@@ -49,12 +49,12 @@
                 android:id="@+id/upvote_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/upvote_default_count"
                 android:gravity="center"
-                app:layout_constraintTop_toTopOf="parent"
+                android:text="@string/upvote_default_count"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/upvote_button"
