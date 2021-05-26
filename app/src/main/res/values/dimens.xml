@@ -12,8 +12,8 @@
     -->
     <dimen name="inner_frame_layout_padding">5dp</dimen>
 
-    <dimen name="shutter_button_size">80dp</dimen>
-    <dimen name="shutter_button_margin">30dp</dimen>
+    <dimen name="shutter_button_size">60dp</dimen>
+    <dimen name="shutter_button_margin">10dp</dimen>
 
     <dimen name="switch_camera_button_size">50dp</dimen>
 

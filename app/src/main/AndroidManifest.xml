@@ -61,8 +61,7 @@
         <activity
             android:name=".photo.CameraActivity"
             android:noHistory="true"
-            android:parentActivityName=".posts.forum.ForumActivity"
-            android:screenOrientation="portrait"/>
+            android:parentActivityName=".posts.forum.ForumActivity"/>
         <activity
             android:name=".messages.ChatLogActivity"
             android:parentActivityName=".map.MapActivity" />
