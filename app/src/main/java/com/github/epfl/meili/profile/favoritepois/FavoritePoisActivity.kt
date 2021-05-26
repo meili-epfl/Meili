@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.posts.forum.ForumActivity
 import com.github.epfl.meili.profile.ProfileActivity.Companion.USER_KEY
@@ -52,6 +53,7 @@ class FavoritePoisActivity : AppCompatActivity() {
                 MapActivity.POI_KEY,
                 viewModel.getElements().value?.get((view.findViewById(R.id.poi_id) as TextView).text.toString())
             )
+                .putExtra(MapActivity.POI_STATUS_KEY, PointOfInterestStatus.VISIBLE)
         )
     }
 
