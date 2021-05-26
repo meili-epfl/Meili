@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Meili</string>
+    <string name="app_moto">Tourism Revolutionised</string>
     <string name="activity_google_sign_in">Google Sign In</string>
     <string name="title_activity_map">Map</string>
     <string name="average_rating_format">%.2f</string>
@@ -39,4 +40,8 @@
     <string name="take_me_there">Take Me There</string>
     <string name="user_image">user image</string>
     <string name="call">call</string>
+    <string name="poi_info_activity">Info</string>
+    <string name="forum_activity">Forum</string>
+    <string name="chat_activity">Chat</string>
+    <string name="reviews_activity">Reviews</string>
 </resources>
