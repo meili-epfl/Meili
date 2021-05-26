@@ -194,6 +194,12 @@ class ForumActivity : MenuActivity(R.menu.nav_forum_menu), PostListActivity {
     private fun showEditPostView() {
         listPostsView.visibility = View.GONE
         editPostView.visibility = View.VISIBLE
+
+        // Clear fields and photo
+        editTitleView.text.clear()
+        editTextVIew.text.clear()
+        bitmap = null
+        displayImageView.setImageBitmap(bitmap)
     }
 
     private fun showListPostsView() {
