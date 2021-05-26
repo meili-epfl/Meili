@@ -43,6 +43,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
     companion object {
         private const val DEFAULT_ZOOM = 15
         const val POI_KEY = "POI_KEY"
+        const val POI_STATUS_KEY = "POI_STATUS_KEY"
     }
 
     private lateinit var lensPoiNameText: TextView
@@ -189,7 +190,10 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
 
     private fun onPoiItemClicked(markerItem: MarkerItem): Boolean {
         val intent = Intent(this, PoiActivity::class.java)
+
         intent.putExtra(POI_KEY, markerItem.poi)
+
+        intent.putExtra(POI_STATUS_KEY, viewModel.mPointsOfInterestStatus.value!![markerItem.poi.uid])
 
         val statuses: Map<String, PointOfInterestStatus> =
                 viewModel.mPointsOfInterestStatus.value!!

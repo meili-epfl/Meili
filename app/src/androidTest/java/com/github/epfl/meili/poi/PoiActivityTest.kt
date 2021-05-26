@@ -17,6 +17,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.android.libraries.places.api.model.OpeningHours
@@ -76,9 +78,10 @@ class PoiActivityTest {
 
 
     private val intent = Intent(
-        InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
-        PoiActivity::class.java
-    ).putExtra("POI_KEY", fakePoi)
+            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
+            PoiActivity::class.java
+    ).putExtra(MapActivity.POI_KEY, fakePoi)
+            .putExtra(MapActivity.POI_STATUS_KEY, PointOfInterestStatus.VISITED)
 
     @get:Rule
     var mActivityTestRule: ActivityScenarioRule<PoiActivity> = ActivityScenarioRule(intent)
@@ -118,8 +121,9 @@ class PoiActivityTest {
             Mockito.any<T>()
             return uninitialized()
         }
+
         @Suppress("UNCHECKED_CAST")
-        fun <T> uninitialized(): T =  null as T
+        fun <T> uninitialized(): T = null as T
     }
 }
 

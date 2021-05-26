@@ -12,6 +12,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.messages.ChatMessageViewModel
 import com.github.epfl.meili.messages.MockMessageDatabase
 import com.github.epfl.meili.models.PointOfInterest
@@ -34,7 +36,7 @@ class ForumMenuButtonsTests {
 
     companion object {
         private const val MOCK_CHAT_PATH = "POI/mock-poi"
-        private val TEST_POI_KEY = PointOfInterest(100.0,100.0,"lorem_ipsum1", "lorem_ipsum2")
+        private val TEST_POI_KEY = PointOfInterest(100.0, 100.0, "lorem_ipsum1", "lorem_ipsum2")
     }
 
     init {
@@ -57,7 +59,8 @@ class ForumMenuButtonsTests {
 
     private val intent =
             Intent(InstrumentationRegistry.getInstrumentation().targetContext.applicationContext, ForumActivity::class.java)
-                    .putExtra("POI_KEY", TEST_POI_KEY)
+                    .putExtra(MapActivity.POI_KEY, TEST_POI_KEY)
+                    .putExtra(MapActivity.POI_STATUS_KEY, PointOfInterestStatus.VISITED)
 
     @get:Rule
     var rule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(intent)

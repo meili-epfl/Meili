@@ -11,6 +11,8 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.messages.ChatMessageViewModel
 import com.github.epfl.meili.messages.MockMessageDatabase
 import com.github.epfl.meili.models.PointOfInterest
@@ -59,8 +61,9 @@ class ReviewMenuButtonsTest {
     }
 
     private val intent =
-        Intent(getInstrumentation().targetContext.applicationContext, ReviewsActivity::class.java)
-            .putExtra("POI_KEY", TEST_POI_KEY)
+            Intent(getInstrumentation().targetContext.applicationContext, ReviewsActivity::class.java)
+                    .putExtra(MapActivity.POI_KEY, TEST_POI_KEY)
+                    .putExtra(MapActivity.POI_STATUS_KEY, PointOfInterestStatus.VISITED)
 
     @get:Rule
     var rule: ActivityScenarioRule<ReviewsActivity> = ActivityScenarioRule(intent)
@@ -68,20 +71,20 @@ class ReviewMenuButtonsTest {
     @Test
     fun clickChatMenuButton() {
         onView(
-            Matchers.allOf(
-                withId(R.id.menu_chat),
-                withText("Chat")
-            )
+                Matchers.allOf(
+                        withId(R.id.menu_chat),
+                        withText("Chat")
+                )
         ).perform(click())
     }
 
     @Test
     fun clickForumMenuButton() {
         onView(
-            Matchers.allOf(
-                withId(R.id.menu_forum),
-                withText("Forum")
-            )
+                Matchers.allOf(
+                        withId(R.id.menu_forum),
+                        withText("Forum")
+                )
         ).perform(click())
     }
 }
