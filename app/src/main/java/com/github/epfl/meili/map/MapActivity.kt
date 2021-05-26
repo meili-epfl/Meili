@@ -25,7 +25,6 @@ import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
 import com.github.epfl.meili.util.LocationService.requestLocationPermission
 import com.github.epfl.meili.util.NavigableActivity
-import com.github.epfl.meili.util.UserPreferences
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom
@@ -78,11 +77,7 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         viewModel = ViewModelProvider(this).get(MapActivityViewModel::class.java)
 
         initLensViews()
-        setupLandmarkDetection()
         setupLensCamera()
-
-        val preferences = UserPreferences(this)
-        preferences.checkTheme(preferences.darkMode)
 
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
         placesClient = Places.createClient(this)
@@ -108,10 +103,12 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
     private fun setupLandmarkDetection() {
         viewModel.getPoiDist().observe(this) { poiDist ->
             if (poiDist != null) {
+                clusterRenderer.renderMeiliLensPoi(PoiItem(poiDist.first))
                 lensPoiNameText.text = poiDist.first.name
                 lensPoiDistText.text =
                     String.format(getString(R.string.lens_poi_distance), poiDist.second)
             } else {
+                clusterRenderer.renderMeiliLensPoi(null)
                 lensPoiNameText.text = getString(R.string.no_poi_found)
                 lensPoiDistText.text = ""
             }
@@ -189,6 +186,8 @@ class MapActivity : NavigableActivity(R.layout.activity_map, R.id.map), OnMapRea
         }
 
         viewModel.mPointsOfInterestStatus.observe(this) { addItems(it) }
+
+        setupLandmarkDetection()
     }
 
     private fun onPoiItemClicked(poiItem: PoiItem): Boolean {

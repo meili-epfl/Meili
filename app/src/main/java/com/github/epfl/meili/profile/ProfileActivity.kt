@@ -245,7 +245,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         val preferences = UserPreferences(this)
 
         builder.setSingleChoiceItems(styles, preferences.darkMode) { dialog, which ->
-            preferences.checkTheme(which)
+            preferences.applyMode(which)
             preferences.darkMode = which
             dialog.dismiss()
         }
@@ -253,30 +253,30 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         val dialog = builder.create()
         dialog.show()
     }
-}
 
-private val facebookCallback = object : FacebookCallback<LoginResult> {
-    private lateinit var profileTracker: ProfileTracker
+    private val facebookCallback = object : FacebookCallback<LoginResult> {
+        private lateinit var profileTracker: ProfileTracker
 
-    override fun onSuccess(loginResult: LoginResult?) {
-        if (Profile.getCurrentProfile() == null) {
-            profileTracker = object : ProfileTracker() {
-                override fun onCurrentProfileChanged(
-                    oldProfile: Profile?,
-                    currentProfile: Profile
-                ) {
-                    Auth.setAuthenticationService(FacebookAuthenticationService())
-                    profileTracker.stopTracking()
+        override fun onSuccess(loginResult: LoginResult?) {
+            if (Profile.getCurrentProfile() == null) {
+                profileTracker = object : ProfileTracker() {
+                    override fun onCurrentProfileChanged(
+                        oldProfile: Profile?,
+                        currentProfile: Profile
+                    ) {
+                        Auth.setAuthenticationService(FacebookAuthenticationService())
+                        profileTracker.stopTracking()
+                    }
                 }
+            } else {
+                Auth.setAuthenticationService(FacebookAuthenticationService())
             }
-        } else {
-            Auth.setAuthenticationService(FacebookAuthenticationService())
         }
-    }
 
-    override fun onCancel() {
-    }
+        override fun onCancel() {
+        }
 
-    override fun onError(exception: FacebookException) {
+        override fun onError(exception: FacebookException) {
+        }
     }
 }

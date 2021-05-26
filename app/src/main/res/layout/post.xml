@@ -22,7 +22,7 @@
             android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="parent"
             android:baselineAligned="false">
-
+            
             <LinearLayout
                 android:id="@+id/post_linear_layout"
                 android:layout_width="0dp"
