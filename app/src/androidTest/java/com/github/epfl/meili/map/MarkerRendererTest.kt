@@ -14,7 +14,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 
-@Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class MarkerRendererTest {
     @Test
@@ -22,12 +21,11 @@ class MarkerRendererTest {
         MapsInitializer.initialize(MainApplication.applicationContext())
         Looper.prepare()
         val mockClusterManager = Mockito.mock(ClusterManager::class.java)
-        val renderer = MarkerRendererTester(
+        @Suppress("UNCHECKED_CAST") val renderer = MarkerRendererTester(
             MainApplication.applicationContext(),
             null,
             mockClusterManager as ClusterManager<MarkerItem>
         )
-
 
         val poi1 = MarkerItem(PointOfInterest(41.075000, 1.130870, "place1", "place1"))
         val poi2 = MarkerItem(PointOfInterest(41.063563, 1.083658, "place2", "place2"))
