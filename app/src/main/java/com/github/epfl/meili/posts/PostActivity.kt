@@ -29,8 +29,6 @@ import de.hdodenhof.circleimageview.CircleImageView
 class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListener {
     companion object {
         private const val TAG = "PostActivity"
-        private val DEFAULT_URI =
-                Uri.parse("https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Forum_romanum_6k_%285760x2097%29.jpg/2880px-Forum_romanum_6k_%285760x2097%29.jpg")
         const val POST_ID = "Post_ID"
 
         var serviceProvider: () -> UserInfoService = { UserInfoService() }
@@ -60,11 +58,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
 
         FirebaseStorageService.getDownloadUrl(
                 "images/forum/$postId",
-                { uri -> getDownloadUrlCallback(uri) },
-                { exception ->
-                    Log.e(TAG, "Image not found", exception)
-                    getDownloadUrlCallback(DEFAULT_URI)
-                }
+                { uri -> getDownloadUrlCallback(uri) }
         )
 
         usersMap = HashMap()
