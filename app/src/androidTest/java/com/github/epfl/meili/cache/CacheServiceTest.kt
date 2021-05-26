@@ -19,7 +19,7 @@ import java.lang.reflect.Type
 @Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class CacheServiceTest {
-    private val type: Type = object: TypeToken<List<PointOfInterest?>?>() {}.type
+    private val type: Type = object : TypeToken<List<PointOfInterest?>?>() {}.type
     private val service: CacheService<List<PointOfInterest>> = CacheService("MOCK_PREFERENCES", type)
     private var mockInternetConnectionService: InternetConnectionService = Mockito.mock(InternetConnectionService::class.java)
     private var mockSharedPreferences: SharedPreferences = Mockito.mock(SharedPreferences::class.java)
@@ -68,7 +68,7 @@ class CacheServiceTest {
 
     private fun setInternetConnection(status: Boolean) {
         Mockito.`when`(mockInternetConnectionService.isConnectedToInternet(MainApplication.applicationContext())).thenReturn(status)
-        service.setInternetConnectionService(mockInternetConnectionService)
+        CacheService.internetConnectionServiceProvider = { mockInternetConnectionService }
     }
 
 

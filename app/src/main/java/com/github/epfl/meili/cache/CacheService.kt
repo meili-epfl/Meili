@@ -12,12 +12,9 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
     // Service for fetching information
     private lateinit var fetcher: ResponseFetcher<T>
 
-    // Auxiliary service
-    private var internetConnectionService = InternetConnectionService()
-
     // Object for handling saving data locally on phone
     protected var mPrefs: SharedPreferences = MainApplication.applicationContext()
-        .getSharedPreferences(sharedPreferencesKey, Context.MODE_PRIVATE)
+            .getSharedPreferences(sharedPreferencesKey, Context.MODE_PRIVATE)
     protected var gsonObject = Gson()
 
     // In-Object cached values
@@ -39,13 +36,6 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
     }
 
     /**
-     * Sets auxiliary service
-     */
-    fun setInternetConnectionService(internetConnectionService: InternetConnectionService) {
-        this.internetConnectionService = internetConnectionService
-    }
-
-    /**
      * Tries to retrieve object from cache or from service if it is not in cache
      */
     open fun getResponse(arg: Any?, onSuccess: ((T) -> Unit)?, onError: ((Error) -> Unit)?) {
@@ -61,7 +51,7 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
                     Log.d(TAG, "Getting info from shared preferences")
                     onSuccess(retrieveCachedResponse())
                 }
-                internetConnectionService.isConnectedToInternet(MainApplication.applicationContext()) -> {
+                internetConnectionServiceProvider().isConnectedToInternet(MainApplication.applicationContext()) -> {
                     // Data saved in the object and on the phone are not valid hence we need to fetch from the API
 
                     Log.d(TAG, "Getting info from the API")
@@ -157,5 +147,6 @@ open class CacheService<T>(sharedPreferencesKey: String, val classType: Type) {
         const val TIMESTAMP_KEY = "timestamp"
         const val CACHE_TIME_LIMIT = 60 * 60 // 1 hour in seconds
         const val TAG = "CacheService"
+        var internetConnectionServiceProvider: () -> InternetConnectionService = { InternetConnectionService() }
     }
 }

@@ -3,6 +3,7 @@ package com.github.epfl.meili.poi
 import android.content.SharedPreferences
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.epfl.meili.MainApplication
+import com.github.epfl.meili.cache.CacheService
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.util.InternetConnectionService
 import com.google.android.gms.maps.model.LatLng
@@ -20,10 +21,10 @@ import org.mockito.Mockito.mock
 class PoiServiceCachedTest {
     private val service: PoiServiceCached = PoiServiceCached()
     private var mockInternetConnectionService: InternetConnectionService =
-        mock(InternetConnectionService::class.java)
+            mock(InternetConnectionService::class.java)
     private var mockSharedPreferences: SharedPreferences = mock(SharedPreferences::class.java)
     private var mockSharedPreferencesEditor: SharedPreferences.Editor =
-        mock(SharedPreferences.Editor::class.java)
+            mock(SharedPreferences.Editor::class.java)
     private val mockPoiGoogleRetriever: PoiGoogleRetriever = mock(PoiGoogleRetriever::class.java)
 
     private val testPoiList = ArrayList<PointOfInterest>()
@@ -37,10 +38,10 @@ class PoiServiceCachedTest {
         testPoiList.add(poi2)
 
         `when`(
-            mockSharedPreferencesEditor.putLong(
-                Mockito.anyString(),
-                Mockito.anyLong()
-            )
+                mockSharedPreferencesEditor.putLong(
+                        Mockito.anyString(),
+                        Mockito.anyLong()
+                )
         ).thenReturn(null)
         `when`(mockSharedPreferences.edit()).thenReturn(mockSharedPreferencesEditor)
     }
@@ -52,7 +53,7 @@ class PoiServiceCachedTest {
 
     private fun initPreferencesWithData(timestamp: Long) {
         `when`(mockSharedPreferences.getLong(Mockito.anyString(), Mockito.anyLong())).thenReturn(
-            timestamp
+                timestamp
         )
         `when`(mockSharedPreferences.getString(Mockito.anyString(), Mockito.anyString())).then {
             val key = it.arguments[0] as String
@@ -68,9 +69,9 @@ class PoiServiceCachedTest {
 
     private fun setInternetConnection(status: Boolean) {
         `when`(mockInternetConnectionService.isConnectedToInternet(MainApplication.applicationContext())).thenReturn(
-            status
+                status
         )
-        service.setInternetConnectionService(mockInternetConnectionService)
+        CacheService.internetConnectionServiceProvider = { mockInternetConnectionService }
     }
 
     @Test
@@ -86,11 +87,11 @@ class PoiServiceCachedTest {
         initEmptyPreferences()
 
         `when`(
-            mockPoiGoogleRetriever.requestPoisAPI(
-                Mockito.any(),
-                Mockito.any(),
-                Mockito.any()
-            )
+                mockPoiGoogleRetriever.requestPoisAPI(
+                        Mockito.any(),
+                        Mockito.any(),
+                        Mockito.any()
+                )
         ).then {
             val onSuccess = it.arguments[1] as ((List<PointOfInterest>) -> Unit)
             onSuccess(testPoiList)
