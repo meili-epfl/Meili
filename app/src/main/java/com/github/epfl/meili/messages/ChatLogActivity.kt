@@ -141,7 +141,8 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
                 } else {
                     true
                 }
-                Log.d(TAG,"loading message: ${message.text} should it show the date? : $isDisplayingDate prevmessage: ${prevMessage}")
+                Log.d(TAG,
+                    "loading message: ${message.text} should it show the date? : $isDisplayingDate prevmessage: ${prevMessage}")
                 adapter.add(ChatItem(message,
                     message.fromId == currentUser!!.uid,
                     isGroupChat,
@@ -175,8 +176,12 @@ class ChatItem(
 ) :
     Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
-        return if (isChatMessageFromCurrentUser) {
+        return if (isChatMessageFromCurrentUser && isDisplayingDate) {
+            R.layout.chat_from_me_row_with_date
+        } else if (isChatMessageFromCurrentUser && !isDisplayingDate) {
             R.layout.chat_from_me_row
+        } else if (!isChatMessageFromCurrentUser && isDisplayingDate) {
+            R.layout.chat_from_other_row_with_date
         } else {
             R.layout.chat_from_other_row
         }
@@ -187,7 +192,7 @@ class ChatItem(
         val date = DateAuxiliary.getDateFromTimestamp(message.timestamp)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_timestamp).text =
             DateAuxiliary.getTime(date)
-        viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
+        if (isDisplayingDate) viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
             DateAuxiliary.getDay(date)
         if (!isChatMessageFromCurrentUser) {
             viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text =
