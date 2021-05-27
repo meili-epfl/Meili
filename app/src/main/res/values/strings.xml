@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Meili</string>
     <string name="app_moto">Tourism Revolutionised</string>
-    <string name="activity_google_sign_in">Google Sign In</string>
     <string name="title_activity_map">Map</string>
     <string name="average_rating_format">%.2f</string>
     <string name="title_hint">Title</string>
@@ -12,11 +11,7 @@
     <string name="sign_in_button_message">Sign In</string>
     <string name="sign_out_button_message">Sign Out</string>
     <string name="welcome_message">Welcome %s!</string>
-    <string name="fetch_pois_error_message">An error occurred while fetching POIs</string>
     <string name="not_signed_in">Not Signed In</string>
-    <string name="poi_no_info">No information found for this point of interest :(</string>
-    <string name="open">OPEN</string>
-    <string name="closed">CLOSED</string>
     <string name="friend_succ">Friendship successful!</string>
     <string name="accept_friend">Accept friendship with %s</string>
     <string name="accept">Accept</string>
@@ -29,7 +24,6 @@
     <string name="no_poi_found">No Point of Interest found</string>
     <string name="no_landmark_detected">No landmark found in the picture</string>
     <string name="facebook_app_id">1155284924987862</string>
-    <string name="fb_login_protocol_scheme">fb1155284924987862</string>
 
     <string name="button_to_change_profile_picture">Button to change profile picture</string>
     <string name="button_to_edit_profile">Button to edit profile</string>
@@ -53,8 +47,6 @@
     <string name="switch_camera">Switch camera</string>
     <string name="enter_message">Enter Message…</string>
     <string name="send_message">Send</string>
-    <string name="my_feed">My Feed</string>
-    <string name="forum_image">Forum image</string>
 
     <string name="add_friend">Add Friend</string>
     <string name="google_sign_in_prompt">Sign In to get access to all features!</string>
@@ -62,10 +54,7 @@
     <string name="access_no_sign_in">Meili\nLimited Functionality</string>
     <string name="launcher">Launcher</string>
     <string name="meili_lens">Meili Lens</string>
-    <string name="lens">Lens</string>
     <string name="point_of_interest_detected">Point Of Interest Detected!</string>
-    <string name="lens_camera">Lens camera</string>
-    <string name="dismiss_lens">Dismiss lens</string>
     <string name="find_my_friend">Find My Friend</string>
     <string name="image">image</string>
     <string name="crop_photo">crop photo</string>
@@ -90,18 +79,12 @@
     <string name="add_your_comment">Add your comment</string>
     <string name="post_comment">Post comment</string>
     <string name="user_icon">User Icon</string>
-    <string name="poi_image">poi image</string>
-    <string name="textview">TextView</string>
     <string name="upvote">upvote</string>
     <string name="downvote">downvote</string>
     <string name="no_upvotes">0 Upvotes</string>
-    <string name="forum">Forum</string>
-    <string name="chat">Chat</string>
-    <string name="reviews">Reviews</string>
     <string name="profile">Profile</string>
     <string name="map">Map</string>
     <string name="feed">Feed</string>
-    <string name="favorite">Favorite</string>
     <string name="post_edit_title_hint">Title (70 characters max.)</string>
     <string name="post_edit_text_hint">Text (500 characters max.)</string>
     <string name="images">Images</string>
