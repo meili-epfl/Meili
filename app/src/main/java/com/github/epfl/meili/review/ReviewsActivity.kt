@@ -7,8 +7,8 @@ import android.widget.*
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
@@ -160,7 +160,7 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
         }
 
         val newUsersList = ArrayList<String>()
-        for ((reviewId, post) in map) {
+        for ((_, post) in map) {
             newUsersList.add(post.authorUid)
         }
 
@@ -170,11 +170,11 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
             getString(R.string.average_rating_format).format(Review.averageRating(map))
     }
 
-    override fun onUsersInfoReceived(users: Map<String, User>, reviewMap: Map<String, Review>) {
+    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Review>) {
         usersMap = HashMap(usersMap) + users
 
         val reviewsAndUsersMap = HashMap<String, Pair<Review, User>>()
-        for ((postId, review) in reviewMap) {
+        for ((postId, review) in map) {
             val user = usersMap[review.authorUid]
             if (user != null) {
                 reviewsAndUsersMap[postId] = Pair(review, user)

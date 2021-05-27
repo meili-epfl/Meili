@@ -15,8 +15,8 @@ import com.facebook.*
 import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
 import com.github.epfl.meili.R
-import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.home.FacebookAuthenticationService
+import com.github.epfl.meili.auth.Auth
+import com.github.epfl.meili.auth.FacebookAuthenticationService
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.navigation.HomeActivity
@@ -48,7 +48,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
     private lateinit var signOutButton: Button
     private lateinit var postsButton: ImageButton
     private lateinit var favoritePoisButton: ImageButton
-    private lateinit var lightdarkModeButton: ImageButton
+    private lateinit var lightDarkModeButton: ImageButton
 
     private lateinit var signedInView: View
     private lateinit var profileView: View
@@ -117,7 +117,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
         signOutButton = findViewById(R.id.sign_out)
         postsButton = findViewById(R.id.profile_posts_button)
         favoritePoisButton = findViewById(R.id.profile_poi_history_button)
-        lightdarkModeButton = findViewById(R.id.switch_mode)
+        lightDarkModeButton = findViewById(R.id.switch_mode)
     }
 
     private fun registerFacebookCallBack() {
@@ -130,6 +130,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
 
 
     private fun setupViewModel() {
+
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(profileUid!!))
             .get(ProfileViewModel::class.java)
         viewModel.getUser().removeObservers(this)
@@ -149,16 +150,18 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
     /** Buttons callback function */
     fun onProfileButtonClick(view: View) {
         when (view) {
+
             photoEditView -> launchGallery.launch(STORAGE_IMAGES_PATH)
             saveButton -> saveProfile()
             cancelButton -> showProfile()
+
             seeFriendsButton -> showProfileOwnersInfo(FriendsListActivity::class.java)
-            signInButton -> Auth.signIn(this)
+            signInButton -> Auth.signInIntent(this)
             signOutButton -> Auth.signOut()
             profileEditButton -> showEditMode()
             postsButton -> showProfileOwnersInfo(MyPostsActivity::class.java)
             favoritePoisButton -> showProfileOwnersInfo(FavoritePoisActivity::class.java)
-            lightdarkModeButton -> changeMode()
+            lightDarkModeButton -> changeMode()
         }
     }
 
@@ -199,7 +202,8 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Auth.onActivityResult(this, requestCode, resultCode, data)
+
+        Auth.onActivityResult(this, requestCode, resultCode, data) {}
         callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -214,6 +218,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
             updateIsProfileOwner()
             showProfile()
         } else {
+
             supportActionBar?.title = SUPPORT_ACTIONBAR_NOT_SIGNED_IN
             signedInView.visibility = View.GONE
             signInButton.visibility = View.VISIBLE
@@ -221,6 +226,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
             signOutButton.visibility = View.GONE
         }
     }
+
 
     private fun updateIsProfileOwner() {
         val authUser = Auth.getCurrentUser()!!
