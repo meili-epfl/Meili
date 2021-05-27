@@ -21,6 +21,7 @@ class MyPostsActivity : AppCompatActivity(), PostListActivity {
     override var usersMap: Map<String, User> = HashMap()
     override var postsMap: Map<String, Post> = HashMap()
     override var sortOrder = NEWEST
+    override var showPOI = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

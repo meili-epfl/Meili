@@ -13,7 +13,8 @@ import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
 
-class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private val listener: ClickListener) :
+class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private val listener: ClickListener,
+                              private val showPOI: Boolean) :
         MeiliRecyclerAdapter<Pair<Post, User>>() {
     private var userId: String? = null
 
@@ -51,6 +52,8 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
             postId.text = post.postId()
             poiName.text = post.poiName
             title.text = post.title
+
+            if(showPOI){poiName.visibility=View.VISIBLE}
 
             //show or hide up/downvote depending on user status
             val visibility = if (userId == null) {

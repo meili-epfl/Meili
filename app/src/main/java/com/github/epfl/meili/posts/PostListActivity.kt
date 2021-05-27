@@ -36,7 +36,7 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
     }
 
     var viewModel: PostListViewModel
-
+    var showPOI: Boolean
     var sortOrder: String
     var postsMap: Map<String, Post>
 
@@ -75,7 +75,7 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
     }
 
     private fun initRecyclerAdapter(recyclerView: RecyclerView) {
-        recyclerAdapter = PostListRecyclerAdapter(viewModel, this)
+        recyclerAdapter = PostListRecyclerAdapter(viewModel, this, showPOI)
         RecyclerViewInitializer.initRecyclerView(
                 recyclerAdapter,
                 recyclerView,

@@ -24,6 +24,7 @@ class FeedActivity : HomeActivity(R.layout.activity_feed, R.id.feed_activity), P
 
     override var usersMap: Map<String, User> = HashMap()
     override var postsMap: Map<String, Post> = HashMap()
+    override var showPOI = true
 
     override fun getActivity(): AppCompatActivity = this
 
