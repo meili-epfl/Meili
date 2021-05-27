@@ -69,6 +69,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:text="@string/take_me_there"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
         app:layout_constraintBottom_toTopOf="@id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
