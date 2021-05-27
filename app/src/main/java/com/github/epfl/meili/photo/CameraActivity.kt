@@ -29,6 +29,7 @@ class CameraActivity : AppCompatActivity() {
         private const val PRESS_DELAY = 200L
         private const val TAG = "CameraActivity"
         const val URI_KEY = "URI_KEY"
+        const val EXTENSION = ".jpg"
         const val EDIT_PHOTO = "EDIT_PHOTO"
     }
 
@@ -43,15 +44,17 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var switchCameraButton: ImageButton
     private lateinit var previewView: PreviewView
 
-    private var lensFacing: Int = CameraSelector.LENS_FACING_BACK // which direction is the camera facing
+    private var lensFacing: Int =
+        CameraSelector.LENS_FACING_BACK // which direction is the camera facing
 
     private var editPhoto = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         setContentView(R.layout.activity_camera)
 
-        outputDirectory = getOutputDirectory()
+        outputDirectory = applicationContext.filesDir
 
         cameraButton = findViewById(R.id.camera_capture_button)
         switchCameraButton = findViewById(R.id.camera_switch_button)
@@ -114,7 +117,7 @@ class CameraActivity : AppCompatActivity() {
         SimpleDateFormat(
             FILENAME_FORMAT,
             Locale.US
-        ).format(System.currentTimeMillis()) + ".jpg"
+        ).format(System.currentTimeMillis()) + EXTENSION
     )
 
     private fun setupSwitchCameraButton() {
@@ -309,14 +312,4 @@ class CameraActivity : AppCompatActivity() {
         orientationEventListener.enable()
     }
 
-    /**
-     * Figures out where to store photos depending on whether external storage media is available
-     */
-    private fun getOutputDirectory(): File {
-        val mediaDir = applicationContext.externalMediaDirs.firstOrNull()?.let {
-            File(it, baseContext.resources.getString(R.string.app_name)).apply { mkdirs() }
-        }
-        return if (mediaDir != null && mediaDir.exists())
-            mediaDir else applicationContext.filesDir
-    }
 }

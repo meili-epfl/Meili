@@ -4,19 +4,21 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Review (
+data class Review(
+    var authorUid: String = "",
+    var poiKey: String = "",
     var rating: Float = 0f,
     var title: String = "",
     var summary: String = ""
-): Parcelable {
+) : Parcelable {
     companion object {
-        private const val TAG = "Review"
+        const val POI_KEY_FIELD = "poiKey"
 
         fun averageRating(reviews: Map<String, Review>): Float {
             return if (reviews.isEmpty()) {
                 0f
             } else {
-                reviews.values.map {r -> r.rating}.reduce {a,b -> a + b} / reviews.size
+                reviews.values.map { r -> r.rating }.reduce { a, b -> a + b } / reviews.size
             }
         }
     }

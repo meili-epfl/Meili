@@ -4,15 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".feed.FeedActivity">
+    tools:context=".posts.feed.FeedActivity">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="My Feed"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+
+    <RelativeLayout
+        android:id="@+id/list_posts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/sort_by"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text="@string/sort_by" />
+
+
+        <Spinner
+            android:id="@+id/sort_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/sort_by" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/feed_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/sort_spinner"
+            tools:layout_editor_absoluteX="12dp"
+            tools:layout_editor_absoluteY="33dp" />
+    </RelativeLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
@@ -21,6 +43,6 @@
         android:layout_alignParentBottom="true"
         app:itemIconTint="@drawable/navigation_selector"
         app:itemTextColor="@drawable/navigation_selector"
-        app:menu="@menu/navigation_menu" />
+        app:menu="@menu/home_navigation_menu" />
 
 </RelativeLayout>

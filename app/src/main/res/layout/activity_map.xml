@@ -7,105 +7,105 @@
     tools:context=".map.MapActivity">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/lens_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/lens_card">
-            <LinearLayout
-                android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:id="@+id/lens_visuals_container"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-                <RelativeLayout
+                android:layout_weight="2">
+
+                <TextView
+                    android:id="@+id/lens_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/lens_visuals_container"
-                    android:layout_weight="2"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Meili Lens"
-                        android:id="@+id/lens_text"
-                        android:layout_centerHorizontal="true"
-                        />
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_eye"
-                        android:layout_below="@id/lens_text"
-                        android:layout_centerHorizontal="true"
-                        />
-                </RelativeLayout>
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/lens_info_container"
-                    android:layout_weight="4"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/lens_poi_name"
-                        android:layout_centerHorizontal="true"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/lens_poi_name"
-                        android:id="@+id/lens_poi_distance"
-                        android:layout_centerHorizontal="true"
-                        />
-                </RelativeLayout>
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/lens_detected_landmark_container"
-                    android:visibility="gone"
-                    android:layout_weight="4"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Point Of Interest Detected!"
-                        android:id="@+id/lens_detected_landmark_text"
-                        android:layout_centerHorizontal="true"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/lens_detected_landmark"
-                        android:layout_below="@id/lens_detected_landmark_text"
-                        android:layout_centerHorizontal="true"
-                        />
-                </RelativeLayout>
+
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/meili_lens" />
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/lens_camera"
-                    android:src="@android:drawable/ic_menu_camera"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    />
-                <ImageView
+                    android:layout_below="@id/lens_text"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_eye" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/lens_info_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4">
+
+                <TextView
+                    android:id="@+id/lens_poi_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/lens_dismiss_landmark"
-                    android:src="@drawable/ic_done"
-                    android:visibility="gone"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    />
+                    android:layout_centerHorizontal="true" />
+
+                <TextView
+                    android:id="@+id/lens_poi_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lens_poi_name"
+                    android:layout_centerHorizontal="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/lens_detected_landmark_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/lens_detected_landmark_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/point_of_interest_detected" />
+
+                <TextView
+                    android:id="@+id/lens_detected_landmark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/lens_detected_landmark_text"
+                    android:layout_centerHorizontal="true" />
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/lens_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@android:drawable/ic_menu_camera" />
+
+
+            <ImageView
+                android:id="@+id/lens_dismiss_landmark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:src="@drawable/ic_done"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-
     <androidx.fragment.app.FragmentContainerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/lens_card"
         android:id="@+id/map_fragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-    />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/lens_card" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
@@ -114,6 +114,6 @@
         android:layout_alignParentBottom="true"
         app:itemIconTint="@drawable/navigation_selector"
         app:itemTextColor="@drawable/navigation_selector"
-        app:menu="@menu/navigation_menu" />
+        app:menu="@menu/home_navigation_menu" />
 
 </RelativeLayout>

@@ -8,22 +8,31 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.facebook.*
+import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
 import com.github.epfl.meili.R
-import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.models.User
+import com.github.epfl.meili.auth.Auth
+import com.github.epfl.meili.auth.FacebookAuthenticationService
+import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
-import com.github.epfl.meili.util.NavigableActivity
+import com.github.epfl.meili.util.navigation.HomeActivity
+import com.github.epfl.meili.profile.myposts.MyPostsActivity
 import com.github.epfl.meili.util.UIUtility
+import com.github.epfl.meili.util.UserPreferences
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hdodenhof.circleimageview.CircleImageView
 
 
-class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profile) {
+class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_activity) {
     private val launchGallery = registerForActivityResult(ActivityResultContracts.GetContent())
     { viewModel.loadLocalImage(contentResolver, it) }
 
     private lateinit var photoView: CircleImageView
+
     private lateinit var photoEditView: FloatingActionButton
     private lateinit var nameView: TextView
     private lateinit var bioView: TextView
@@ -35,11 +44,11 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     private lateinit var cancelButton: Button
     private lateinit var seeFriendsButton: ImageButton
     private lateinit var signInButton: Button
+    private lateinit var facebookSignInButton: LoginButton
     private lateinit var signOutButton: Button
-    private lateinit var commentsButton: ImageButton
     private lateinit var postsButton: ImageButton
-    private lateinit var reviewsButton: ImageButton
-    private lateinit var poiButton: ImageButton
+    private lateinit var favoritePoisButton: ImageButton
+    private lateinit var lightDarkModeButton: ImageButton
 
     private lateinit var signedInView: View
     private lateinit var profileView: View
@@ -47,6 +56,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
     private lateinit var viewModel: ProfileViewModel
 
+    private lateinit var callbackManager: CallbackManager
     private var isProfileOwner = false
     private var profileUid: String? = null
 
@@ -60,16 +70,15 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        profileUid = intent.getStringExtra(USER_KEY)
-        if (profileUid == null) {
-            profileUid = Auth.getCurrentUser()!!.uid // By default profile we are seeing is ours
-        }
-
         Auth.isLoggedIn.observe(this) {
             verifyAndUpdateUserIsLoggedIn()
         }
-        if (!Auth.isLoggedIn.value!!) {
-            Auth.signIn(this)
+
+        profileUid = intent.getStringExtra(USER_KEY)
+        if (profileUid == null) {
+            if (Auth.isLoggedIn.value!!) {
+                profileUid = Auth.getCurrentUser()!!.uid // By default profile we are seeing is ours
+            }
         }
 
         initializeViews()
@@ -83,23 +92,45 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
         nameEditView = findViewById(R.id.profile_edit_name)
         bioEditView = findViewById(R.id.profile_edit_bio)
 
+        initializeButtons()
+
+        signedInView = findViewById(R.id.signed_in)
+
+        registerFacebookCallBack()
+
+        Auth.isLoggedIn.observe(this) {
+            verifyAndUpdateUserIsLoggedIn()
+        }
+
+
+        profileView = findViewById(R.id.profile_container)
+        profileEditView = findViewById(R.id.profile_edit_container)
+    }
+
+    private fun initializeButtons() {
         profileEditButton = findViewById(R.id.profile_edit_button)
         saveButton = findViewById(R.id.save)
         cancelButton = findViewById(R.id.cancel)
         seeFriendsButton = findViewById(R.id.list_friends_button)
         signInButton = findViewById(R.id.sign_in)
+        facebookSignInButton = findViewById(R.id.facebook_sign_in)
         signOutButton = findViewById(R.id.sign_out)
-        commentsButton = findViewById(R.id.profile_comments_button)
         postsButton = findViewById(R.id.profile_posts_button)
-        reviewsButton = findViewById(R.id.profile_reviews_button)
-        poiButton = findViewById(R.id.profile_poi_history_button)
-
-        signedInView = findViewById(R.id.signed_in)
-        profileView = findViewById(R.id.profile_container)
-        profileEditView = findViewById(R.id.profile_edit_container)
+        favoritePoisButton = findViewById(R.id.profile_favorite_pois_button)
+        lightDarkModeButton = findViewById(R.id.switch_mode)
     }
 
+    private fun registerFacebookCallBack() {
+        callbackManager = CallbackManager.Factory.create()
+
+        facebookSignInButton.registerCallback(
+            callbackManager, facebookCallback
+        )
+    }
+
+
     private fun setupViewModel() {
+
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(profileUid!!))
             .get(ProfileViewModel::class.java)
         viewModel.getUser().removeObservers(this)
@@ -108,6 +139,7 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             bioView.text = user.bio
 
             if (nameView.text.isEmpty()) {
+
                 nameView.text = Auth.getCurrentUser()!!.username
             }
         }
@@ -118,19 +150,19 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
     /** Buttons callback function */
     fun onProfileButtonClick(view: View) {
         when (view) {
+
             photoEditView -> launchGallery.launch(STORAGE_IMAGES_PATH)
             saveButton -> saveProfile()
             cancelButton -> showProfile()
-            seeFriendsButton -> showFriends()
-            signInButton -> Auth.signIn(this)
+
+            seeFriendsButton -> showProfileOwnersInfo(FriendsListActivity::class.java)
+            signInButton -> Auth.signInIntent(this)
             signOutButton -> Auth.signOut()
             profileEditButton -> showEditMode()
+            postsButton -> showProfileOwnersInfo(MyPostsActivity::class.java)
+            favoritePoisButton -> showProfileOwnersInfo(FavoritePoisActivity::class.java)
+            lightDarkModeButton -> changeMode()
         }
-    }
-
-    private fun showFriends() {
-        val intent = Intent(this, FriendsListActivity::class.java)
-        startActivity(intent)
     }
 
     private fun saveProfile() {
@@ -170,7 +202,9 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Auth.onActivityResult(this, requestCode, resultCode, data)
+
+        Auth.onActivityResult(this, requestCode, resultCode, data) {}
+        callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun verifyAndUpdateUserIsLoggedIn() {
@@ -178,20 +212,73 @@ class ProfileActivity : NavigableActivity(R.layout.activity_profile, R.id.profil
             supportActionBar?.title = SUPPORT_ACTIONBAR_SIGNED_IN
             signedInView.visibility = View.VISIBLE
             signInButton.visibility = View.GONE
+            facebookSignInButton.visibility = View.GONE
 
             setupViewModel()
             updateIsProfileOwner()
             showProfile()
         } else {
+
             supportActionBar?.title = SUPPORT_ACTIONBAR_NOT_SIGNED_IN
             signedInView.visibility = View.GONE
             signInButton.visibility = View.VISIBLE
+            facebookSignInButton.visibility = View.VISIBLE
             signOutButton.visibility = View.GONE
         }
     }
 
+
     private fun updateIsProfileOwner() {
         val authUser = Auth.getCurrentUser()!!
         isProfileOwner = (authUser.uid == profileUid)
+    }
+
+    private fun showProfileOwnersInfo(activityClass: Class<out AppCompatActivity>) {
+        val intent = Intent(this, activityClass)
+            .putExtra(USER_KEY, profileUid)
+        startActivity(intent)
+    }
+
+    private fun changeMode() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Choose Mode")
+        val styles = arrayOf("System default", "Light", "Dark")
+
+        val preferences = UserPreferences(this)
+
+        builder.setSingleChoiceItems(styles, preferences.darkMode) { dialog, which ->
+            preferences.applyMode(which)
+            preferences.darkMode = which
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private val facebookCallback = object : FacebookCallback<LoginResult> {
+        private lateinit var profileTracker: ProfileTracker
+
+        override fun onSuccess(loginResult: LoginResult?) {
+            if (Profile.getCurrentProfile() == null) {
+                profileTracker = object : ProfileTracker() {
+                    override fun onCurrentProfileChanged(
+                        oldProfile: Profile?,
+                        currentProfile: Profile
+                    ) {
+                        Auth.setAuthenticationService(FacebookAuthenticationService())
+                        profileTracker.stopTracking()
+                    }
+                }
+            } else {
+                Auth.setAuthenticationService(FacebookAuthenticationService())
+            }
+        }
+
+        override fun onCancel() {
+        }
+
+        override fun onError(exception: FacebookException) {
+        }
     }
 }

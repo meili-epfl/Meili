@@ -6,7 +6,6 @@ import android.hardware.SensorManager
 import android.location.Location
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.models.PointOfInterest
@@ -104,8 +103,9 @@ class MapActivityViewModelTest {
                 return@then null
             }
 
-        UiThreadStatement.runOnUiThread {
-            viewModel.setPoiService(mockPoiService)
+
+        runOnUiThread {
+            viewModel.initPoiService(mockPoiService)
 
             viewModel.setDatabase(mockDatabase as Database<PointOfInterest>)
 
@@ -149,8 +149,8 @@ class MapActivityViewModelTest {
                 return@then null
             }
 
-        UiThreadStatement.runOnUiThread {
-            viewModel.setPoiService(mockPoiService)
+        runOnUiThread {
+            viewModel.initPoiService(mockPoiService)
 
             viewModel.setDatabase(mockDatabase as Database<PointOfInterest>)
 
@@ -166,7 +166,7 @@ class MapActivityViewModelTest {
             assertEquals(it.arguments[1], poi1)
         }
 
-        UiThreadStatement.runOnUiThread {
+        runOnUiThread {
             val poiStatusMap = HashMap<String, PointOfInterestStatus>()
             poiStatusMap[poi1.uid] = PointOfInterestStatus.REACHABLE
             viewModel.mPointsOfInterestStatus.value = poiStatusMap
@@ -218,8 +218,9 @@ class MapActivityViewModelTest {
         )
             .thenReturn(reachablePoiList)
 
-        UiThreadStatement.runOnUiThread {
-            viewModel.setPoiService(mockPoiService)
+
+        runOnUiThread {
+            viewModel.initPoiService(mockPoiService)
 
             viewModel.setDatabase(mockDatabase as Database<PointOfInterest>)
 
@@ -256,9 +257,9 @@ class MapActivityViewModelTest {
         val reachablePoiList = ArrayList<PointOfInterest>()
         reachablePoiList.add(poi1)
 
-        UiThreadStatement.runOnUiThread {
+        runOnUiThread {
             viewModel.setDatabase(mockDatabase as Database<PointOfInterest>)
-            viewModel.setPoiService(mockPoiService)
+            viewModel.initPoiService(mockPoiService)
             viewModel.onLocationChanged(mockLocation)
             viewModel.update(null, null)
 
@@ -313,7 +314,7 @@ class MapActivityViewModelTest {
             .thenReturn(reachablePoiList)
 
         runOnUiThread {
-            viewModel.setPoiService(mockPoiService)
+            viewModel.initPoiService(mockPoiService)
 
             viewModel.setDatabase(mockDatabase as Database<PointOfInterest>)
 

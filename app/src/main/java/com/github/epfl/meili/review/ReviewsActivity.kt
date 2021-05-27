@@ -1,35 +1,37 @@
 package com.github.epfl.meili.review
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
-import com.github.epfl.meili.util.MeiliViewModel
-import com.github.epfl.meili.util.MenuActivity
-import com.github.epfl.meili.util.TopSpacingItemDecoration
-import com.github.epfl.meili.util.UIUtility
+import com.github.epfl.meili.models.User
+import com.github.epfl.meili.profile.UserProfileLinker
+import com.github.epfl.meili.profile.friends.UserInfoService
+import com.github.epfl.meili.util.*
+import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
+import com.github.epfl.meili.util.navigation.PoiActivity
 
-
-class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
+class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_activity), ClickListener,
+    UserProfileLinker<Review> {
     companion object {
-        private const val CARD_PADDING: Int = 30
-
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
         private const val EDIT_BUTTON_DRAWABLE = android.R.drawable.ic_menu_edit
+        private const val TAG = "ReviewsActivity"
+
+        var serviceProvider: () -> UserInfoService = { UserInfoService() }
     }
 
     private var currentUserReview: Review? = null
 
-    private lateinit var recyclerAdapter: ReviewsRecyclerAdapter
     private lateinit var viewModel: MeiliViewModel<Review>
 
     private lateinit var listReviewsView: View
@@ -44,17 +46,33 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
     private lateinit var submitButton: Button
     private lateinit var cancelButton: Button
 
+    override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Review, User>>
+    override lateinit var usersMap: Map<String, User>
+    private lateinit var poi: PointOfInterest
+    private lateinit var poiStatus: PointOfInterestStatus
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reviews)
 
         listReviewsView = findViewById(R.id.list_reviews)
         editReviewView = findViewById(R.id.edit_review)
 
-        val poiKey = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)!!.uid
+        usersMap = HashMap()
+
+        poi = intent.getParcelableExtra(MapActivity.POI_KEY)!!
+        poiStatus = intent.getSerializableExtra(MapActivity.POI_STATUS_KEY) as PointOfInterestStatus
+
+        supportActionBar?.title = poi.name
+
+        val poiKey = poi.uid
         showListReviewsView()
         initReviewEditView()
-        initRecyclerView()
+        recyclerAdapter = ReviewsRecyclerAdapter(this)
+        initRecyclerView(
+            recyclerAdapter,
+            findViewById(R.id.reviews_recycler_view),
+            this
+        )
         initViewModel(poiKey)
         initLoggedInListener()
     }
@@ -90,7 +108,9 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         val title = editTitleView.text.toString()
         val summary = editSummaryView.text.toString()
 
-        viewModel.addElement(Auth.getCurrentUser()!!.uid, Review(rating, title, summary))
+        val currentUserUid = Auth.getCurrentUser()!!.uid
+        val key = currentUserUid + poi.uid
+        viewModel.addElement(key, Review(currentUserUid, poi.uid, rating, title, summary))
     }
 
     private fun editReviewButtonListener() {
@@ -115,9 +135,13 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         averageRatingView = findViewById(R.id.average_rating)
 
         @Suppress("UNCHECKED_CAST")
-        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
+        viewModel =
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Review>
 
-        viewModel.initDatabase(FirestoreDatabase("review/$poiKey/reviews", Review::class.java))
+        viewModel.initDatabase(FirestoreDatabase("reviews", Review::class.java) {
+            it.whereEqualTo(Review.POI_KEY_FIELD, poiKey)
+        })
+
         viewModel.getElements().observe(this, { map ->
             reviewsMapListener(map)
         })
@@ -135,25 +159,36 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
             }
         }
 
-        averageRatingView.text = getString(R.string.average_rating_format).format(Review.averageRating(map))
-        recyclerAdapter.submitList(map.toList())
-        recyclerAdapter.notifyDataSetChanged()
+        val newUsersList = ArrayList<String>()
+        for ((_, post) in map) {
+            newUsersList.add(post.authorUid)
+        }
+
+        serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, map) },
+            { Log.d(TAG, "Error when fetching users information") })
+        averageRatingView.text =
+            getString(R.string.average_rating_format).format(Review.averageRating(map))
     }
 
-    private fun initRecyclerView() {
-        recyclerAdapter = ReviewsRecyclerAdapter()
-        val recyclerView: RecyclerView = findViewById(R.id.reviews_recycler_view)
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(this@ReviewsActivity)
-            addItemDecoration(TopSpacingItemDecoration(CARD_PADDING))
-            adapter = recyclerAdapter
+    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Review>) {
+        usersMap = HashMap(usersMap) + users
+
+        val reviewsAndUsersMap = HashMap<String, Pair<Review, User>>()
+        for ((postId, review) in map) {
+            val user = usersMap[review.authorUid]
+            if (user != null) {
+                reviewsAndUsersMap[postId] = Pair(review, user)
+            }
         }
+
+        recyclerAdapter.submitList(reviewsAndUsersMap.toList())
+        recyclerAdapter.notifyDataSetChanged()
     }
 
     private fun initLoggedInListener() {
         Auth.isLoggedIn.observe(this, { loggedIn ->
-            floatingActionButton.isEnabled = loggedIn
-            floatingActionButton.visibility = if (loggedIn)
+            floatingActionButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn , poiStatus)
+            floatingActionButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn , poiStatus))
                 View.VISIBLE
             else
                 View.GONE
@@ -169,4 +204,5 @@ class ReviewsActivity : MenuActivity(R.menu.nav_review_menu) {
         listReviewsView.visibility = View.VISIBLE
         editReviewView.visibility = View.GONE
     }
+
 }

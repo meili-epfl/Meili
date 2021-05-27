@@ -11,9 +11,12 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.Mockito
 
+@Suppress("UNCHECKED_CAST")
 class UserInfoServiceTest {
-    private val TEST_UID = "TEST_ID"
-    private val TEST_NAME = "TEST_NAME"
+    companion object {
+        private const val TEST_UID = "TEST_ID"
+        private const val TEST_NAME = "TEST_NAME"
+    }
 
     @Test
     fun getUserInformationTest() {
@@ -32,7 +35,8 @@ class UserInfoServiceTest {
         val mockDocumentReference = Mockito.mock(DocumentReference::class.java)
         Mockito.`when`(mockDocumentReference.get()).thenReturn(mockTask as Task<DocumentSnapshot>)
         val mockFirestore = Mockito.mock(FirebaseFirestore::class.java)
-        Mockito.`when`(mockFirestore.document(Mockito.anyString())).thenReturn(mockDocumentReference)
+        Mockito.`when`(mockFirestore.document(Mockito.anyString()))
+            .thenReturn(mockDocumentReference)
 
         FirestoreDocumentService.databaseProvider = { mockFirestore }
 

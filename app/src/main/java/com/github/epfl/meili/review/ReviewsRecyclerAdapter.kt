@@ -8,27 +8,30 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Review
+import com.github.epfl.meili.models.User
+import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
+import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
 
-class ReviewsRecyclerAdapter : MeiliRecyclerAdapter<Review>() {
+class ReviewsRecyclerAdapter(private val clickListener: ClickListener) : MeiliRecyclerAdapter<Pair<Review, User>>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-            ReviewViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.review, parent, false))
+            ReviewViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.review, parent, false), clickListener)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-            (holder as ReviewViewHolder).bind(items[position])
+            (holder as ReviewViewHolder).bind(items[position].second.second, items[position].second.first)
 
-    class ReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ReviewViewHolder(itemView: View, listener: ClickListener) : MeiliWithUserRecyclerViewHolder<Review>(itemView, listener), View.OnClickListener {
         private val ratingBar: RatingBar = itemView.findViewById(R.id.review_rating)
         private val title: TextView = itemView.findViewById(R.id.review_title)
         private val summary: TextView = itemView.findViewById(R.id.review_summary)
-        private val author: TextView = itemView.findViewById(R.id.review_author)
 
-        fun bind(pair: Pair<String, Review>) {
-            val review = pair.second
-            ratingBar.rating = review.rating
-            title.text = review.title
-            summary.text = review.summary
-            author.text = pair.first
+
+        override fun bind(user: User, other: Review) {
+            super.bind(user, other)
+
+            ratingBar.rating = other.rating
+            title.text = other.title
+            summary.text = other.summary
         }
     }
 }

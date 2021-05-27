@@ -18,21 +18,27 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.map.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Review
+import com.github.epfl.meili.models.User
+import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.firebase.firestore.*
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
@@ -42,11 +48,16 @@ import org.mockito.Mockito.mock
 class ReviewsActivityTest {
 
     companion object {
-        private const val TEST_UID = "MrPerfect"
+        private const val TEST_AUTHOR_USERNAME = "MrPerfect"
+        private const val TEST_OTHER_AUTHOR_USERNAME = "MrPerfect2"
+        private const val TEST_REVIEW_ID = "test uid"
 
-        private val TEST_POI_KEY = PointOfInterest(100.0,100.0,"lorem_ipsum1", "lorem_ipsum2")
+        private const val TEST_POI_KEY = "lorem_ipsum2"
+        private val TEST_POI = PointOfInterest(100.0, 100.0, "lorem_ipsum1", TEST_POI_KEY)
         private const val TEST_TITLE = "Beach too sandy"
         private const val TEST_SUMMARY = "Water too wet"
+        private const val TEST_AUTHOR_ID = "author id"
+        private const val TEST_OTHER_AUTHOR_ID = "author id2"
 
         private const val AVERAGE_FORMAT = "%.2f"
 
@@ -68,6 +79,7 @@ class ReviewsActivityTest {
     private val mockSnapshotAfterEdition: QuerySnapshot = mock(QuerySnapshot::class.java)
 
     private val mockAuthenticationService = MockAuthenticationService()
+    private val mockUserInfoService = Mockito.mock(UserInfoService::class.java)
     private lateinit var database: FirestoreDatabase<Review>
 
     private var testAverageRatingBeforeAddition: Float = 0f
@@ -78,13 +90,44 @@ class ReviewsActivityTest {
         setupMocks()
     }
 
+    @Before
+    fun startUserInfoService() {
+        val testFriendMap = HashMap<String, User>()
+        testFriendMap[TEST_AUTHOR_ID] = User(TEST_AUTHOR_ID, TEST_AUTHOR_USERNAME)
+        testFriendMap[TEST_OTHER_AUTHOR_ID] = User(TEST_OTHER_AUTHOR_ID, TEST_OTHER_AUTHOR_USERNAME)
+
+        `when`(
+                mockUserInfoService.getUserInformation(
+                        Mockito.anyList(),
+                        Mockito.any(),
+                        Mockito.any()
+                )
+        ).then {
+            val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)
+
+            onSuccess(testFriendMap)
+
+            return@then null
+        }
+        ReviewsActivity.serviceProvider = { mockUserInfoService }
+    }
+
     private fun setupMocks() {
-        `when`(mockFirestore.collection("review/${TEST_POI_KEY.uid}/reviews")).thenReturn(mockCollection)
-        `when`(mockCollection.addSnapshotListener(any())).thenAnswer { invocation ->
+        `when`(mockFirestore.collection("reviews")).thenReturn(mockCollection)
+        val mockQuery = mock(Query::class.java)
+        `when`(
+                mockCollection.whereEqualTo(
+                        Review.POI_KEY_FIELD,
+                        TEST_POI_KEY
+                )
+        ).thenReturn(mockQuery)
+        `when`(mockQuery.addSnapshotListener(any())).thenAnswer { invocation ->
             database = invocation.arguments[0] as FirestoreDatabase<Review>
             mock(ListenerRegistration::class.java)
         }
-        `when`(mockCollection.document(ArgumentMatchers.matches(TEST_UID))).thenReturn(mockDocument)
+        `when`(mockCollection.document(ArgumentMatchers.matches(TEST_REVIEW_ID))).thenReturn(
+                mockDocument
+        )
 
         val mockDocumentList = beforeAdditionList()
         `when`(mockSnapshotBeforeAddition.documents).thenReturn(mockDocumentList)
@@ -97,7 +140,7 @@ class ReviewsActivityTest {
         mockDocumentListAfterEdition.add(editedReviewDocumentSnapshot())
         `when`(mockSnapshotAfterEdition.documents).thenReturn(mockDocumentListAfterEdition)
 
-        mockAuthenticationService.setMockUid(TEST_UID)
+        mockAuthenticationService.setMockUid(TEST_REVIEW_ID)
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
@@ -105,15 +148,35 @@ class ReviewsActivityTest {
     }
 
     private fun editedReviewDocumentSnapshot(): DocumentSnapshot {
-        testAverageRatingAfterEdition = (NUM_REVIEWS_BEFORE_ADDITION * testAverageRatingBeforeAddition + EDITED_REVIEW_RATING) /
-                (NUM_REVIEWS_BEFORE_ADDITION + 1)
-        return getMockDocumentSnapshot(TEST_UID, Review(EDITED_REVIEW_RATING, TEST_EDITED_TITLE, TEST_SUMMARY))
+        testAverageRatingAfterEdition =
+                (NUM_REVIEWS_BEFORE_ADDITION * testAverageRatingBeforeAddition + EDITED_REVIEW_RATING) /
+                        (NUM_REVIEWS_BEFORE_ADDITION + 1)
+        return getMockDocumentSnapshot(
+                TEST_REVIEW_ID,
+                Review(
+                        TEST_OTHER_AUTHOR_ID,
+                        TEST_POI_KEY,
+                        EDITED_REVIEW_RATING,
+                        TEST_EDITED_TITLE,
+                        TEST_SUMMARY
+                )
+        )
     }
 
     private fun addedReviewDocumentSnapshot(): DocumentSnapshot {
-        testAverageRatingAfterAddition = (NUM_REVIEWS_BEFORE_ADDITION * testAverageRatingBeforeAddition + ADDED_REVIEW_RATING) /
-                (NUM_REVIEWS_BEFORE_ADDITION + 1)
-        return getMockDocumentSnapshot(TEST_UID, Review(ADDED_REVIEW_RATING, TEST_ADDED_TITLE, TEST_SUMMARY))
+        testAverageRatingAfterAddition =
+                (NUM_REVIEWS_BEFORE_ADDITION * testAverageRatingBeforeAddition + ADDED_REVIEW_RATING) /
+                        (NUM_REVIEWS_BEFORE_ADDITION + 1)
+        return getMockDocumentSnapshot(
+                TEST_REVIEW_ID,
+                Review(
+                        TEST_OTHER_AUTHOR_ID,
+                        TEST_POI_KEY,
+                        ADDED_REVIEW_RATING,
+                        TEST_ADDED_TITLE,
+                        TEST_SUMMARY
+                )
+        )
     }
 
     private fun beforeAdditionList(): MutableList<DocumentSnapshot> {
@@ -121,7 +184,14 @@ class ReviewsActivityTest {
         val documentList: MutableList<DocumentSnapshot> = ArrayList()
 
         for (i in 1..NUM_REVIEWS_BEFORE_ADDITION) {
-            val review = Review(i.toFloat() / 2, TEST_TITLE, TEST_SUMMARY)
+            val review =
+                    Review(
+                            TEST_AUTHOR_ID,
+                            TEST_POI_KEY,
+                            i.toFloat() / 2,
+                            TEST_TITLE,
+                            TEST_SUMMARY
+                    )
             reviews[i.toString()] = review
             documentList.add(getMockDocumentSnapshot(i.toString(), review))
         }
@@ -137,8 +207,10 @@ class ReviewsActivityTest {
         return mockDocumentSnapshot
     }
 
-    private val intent = Intent(getInstrumentation().targetContext.applicationContext, ReviewsActivity::class.java)
-                            .putExtra("POI_KEY", TEST_POI_KEY)
+    private val intent =
+            Intent(getInstrumentation().targetContext.applicationContext, ReviewsActivity::class.java)
+                    .putExtra(MapActivity.POI_KEY, TEST_POI)
+                    .putExtra(MapActivity.POI_STATUS_KEY, PointOfInterestStatus.VISITED)
 
     @get:Rule
     var rule: ActivityScenarioRule<ReviewsActivity> = ActivityScenarioRule(intent)
@@ -151,7 +223,15 @@ class ReviewsActivityTest {
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.average_rating)).check(matches(textViewContainsText(AVERAGE_FORMAT.format(testAverageRatingBeforeAddition))))
+        onView(withId(R.id.average_rating)).check(
+                matches(
+                        textViewContainsText(
+                                AVERAGE_FORMAT.format(
+                                        testAverageRatingBeforeAddition
+                                )
+                        )
+                )
+        )
 
         onView(withId(R.id.fab_add_edit_review)).check(matches(isNotEnabled()))
         onView(withId(R.id.fab_add_edit_review)).check(matches(not(isDisplayed())))
@@ -159,13 +239,21 @@ class ReviewsActivityTest {
 
     @Test
     fun signedInDisplayTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.list_reviews)).check(matches(isDisplayed()))
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.average_rating)).check(matches(textViewContainsText(AVERAGE_FORMAT.format(testAverageRatingBeforeAddition))))
+        onView(withId(R.id.average_rating)).check(
+                matches(
+                        textViewContainsText(
+                                AVERAGE_FORMAT.format(
+                                        testAverageRatingBeforeAddition
+                                )
+                        )
+                )
+        )
 
         onView(withId(R.id.fab_add_edit_review)).check(matches(isEnabled()))
         onView(withId(R.id.fab_add_edit_review)).check(matches(isDisplayed()))
@@ -173,7 +261,7 @@ class ReviewsActivityTest {
 
     @Test
     fun signedInCancelAddingTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())
@@ -191,14 +279,22 @@ class ReviewsActivityTest {
 
     @Test
     fun signedInAddReviewTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotBeforeAddition, null)
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())
 
         onView(withId(R.id.rating_bar)).perform(setRating(ADDED_REVIEW_RATING))
-        onView(withId(R.id.review_edit_title)).perform(clearText(), typeText(TEST_ADDED_TITLE), closeSoftKeyboard())
-        onView(withId(R.id.review_edit_summary)).perform(clearText(), typeText(TEST_SUMMARY), closeSoftKeyboard())
+        onView(withId(R.id.review_edit_title)).perform(
+                clearText(),
+                typeText(TEST_ADDED_TITLE),
+                closeSoftKeyboard()
+        )
+        onView(withId(R.id.review_edit_summary)).perform(
+                clearText(),
+                typeText(TEST_SUMMARY),
+                closeSoftKeyboard()
+        )
 
         onView(withId(R.id.submit_review)).perform(click())
 
@@ -210,17 +306,33 @@ class ReviewsActivityTest {
 
         onView(withId(R.id.reviews_recycler_view))
                 .check(matches(isDisplayed()))
-                .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_UID))))
+                .perform(
+                        RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
+                                hasDescendant(
+                                        withText(
+                                                TEST_OTHER_AUTHOR_USERNAME
+                                        )
+                                )
+                        )
+                )
 
-        onView(withText(TEST_UID)).check(matches(isDisplayed()))
+        onView(textViewContainsText(TEST_OTHER_AUTHOR_USERNAME)).check(matches(isDisplayed()))
         onView(textViewContainsText(TEST_ADDED_TITLE)).check(matches(isDisplayed()))
 
-        onView(withId(R.id.average_rating)).check(matches(textViewContainsText(AVERAGE_FORMAT.format(testAverageRatingAfterAddition))))
+        onView(withId(R.id.average_rating)).check(
+                matches(
+                        textViewContainsText(
+                                AVERAGE_FORMAT.format(
+                                        testAverageRatingAfterAddition
+                                )
+                        )
+                )
+        )
     }
 
     @Test
     fun signedInEditReviewTest() {
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotAfterAddition, null) // mock user has existing review
 
         onView(withId(R.id.fab_add_edit_review)).perform(click())
@@ -232,7 +344,11 @@ class ReviewsActivityTest {
 
         // edit review
         onView(withId(R.id.rating_bar)).perform(setRating(EDITED_REVIEW_RATING))
-        onView(withId(R.id.review_edit_title)).perform(clearText(), typeText(TEST_EDITED_TITLE), closeSoftKeyboard())
+        onView(withId(R.id.review_edit_title)).perform(
+                clearText(),
+                typeText(TEST_EDITED_TITLE),
+                closeSoftKeyboard()
+        )
         onView(withId(R.id.submit_review)).perform(click())
 
         // send reviews map with edited review to review service
@@ -242,15 +358,31 @@ class ReviewsActivityTest {
         onView(withId(R.id.edit_review)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.reviews_recycler_view))
-            .check(matches(isDisplayed()))
-            .perform(RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(hasDescendant(withText(TEST_UID))))
+                .check(matches(isDisplayed()))
+                .perform(
+                        RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
+                                hasDescendant(
+                                        withText(
+                                                TEST_OTHER_AUTHOR_USERNAME
+                                        )
+                                )
+                        )
+                )
 
-        onView(withText(TEST_UID)).check(matches(isDisplayed()))
+        onView(withText(TEST_OTHER_AUTHOR_USERNAME)).check(matches(isDisplayed()))
         onView(textViewContainsText(TEST_EDITED_TITLE)).check(matches(isDisplayed()))
 
         onView(withText(TEST_ADDED_TITLE)).check(doesNotExist())
 
-        onView(withId(R.id.average_rating)).check(matches(textViewContainsText(AVERAGE_FORMAT.format(testAverageRatingAfterEdition))))
+        onView(withId(R.id.average_rating)).check(
+                matches(
+                        textViewContainsText(
+                                AVERAGE_FORMAT.format(
+                                        testAverageRatingAfterEdition
+                                )
+                        )
+                )
+        )
     }
 
     private fun ratingBarHasRating(rating: Float): Matcher<View?> {

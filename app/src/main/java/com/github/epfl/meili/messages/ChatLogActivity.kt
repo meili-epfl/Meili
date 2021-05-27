@@ -6,12 +6,14 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.home.Auth
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.*
 import com.github.epfl.meili.notifications.FirebaseNotificationService
@@ -22,6 +24,8 @@ import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.MenuActivity
 import com.google.firebase.database.DatabaseException
 import com.google.firebase.messaging.FirebaseMessaging
+import com.github.epfl.meili.util.navigation.PoiActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -30,7 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
+class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activity) {
 
     companion object {
         private const val TAG: String = "ChatLogActivity"
@@ -43,24 +47,30 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     private lateinit var viewModel: MeiliViewModel<Token>
     private var token: Token? = null
     private lateinit var chatId: String
-    private var messageSet = HashSet<ChatMessage>()
+    private var messageList: ArrayList<ChatMessage> = ArrayList()
+
     private var isGroupChat = false
+    private var poi: PointOfInterest? = null
+
+    private lateinit var navigationBar: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat_log)
-        FirebaseMessaging.getInstance().subscribeToTopic(MY_TOPIC)
-        findViewById<RecyclerView>(R.id.recycleview_chat_log).adapter = adapter
+
+        navigationBar = findViewById(R.id.navigation)
+
+        findViewById<RecyclerView>(R.id.recyclerview_chat_log).adapter = adapter
 
         Auth.isLoggedIn.observe(this) {
-            Log.d(TAG, "value received $it")
             verifyAndUpdateUserIsLoggedIn(it)
         }
 
         verifyAndUpdateUserIsLoggedIn(Auth.isLoggedIn.value!!)
     }
 
-
+    /**
+     * Start the chat if the user is logged in
+     */
     fun verifyAndUpdateUserIsLoggedIn(isLoggedIn: Boolean) {
         if (isLoggedIn) {
             currentUser = Auth.getCurrentUser()
@@ -70,6 +80,7 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
             val databasePath: String
 
             if (poi != null) {
+                this.poi = poi
 
                 supportActionBar?.title = poi.name
                 chatId = poi.uid
@@ -106,8 +117,8 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 
         } else {
             currentUser = null
-            supportActionBar?.title = "Not Signed In"
-            Auth.signIn(this)
+            supportActionBar?.title = getString(R.string.not_signed_in)
+            Auth.signInIntent(this)
         }
     }
 
@@ -137,14 +148,11 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     private fun setGroupChat(isGroupChat: Boolean) {
         this.isGroupChat = isGroupChat
         if (!isGroupChat) {
-            hideMenuButtons()
+            navigationBar.isVisible = false
         }
     }
 
-    private fun hideMenuButtons() {
-        setShowMenu(false)
-        invalidateOptionsMenu()
-    }
+
 
     private fun sendNotification(notification: PushNotification) =
         CoroutineScope(Dispatchers.IO).launch {
@@ -188,26 +196,37 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
     private fun listenForMessages(chatID: String) {
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
-            val newMessages = list.minus(messageSet)
+            val newMessages = list.minus(messageList)
+            var prevMessage: ChatMessage? = if (messageList.isEmpty()) null else messageList.last()
             newMessages.filter { message -> message.toId == chatID }.forEach { message ->
-                Log.d(TAG, "loading message: ${message.text}")
-                adapter.add(ChatItem(message, message.fromId == currentUser!!.uid, isGroupChat))
+                val isDisplayingDate: Boolean = if (prevMessage != null) {
+                    !DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(message.timestamp))
+                            .equals(DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(prevMessage!!.timestamp)))
+                } else {
+                    true
+                }
+                adapter.add(ChatItem(message,
+                        message.fromId == currentUser!!.uid,
+                        isGroupChat,
+                        isDisplayingDate
+                ))
+
+                prevMessage = message
             }
 
-            messageSet.addAll(newMessages)
+            messageList.addAll(newMessages)
             //scroll down
             val lastItemPos = adapter.itemCount - 1
-            findViewById<RecyclerView>(R.id.recycleview_chat_log).scrollToPosition(lastItemPos)
+            findViewById<RecyclerView>(R.id.recyclerview_chat_log).scrollToPosition(lastItemPos)
         }
 
         ChatMessageViewModel.messages.observe(this, groupMessageObserver)
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        Auth.onActivityResult(this, requestCode, resultCode, data)
+        Auth.onActivityResult(this, requestCode, resultCode, data) {}
     }
 
     override fun onDestroy() {
@@ -219,14 +238,19 @@ class ChatLogActivity : MenuActivity(R.menu.nav_chat_menu) {
 }
 
 class ChatItem(
-    private val message: ChatMessage,
-    private val isChatMessageFromCurrentUser: Boolean,
-    private val isGroupChat: Boolean
+        private val message: ChatMessage,
+        private val isChatMessageFromCurrentUser: Boolean,
+        private val isGroupChat: Boolean,
+        private val isDisplayingDate: Boolean,
 ) :
     Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
-        return if (isChatMessageFromCurrentUser) {
+        return if (isChatMessageFromCurrentUser && isDisplayingDate) {
+            R.layout.chat_from_me_row_with_date
+        } else if (isChatMessageFromCurrentUser && !isDisplayingDate) {
             R.layout.chat_from_me_row
+        } else if (!isChatMessageFromCurrentUser && isDisplayingDate) {
+            R.layout.chat_from_other_row_with_date
         } else {
             R.layout.chat_from_other_row
         }
@@ -236,9 +260,9 @@ class ChatItem(
         viewHolder.itemView.findViewById<TextView>(R.id.text_gchat_message).text = message.text
         val date = DateAuxiliary.getDateFromTimestamp(message.timestamp)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_timestamp).text =
-            DateAuxiliary.getTime(date)
-        viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
-            DateAuxiliary.getDay(date)
+                DateAuxiliary.getTime(date)
+        if (isDisplayingDate) viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
+                DateAuxiliary.getDay(date)
         if (!isChatMessageFromCurrentUser) {
             viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text =
                 if (isGroupChat) message.fromName else ""

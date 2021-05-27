@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="icActive">#FFFFFFFF</color>
+    <color name="icFocused">#DDFFFFFF</color>
+    <color name="icPressed">#AAFFFFFF</color>
+
+    <color name="menu_selected">#FF03DAC5</color>
+    <color name="menu_unselected">#6200EE</color>
+
+    <!-- Meili Color Palette-->
+    <color name="white_blue">#CAF0F8</color>
+    <color name="pink">#ECCBD9</color>
+    <color name="gold">#F6CA83</color>
+    <color name="brown">#522A27</color>
+    <color name="dark_blue">#023E8A</color>
+    <!-- Dark Mode Palette-->
+    <color name="black_purple">#363b4e</color>
+    <color name="dark_purple">#4f3b78</color>
+    <color name="grey_purple">#927fbf</color>
+
+</resources>

@@ -12,13 +12,13 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDocumentService
-import com.github.epfl.meili.feed.FeedActivity
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.User
+import com.github.epfl.meili.posts.feed.FeedActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.MockAuthenticationService
@@ -39,6 +39,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.*
 
+@Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class ProfileActivityTest {
 
@@ -57,7 +58,7 @@ class ProfileActivityTest {
     var testRule = ActivityScenarioRule(ProfileActivity::class.java)
 
     private val listenerCaptor: ArgumentCaptor<OnSuccessListener<DocumentSnapshot>> =
-            ArgumentCaptor.forClass(OnSuccessListener::class.java) as ArgumentCaptor<OnSuccessListener<DocumentSnapshot>>
+        ArgumentCaptor.forClass(OnSuccessListener::class.java) as ArgumentCaptor<OnSuccessListener<DocumentSnapshot>>
     private lateinit var mockDocumentSnapshot1: DocumentSnapshot
     private lateinit var mockDocumentSnapshot2: DocumentSnapshot
 
@@ -69,12 +70,12 @@ class ProfileActivityTest {
     }
 
     @Before
-    fun initIntents(){
+    fun initIntents() {
         Intents.init()
     }
 
     @After
-    fun releaseIntents(){
+    fun releaseIntents() {
         Intents.release()
     }
 
@@ -102,12 +103,12 @@ class ProfileActivityTest {
 
         FirestoreDocumentService.databaseProvider = { mockFirestore }
         Auth.authService = mockAuthenticationService
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
     }
 
     private fun setupMapMocks() {
         val mockFirestore = mock(FirebaseFirestore::class.java)
-        val mockCollection =  mock(CollectionReference::class.java)
+        val mockCollection = mock(CollectionReference::class.java)
         `when`(mockFirestore.collection(anyString())).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { mock(ListenerRegistration::class.java) }
 
@@ -123,7 +124,9 @@ class ProfileActivityTest {
         `when`(mockReference.putBytes(ArgumentMatchers.any())).thenReturn(mockUploadTask)
 
         val mockStorageTask = mock(StorageTask::class.java)
-        `when`(mockUploadTask.addOnSuccessListener(ArgumentMatchers.any())).thenReturn(mockStorageTask as StorageTask<UploadTask.TaskSnapshot>?)
+        `when`(mockUploadTask.addOnSuccessListener(ArgumentMatchers.any())).thenReturn(
+            mockStorageTask as StorageTask<UploadTask.TaskSnapshot>?
+        )
 
         val mockTask = mock(Task::class.java)
         `when`(mockReference.downloadUrl).thenReturn(mockTask as Task<Uri>?)
@@ -149,10 +152,8 @@ class ProfileActivityTest {
         onView(withId(R.id.profile_edit_button)).check(matches(isDisplayed()))
         onView(withId(R.id.list_friends_button)).check(matches(isDisplayed()))
 
-        onView(withId(R.id.profile_comments_button)).check(matches(isDisplayed()))
         onView(withId(R.id.profile_posts_button)).check(matches(isDisplayed()))
-        onView(withId(R.id.profile_reviews_button)).check(matches(isDisplayed()))
-        onView(withId(R.id.profile_poi_history_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.profile_favorite_pois_button)).check(matches(isDisplayed()))
 
         onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
         onView(withId(R.id.sign_in)).check(matches(not(isDisplayed())))
@@ -170,8 +171,16 @@ class ProfileActivityTest {
         onView(withId(R.id.profile_edit_button)).perform(click())
         onView(withId(R.id.photo_edit)).check(matches(isDisplayed()))
 
-        onView(withId(R.id.profile_edit_name)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
-        onView(withId(R.id.profile_edit_bio)).perform(clearText(), typeText(TEST_BIO), closeSoftKeyboard())
+        onView(withId(R.id.profile_edit_name)).perform(
+            clearText(),
+            typeText(TEST_USERNAME),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.profile_edit_bio)).perform(
+            clearText(),
+            typeText(TEST_BIO),
+            closeSoftKeyboard()
+        )
         onView(withId(R.id.save)).perform(click())
 
         runOnUiThread {
@@ -193,8 +202,16 @@ class ProfileActivityTest {
 
         onView(withId(R.id.profile_edit_button)).perform(click())
 
-        onView(withId(R.id.profile_edit_name)).perform(clearText(), typeText(TEST_USERNAME), closeSoftKeyboard())
-        onView(withId(R.id.profile_edit_bio)).perform(clearText(), typeText(TEST_BIO), closeSoftKeyboard())
+        onView(withId(R.id.profile_edit_name)).perform(
+            clearText(),
+            typeText(TEST_USERNAME),
+            closeSoftKeyboard()
+        )
+        onView(withId(R.id.profile_edit_bio)).perform(
+            clearText(),
+            typeText(TEST_BIO),
+            closeSoftKeyboard()
+        )
         onView(withId(R.id.cancel)).perform(click())
 
         onView(withId(R.id.profile_name)).check(matches(withText(MOCK_USERNAME)))
@@ -216,13 +233,19 @@ class ProfileActivityTest {
 
     @Test
     fun goToMapTest() {
-        onView(withId(R.id.map)).perform(click())
+        onView(withId(R.id.map_activity)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(MapActivity::class.qualifiedName))
     }
 
     @Test
     fun goToFeedTest() {
-        onView(withId(R.id.feed)).perform(click())
+        onView(withId(R.id.feed_activity)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(FeedActivity::class.qualifiedName))
     }
+
+    @Test
+    fun changeModeTest() {
+        onView(withId(R.id.switch_mode)).perform(click())
+    }
+
 }

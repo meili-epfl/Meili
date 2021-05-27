@@ -17,16 +17,24 @@ abstract class MessageDatabase(path: String) : Observable() {
     private var observers: ArrayList<Observer> = ArrayList()
 
     init {
-        if (path == "") {
-            throw IllegalArgumentException("Path cannot be null")
+        if (path.isEmpty()) {
+            throw IllegalArgumentException("Path cannot be empty")
         }
     }
 
+    /**
+     * Add message to the database
+     *
+     * @param chatMessage: chat message to be added inside the database
+     */
     abstract fun addMessageToDatabase(chatMessage: ChatMessage)
 
+    /**
+     * Get all messages from the database
+     */
     abstract fun getMessages(): ArrayList<ChatMessage>
 
-    override fun addObserver(o: Observer?) { //TODO: write tests for observers
+    override fun addObserver(o: Observer?) {
         super.addObserver(o)
         if(o != null && !observers.contains(o)){
             observers.add(o)

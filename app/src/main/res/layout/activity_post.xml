@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".forum.PostActivity"
+    tools:context=".posts.PostActivity"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -11,15 +10,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/post_author"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="12dp"
-            android:textSize="14sp" />
+        <include layout="@layout/user" />
 
         <TextView
             android:id="@+id/post_title"
@@ -44,39 +35,47 @@
             android:id="@+id/post_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+            tools:srcCompat="@tools:sample/backgrounds/scenic"
+            android:contentDescription="@string/post_image" />
 
         <LinearLayout
             android:id="@+id/new_comment_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <Button
                     android:id="@+id/comment_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Add comment"
-                    android:visibility="visible"/>
+                    android:text="@string/add_comment"
+                    style="@style/Theme.Meili.button"
+                    android:theme="@style/Theme.Meili.button"
+                    android:visibility="visible" />
 
                 <EditText
                     android:id="@+id/edit_comment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Add your comment"
+                    android:hint="@string/add_your_comment"
                     android:inputType="textMultiLine"
                     android:maxLength="300"
-                    android:visibility="invisible"/>
+                    android:visibility="invisible"
+                    android:autofillHints="" />
             </RelativeLayout>
 
             <Button
                 android:id="@+id/add_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Post comment"
+                android:text="@string/post_comment"
+                style="@style/Theme.Meili.button"
+                android:theme="@style/Theme.Meili.button"
                 android:visibility="invisible" />
         </LinearLayout>
 
