@@ -178,8 +178,6 @@ class PoiInfoActivityTest {
 
     @Test
     fun favoriteButtonTestSignedIn() {
-
-
         database.onEvent(mockSnapshot, null)
         onView(withId(R.id.favorite_button)).check(matches(isDisplayed()))
         onView(withId(R.id.favorite_button)).perform(click())

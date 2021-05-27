@@ -5,7 +5,6 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     tools:context=".profile.friends.NearbyActivity">
 
     <Button
@@ -21,10 +20,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/test_button_text1" />
+        app:layout_constraintTop_toBottomOf="@+id/explanation_text" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/bluetooth_image"
         android:layout_width="37dp"
         android:layout_height="33dp"
         android:layout_marginStart="16dp"
@@ -35,7 +34,7 @@
         android:contentDescription="@string/bluetooth" />
 
     <TextView
-        android:id="@+id/test_button_text1"
+        android:id="@+id/explanation_text"
         android:layout_width="247dp"
         android:layout_height="60dp"
         android:layout_marginStart="16dp"
@@ -44,8 +43,8 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.18"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/imageView2" />
+        app:layout_constraintStart_toEndOf="@+id/bluetooth_image"
+        app:layout_constraintTop_toTopOf="@+id/bluetooth_image" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
