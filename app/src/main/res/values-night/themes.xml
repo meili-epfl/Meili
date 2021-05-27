@@ -4,7 +4,7 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/dark_purple</item>
         <item name="colorPrimaryVariant">@color/black_purple</item>
-        <item name="colorOnPrimary">@color/black_purple</item>
+        <item name="colorOnPrimary">@color/white_blue</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_200</item>
@@ -16,8 +16,6 @@
         <item name="android:colorBackground">@color/black_purple</item>
         <!-- Button Color -->
         <item name="colorAccent">@color/white_blue</item>
-        <item name="colorButtonNormal">@color/white_blue</item>
-        <item name="android:colorButtonNormal">@color/white_blue</item>
         <item name="android:textColor">@color/white_blue</item>
         <!-- option menu aciton bar -->
         <item name="android:itemBackground">@color/pink</item>
