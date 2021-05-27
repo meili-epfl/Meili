@@ -115,7 +115,7 @@ dependencies {
 
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0-beta01'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0-alpha06'
 }
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
