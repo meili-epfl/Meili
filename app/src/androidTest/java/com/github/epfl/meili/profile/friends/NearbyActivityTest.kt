@@ -10,8 +10,8 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.common.api.Status
@@ -29,7 +29,7 @@ import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
-
+@Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class NearbyActivityTest {
 
@@ -83,7 +83,7 @@ class NearbyActivityTest {
         val mockAuth = MockAuthenticationService()
         mockAuth.setMockUid(MOCK_UID)
         mockAuth.setUsername(MOCK_USERNAME)
-        mockAuth.signInIntent()
+        mockAuth.signInIntent(null)
 
         NearbyActivity.getConnectionsClient = { mockClient }
         Auth.authService = mockAuth

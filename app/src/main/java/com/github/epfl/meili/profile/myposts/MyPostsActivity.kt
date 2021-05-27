@@ -8,6 +8,7 @@ import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.posts.PostListActivity
+
 import com.github.epfl.meili.posts.PostListActivity.Companion.NEWEST
 import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.profile.ProfileActivity
