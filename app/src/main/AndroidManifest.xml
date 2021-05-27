@@ -96,10 +96,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".forum.PostActivity"
-            android:parentActivityName=".forum.ForumActivity"/>
-
         <service android:name=".notifications.FirebaseNotificationService"
                 android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
