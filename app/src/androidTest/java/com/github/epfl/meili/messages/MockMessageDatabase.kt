@@ -7,8 +7,8 @@ class MockMessageDatabase(path: String) : MessageDatabase(path) {
 
     init {
         // Add mock messages
-        val mock_message = ChatMessage("Hi I am a Mock Message", "Meili", "tour-eiffel", 1234)
-        messages.add(mock_message)
+        val mockMessage = ChatMessage("Hi I am a Mock Message", "Meili", "tour-eiffel", 1234)
+        messages.add(mockMessage)
         notifyObservers()
     }
 

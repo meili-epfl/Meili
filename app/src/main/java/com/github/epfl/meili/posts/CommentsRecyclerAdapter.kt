@@ -10,6 +10,7 @@ import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
+
 import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
 
 class CommentsRecyclerAdapter(private val listener: ClickListener) :

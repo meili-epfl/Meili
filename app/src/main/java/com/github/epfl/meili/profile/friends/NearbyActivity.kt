@@ -10,8 +10,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.LocationService.isLocationEnabled
@@ -42,8 +42,11 @@ class NearbyActivity : AppCompatActivity() {
                 ACK -> connectionsClient.disconnectFromEndpoint(endpointId)
                 else -> {
                     database.addElement(payloadString, Friend(payloadString))
-                    Toast.makeText(applicationContext, "Friendship successful!", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.friend_succ),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     connectionsClient.sendPayload(endpointId, Payload.fromBytes(ACK.toByteArray()))
                 }
             }
@@ -55,9 +58,16 @@ class NearbyActivity : AppCompatActivity() {
     private val connectionLifecycleCallback = object : ConnectionLifecycleCallback() {
         override fun onConnectionInitiated(endpointId: String, info: ConnectionInfo) {
             AlertDialog.Builder(this@NearbyActivity)
-                .setTitle("Accept friendship with ${info.endpointName}")
-                .setMessage("Confirm the code matches on both devices to finalize your friendship: ${info.authenticationToken}")
-                .setPositiveButton("Accept") { _, _ ->
+                .setTitle(String.format(getString(R.string.accept_friend), info.endpointName))
+                .setMessage(
+                    String.format(
+                        getString(
+                            R.string.confirm_code,
+                            info.authenticationToken
+                        )
+                    )
+                )
+                .setPositiveButton(getString(R.string.accept)) { _, _ ->
                     connectionsClient.acceptConnection(endpointId, payloadCallback)
                 }
                 .setNegativeButton(android.R.string.cancel) { _, _ ->
@@ -77,7 +87,11 @@ class NearbyActivity : AppCompatActivity() {
                     connectionsClient.sendPayload(endpointId, uidPayload)
                 }
                 ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED ->
-                    Toast.makeText(applicationContext, "Friendship aborted!", Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.friend_abort),
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 else -> Log.e(TAG, "CODE: ${result.status.statusCode}")
             }
@@ -118,7 +132,12 @@ class NearbyActivity : AppCompatActivity() {
         }
 
         localUser = Auth.getCurrentUser()!!
-        database = FirestoreDatabase("friends/${localUser.uid}/friends", Friend::class.java)
+        database = FirestoreDatabase(
+            String.format(
+                FriendsListActivity.getFriendsDatabasePath(localUser.uid),
+                localUser.uid
+            ), Friend::class.java
+        )
         connectionsClient = getConnectionsClient(this)
     }
 
@@ -141,7 +160,7 @@ class NearbyActivity : AppCompatActivity() {
         if (!isLocationPermissionGranted(this)) {
             Toast.makeText(
                 applicationContext,
-                "Location is required for this feature",
+                getString(R.string.location_required),
                 Toast.LENGTH_SHORT
             ).show()
             finish()
@@ -165,14 +184,15 @@ class NearbyActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 Toast.makeText(
                     applicationContext,
-                    "Looking for your friend!",
+                    getString(R.string.looking_for_friend),
                     Toast.LENGTH_SHORT
                 ).show()
             }
             .addOnFailureListener {
                 Toast.makeText(
                     applicationContext,
-                    "Error finding friend",
+
+                    getString(R.string.error_find_friend),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -182,7 +202,12 @@ class NearbyActivity : AppCompatActivity() {
         val discoveryOptions = DiscoveryOptions.Builder().setStrategy(STRATEGY).build()
         connectionsClient.startDiscovery(packageName, endpointDiscoveryCallback, discoveryOptions)
             .addOnFailureListener {
-                Toast.makeText(applicationContext, "Error finding friend", Toast.LENGTH_SHORT)
+
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.error_find_friend),
+                    Toast.LENGTH_SHORT
+                )
                     .show()
                 Log.e(TAG, it.toString())
             }

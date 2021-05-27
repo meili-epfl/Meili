@@ -15,10 +15,10 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.models.PointOfInterest
-import com.github.epfl.meili.posts.forum.ForumActivity
+import com.github.epfl.meili.poi.PoiInfoActivity
 import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.firebase.firestore.*
@@ -71,7 +71,7 @@ class FavoritePoisActivityTest {
 
     init {
         setupMocks()
-        mockAuthenticationService.signInIntent()
+        mockAuthenticationService.signInIntent(null)
     }
 
     private fun setupMocks() {
@@ -129,7 +129,7 @@ class FavoritePoisActivityTest {
 
         Intents.intended(
             CoreMatchers.allOf(
-                IntentMatchers.hasComponent(ForumActivity::class.java.name)
+                IntentMatchers.hasComponent(PoiInfoActivity::class.java.name)
             )
         )
 

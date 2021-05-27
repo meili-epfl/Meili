@@ -26,8 +26,9 @@
                     android:id="@+id/lens_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:layout_centerHorizontal="true"
-                    android:text="Meili Lens" />
+                    android:text="@string/meili_lens" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -69,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:text="Point Of Interest Detected!" />
+                    android:text="@string/point_of_interest_detected" />
 
                 <TextView
                     android:id="@+id/lens_detected_landmark"
@@ -113,6 +114,6 @@
         android:layout_alignParentBottom="true"
         app:itemIconTint="@drawable/navigation_selector"
         app:itemTextColor="@drawable/navigation_selector"
-        app:menu="@menu/navigation_menu" />
+        app:menu="@menu/home_navigation_menu" />
 
 </RelativeLayout>
