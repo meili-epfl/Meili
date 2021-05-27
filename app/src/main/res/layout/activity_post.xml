@@ -57,6 +57,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/add_comment"
+                    style="@style/Theme.Meili.button"
+                    android:theme="@style/Theme.Meili.button"
                     android:visibility="visible" />
 
                 <EditText
@@ -75,6 +77,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/post_comment"
+                style="@style/Theme.Meili.button"
+                android:theme="@style/Theme.Meili.button"
                 android:visibility="invisible" />
         </LinearLayout>
 

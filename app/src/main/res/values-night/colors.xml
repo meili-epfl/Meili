@@ -8,8 +8,8 @@
     <color name="icFocused">#DDFFFFFF</color>
     <color name="icPressed">#AAFFFFFF</color>
 
-    <color name="menu_selected">#023E8A</color>
-    <color name="menu_unselected">#FF000000</color>
+    <color name="menu_selected">#FF03DAC5</color>
+    <color name="menu_unselected">#6200EE</color>
 
     <!-- Meili Color Palette-->
     <color name="white_blue">#CAF0F8</color>
