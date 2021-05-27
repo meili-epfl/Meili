@@ -99,12 +99,12 @@
                         android:layout_marginStart="8dp">
 
                         <ImageButton
-                            android:id="@+id/profile_poi_history_button"
+                            android:id="@+id/profile_favorite_pois_button"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
                             android:adjustViewBounds="true"
                             android:background="@color/design_default_color_primary"
-                            android:contentDescription="@string/profile_poi_history_button"
+                            android:contentDescription="@string/profile_favorite_pois_button"
                             android:onClick="onProfileButtonClick"
                             android:padding="32dp"
                             android:scaleType="fitCenter"

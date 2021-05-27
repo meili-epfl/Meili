@@ -116,7 +116,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
         facebookSignInButton = findViewById(R.id.facebook_sign_in)
         signOutButton = findViewById(R.id.sign_out)
         postsButton = findViewById(R.id.profile_posts_button)
-        favoritePoisButton = findViewById(R.id.profile_poi_history_button)
+        favoritePoisButton = findViewById(R.id.profile_favorite_pois_button)
         lightDarkModeButton = findViewById(R.id.switch_mode)
     }
 

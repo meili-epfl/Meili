@@ -158,7 +158,7 @@ class ProfileEditableTest {
         onView(withId(R.id.list_friends_button)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.profile_posts_button)).check(matches(isDisplayed()))
-        onView(withId(R.id.profile_poi_history_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.profile_favorite_pois_button)).check(matches(isDisplayed()))
 
         onView(withId(R.id.sign_out)).check(matches(not(isDisplayed())))
         onView(withId(R.id.sign_in)).check(matches(not(isDisplayed())))
