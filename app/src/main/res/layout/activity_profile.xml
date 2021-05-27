@@ -198,13 +198,13 @@
                             android:id="@+id/profile_poi_history_button"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
-                            android:onClick="onProfileButtonClick"
-                            android:src="@drawable/ic_location"
-                            android:background="@color/design_default_color_primary"
-                            android:padding="32dp"
                             android:adjustViewBounds="true"
+                            android:background="@color/design_default_color_primary"
+                            android:contentDescription="@string/profile_poi_history_button"
+                            android:onClick="onProfileButtonClick"
+                            android:padding="32dp"
                             android:scaleType="fitCenter"
-                            android:contentDescription="@string/profile_poi_history_button" />
+                            android:src="@drawable/ic_heart" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -214,7 +214,7 @@
                             android:paddingStart="8dp"
                             android:paddingTop="8dp"
                             android:paddingEnd="8dp"
-                            android:text="@string/profile_poi_history_textview"
+                            android:text="@string/favorite_pois"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                     </RelativeLayout>
