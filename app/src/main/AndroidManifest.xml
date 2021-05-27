@@ -63,12 +63,6 @@
             android:name=".auth.GoogleSignInActivity"
             android:label="Meili"
             android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
         </activity>
         <activity
             android:name=".map.MapActivity"
@@ -77,7 +71,7 @@
         <activity
             android:name=".photo.CameraActivity"
             android:noHistory="true"
-            android:parentActivityName=".posts.forum.ForumActivity" />
+            android:parentActivityName=".posts.forum.ForumActivity"/>
         <activity
             android:name=".messages.ChatLogActivity"
             android:parentActivityName=".map.MapActivity"
