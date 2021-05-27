@@ -7,6 +7,30 @@
     android:layout_height="match_parent"
     tools:context=".profile.friends.NearbyActivity">
 
+<!--    <ImageView-->
+<!--        android:id="@+id/bluetooth_image"-->
+<!--        android:layout_width="37dp"-->
+<!--        android:layout_height="33dp"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:contentDescription="@string/bluetooth"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:srcCompat="@drawable/bluetooth" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/explanation_text"-->
+<!--        android:layout_width="247dp"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:text="@string/meili_nearby_lets_you_add_another_user_as_a_friend_if_your_devices_are_close"-->
+<!--        android:textAlignment="center"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.18"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/bluetooth_image"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/bluetooth_image" />-->
+
     <Button
         android:id="@+id/find_my_friend"
         android:layout_width="wrap_content"
@@ -21,30 +45,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/explanation_text" />
-
-    <ImageView
-        android:id="@+id/bluetooth_image"
-        android:layout_width="37dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bluetooth"
-        android:contentDescription="@string/bluetooth" />
-
-    <TextView
-        android:id="@+id/explanation_text"
-        android:layout_width="247dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/meili_nearby_lets_you_add_another_user_as_a_friend_if_your_devices_are_close"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.18"
-        app:layout_constraintStart_toEndOf="@+id/bluetooth_image"
-        app:layout_constraintTop_toTopOf="@+id/bluetooth_image" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
