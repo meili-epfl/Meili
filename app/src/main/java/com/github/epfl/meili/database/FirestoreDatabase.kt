@@ -24,18 +24,6 @@ open class FirestoreDatabase<T : Any>(
     private val registration = query(collectionReference).addSnapshotListener(this)
 
     override fun addElement(key: String, element: T?) {
-        ref.document(key).set(element!!)
-    }
-
-    override fun updateElement(key: String, element: T?) {
-        ref.document(key).delete().addOnSuccessListener {
-            addElement(key, element)
-        }
-    }
-
-
-    override fun onDestroy() {
-        registration.remove()
         collectionReference.document(key).set(element!!)
     }
 
@@ -65,5 +53,12 @@ open class FirestoreDatabase<T : Any>(
 
     override fun removeElement(key: String) {
         collectionReference.document(key).delete()
+            .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
+    }
+
+    override fun updateElement(key: String, element: T?) {
+        collectionReference.document(key).delete()
+            .addOnSuccessListener { addElement(key, element) }
+            .addOnFailureListener { addElement(key, element) }
     }
 }

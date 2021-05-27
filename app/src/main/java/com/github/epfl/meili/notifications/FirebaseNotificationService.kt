@@ -10,12 +10,10 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.github.epfl.meili.R
-import com.github.epfl.meili.home.Auth
-import com.github.epfl.meili.map.MapActivity
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
 import com.google.firebase.messaging.FirebaseMessagingService

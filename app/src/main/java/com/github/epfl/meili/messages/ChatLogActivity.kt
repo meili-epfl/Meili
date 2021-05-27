@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.models.*
@@ -21,7 +20,6 @@ import com.github.epfl.meili.notifications.RetrofitInstance
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
 import com.github.epfl.meili.util.DateAuxiliary
 import com.github.epfl.meili.util.MeiliViewModel
-import com.github.epfl.meili.util.MenuActivity
 import com.google.firebase.database.DatabaseException
 import com.google.firebase.messaging.FirebaseMessaging
 import com.github.epfl.meili.util.navigation.PoiActivity
