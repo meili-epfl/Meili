@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".posts.PostActivity"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:context=".posts.PostActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,8 +16,8 @@
             android:id="@+id/post_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginTop="12dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="12dp"
             android:textSize="30sp"
@@ -36,9 +36,10 @@
             android:id="@+id/post_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:srcCompat="@tools:sample/backgrounds/scenic"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/post_image"
             android:scaleType="fitCenter"
-            android:adjustViewBounds="true"/>
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
         <LinearLayout
             android:id="@+id/new_comment_layout"
@@ -55,14 +56,15 @@
                     android:id="@+id/comment_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Add comment"
+                    android:text="@string/add_comment"
                     android:visibility="visible" />
 
                 <EditText
                     android:id="@+id/edit_comment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Add your comment"
+                    android:autofillHints=""
+                    android:hint="@string/add_your_comment"
                     android:inputType="textMultiLine"
                     android:maxLength="300"
                     android:visibility="invisible" />
@@ -72,7 +74,7 @@
                 android:id="@+id/add_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Post comment"
+                android:text="@string/post_comment"
                 android:visibility="invisible" />
         </LinearLayout>
 

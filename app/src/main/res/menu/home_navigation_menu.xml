@@ -4,13 +4,14 @@
     <item
         android:id="@+id/profile_activity"
         android:icon="@drawable/ic_person_outline"
-        android:title="Profile" />
+        android:title="@string/profile" />
     <item
         android:id="@+id/map_activity"
         android:icon="@drawable/ic_map"
-        android:title="Map" />
+        android:title="@string/map" />
     <item
         android:id="@+id/feed_activity"
         android:icon="@drawable/ic_outline_forum_24"
-        android:title="Feed" />
+        android:title="@string/feed" />
+
 </menu>

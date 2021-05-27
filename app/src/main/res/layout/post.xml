@@ -69,6 +69,7 @@
                     android:layout_width="50dp"
                     android:layout_height="70dp"
                     android:background="@android:drawable/screen_background_light_transparent"
+                    android:contentDescription="@string/upvote"
                     android:scaleX="0.5"
                     android:scaleY="0.5"
                     app:layout_constraintBottom_toTopOf="@+id/upvote_count"
@@ -82,6 +83,7 @@
                     android:layout_width="50dp"
                     android:layout_height="70dp"
                     android:background="@android:drawable/screen_background_light_transparent"
+                    android:contentDescription="@string/downvote"
                     android:scaleX="0.5"
                     android:scaleY="0.5"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -99,7 +101,8 @@
             app:layout_constraintTop_toBottomOf="@+id/post_horizontal_layout"
             tools:srcCompat="@tools:sample/backgrounds/scenic"
             android:scaleType="fitCenter"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/post_preview_image" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

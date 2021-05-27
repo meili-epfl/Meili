@@ -13,6 +13,9 @@ class AtomicPostFirestoreDatabase(
         private const val downVoters = "downvoters"
     }
 
+    /**
+     * Makes the user corresponding to `userUid` upvote or downvote depending on `isUpvote` the post corresponding to `key`, in an atomic way
+     */
     @Suppress("UNCHECKED_CAST")
     fun upDownVote(key: String, userUid: String, isUpvote: Boolean) {
         val sfDocRef = collectionReference.document(key)

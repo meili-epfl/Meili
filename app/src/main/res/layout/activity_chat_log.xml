@@ -11,24 +11,25 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Enter Message..."
+        android:hint="@string/enter_message"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@id/navigation"
         app:layout_constraintEnd_toStartOf="@+id/button_chat_log"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:autofillHints="" />
 
     <Button
         android:id="@+id/button_chat_log"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send"
+        android:text="@string/send_message"
         style="@style/Theme.Meili.button"
         android:theme="@style/Theme.Meili.button"
         app:layout_constraintBottom_toTopOf="@id/navigation"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleview_chat_log"
+        android:id="@+id/recyclerview_chat_log"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"

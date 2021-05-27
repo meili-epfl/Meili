@@ -9,10 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.home.Auth
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Friend
+
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.UserProfileLinker
 import com.github.epfl.meili.util.ClickListener
@@ -62,13 +63,14 @@ class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinke
 
         @Suppress("UNCHECKED_CAST")
         viewModel =
-                ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
+
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Friend>
 
         viewModel.initDatabase(
-                FirestoreDatabase(
-                        getFriendsDatabasePath(Auth.getCurrentUser()!!.uid),
-                        Friend::class.java
-                )
+            FirestoreDatabase(
+                getFriendsDatabasePath(Auth.getCurrentUser()!!.uid),
+                Friend::class.java
+            )
         )
         viewModel.getElements().observe(this) { map ->
             onFriendsUpdateReceived(map)
@@ -107,7 +109,7 @@ class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinke
 
     private fun openFriendChat(friendUid: String) {
         val intent =
-                Intent(this, ChatLogActivity::class.java).putExtra(FRIEND_KEY, usersMap[friendUid])
+            Intent(this, ChatLogActivity::class.java).putExtra(FRIEND_KEY, usersMap[friendUid])
         startActivity(intent)
     }
 
