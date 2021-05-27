@@ -210,6 +210,8 @@
                 android:layout_alignEnd="@id/profile_edit_linear"
                 android:layout_marginTop="16dp"
                 android:onClick="onProfileButtonClick"
+                style="@style/Theme.Meili.button"
+                android:theme="@style/Theme.Meili.button"
                 android:text="@string/save_my_profile" />
 
             <Button
@@ -221,6 +223,8 @@
                 android:layout_marginEnd="16dp"
                 android:layout_toStartOf="@id/save"
                 android:onClick="onProfileButtonClick"
+                style="@style/Theme.Meili.button"
+                android:theme="@style/Theme.Meili.button"
                 android:text="@string/profile_edit_cancel" />
         </RelativeLayout>
     </RelativeLayout>
@@ -231,6 +235,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
         android:onClick="onProfileButtonClick"
         android:text="@string/sign_in" />
 
@@ -258,6 +264,8 @@
         android:layout_above="@id/navigation"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
+        style="@style/Theme.Meili.button"
+        android:theme="@style/Theme.Meili.button"
         android:gravity="center"
         android:onClick="onProfileButtonClick"
         android:text="@string/sign_out" />
