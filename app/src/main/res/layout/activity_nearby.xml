@@ -33,8 +33,8 @@
 
     <Button
         android:id="@+id/find_my_friend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="250sp"
+        android:layout_height="100sp"
         android:layout_marginBottom="580dp"
 
         android:onClick="onNearbyButtonClick"
