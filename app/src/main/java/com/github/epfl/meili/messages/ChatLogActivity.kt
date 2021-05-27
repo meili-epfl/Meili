@@ -22,8 +22,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
-import java.util.*
-import kotlin.collections.ArrayList
 
 class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activity) {
 
@@ -86,7 +84,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
                 // The friend chat document in the database is saved under the key with value
                 // of the two user ids concatenated in sorted order
                 chatId =
-                    if (friendUid < currentUid) "$friendUid;$currentUid" else "$currentUid;$friendUid"
+                        if (friendUid < currentUid) "$friendUid;$currentUid" else "$currentUid;$friendUid"
 
                 setGroupChat(false)
 
@@ -121,11 +119,11 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
         findViewById<EditText>(R.id.edit_text_chat_log).text.clear()
 
         ChatMessageViewModel.addMessage(
-            text,
-            currentUser!!.uid,
-            chatId,
-            System.currentTimeMillis() / 1000,
-            currentUser!!.username
+                text,
+                currentUser!!.uid,
+                chatId,
+                System.currentTimeMillis() / 1000,
+                currentUser!!.username
         )
     }
 
@@ -137,16 +135,14 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
             newMessages.filter { message -> message.toId == chatID }.forEach { message ->
                 val isDisplayingDate: Boolean = if (prevMessage != null) {
                     !DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(message.timestamp))
-                        .equals(DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(prevMessage!!.timestamp)))
+                            .equals(DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(prevMessage!!.timestamp)))
                 } else {
                     true
                 }
-                Log.d(TAG,
-                    "loading message: ${message.text} should it show the date? : $isDisplayingDate prevmessage: ${prevMessage}")
                 adapter.add(ChatItem(message,
-                    message.fromId == currentUser!!.uid,
-                    isGroupChat,
-                    isDisplayingDate
+                        message.fromId == currentUser!!.uid,
+                        isGroupChat,
+                        isDisplayingDate
                 ))
 
                 prevMessage = message
@@ -169,12 +165,12 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
 }
 
 class ChatItem(
-    private val message: ChatMessage,
-    private val isChatMessageFromCurrentUser: Boolean,
-    private val isGroupChat: Boolean,
-    private val isDisplayingDate: Boolean,
+        private val message: ChatMessage,
+        private val isChatMessageFromCurrentUser: Boolean,
+        private val isGroupChat: Boolean,
+        private val isDisplayingDate: Boolean,
 ) :
-    Item<GroupieViewHolder>() {
+        Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
         return if (isChatMessageFromCurrentUser && isDisplayingDate) {
             R.layout.chat_from_me_row_with_date
@@ -191,12 +187,12 @@ class ChatItem(
         viewHolder.itemView.findViewById<TextView>(R.id.text_gchat_message).text = message.text
         val date = DateAuxiliary.getDateFromTimestamp(message.timestamp)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_timestamp).text =
-            DateAuxiliary.getTime(date)
+                DateAuxiliary.getTime(date)
         if (isDisplayingDate) viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
-            DateAuxiliary.getDay(date)
+                DateAuxiliary.getDay(date)
         if (!isChatMessageFromCurrentUser) {
             viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text =
-                if (isGroupChat) message.fromName else ""
+                    if (isGroupChat) message.fromName else ""
         }
     }
 }
