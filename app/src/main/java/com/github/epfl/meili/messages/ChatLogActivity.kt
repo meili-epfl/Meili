@@ -33,7 +33,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
 
     private var currentUser: User? = null
     private lateinit var chatId: String
-    private var messageSet = HashSet<ChatMessage>()
+    private var messageList: ArrayList<ChatMessage> = ArrayList()
 
     private var isGroupChat = false
     private var poi: PointOfInterest? = null
@@ -84,7 +84,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
                 // The friend chat document in the database is saved under the key with value
                 // of the two user ids concatenated in sorted order
                 chatId =
-                    if (friendUid < currentUid) "$friendUid;$currentUid" else "$currentUid;$friendUid"
+                        if (friendUid < currentUid) "$friendUid;$currentUid" else "$currentUid;$friendUid"
 
                 setGroupChat(false)
 
@@ -119,24 +119,36 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
         findViewById<EditText>(R.id.edit_text_chat_log).text.clear()
 
         ChatMessageViewModel.addMessage(
-            text,
-            currentUser!!.uid,
-            chatId,
-            System.currentTimeMillis() / 1000,
-            currentUser!!.username
+                text,
+                currentUser!!.uid,
+                chatId,
+                System.currentTimeMillis() / 1000,
+                currentUser!!.username
         )
     }
 
     private fun listenForMessages(chatID: String) {
 
         val groupMessageObserver = Observer<List<ChatMessage>?> { list ->
-            val newMessages = list.minus(messageSet)
+            val newMessages = list.minus(messageList)
+            var prevMessage: ChatMessage? = if (messageList.isEmpty()) null else messageList.last()
             newMessages.filter { message -> message.toId == chatID }.forEach { message ->
-                Log.d(TAG, "loading message: ${message.text}")
-                adapter.add(ChatItem(message, message.fromId == currentUser!!.uid, isGroupChat))
+                val isDisplayingDate: Boolean = if (prevMessage != null) {
+                    !DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(message.timestamp))
+                            .equals(DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(prevMessage!!.timestamp)))
+                } else {
+                    true
+                }
+                adapter.add(ChatItem(message,
+                        message.fromId == currentUser!!.uid,
+                        isGroupChat,
+                        isDisplayingDate
+                ))
+
+                prevMessage = message
             }
 
-            messageSet.addAll(newMessages)
+            messageList.addAll(newMessages)
             //scroll down
             val lastItemPos = adapter.itemCount - 1
             findViewById<RecyclerView>(R.id.recyclerview_chat_log).scrollToPosition(lastItemPos)
@@ -153,14 +165,19 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
 }
 
 class ChatItem(
-    private val message: ChatMessage,
-    private val isChatMessageFromCurrentUser: Boolean,
-    private val isGroupChat: Boolean
+        private val message: ChatMessage,
+        private val isChatMessageFromCurrentUser: Boolean,
+        private val isGroupChat: Boolean,
+        private val isDisplayingDate: Boolean,
 ) :
-    Item<GroupieViewHolder>() {
+        Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
-        return if (isChatMessageFromCurrentUser) {
+        return if (isChatMessageFromCurrentUser && isDisplayingDate) {
+            R.layout.chat_from_me_row_with_date
+        } else if (isChatMessageFromCurrentUser && !isDisplayingDate) {
             R.layout.chat_from_me_row
+        } else if (!isChatMessageFromCurrentUser && isDisplayingDate) {
+            R.layout.chat_from_other_row_with_date
         } else {
             R.layout.chat_from_other_row
         }
@@ -170,12 +187,12 @@ class ChatItem(
         viewHolder.itemView.findViewById<TextView>(R.id.text_gchat_message).text = message.text
         val date = DateAuxiliary.getDateFromTimestamp(message.timestamp)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_timestamp).text =
-            DateAuxiliary.getTime(date)
-        viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
-            DateAuxiliary.getDay(date)
+                DateAuxiliary.getTime(date)
+        if (isDisplayingDate) viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
+                DateAuxiliary.getDay(date)
         if (!isChatMessageFromCurrentUser) {
             viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text =
-                if (isGroupChat) message.fromName else ""
+                    if (isGroupChat) message.fromName else ""
         }
     }
 }
