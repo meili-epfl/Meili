@@ -94,6 +94,7 @@ class NearbyActivityTest {
 
     @Test
     fun testNearbyConnection() {
+        Thread.sleep(1000)
         onView(withId(R.id.find_my_friend)).perform(click())
         onView(withId(R.id.find_my_friend)).check(matches(isNotEnabled()))
 
