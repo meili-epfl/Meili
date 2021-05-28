@@ -2,6 +2,10 @@
 
 ## Ahmed
 
+This week I finshed writing the tests for the notifcations code. The test themsleves aren't long but I had to rewrite a lot of code and spend a lot of time to figure out how to make the code "testable"
+I also added the feature where the date of a chat message is only shown if it's a new day.
+
+I am very glad my time estimates this week were very correct. 
 
 ## Aman
 
