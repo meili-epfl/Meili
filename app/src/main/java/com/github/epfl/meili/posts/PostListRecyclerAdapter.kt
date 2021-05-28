@@ -70,22 +70,26 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
                 userId: String,
                 postId: String
         ) {
-            when {
-                upvoters.contains(userId) -> {
-                    upvoteButton.setImageResource(R.mipmap.upvote_filled_foreground)
-                    downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
-                }
-                downvoters.contains(userId) -> {
-                    upvoteButton.setImageResource(R.mipmap.upvote_empty_foreground)
-                    downvoteButton.setImageResource(R.mipmap.downvote_filled_foreground)
-                }
-                else -> {
-                    upvoteButton.setImageResource(R.mipmap.upvote_empty_foreground)
-                    downvoteButton.setImageResource(R.mipmap.downvote_empty_foreground)
-                }
-            }
+            updateVoteButtons(upvoters.contains(userId), downvoters.contains(userId))
             upvoteButton.setOnClickListener { viewModel.upvote(postId, userId) }
             downvoteButton.setOnClickListener { viewModel.downvote(postId, userId) }
+        }
+
+        private fun updateVoteButtons(up: Boolean, down: Boolean) {
+            val upRes = if (up) {
+                R.mipmap.upvote_filled_foreground
+            } else {
+                R.mipmap.upvote_empty_foreground
+            }
+
+            val downRes = if (up) {
+                R.mipmap.downvote_filled_foreground
+            } else {
+                R.mipmap.downvote_empty_foreground
+            }
+
+            upvoteButton.setImageResource(upRes)
+            downvoteButton.setImageResource(downRes)
         }
     }
 }

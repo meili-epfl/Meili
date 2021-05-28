@@ -135,6 +135,5 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
         sortPosts(parent?.getItemAtPosition(pos) as String)
     }
 
-
     override fun onNothingSelected(p0: AdapterView<*>?) {}
 }
