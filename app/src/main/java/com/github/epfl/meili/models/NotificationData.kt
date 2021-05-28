@@ -6,6 +6,7 @@ package com.github.epfl.meili.models
 data class NotificationData(
     var title: String = "",
     var message: String = "",
+    var otheruid: String = ""
 ) {
 
     companion object {

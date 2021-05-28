@@ -21,7 +21,6 @@ open class MeiliViewModel<T> : ViewModel(), Observer {
 
     fun addElement(id: String, element: T) = database.addElement(id, element)
 
-    fun updateElement(id: String, element: T) = database.updateElement(id, element)
     fun removeElement(id: String) = database.removeElement(id)
 
     override fun update(o: Observable?, arg: Any?) {

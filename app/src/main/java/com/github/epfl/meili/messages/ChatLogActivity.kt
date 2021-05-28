@@ -51,6 +51,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
     private var poi: PointOfInterest? = null
 
     private lateinit var navigationBar: BottomNavigationView
+    private var friend: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +75,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
             currentUser = Auth.getCurrentUser()
 
             val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)
-            val friend = intent.getParcelableExtra<User>(FRIEND_KEY)
+            friend = intent.getParcelableExtra<User>(FRIEND_KEY)
             val databasePath: String
 
             if (poi != null) {
@@ -101,7 +102,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
 
                 setGroupChat(false)
 
-                Log.d(TAG, "Starting friend chat with ${friend.uid}")
+                Log.d(TAG, "Starting friend chat with ${friend!!.uid}")
 
                 databasePath = "FriendChat/${chatId}"
             }
@@ -126,15 +127,17 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
 
         viewModel.initDatabase(FirestoreDatabase("token", Token::class.java))
 
+
         FirebaseNotificationService.sharedPref = getSharedPreferences("sharedPref", MODE_PRIVATE)
 
         FirebaseMessaging.getInstance().token.addOnSuccessListener {
-            FirebaseNotificationService.token = it
+
 
             try {
-                viewModel.updateElement(Auth.getCurrentUser()!!.uid, Token(FirebaseNotificationService.token!!))
-            }catch (e: DatabaseException){
-                Log.e(TAG,"token already registered")
+                viewModel.addElement(Auth.getCurrentUser()!!.uid,
+                    Token(FirebaseNotificationService.token!!))
+            } catch (e: DatabaseException) {
+                Log.e(TAG, "token already registered")
             }
         }
 
@@ -149,7 +152,6 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
             navigationBar.isVisible = false
         }
     }
-
 
 
     private fun sendNotification(notification: PushNotification) =
@@ -181,9 +183,10 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
             currentUser!!.username
         )
         //send notification if in direct message not poi chat
-        if (intent.getParcelableExtra<User>(FRIEND_KEY) != null && token != null) {
+        if (friend != null && token != null) {
+            Log.d(TAG, "token is ${token!!.value}")
             PushNotification(
-                NotificationData("Message from ${currentUser!!.username}", text),
+                NotificationData("Message from ${Auth.getCurrentUser()!!.username}", text, Auth.getCurrentUser()!!.uid),
                 token!!.value
             ).also {
                 sendNotification(it)
@@ -199,14 +202,14 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
             newMessages.filter { message -> message.toId == chatID }.forEach { message ->
                 val isDisplayingDate: Boolean = if (prevMessage != null) {
                     !DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(message.timestamp))
-                            .equals(DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(prevMessage!!.timestamp)))
+                        .equals(DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(prevMessage!!.timestamp)))
                 } else {
                     true
                 }
                 adapter.add(ChatItem(message,
-                        message.fromId == currentUser!!.uid,
-                        isGroupChat,
-                        isDisplayingDate
+                    message.fromId == currentUser!!.uid,
+                    isGroupChat,
+                    isDisplayingDate
                 ))
 
                 prevMessage = message
@@ -229,17 +232,17 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
 
     override fun onDestroy() {
         super.onDestroy()
-        if(this::viewModel.isInitialized){
+        if (this::viewModel.isInitialized) {
             viewModel.onDestroy()
         }
     }
 }
 
 class ChatItem(
-        private val message: ChatMessage,
-        private val isChatMessageFromCurrentUser: Boolean,
-        private val isGroupChat: Boolean,
-        private val isDisplayingDate: Boolean,
+    private val message: ChatMessage,
+    private val isChatMessageFromCurrentUser: Boolean,
+    private val isGroupChat: Boolean,
+    private val isDisplayingDate: Boolean,
 ) :
     Item<GroupieViewHolder>() {
     override fun getLayout(): Int {
@@ -258,9 +261,9 @@ class ChatItem(
         viewHolder.itemView.findViewById<TextView>(R.id.text_gchat_message).text = message.text
         val date = DateAuxiliary.getDateFromTimestamp(message.timestamp)
         viewHolder.itemView.findViewById<TextView>(R.id.text_chat_timestamp).text =
-                DateAuxiliary.getTime(date)
+            DateAuxiliary.getTime(date)
         if (isDisplayingDate) viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
-                DateAuxiliary.getDay(date)
+            DateAuxiliary.getDay(date)
         if (!isChatMessageFromCurrentUser) {
             viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text =
                 if (isGroupChat) message.fromName else ""

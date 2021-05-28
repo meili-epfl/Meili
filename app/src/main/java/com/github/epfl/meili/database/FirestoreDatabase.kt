@@ -53,12 +53,6 @@ open class FirestoreDatabase<T : Any>(
 
     override fun removeElement(key: String) {
         collectionReference.document(key).delete()
-            .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
     }
 
-    override fun updateElement(key: String, element: T?) {
-        collectionReference.document(key).delete()
-            .addOnSuccessListener { addElement(key, element) }
-            .addOnFailureListener { addElement(key, element) }
-    }
 }
