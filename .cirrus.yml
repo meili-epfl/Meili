@@ -7,6 +7,7 @@ check_android_task:
     CC_TEST_REPORTER_ID: ENCRYPTED[!e910f63dbf85cb27b5d537114f7e81c10361e47ec43ac3fb7b91c09a6646e945482bb6100213468bd93874ff712b6774!]
     FIREBASE_API_KEY : ENCRYPTED[4913176803fdd1377247495ebb56739ec42a73f426f69d18ce2ab2b6fdfd88ca8a9e52c3e34ebc47063a1e4a068485c2]
     GOOGLE_SERVICES_KEY : ENCRYPTED[61ced0f74fd39fef7ea75ae812377fa6e1e856bc4348e6896b5280100395e0c4266b17298eeeb9f3406f9922178ef92e]
+    KEYS_FILE: ENCRYPTED[4b42478849571186ae5f14a8eb6b1cb422fe3e0c67a1d8ea1a1bc44af13cc327e53a58362fdec51298f3e002c6033781]
   container:
     image: reactivecircus/android-emulator-$API_LEVEL:latest
     kvm: true
@@ -18,6 +19,8 @@ check_android_task:
     $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -no-audio -no-boot-anim -camera-back emulated
   set_auth_tokens_script: |
     echo $GOOGLE_SERVICES_KEY > app/google-services.json
+  set_keys_script: |
+    echo $KEYS_FILE > app/src/main/res/values/keys.xml
   build_script: |
     chmod +x gradlew
     ./gradlew assembleDebugAndroidTest
