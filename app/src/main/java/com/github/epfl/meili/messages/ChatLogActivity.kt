@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseException
 import com.google.firebase.messaging.FirebaseMessaging
 import com.github.epfl.meili.util.navigation.PoiActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.ktx.Firebase
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
@@ -126,7 +127,6 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
         viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Token>
 
         viewModel.initDatabase(FirestoreDatabase("token", Token::class.java))
-
 
         FirebaseNotificationService.sharedPref = getSharedPreferences("sharedPref", MODE_PRIVATE)
 

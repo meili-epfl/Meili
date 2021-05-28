@@ -15,6 +15,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.ViewModelProvider
+import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
@@ -39,7 +40,6 @@ class FirebaseNotificationService() : FirebaseMessagingService() {
     companion object {
         private const val CHANNEL_ID = "my_channel"
 
-
         var sharedPref: SharedPreferences? = null
 
         var token: String?
@@ -49,13 +49,6 @@ class FirebaseNotificationService() : FirebaseMessagingService() {
             set(value) {
                 sharedPref?.edit()?.putString("token", value)?.apply()
             }
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        //The android given notificaiton manager
-        notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
 
     override fun onNewToken(newToken: String) {
@@ -77,6 +70,9 @@ class FirebaseNotificationService() : FirebaseMessagingService() {
         //intent can only be used once
         //val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
 
+        //The android given notificaiton manager
+        notificationManager =
+            MainApplication.applicationContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         //notification id needed to initialize notification
         val notificationID = Random.nextInt()
@@ -86,7 +82,7 @@ class FirebaseNotificationService() : FirebaseMessagingService() {
             createNotificationChannel(notificationManager)
         }
         //build notification
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+        val notification = NotificationCompat.Builder(MainApplication.applicationContext(), CHANNEL_ID)
             .setContentTitle(message.data["title"])
             .setContentText(message.data["message"])
             .setSmallIcon(R.mipmap.meili_launcher_foreground)

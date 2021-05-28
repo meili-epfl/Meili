@@ -114,13 +114,13 @@ class FirebaseNotificationServiceTest {
     }
     @Test
     fun messageReceivedCorrectly(){
-//        val firebaseNotifService = FirebaseNotificationService()
-//        val bundle = bundleOf(
-//            "title" to "test_title",
-//            "message" to "test_message"
-//        )
-//        val remoteMessage = RemoteMessage(bundle)
-//        firebaseNotifService.onCreate()
-//        firebaseNotifService.onMessageReceived(remoteMessage)
+        val firebaseNotifService = FirebaseNotificationService()
+        val bundle = bundleOf(
+            "title" to "test_title",
+            "message" to "test_message"
+        )
+        val remoteMessage = RemoteMessage(bundle)
+        firebaseNotifService.onCreate()
+        firebaseNotifService.onMessageReceived(remoteMessage)
     }
 }
