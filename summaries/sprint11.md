@@ -10,8 +10,12 @@ For the final sprint I am planning on keeping up with this pace and fixing more 
 
 ## Aman
 
+This week I improved the user interface of the point of interest activities to make more intuitive and easy to use. I also improved the app launching experience by displaying a logo at startup and redirecting the user to the correct activity (sign-in for a first-time user, map for a returning user).
 
-## Ewan 
+Furthermore, I contributed to the PR fixing remarks from code review before approving it, which was time I hadn't added in my estimates. Since I didn't have too much additional time this week due to other projects, I decided to work on my last task of verifying/fixing image caching in the next sprint. With a little bit of remaining time I had, I fixed some bugs such as the app having two launcher activities and fix warnings like unused code or UI/UX suggestions (such as putting the cancel button on the left and the confirm button on the right).
+
+## Ewan
+
 This sprint I worked on improving the UI of the Profile, removing the default image in Posts and showing images (when they exist) directly in Post previews (forum, feed, my posts).
 As I started my features a bit late, only 1 of my PRs was reviewed in time, but everything is done.
 
@@ -19,7 +23,8 @@ One problem I had is that I was one of the last PRs to get reviewed, so I had to
 
 My time estimates were very good this week, and I am happy wih that.
 
-## Marcel 
+## Marcel
+
 This week I had 3 tasks to work on. The first was to restrict possibility to create posts and reviews to only users who have been in the point of interest before. I believe this is an important task since it was one of the features that makes Meili valuable, users will be able to trust posts and reviews because they must have been there before. The second task was also really exciting to implement, now we are displaying the POI being analyzed by MeiliLens in a different colour so that the users can have a UI reference in the map. It was hard to implement this task because of how the `ClusterManager` works in android and in my opinion the documentation on this aspect is not really good. Finally, my last task for the week was to fix a supposed bug in the cache service, but after digging deep we realized that everything is working properly and that it was just a false red flag.
 
 I managed to implement all of my tasks in the estimated time, there was just the last task that took me less time since at the end I found that there was no problem. Since I had a little bit of time left because of my shorter than expected last task, I collaborated in the fixing code review remarks PR and also reviewed as many PRs as I could.
