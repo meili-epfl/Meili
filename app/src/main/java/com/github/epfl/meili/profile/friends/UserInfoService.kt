@@ -4,7 +4,7 @@ import android.util.Log
 import com.github.epfl.meili.database.FirestoreDocumentService
 import com.github.epfl.meili.models.User
 
-open class UserInfoService {
+class UserInfoService {
     companion object {
         var documentService: () -> FirestoreDocumentService = { FirestoreDocumentService }
         var getUserPath: (String) -> String = { uid -> "users/${uid}" }
@@ -22,7 +22,7 @@ open class UserInfoService {
      * This function will fetch one-by-one the user information from the Firestore and will call
      * onSuccess with the result if successful otherwise it will call onError
      */
-    open fun getUserInformation(
+    fun getUserInformation(
             uids: List<String>,
             onSuccess: ((Map<String, User>) -> Unit)?,
             onError: ((Error) -> Unit)?

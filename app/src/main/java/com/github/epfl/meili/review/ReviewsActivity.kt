@@ -20,7 +20,8 @@ import com.github.epfl.meili.util.*
 import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
 import com.github.epfl.meili.util.navigation.PoiActivity
 
-class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_activity), ClickListener,
+class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_activity),
+    ClickListener,
     UserProfileLinker<Review> {
     companion object {
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
@@ -170,25 +171,10 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
             getString(R.string.average_rating_format).format(Review.averageRating(map))
     }
 
-    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Review>) {
-        usersMap = HashMap(usersMap) + users
-
-        val reviewsAndUsersMap = HashMap<String, Pair<Review, User>>()
-        for ((postId, review) in map) {
-            val user = usersMap[review.authorUid]
-            if (user != null) {
-                reviewsAndUsersMap[postId] = Pair(review, user)
-            }
-        }
-
-        recyclerAdapter.submitList(reviewsAndUsersMap.toList())
-        recyclerAdapter.notifyDataSetChanged()
-    }
-
     private fun initLoggedInListener() {
         Auth.isLoggedIn.observe(this, { loggedIn ->
-            floatingActionButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn , poiStatus)
-            floatingActionButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn , poiStatus))
+            floatingActionButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn, poiStatus)
+            floatingActionButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn, poiStatus))
                 View.VISIBLE
             else
                 View.GONE

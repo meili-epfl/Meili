@@ -57,8 +57,8 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         initViews(post)
 
         FirebaseStorageService.getDownloadUrl(
-                "images/forum/$postId",
-                { uri -> getDownloadUrlCallback(uri) }
+            "images/forum/$postId",
+            { uri -> getDownloadUrlCallback(uri) }
         )
 
         usersMap = HashMap()
@@ -107,7 +107,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
     private fun initViewModel() {
         @Suppress("UNCHECKED_CAST")
         viewModel =
-                ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
 
         viewModel.initDatabase(FirestoreDatabase("forum/$postId/comments", Comment::class.java))
         viewModel.getElements().observe(this, { map ->
@@ -122,22 +122,9 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         }
 
         serviceProvider().getUserInformation(newUsers, { onUsersInfoReceived(it, commentsMap) },
-            { Log.e(TAG, "Error when fetching users information")
-        })
-    }
-
-    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Comment>) {
-        usersMap = HashMap(usersMap) + users
-        val commentsAndUsersMap = HashMap<String, Pair<Comment, User>>()
-        for ((commentId, comment) in map) {
-            val user = usersMap[comment.authorUid]
-            if (user != null) {
-                commentsAndUsersMap[commentId] = Pair(comment, user)
-            }
-        }
-
-        recyclerAdapter.submitList(commentsAndUsersMap.toList())
-        recyclerAdapter.notifyDataSetChanged()
+            {
+                Log.e(TAG, "Error when fetching users information")
+            })
     }
 
     private fun initRecyclerAdapter() {
