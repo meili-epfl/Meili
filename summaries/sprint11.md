@@ -35,6 +35,7 @@ I was not able to merge my last task because once again I has problems with all 
 
 ## Yingxuan
 
+This week I had two tasks, one consists of night mode improvement, another is adding name of POI to posts. I'm happy to find a way to display different group of colors on dark mode for the menu items exactly as the team wanted. For the second task, I had a bug that did not send error message, and stuck for a moment, then after checking the firebase console I managed to fix it, and the poi name can show up when the post is viewed in my posts and feed, we decided not to show it in forum because it is already grouped by poi and will be redundant otherwise. This task is not marged yet because it modifies the database and we do not want it to disturb zhe demo.
 
 ## Overall team
 
