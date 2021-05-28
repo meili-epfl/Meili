@@ -15,6 +15,11 @@ check_android_task:
     echo no | avdmanager create avd --force --name test --abi "$TARGET/$ARCH" --package "system-images;android-$API_LEVEL;$TARGET;$ARCH"
   start_emulator_background_script:
     $ANDROID_SDK_ROOT/emulator/emulator -avd test -no-window -gpu swiftshader_indirect -no-snapshot -no-audio -no-boot-anim -camera-back emulated
+  set_auth_tokens: |
+    environment:
+      AUTH_TOKEN: ENCRYPTED[qwerty239abc]
+     script:
+      echo AUTH_TOKEN > app/google-services.json
   build_script: |
     chmod +x gradlew
     ./gradlew assembleDebugAndroidTest
