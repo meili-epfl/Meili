@@ -2,10 +2,11 @@
 
 ## Ahmed
 
-This week I finshed writing the tests for the notifcations code. The test themsleves aren't long but I had to rewrite a lot of code and spend a lot of time to figure out how to make the code "testable"
-I also added the feature where the date of a chat message is only shown if it's a new day.
+This week I finshed writing the tests for the notifcations code. The test themsleves aren't long but I had to rewrite a lot of code and spend a lot of time to figure out how to make the code "testable". I also added the feature where the date of a chat message is only shown if it's the first message of any day. This feature was divided into two parts and there was no impediments since it was work on a pretty familiar part of the code.
 
-I am very glad my time estimates this week were very correct. 
+I am very glad my time estimates this week were correct despite some difficulties, namely the internet being down several times. One reason for this is that I am generally getting better at estimating time. The other reason is that I am more familiar with the android framework so I have a better understanding of what to do and how much time it will usually take.
+
+For the final sprint I am planning on keeping up with this pace and fixing more bugs!
 
 ## Aman
 
