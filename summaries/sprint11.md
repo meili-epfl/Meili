@@ -15,7 +15,9 @@ For the final sprint I am planning on keeping up with this pace and fixing more 
  
 
 ## Marcel 
+This week I had 3 tasks to work on. The first was to restrict possibility to create posts and reviews to only users who have been in the point of interest before. I believe this is an important task since it was one of the features that makes Meili valuable, users will be able to trust posts and reviews because they must have been there before. The second task was also really exciting to implement, now we are displaying the POI being analyzed by MeiliLens in a different colour so that the users can have a UI reference in the map. It was hard to implement this task because of how the `ClusterManager` works in android and in my opinion the documentation on this aspect is not really good. Finally, my last task for the week was to fix a supposed bug in the cache service, but after digging deep we realized that everything is working properly and that it was just a false red flag.
 
+I managed to implement all of my tasks in the estimated time, there was just the last task that took me less time since at the end I found that there was no problem. Since I had a little bit of time left because of my shorter than expected last task, I collaborated in the fixing code review remarks PR and also reviewed as many PRs as I could.
 
 ## Thomas (Scrum Master)
 
