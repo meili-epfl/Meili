@@ -131,14 +131,15 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
         FirebaseNotificationService.sharedPref = getSharedPreferences("sharedPref", MODE_PRIVATE)
 
         FirebaseMessaging.getInstance().token.addOnSuccessListener {
-
-
-            try {
-                viewModel.addElement(Auth.getCurrentUser()!!.uid,
-                    Token(FirebaseNotificationService.token!!))
-            } catch (e: DatabaseException) {
-                Log.e(TAG, "token already registered")
+            if(Auth.getCurrentUser() != null && FirebaseNotificationService.token != null){
+                try {
+                    viewModel.addElement(Auth.getCurrentUser()!!.uid,
+                        Token(FirebaseNotificationService.token!!))
+                } catch (e: DatabaseException) {
+                    Log.e(TAG, "token already registered")
+                }
             }
+
         }
 
         viewModel.getElements().observe(this, { map ->
