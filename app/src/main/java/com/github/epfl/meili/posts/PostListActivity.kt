@@ -1,7 +1,6 @@
 package com.github.epfl.meili.posts
 
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -111,8 +110,7 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
         }
 
         serviceProvider().getUserInformation(newUsers,
-            { onUsersInfoReceived(it, postMap) { m -> orderPosts(m.toList()) } },
-            { Log.d(TAG, "Error when fetching users information") })
+            { onUsersInfoReceived(it, postMap) { m -> orderPosts(m.toList()) } })
     }
 
     private fun sortPosts(order: String) {

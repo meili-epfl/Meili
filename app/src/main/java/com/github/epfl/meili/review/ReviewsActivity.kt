@@ -165,10 +165,8 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
             newUsersList.add(post.authorUid)
         }
 
-        serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, map) },
-            { Log.d(TAG, "Error when fetching users information") })
-        averageRatingView.text =
-            getString(R.string.average_rating_format).format(Review.averageRating(map))
+        serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, map) })
+        averageRatingView.text = getString(R.string.average_rating_format).format(Review.averageRating(map))
     }
 
     private fun initLoggedInListener() {

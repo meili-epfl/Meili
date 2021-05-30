@@ -121,10 +121,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
             newUsers.add(comment.authorUid)
         }
 
-        serviceProvider().getUserInformation(newUsers, { onUsersInfoReceived(it, commentsMap) },
-            {
-                Log.e(TAG, "Error when fetching users information")
-            })
+        serviceProvider().getUserInformation(newUsers, { onUsersInfoReceived(it, commentsMap) })
     }
 
     private fun initRecyclerAdapter() {

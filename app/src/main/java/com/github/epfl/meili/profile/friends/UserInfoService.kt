@@ -25,7 +25,7 @@ class UserInfoService {
     fun getUserInformation(
             uids: List<String>,
             onSuccess: ((Map<String, User>) -> Unit)?,
-            onError: ((Error) -> Unit)?
+            onError: ((Error) -> Unit)? = {}
     ) {
         if (onError != null && onSuccess != null) {
             if (responsesRemaining != 0) {
