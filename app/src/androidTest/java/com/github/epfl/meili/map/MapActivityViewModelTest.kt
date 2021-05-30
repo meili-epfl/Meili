@@ -156,6 +156,8 @@ class MapActivityViewModelTest {
             viewModel.setDatabase(mockDatabase as Database<PointOfInterest>)
 
             viewModel.onLocationChanged(mockLocation)
+
+            //TODO: assert that toast was displayed
         }
     }
 

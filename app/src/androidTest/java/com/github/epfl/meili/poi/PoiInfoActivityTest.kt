@@ -176,7 +176,7 @@ class PoiInfoActivityTest {
         Intents.intended(toPackage("com.android.server.telecom"))
     }
 
-    //TODO: add is clickable
+    //TODO: Check that the status of that poi changes
     @Test
     fun favoriteButtonTestSignedIn() {
         database.onEvent(mockSnapshot, null)

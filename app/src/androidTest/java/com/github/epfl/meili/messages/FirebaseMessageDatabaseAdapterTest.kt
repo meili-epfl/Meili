@@ -31,9 +31,7 @@ class FirebaseMessageDatabaseAdapterTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun constructorThrowsWhenNullArgs() {
-
         FirebaseMessageDatabaseAdapter("")
-
     }
 
     @Test
@@ -73,6 +71,7 @@ class FirebaseMessageDatabaseAdapterTest {
 
     @Test
     fun onCancelledTest() {
+        // Do nothing
         db.onCancelled(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION))
     }
 }
