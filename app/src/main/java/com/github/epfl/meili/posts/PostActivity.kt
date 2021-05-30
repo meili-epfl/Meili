@@ -92,7 +92,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
 
         val singletonList = ArrayList<String>()
         singletonList.add(post.authorUid)
-        serviceProvider().getUserInformation(singletonList, { onAuthorInfoReceived(it) }) {}
+        serviceProvider().getUserInformation(singletonList) { onAuthorInfoReceived(it) }
     }
 
     private fun onAuthorInfoReceived(users: Map<String, User>) {
@@ -121,7 +121,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
             newUsers.add(comment.authorUid)
         }
 
-        serviceProvider().getUserInformation(newUsers, { onUsersInfoReceived(it, commentsMap) })
+        serviceProvider().getUserInformation(newUsers) { onUsersInfoReceived(it, commentsMap) }
     }
 
     private fun initRecyclerAdapter() {

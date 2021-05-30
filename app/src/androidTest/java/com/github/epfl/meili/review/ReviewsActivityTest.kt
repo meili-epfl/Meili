@@ -100,7 +100,6 @@ class ReviewsActivityTest {
                 mockUserInfoService.getUserInformation(
                         Mockito.anyList(),
                         Mockito.any(),
-                        Mockito.any()
                 )
         ).then {
             val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)

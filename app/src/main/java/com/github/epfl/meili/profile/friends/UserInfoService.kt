@@ -6,6 +6,8 @@ import com.github.epfl.meili.models.User
 
 class UserInfoService {
     companion object {
+        private const val TAG = "UserInfoService"
+
         var documentService: () -> FirestoreDocumentService = { FirestoreDocumentService }
         var getUserPath: (String) -> String = { uid -> "users/${uid}" }
     }
@@ -25,11 +27,10 @@ class UserInfoService {
     fun getUserInformation(
             uids: List<String>,
             onSuccess: ((Map<String, User>) -> Unit)?,
-            onError: ((Error) -> Unit)? = {}
     ) {
-        if (onError != null && onSuccess != null) {
+        if (onSuccess != null) {
             if (responsesRemaining != 0) {
-                onError(Error("Response is currently being processed"))
+                Log.e(TAG, "Error fetching user information:")
             } else {
                 if (uids.isEmpty()) {
                     onSuccess(HashMap())

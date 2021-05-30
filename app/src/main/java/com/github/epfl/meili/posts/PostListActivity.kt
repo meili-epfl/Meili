@@ -109,8 +109,9 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
             newUsers.add(post.authorUid)
         }
 
-        serviceProvider().getUserInformation(newUsers,
-            { onUsersInfoReceived(it, postMap) { m -> orderPosts(m.toList()) } })
+        serviceProvider().getUserInformation(newUsers) {
+            onUsersInfoReceived(it, postMap) { m -> orderPosts(m.toList()) }
+        }
     }
 
     private fun sortPosts(order: String) {
