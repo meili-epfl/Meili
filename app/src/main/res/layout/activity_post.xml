@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".posts.PostActivity"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:context=".posts.PostActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,8 +35,8 @@
             android:id="@+id/post_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:srcCompat="@tools:sample/backgrounds/scenic"
-            android:contentDescription="@string/post_image" />
+            android:contentDescription="@string/post_image"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
         <LinearLayout
             android:id="@+id/new_comment_layout"
@@ -51,10 +51,10 @@
 
                 <Button
                     android:id="@+id/comment_button"
+                    style="@style/Theme.Meili.button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/add_comment"
-                    style="@style/Theme.Meili.button"
                     android:theme="@style/Theme.Meili.button"
                     android:visibility="visible" />
 
@@ -62,22 +62,50 @@
                     android:id="@+id/edit_comment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints=""
                     android:hint="@string/add_your_comment"
                     android:inputType="textMultiLine"
                     android:maxLength="300"
-                    android:visibility="invisible"
-                    android:autofillHints="" />
+                    android:visibility="invisible" />
             </RelativeLayout>
 
             <Button
                 android:id="@+id/add_comment"
+                style="@style/Theme.Meili.button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/post_comment"
-                style="@style/Theme.Meili.button"
                 android:theme="@style/Theme.Meili.button"
                 android:visibility="invisible" />
         </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/list_comments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/sort_by"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="@string/sort_by" />
+
+            <Spinner
+                android:id="@+id/sort_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/sort_by" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/forum_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/sort_spinner"
+                tools:layout_editor_absoluteX="12dp"
+                tools:layout_editor_absoluteY="33dp" />
+        </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/comments_recycler_view"

@@ -25,8 +25,10 @@ import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
+import java.lang.IllegalArgumentException
 
-class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListener {
+class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListener,
+    AdapterView.OnItemSelectedListener {
     companion object {
         private const val TAG = "PostActivity"
         const val POST_ID = "Post_ID"
@@ -35,7 +37,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
     }
 
     override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Comment, User>>
-    override lateinit var usersMap: Map<String, User>
+    override var usersMap: Map<String, User> = HashMap()
 
     private lateinit var viewModel: MeiliViewModel<Comment>
 
@@ -47,6 +49,9 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
     private lateinit var postId: String
     private lateinit var post: Post
 
+    private var sortOrder = PostListActivity.NEWEST
+    private var commentMap: Map<String, Comment> = HashMap()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
@@ -57,15 +62,14 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         initViews(post)
 
         FirebaseStorageService.getDownloadUrl(
-                "images/forum/$postId",
-                { uri -> getDownloadUrlCallback(uri) }
+            "images/forum/$postId",
+            { uri -> getDownloadUrlCallback(uri) }
         )
-
-        usersMap = HashMap()
 
         initViewModel()
         initRecyclerAdapter()
         initLoggedInListener()
+        initSorting(findViewById(R.id.sort_spinner))
 
         findViewById<TextView>(R.id.userName).setOnClickListener {
             openUserProfile(post.authorUid)
@@ -107,7 +111,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
     private fun initViewModel() {
         @Suppress("UNCHECKED_CAST")
         viewModel =
-                ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
 
         viewModel.initDatabase(FirestoreDatabase("forum/$postId/comments", Comment::class.java))
         viewModel.getElements().observe(this, { map ->
@@ -122,12 +126,15 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         }
 
         serviceProvider().getUserInformation(newUsers, { onUsersInfoReceived(it, commentsMap) },
-            { Log.e(TAG, "Error when fetching users information")
-        })
+            {
+                Log.e(TAG, "Error when fetching users information")
+            })
     }
 
     override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Comment>) {
+        this.commentMap = map
         usersMap = HashMap(usersMap) + users
+
         val commentsAndUsersMap = HashMap<String, Pair<Comment, User>>()
         for ((commentId, comment) in map) {
             val user = usersMap[comment.authorUid]
@@ -136,7 +143,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
             }
         }
 
-        recyclerAdapter.submitList(commentsAndUsersMap.toList())
+        recyclerAdapter.submitList(orderComments(commentsAndUsersMap.toList()))
         recyclerAdapter.notifyDataSetChanged()
     }
 
@@ -176,11 +183,47 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
             error("Unconnected user is trying to add comment")
         }
         val user: User = Auth.getCurrentUser()!!
-        val commentId = "${user.uid}${System.currentTimeMillis()}"
+        val timestamp = System.currentTimeMillis()
+        val commentId = "${user.uid}${timestamp}"
         val text = editText.text.toString()
 
-        viewModel.addElement(commentId, Comment(user.uid, text))
+        viewModel.addElement(commentId, Comment(user.uid, text, timestamp))
 
         hideEditCommentView()
+    }
+
+    private fun initSorting(sortSpinner: Spinner) {
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter.createFromResource(
+            this, R.array.sort_array_comments,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            sortSpinner.adapter = adapter
+        }
+        sortSpinner.onItemSelectedListener = this
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
+        sortComments(parent?.getItemAtPosition(pos) as String)
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {}
+
+    private fun sortComments(order: String) {
+        sortOrder = order
+        onUsersInfoReceived(HashMap(), commentMap)
+    }
+
+    private fun orderComments(postList: List<Pair<String, Pair<Comment, User>>>): List<Pair<String, Pair<Comment, User>>> {
+        return postList.sortedBy { pair ->
+            when (sortOrder) {
+                PostListActivity.NEWEST -> -pair.second.first.timestamp
+                PostListActivity.OLDEST -> pair.second.first.timestamp
+                else -> throw IllegalArgumentException()
+            }
+        }
     }
 }
