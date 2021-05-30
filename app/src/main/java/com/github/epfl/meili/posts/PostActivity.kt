@@ -1,6 +1,5 @@
 package com.github.epfl.meili.posts
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
-import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.Post
@@ -23,7 +21,6 @@ import com.github.epfl.meili.util.ImageSetter
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
-import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
 class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListener {
@@ -57,13 +54,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         initViews(post)
 
         if (post.hasPhoto) {
-            FirebaseStorageService.getDownloadUrl(
-                "images/forum/$postId",
-                { uri -> getDownloadUrlCallback(uri) },
-                { exception ->
-                    Log.e(TAG, "Image not found", exception)
-                }
-            )
+            ImageSetter.setImageInto(postId, imageView, ImageSetter.imagePostPath)
         }
 
         usersMap = HashMap()
@@ -75,10 +66,6 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         findViewById<TextView>(R.id.userName).setOnClickListener {
             openUserProfile(post.authorUid)
         }
-    }
-
-    private fun getDownloadUrlCallback(uri: Uri) {
-        Picasso.get().load(uri).into(imageView)
     }
 
     private fun initViews(post: Post) {
@@ -106,7 +93,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         val imageAuthor: CircleImageView = findViewById(R.id.userImage)
 
         authorView.text = author?.username
-        ImageSetter.setImageInto(author!!.uid, imageAuthor)
+        ImageSetter.setImageInto(author!!.uid, imageAuthor, ImageSetter.imageAvatarPath)
     }
 
     private fun initViewModel() {

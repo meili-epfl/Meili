@@ -1,7 +1,5 @@
 package com.github.epfl.meili.posts
 
-import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,30 +8,36 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
-import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.ClickListener
+import com.github.epfl.meili.util.ImageSetter
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
-import com.squareup.picasso.Picasso
 
-class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private val listener: ClickListener) :
-        MeiliRecyclerAdapter<Pair<Post, User>>() {
+class PostListRecyclerAdapter(
+    private val viewModel: PostListViewModel,
+    private val listener: ClickListener
+) :
+    MeiliRecyclerAdapter<Pair<Post, User>>() {
     private var userId: String? = null
 
     companion object {
-        val TAG = "PostListRecyclerAdapter"
+        const val TAG = "PostListRecyclerAdapter"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-            PostViewHolder(
-                    LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false),
-                    listener
-            )
+        PostViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.post, parent, false),
+            listener
+        )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-            (holder as PostViewHolder).bind(items[position].second.second, items[position].second.first, userId)
+        (holder as PostViewHolder).bind(
+            items[position].second.second,
+            items[position].second.first,
+            userId
+        )
 
     /**
      * Update recycler view with user's info
@@ -43,7 +47,7 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
     }
 
     inner class PostViewHolder(itemView: View, listener: ClickListener) :
-            MeiliWithUserRecyclerViewHolder<Post>(itemView, listener) {
+        MeiliWithUserRecyclerViewHolder<Post>(itemView, listener) {
         private val title: TextView = itemView.findViewById(R.id.post_title)
         private val postId: TextView = itemView.findViewById(R.id.post_id)
         private val upvoteButton: ImageButton = itemView.findViewById(R.id.upvote_button)
@@ -74,21 +78,15 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
             upvoteCount.text = (post.upvoters.size - post.downvoters.size).toString()
 
             if (post.hasPhoto) {
-                FirebaseStorageService.getDownloadUrl(
-                    "images/forum/${post.postId()}",
-                    { uri -> getDownloadUrlCallback(uri) },
-                    { exception ->
-                        Log.e(TAG, "Image not found", exception)
-                    }
-                )
+                ImageSetter.setImageInto(post.postId(), image, ImageSetter.imagePostPath)
             }
         }
 
         private fun setupButtons(
-                upvoters: ArrayList<String>,
-                downvoters: ArrayList<String>,
-                userId: String,
-                postId: String
+            upvoters: ArrayList<String>,
+            downvoters: ArrayList<String>,
+            userId: String,
+            postId: String
         ) {
             when {
                 upvoters.contains(userId) -> {
@@ -106,10 +104,6 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
             }
             upvoteButton.setOnClickListener { viewModel.upvote(postId, userId) }
             downvoteButton.setOnClickListener { viewModel.downvote(postId, userId) }
-        }
-
-        private fun getDownloadUrlCallback(uri: Uri) {
-            Picasso.get().load(uri).into(image)
         }
     }
 }

@@ -89,21 +89,21 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/submit_post"
-                    style="@style/Theme.Meili.button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onClick"
-                    android:text="@string/create_post"
-                    android:theme="@style/Theme.Meili.button" />
-
-                <Button
                     android:id="@+id/cancel_post"
                     style="@style/Theme.Meili.button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="onClick"
                     android:text="@string/cancel"
+                    android:theme="@style/Theme.Meili.button" />
+
+                <Button
+                    android:id="@+id/submit_post"
+                    style="@style/Theme.Meili.button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onClick"
+                    android:text="@string/create_post"
                     android:theme="@style/Theme.Meili.button" />
 
             </LinearLayout>
