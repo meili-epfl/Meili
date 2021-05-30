@@ -30,6 +30,7 @@ class PhotoCropActivityTest {
         Thread.sleep(1500)
     }
 
+    //TODO: no assertions in any of the below tests, we can add some view assertions or something?
     @Test
     fun rotate90Click() {
         onView(withId(R.id.rotate_90)).perform(click())

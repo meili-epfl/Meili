@@ -129,8 +129,6 @@ class ChatLogActivityAndroidTest {
                 a.verifyAndUpdateUserIsLoggedIn(true)
                 assertThat(a.supportActionBar?.title, `is`("fake_poi"))
             }
-
-
         }
     }
 

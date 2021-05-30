@@ -75,12 +75,6 @@ class PoiServiceCachedTest {
     }
 
     @Test
-    fun test() {
-        assert(true)
-    }
-
-
-    @Test
     fun requestPoisWhenNoValidDataAndInternetConnection() {
         setInternetConnection(true)
 

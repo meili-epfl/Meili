@@ -342,6 +342,7 @@ class ForumActivityTest {
         onView(withId(R.id.sort_spinner)).check(matches(withSpinnerText(containsString("Newest"))))
     }
 
+    //TODO: no assertions here
     @Test
     fun clickUpvoteDownvoteButtonsTest() {
         mockAuthenticationService.signInIntent(null)
@@ -365,6 +366,4 @@ class ForumActivityTest {
         onView(withId(R.id.post_use_camera)).perform(click())
         Intents.intended(hasComponent(CameraActivity::class.java.name))
     }
-
-
 }

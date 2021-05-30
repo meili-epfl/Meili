@@ -140,6 +140,7 @@ class ProfileEditableTest {
         FirebaseStorageService.storageProvider = { mockFirebase }
     }
 
+    //TODO: add test for can edit own profile?
     @Test
     fun cannotEditNotOwnedProfile() {
         runOnUiThread {

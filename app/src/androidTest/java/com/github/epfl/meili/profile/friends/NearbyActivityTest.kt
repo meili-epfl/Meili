@@ -120,6 +120,8 @@ class NearbyActivityTest {
         runOnUiThread {
             payloadCallbackCaptor.value.onPayloadReceived(MOCK_ENDPOINT_ID, uidPayload)
             payloadCallbackCaptor.value.onPayloadReceived(MOCK_FRIEND_UID, ackPayload)
+
+            //TODO: add assertion here??
         }
     }
 }

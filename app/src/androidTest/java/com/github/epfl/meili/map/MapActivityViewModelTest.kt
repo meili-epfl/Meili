@@ -119,6 +119,7 @@ class MapActivityViewModelTest {
         }
     }
 
+    //TODO: no assertion here
     @Test
     fun onRepeatedErrorsDisplayErrorMessage() {
         val mockPoiService = Mockito.mock(PoiService::class.java)
@@ -271,6 +272,7 @@ class MapActivityViewModelTest {
         }
     }
 
+    //TODO: no assertion here
     @Test
     fun sensorsTest() {
         val mockPoiService = Mockito.mock(PoiService::class.java)
