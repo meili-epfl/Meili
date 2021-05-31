@@ -2,6 +2,7 @@ package com.github.epfl.meili.util.navigation
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.github.epfl.meili.R
 import com.github.epfl.meili.map.MapActivity
@@ -27,6 +28,8 @@ abstract class NavigableActivity(
             true
         }
     }
+
+
 
     abstract fun getNavigationIntent(id: Int): Intent
 }
