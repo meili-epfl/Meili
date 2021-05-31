@@ -5,6 +5,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.hardware.SensorManager.SENSOR_DELAY_NORMAL
 import android.location.Location
 import android.net.Uri
 import androidx.core.content.ContextCompat.getSystemService
@@ -34,11 +35,8 @@ import kotlin.math.roundToInt
 class MapActivityViewModel(application: Application) :
     AndroidViewModel(application), PoiServiceViewModel, Observer {
     companion object {
-        private const val SENSOR_DELAY = 500_000 // microseconds
-        private const val FIELD_OF_VIEW = 25.0 // degrees
-        private const val LENS_MAX_DISTANCE = 500.0 // meters
-        private const val AZIMUTH_TOLERANCE = 15.0 // degrees
-
+        private const val FIELD_OF_VIEW = 60.0 // degrees
+        private const val AZIMUTH_TOLERANCE = 20.0 // degrees
         private const val REACHABLE_DIST = 500.0 //meters
 
         var getSensorManager: (application: Application) -> SensorManager =
@@ -79,7 +77,7 @@ class MapActivityViewModel(application: Application) :
         sensorManager.registerListener(
             MapSensorEventListener(sensor),
             sensorManager.getDefaultSensor(sensor),
-            SENSOR_DELAY
+            SENSOR_DELAY_NORMAL
         )
     }
 
@@ -114,9 +112,18 @@ class MapActivityViewModel(application: Application) :
     }
 
     private fun updatePoiDist() {
-        if (!checkAnglesClose(azimuthInDegrees(), lastUpdatedAzimuth, AZIMUTH_TOLERANCE)) {
-            mPoiDist.value = closestPoiAndDistance(fieldOfViewPOIs())
-            lastUpdatedAzimuth = azimuthInDegrees()
+        // currently no lens poi OR sufficiently different orientation
+        if (mPoiDist.value == null || !checkAnglesClose(
+                azimuthInDegrees(),
+                lastUpdatedAzimuth,
+                AZIMUTH_TOLERANCE
+            )
+        ) {
+            val newPoiDist = closestPoiAndDistance(fieldOfViewPOIs())
+            if (newPoiDist != mPoiDist.value) {
+                lastUpdatedAzimuth = azimuthInDegrees()
+                mPoiDist.value = newPoiDist
+            }
         }
     }
 
@@ -132,7 +139,7 @@ class MapActivityViewModel(application: Application) :
     private fun closestPoiAndDistance(pois: List<PointOfInterest>): Pair<PointOfInterest, Int>? {
         if (lastUserLocation == null) return null
 
-        var minDist = LENS_MAX_DISTANCE
+        var minDist = REACHABLE_DIST
         var nearestPoi: PointOfInterest? = null
         val userLocation = getUserLocation()
         for (poi in pois) {

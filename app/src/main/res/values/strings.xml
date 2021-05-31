@@ -100,9 +100,11 @@
     <string name="take_me_there">Take Me There</string>
     <string name="user_image">user image</string>
     <string name="call">call</string>
+    <string name="upvote_default_count">0</string>
     <string name="favorite_pois">Favorite POIs</string>
     <string name="poi_info_activity">Info</string>
     <string name="forum_activity">Forum</string>
     <string name="chat_activity">Chat</string>
     <string name="reviews_activity">Reviews</string>
+    <string name="post_preview_image">Post Image in preview</string>
 </resources>
