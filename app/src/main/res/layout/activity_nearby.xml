@@ -12,11 +12,11 @@
         android:layout_width="37dp"
         android:layout_height="33dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
+        android:contentDescription="@string/bluetooth"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bluetooth"
-        android:contentDescription="@string/bluetooth" />
+        app:srcCompat="@drawable/bluetooth" />
 
     <TextView
         android:id="@+id/explanation_text"
@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="128dp"
-        android:layout_marginTop="104dp"
+        android:layout_marginTop="80dp"
         android:onClick="onNearbyButtonClick"
         android:text="@string/find_my_friend"
         android:theme="@style/Theme.Meili.button"
