@@ -25,6 +25,7 @@ import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.friends.UserInfoService
+import com.github.epfl.meili.util.ListSorter
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
@@ -109,7 +110,7 @@ class PostActivityTest {
             return@then null
         }
 
-        PostActivity.serviceProvider = { mockUserInfoService }
+        ListSorter.serviceProvider = { mockUserInfoService }
     }
 
     private fun setupMocks() {
