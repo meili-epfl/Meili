@@ -38,7 +38,7 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
     private lateinit var editReviewView: View
 
     private lateinit var floatingActionButton: ImageView
-    private lateinit var averageRatingView: TextView
+    private lateinit var averageRatingView: RatingBar
 
     private lateinit var ratingBar: RatingBar
     private lateinit var editTitleView: EditText
@@ -166,8 +166,7 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
 
         serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, map) },
             { Log.d(TAG, "Error when fetching users information") })
-        averageRatingView.text =
-            getString(R.string.average_rating_format).format(Review.averageRating(map))
+        averageRatingView.rating = Review.averageRating(map)
     }
 
     override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Review>) {
