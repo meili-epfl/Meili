@@ -102,12 +102,19 @@ class ProfileEditableTest {
         `when`(mockDocumentSnapshot2.exists()).thenReturn(true)
         `when`(mockDocumentSnapshot2.toObject(User::class.java)).thenReturn(TEST_USER)
 
+        FirestoreDocumentService.databaseProvider = { mockFirestore }
+
+        setMockAuthenticationService(MOCK_UID)
+    }
+
+    private fun setMockAuthenticationService(ownUid: String){
         val mockAuthenticationService = MockAuthenticationService()
-        mockAuthenticationService.setMockUid(MOCK_UID)
+        mockAuthenticationService.setMockUid(ownUid)
         mockAuthenticationService.setUsername(MOCK_USERNAME)
 
-        FirestoreDocumentService.databaseProvider = { mockFirestore }
+
         Auth.authService = mockAuthenticationService
+
         mockAuthenticationService.signInIntent(null)
     }
 
@@ -140,7 +147,6 @@ class ProfileEditableTest {
         FirebaseStorageService.storageProvider = { mockFirebase }
     }
 
-    //TODO: add test for can edit own profile?
     @Test
     fun cannotEditNotOwnedProfile() {
         runOnUiThread {
@@ -162,6 +168,32 @@ class ProfileEditableTest {
         onView(withId(R.id.profile_favorite_pois_button)).check(matches(isDisplayed()))
 
         onView(withId(R.id.sign_out)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.sign_in)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun canEditOwnedProfile() {
+        setMockAuthenticationService(TEST_UID)
+
+        runOnUiThread {
+            listenerCaptor.value!!.onSuccess(mockDocumentSnapshot2)
+        }
+
+        onView(withId(R.id.profile_name)).check(matches(withText(TEST_USERNAME)))
+        onView(withId(R.id.profile_bio)).check(matches(withText(TEST_BIO)))
+        onView(withId(R.id.photo)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.photo_edit)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.save)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.cancel)).check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.profile_edit_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.list_friends_button)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.profile_posts_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.profile_favorite_pois_button)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.sign_out)).check(matches(isDisplayed()))
         onView(withId(R.id.sign_in)).check(matches(not(isDisplayed())))
     }
 }
