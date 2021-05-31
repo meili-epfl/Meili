@@ -5,6 +5,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -21,6 +22,8 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,6 +31,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+
 
 @Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
@@ -102,7 +106,7 @@ class NearbyActivityTest {
         val connectionLifecycleCallback = connectionLifecycleCallbackCaptor.value
         runOnUiThread {
             connectionLifecycleCallback.onConnectionInitiated(
-                MOCK_ENDPOINT_ID, ConnectionInfo(
+                    MOCK_ENDPOINT_ID, ConnectionInfo(
                     MOCK_FRIEND_USERNAME, "", false))
         }
 
@@ -120,8 +124,6 @@ class NearbyActivityTest {
         runOnUiThread {
             payloadCallbackCaptor.value.onPayloadReceived(MOCK_ENDPOINT_ID, uidPayload)
             payloadCallbackCaptor.value.onPayloadReceived(MOCK_FRIEND_UID, ackPayload)
-
-            //TODO: add assertion here?? For toast?
         }
     }
 }
