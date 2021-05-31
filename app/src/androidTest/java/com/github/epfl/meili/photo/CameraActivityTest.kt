@@ -108,7 +108,9 @@ class CameraActivityTest {
             }
         }
 
-        //onView(withId(R.id.camera_preview)).perform(touches)
+        onView(withId(R.id.camera_preview)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withId(R.id.camera_preview)).perform(touches)
+        onView(withId(R.id.camera_preview)).check(ViewAssertions.matches(isDisplayed()))
     }
 
 
