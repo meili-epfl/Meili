@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
+            android:layout_marginTop="12dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="12dp"
             android:textSize="30sp"
@@ -35,7 +36,9 @@
             android:id="@+id/post_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/post_image"
+            android:scaleType="fitCenter"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
         <LinearLayout
