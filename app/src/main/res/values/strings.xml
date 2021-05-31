@@ -95,7 +95,6 @@
     <string name="create_post">Create post</string>
     <string name="cancel">Cancel</string>
     <string name="sort_by">Sort by:</string>
-
     <string name="dark_light_mode_button">Dark / light mode button</string>
     <string name="missing_name">Missing Name</string>
     <string name="no_info">No Info</string>
@@ -105,9 +104,11 @@
     <string name="find_my_friend">Find My Friend!</string>
     <string name="bluetooth">bluetooth</string>
     <string name="meili_nearby_lets_you_add_another_user_as_a_friend_if_your_devices_are_close">Meili Nearby lets you add another user as a friend if your devices are close.</string>
+    <string name="upvote_default_count">0</string>
     <string name="favorite_pois">Favorite POIs</string>
     <string name="poi_info_activity">Info</string>
     <string name="forum_activity">Forum</string>
     <string name="chat_activity">Chat</string>
     <string name="reviews_activity">Reviews</string>
+    <string name="post_preview_image">Post Image in preview</string>
 </resources>

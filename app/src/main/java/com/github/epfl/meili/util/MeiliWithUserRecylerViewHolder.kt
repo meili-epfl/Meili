@@ -7,7 +7,10 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.models.User
 import de.hdodenhof.circleimageview.CircleImageView
 
-abstract class MeiliWithUserRecyclerViewHolder<T>(itemView: View, private val listener: ClickListener) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+abstract class MeiliWithUserRecyclerViewHolder<T>(
+    itemView: View,
+    private val listener: ClickListener
+) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
     private val author: TextView = itemView.findViewById(R.id.userName)
     private val authorImage: CircleImageView = itemView.findViewById(R.id.userImage)
     private lateinit var user: User
@@ -20,7 +23,7 @@ abstract class MeiliWithUserRecyclerViewHolder<T>(itemView: View, private val li
         this.user = user
         author.text = user.username
 
-        ImageSetter.setImageInto(user.uid, authorImage)
+        ImageSetter.setImageInto(user.uid, authorImage, ImageSetter.imageAvatarPath)
     }
 
     override fun onClick(v: View) {
