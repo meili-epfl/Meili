@@ -2,40 +2,27 @@ package com.github.epfl.meili.posts
 
 import android.content.Intent
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.profile.UserProfileLinker
-import com.github.epfl.meili.profile.friends.UserInfoService
+import com.github.epfl.meili.util.ListSorter
+import com.github.epfl.meili.util.ListSorter.Companion.NEWEST
+import com.github.epfl.meili.util.ListSorter.Companion.OLDEST
+import com.github.epfl.meili.util.ListSorter.Companion.POPULAR
 import com.github.epfl.meili.util.RecyclerViewInitializer
 
 /**
  * To be implemented by all activities which display a list of posts
  * Performs basic initialization and sorting
  */
-interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLinker<Post> {
-    companion object {
-        const val NEWEST = "Newest"
-        const val OLDEST = "Oldest"
-        const val POPULAR = "Popularity"
-
-        var serviceProvider: () -> UserInfoService = { UserInfoService() }
-    }
+interface PostListActivity : ListSorter<Post> {
 
     var viewModel: PostListViewModel
-
-    var sortOrder: String
-    var postsMap: Map<String, Post>
-
-    fun getActivity(): AppCompatActivity
 
     /**
      * Get intent to launch post activity
@@ -59,13 +46,13 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
         initViewModel(viewModelClass)
         initRecyclerAdapter(recyclerView)
         initLoggedInListener()
-        initSorting(sortSpinner)
+        initSorting(sortSpinner, R.array.sort_array)
     }
 
     fun initViewModel(viewModelClass: Class<out PostListViewModel>) {
         viewModel = ViewModelProvider(getActivity()).get(viewModelClass)
         viewModel.getElements().observe(getActivity()) {
-            postListener(it)
+            sortListener(it)
         }
     }
 
@@ -87,52 +74,8 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
         }
     }
 
-    private fun initSorting(sortSpinner: Spinner) {
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter.createFromResource(
-            getActivity(), R.array.sort_array,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            sortSpinner.adapter = adapter
-        }
-        sortSpinner.onItemSelectedListener = this
-    }
-
-    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Post>) {
-        this.postsMap = map
-        usersMap = HashMap(usersMap) + users
-
-        val postsAndUsersMap = HashMap<String, Pair<Post, User>>()
-        for ((postId, post) in map) {
-            val user = usersMap[post.authorUid]
-            if (user != null) {
-                postsAndUsersMap[postId] = Pair(post, user)
-            }
-        }
-
-        recyclerAdapter.submitList(orderPosts(postsAndUsersMap.toList()))
-        recyclerAdapter.notifyDataSetChanged()
-    }
-
-    private fun postListener(postMap: Map<String, Post>) {
-        val newUsers = ArrayList<String>()
-        for ((_, post) in postMap) {
-            newUsers.add(post.authorUid)
-        }
-
-        serviceProvider().getUserInformation(newUsers) { onUsersInfoReceived(it, postMap) }
-    }
-
-    private fun sortPosts(order: String) {
-        sortOrder = order
-        onUsersInfoReceived(HashMap(), postsMap)
-    }
-
-    private fun orderPosts(postList: List<Pair<String, Pair<Post, User>>>): List<Pair<String, Pair<Post, User>>> {
-        return postList.sortedBy { pair ->
+    override fun orderList(list: List<Pair<String, Pair<Post, User>>>): List<Pair<String, Pair<Post, User>>> {
+        return list.sortedBy { pair ->
             when (sortOrder) {
                 NEWEST -> -pair.second.first.timestamp
                 OLDEST -> pair.second.first.timestamp
@@ -142,9 +85,7 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
         }
     }
 
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, pos: Int, id: Long) {
-        sortPosts(parent?.getItemAtPosition(pos) as String)
+    override fun getAuthorUid(item: Post): String {
+        return item.authorUid
     }
-
-    override fun onNothingSelected(p0: AdapterView<*>?) {}
 }

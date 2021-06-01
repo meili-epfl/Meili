@@ -28,12 +28,8 @@
     <string name="button_to_change_profile_picture">Button to change profile picture</string>
     <string name="button_to_edit_profile">Button to edit profile</string>
     <string name="my_friends">My Friends</string>
-    <string name="profile_comments_button">Profile comments button</string>
-    <string name="profile_comments_textview">Comments</string>
     <string name="profile_posts_button">Profile posts button</string>
     <string name="profile_posts_textview">Posts</string>
-    <string name="profile_reviews_button">Profile reviews button</string>
-    <string name="profile_reviews_textview">Reviews</string>
     <string name="profile_favorite_pois_button">Profile POI history button</string>
     <string name="profile_poi_history_textview">POI</string>
     <string name="profile_name_edit_textview">Name:</string>
@@ -81,7 +77,6 @@
     <string name="user_icon">User Icon</string>
     <string name="upvote">upvote</string>
     <string name="downvote">downvote</string>
-    <string name="no_upvotes">0 Upvotes</string>
     <string name="profile">Profile</string>
     <string name="map">Map</string>
     <string name="feed">Feed</string>

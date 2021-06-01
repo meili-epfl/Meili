@@ -23,11 +23,11 @@ import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.posts.PostListActivity
-import com.github.epfl.meili.posts.PostListActivity.Companion.NEWEST
 import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.util.ImageSetter
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
+import com.github.epfl.meili.util.ListSorter.Companion.NEWEST
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.UIUtility
 import com.github.epfl.meili.util.WritingPolicy
@@ -41,7 +41,7 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
     override lateinit var viewModel: PostListViewModel
 
     override var usersMap: Map<String, User> = HashMap()
-    override var postsMap: Map<String, Post> = HashMap()
+    override var listMap: Map<String, Post> = HashMap()
     override var sortOrder = NEWEST
 
     private lateinit var listPostsView: View
@@ -148,7 +148,12 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
         viewModel.addElement(post.postId(), post)
 
         if (post.hasPhoto) {
-            executor.execute { compressAndUploadToFirebase(ImageSetter.imagePostPath(post.postId()), bitmap!!) }
+            executor.execute {
+                compressAndUploadToFirebase(
+                    ImageSetter.imagePostPath(post.postId()),
+                    bitmap!!
+                )
+            }
         }
 
         showListPostsView()

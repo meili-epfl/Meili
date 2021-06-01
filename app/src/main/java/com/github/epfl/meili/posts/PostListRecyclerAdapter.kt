@@ -14,6 +14,7 @@ import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.ImageSetter
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
+import com.squareup.picasso.Picasso
 
 class PostListRecyclerAdapter(
     private val viewModel: PostListViewModel,
@@ -79,6 +80,8 @@ class PostListRecyclerAdapter(
 
             if (post.hasPhoto) {
                 ImageSetter.setImageInto(post.postId(), image, ImageSetter.imagePostPath)
+            } else {
+                image.setImageResource(0) // Clear image, otherwise it takes image from previous post
             }
         }
 
