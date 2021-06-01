@@ -23,7 +23,7 @@
         android:layout_width="247dp"
         android:layout_height="60dp"
         android:layout_marginTop="24dp"
-        android:text="@string/meili_nearby_lets_you_add_another_user_as_a_friend_if_your_devices_are_close"
+        android:text="@string/nearby_text"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
