@@ -78,9 +78,7 @@ class PostActivity : AppCompatActivity(), ClickListener, ListSorter<Comment> {
         commentButton.setOnClickListener { showEditCommentView() }
         addCommentButton.setOnClickListener { addComment() }
 
-        val singletonList = ArrayList<String>()
-        singletonList.add(post.authorUid)
-        serviceProvider().getUserInformation(singletonList) { onAuthorInfoReceived(it) }
+        serviceProvider().getUserInformation(listOf(post.authorUid)) { onAuthorInfoReceived(it) }
     }
 
     private fun onAuthorInfoReceived(users: Map<String, User>) {

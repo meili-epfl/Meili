@@ -14,7 +14,6 @@ import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.ImageSetter
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
-import com.squareup.picasso.Picasso
 
 class PostListRecyclerAdapter(
     private val viewModel: PostListViewModel,
@@ -98,15 +97,15 @@ class PostListRecyclerAdapter(
 
         private fun updateVoteButtons(up: Boolean, down: Boolean) {
             val upRes = if (up) {
-                R.mipmap.upvote_filled_foreground
+                R.mipmap.upvote_filled
             } else {
-                R.mipmap.upvote_empty_foreground
+                R.mipmap.upvote_empty
             }
 
             val downRes = if (up) {
-                R.mipmap.downvote_filled_foreground
+                R.mipmap.downvote_filled
             } else {
-                R.mipmap.downvote_empty_foreground
+                R.mipmap.downvote_empty
             }
 
             upvoteButton.setImageResource(upRes)

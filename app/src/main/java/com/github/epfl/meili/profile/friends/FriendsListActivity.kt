@@ -81,10 +81,9 @@ class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinke
 
     private fun onFriendsUpdateReceived(map: Map<String, Friend>) {
         addDefaultFriend(map)
-
-        val newFriendsList = map.keys.toList().minus(usersMap.keys.toList())
-
-        serviceProvider().getUserInformation(newFriendsList) { onUsersInfoReceived(it, map) }
+        serviceProvider().getUserInformation(
+            map.keys.toList().minus(usersMap.keys.toList())
+        ) { onUsersInfoReceived(it, map) }
     }
 
     fun onFriendsListButtonClicked(view: View) {

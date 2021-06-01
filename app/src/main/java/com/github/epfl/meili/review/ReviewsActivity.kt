@@ -20,7 +20,8 @@ import com.github.epfl.meili.util.*
 import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
 import com.github.epfl.meili.util.navigation.PoiActivity
 
-class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_activity), ClickListener,
+class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_activity),
+    ClickListener,
     UserProfileLinker<Review> {
     companion object {
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
@@ -156,12 +157,9 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
             }
         }
 
-        val newUsersList = ArrayList<String>()
-        for ((_, post) in map) {
-            newUsersList.add(post.authorUid)
+        serviceProvider().getUserInformation(map.values.map { it.authorUid }) {
+            onUsersInfoReceived(it, map)
         }
-
-        serviceProvider().getUserInformation(newUsersList) { onUsersInfoReceived(it, map) }
         averageRatingView.text =
             getString(R.string.average_rating_format).format(Review.averageRating(map))
     }
