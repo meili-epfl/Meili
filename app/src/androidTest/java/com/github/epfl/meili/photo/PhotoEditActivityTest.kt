@@ -37,7 +37,6 @@ class PhotoEditActivityTest {
         Thread.sleep(1500)
     }
 
-    //TODO: no assertions here. Maybe at least explicitely say isClickable or something like this
     @Test
     fun paintButtonClick() {
         onView(withId(R.id.colorSlider)).check(matches(not(isDisplayed())))
