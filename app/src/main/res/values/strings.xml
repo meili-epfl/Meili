@@ -103,7 +103,7 @@
     <string name="call">call</string>
     <string name="find_my_friend">Find My Friend!</string>
     <string name="bluetooth">bluetooth</string>
-    <string name="meili_nearby_lets_you_add_another_user_as_a_friend_if_your_devices_are_close">Meili Nearby lets you add another user as a friend if your devices are close.</string>
+    <string name="nearby_text">Meili Nearby lets you add another user as a friend if your devices are close.</string>
     <string name="upvote_default_count">0</string>
     <string name="favorite_pois">Favorite POIs</string>
     <string name="poi_info_activity">Info</string>
