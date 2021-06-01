@@ -1,7 +1,6 @@
 package com.github.epfl.meili.posts
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +24,6 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListener {
     companion object {
-        private const val TAG = "PostActivity"
         const val POST_ID = "Post_ID"
 
         var serviceProvider: () -> UserInfoService = { UserInfoService() }
@@ -84,7 +82,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
 
         val singletonList = ArrayList<String>()
         singletonList.add(post.authorUid)
-        serviceProvider().getUserInformation(singletonList) { onAuthorInfoReceived(it) }
+        serviceProvider().getUserInformation(singletonList, { onAuthorInfoReceived(it) }) {}
     }
 
     private fun onAuthorInfoReceived(users: Map<String, User>) {
@@ -102,9 +100,7 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
             ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
 
         viewModel.initDatabase(FirestoreDatabase("forum/$postId/comments", Comment::class.java))
-        viewModel.getElements().observe(this, { map ->
-            commentListener(map)
-        })
+        viewModel.getElements().observe(this) { commentListener(it) }
     }
 
     private fun commentListener(commentsMap: Map<String, Comment>) {
@@ -116,6 +112,20 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         serviceProvider().getUserInformation(newUsers) { onUsersInfoReceived(it, commentsMap) }
     }
 
+    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Comment>) {
+        usersMap = HashMap(usersMap) + users
+        val commentsAndUsersMap = HashMap<String, Pair<Comment, User>>()
+        for ((commentId, comment) in map) {
+            val user = usersMap[comment.authorUid]
+            if (user != null) {
+                commentsAndUsersMap[commentId] = Pair(comment, user)
+            }
+        }
+
+        recyclerAdapter.submitList(commentsAndUsersMap.toList())
+        recyclerAdapter.notifyDataSetChanged()
+    }
+
     private fun initRecyclerAdapter() {
         recyclerAdapter = CommentsRecyclerAdapter(this)
         val recyclerView: RecyclerView = findViewById(R.id.comments_recycler_view)
@@ -124,13 +134,13 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
     }
 
     private fun initLoggedInListener() {
-        Auth.isLoggedIn.observe(this, { loggedIn ->
+        Auth.isLoggedIn.observe(this) { loggedIn ->
             val layout: LinearLayout = findViewById(R.id.new_comment_layout)
             layout.visibility = if (loggedIn)
                 View.VISIBLE
             else
                 View.INVISIBLE
-        })
+        }
     }
 
     private fun showEditCommentView() {

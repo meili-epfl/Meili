@@ -11,20 +11,16 @@ interface UserProfileLinker<T> : ClickListener {
     var recyclerAdapter: MeiliRecyclerAdapter<Pair<T, User>>
     var usersMap: Map<String, User>
 
-    fun onUsersInfoReceived(
-        users: Map<String, User>,
-        map: Map<String, T>,
-        postProcessing: (HashMap<String, Pair<T, User>>) -> List<Pair<String, Pair<T, User>>> = { it.toList() }
-    ) {
+    fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, T>) {
         usersMap = usersMap + HashMap(users)
         val itemsAndUsersMap = HashMap<String, Pair<T, User>>()
         for ((uid, user) in users) {
-            val value = map[uid]
-            if (value != null) {
-                itemsAndUsersMap[uid] = Pair(value, user)
+            val item = map[uid]
+            if (item != null) {
+                itemsAndUsersMap[uid] = Pair(item, user)
             }
         }
-        recyclerAdapter.submitList(postProcessing(itemsAndUsersMap))
+        recyclerAdapter.submitList(itemsAndUsersMap.toList())
         recyclerAdapter.notifyDataSetChanged()
     }
 

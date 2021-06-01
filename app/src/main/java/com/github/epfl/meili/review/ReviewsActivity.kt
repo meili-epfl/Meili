@@ -1,7 +1,6 @@
 package com.github.epfl.meili.review
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
@@ -20,13 +19,11 @@ import com.github.epfl.meili.util.*
 import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
 import com.github.epfl.meili.util.navigation.PoiActivity
 
-class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_activity),
-    ClickListener,
+class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_activity), ClickListener,
     UserProfileLinker<Review> {
     companion object {
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
         private const val EDIT_BUTTON_DRAWABLE = android.R.drawable.ic_menu_edit
-        private const val TAG = "ReviewsActivity"
 
         var serviceProvider: () -> UserInfoService = { UserInfoService() }
     }
@@ -143,9 +140,7 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
             it.whereEqualTo(Review.POI_KEY_FIELD, poiKey)
         })
 
-        viewModel.getElements().observe(this, { map ->
-            reviewsMapListener(map)
-        })
+        viewModel.getElements().observe(this) { reviewsMapListener(it) }
     }
 
     private fun reviewsMapListener(map: Map<String, Review>) {
@@ -166,17 +161,33 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
         }
 
         serviceProvider().getUserInformation(newUsersList) { onUsersInfoReceived(it, map) }
-        averageRatingView.text = getString(R.string.average_rating_format).format(Review.averageRating(map))
+        averageRatingView.text =
+            getString(R.string.average_rating_format).format(Review.averageRating(map))
+    }
+
+    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Review>) {
+        usersMap = HashMap(usersMap) + users
+
+        val reviewsAndUsersMap = HashMap<String, Pair<Review, User>>()
+        for ((postId, review) in map) {
+            val user = usersMap[review.authorUid]
+            if (user != null) {
+                reviewsAndUsersMap[postId] = Pair(review, user)
+            }
+        }
+
+        recyclerAdapter.submitList(reviewsAndUsersMap.toList())
+        recyclerAdapter.notifyDataSetChanged()
     }
 
     private fun initLoggedInListener() {
-        Auth.isLoggedIn.observe(this, { loggedIn ->
+        Auth.isLoggedIn.observe(this) { loggedIn ->
             floatingActionButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn, poiStatus)
             floatingActionButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn, poiStatus))
                 View.VISIBLE
             else
                 View.GONE
-        })
+        }
     }
 
     private fun showEditReviewView() {
@@ -188,5 +199,4 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
         listReviewsView.visibility = View.VISIBLE
         editReviewView.visibility = View.GONE
     }
-
 }

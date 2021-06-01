@@ -12,5 +12,7 @@ abstract class MeiliRecyclerAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewH
         Log.d("SubmitList", list.toString())
         items = list
     }
+
+    abstract fun notifyDataSetChanged()
 }
 

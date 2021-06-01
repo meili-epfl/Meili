@@ -1,7 +1,6 @@
 package com.github.epfl.meili.models
 
 import android.os.Parcelable
-import android.util.Log
 import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.parcelize.Parcelize
 

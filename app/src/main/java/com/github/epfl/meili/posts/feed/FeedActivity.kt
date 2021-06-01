@@ -10,10 +10,10 @@ import com.github.epfl.meili.poi.PoiServiceCached
 import com.github.epfl.meili.posts.PostListActivity
 import com.github.epfl.meili.posts.PostListActivity.Companion.NEWEST
 import com.github.epfl.meili.posts.PostListViewModel
-import com.github.epfl.meili.util.navigation.HomeActivity
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
 import com.github.epfl.meili.util.LocationService.listenToLocationChanges
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
+import com.github.epfl.meili.util.navigation.HomeActivity
 
 class FeedActivity : HomeActivity(R.layout.activity_feed, R.id.feed_activity), PostListActivity {
 

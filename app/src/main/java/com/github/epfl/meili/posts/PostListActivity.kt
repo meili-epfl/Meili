@@ -27,8 +27,6 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
         const val OLDEST = "Oldest"
         const val POPULAR = "Popularity"
 
-        private const val TAG = "PostListActivity"
-
         var serviceProvider: () -> UserInfoService = { UserInfoService() }
     }
 
@@ -81,12 +79,12 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
     }
 
     fun initLoggedInListener() {
-        Auth.isLoggedIn.observe(getActivity(), { loggedIn ->
+        Auth.isLoggedIn.observe(getActivity()) { loggedIn ->
             if (loggedIn && Auth.getCurrentUser() != null) {
                 (recyclerAdapter as PostListRecyclerAdapter).submitUserInfo(Auth.getCurrentUser()!!.uid)
                 recyclerAdapter.notifyDataSetChanged()
             }
-        })
+        }
     }
 
     private fun initSorting(sortSpinner: Spinner) {
@@ -103,20 +101,34 @@ interface PostListActivity : AdapterView.OnItemSelectedListener, UserProfileLink
         sortSpinner.onItemSelectedListener = this
     }
 
+    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Post>) {
+        this.postsMap = map
+        usersMap = HashMap(usersMap) + users
+
+        val postsAndUsersMap = HashMap<String, Pair<Post, User>>()
+        for ((postId, post) in map) {
+            val user = usersMap[post.authorUid]
+            if (user != null) {
+                postsAndUsersMap[postId] = Pair(post, user)
+            }
+        }
+
+        recyclerAdapter.submitList(orderPosts(postsAndUsersMap.toList()))
+        recyclerAdapter.notifyDataSetChanged()
+    }
+
     private fun postListener(postMap: Map<String, Post>) {
         val newUsers = ArrayList<String>()
         for ((_, post) in postMap) {
             newUsers.add(post.authorUid)
         }
 
-        serviceProvider().getUserInformation(newUsers) {
-            onUsersInfoReceived(it, postMap) { m -> orderPosts(m.toList()) }
-        }
+        serviceProvider().getUserInformation(newUsers) { onUsersInfoReceived(it, postMap) }
     }
 
     private fun sortPosts(order: String) {
         sortOrder = order
-        onUsersInfoReceived(HashMap(), postsMap) { m -> orderPosts(m.toList()) }
+        onUsersInfoReceived(HashMap(), postsMap)
     }
 
     private fun orderPosts(postList: List<Pair<String, Pair<Post, User>>>): List<Pair<String, Pair<Post, User>>> {
