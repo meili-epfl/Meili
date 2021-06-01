@@ -10,8 +10,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasPackage
 import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -176,13 +175,12 @@ class PoiInfoActivityTest {
         Intents.intended(toPackage("com.android.server.telecom"))
     }
 
-    //TODO: Check that the status of that poi changes
     @Test
     fun favoriteButtonTestSignedIn() {
         database.onEvent(mockSnapshot, null)
         onView(withId(R.id.favorite_button)).check(matches(isDisplayed()))
-        onView(withId(R.id.favorite_button)).perform(click())
-        onView(withId(R.id.favorite_button)).perform(click())
+        onView(withId(R.id.favorite_button)).check(matches(isChecked())).perform(click())
+        onView(withId(R.id.favorite_button)).check(matches(isNotChecked())).perform(click())
     }
 
     object MockitoHelper {
