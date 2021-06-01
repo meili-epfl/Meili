@@ -26,7 +26,6 @@
                     android:id="@+id/lens_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:layout_centerHorizontal="true"
                     android:text="@string/meili_lens" />
 
@@ -87,7 +86,6 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:src="@android:drawable/ic_menu_camera" />
-
 
             <ImageView
                 android:id="@+id/lens_dismiss_landmark"

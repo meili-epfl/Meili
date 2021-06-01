@@ -26,7 +26,6 @@
                 android:id="@+id/comment_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hello"
                 android:textSize="20sp" />
 
         </LinearLayout>
