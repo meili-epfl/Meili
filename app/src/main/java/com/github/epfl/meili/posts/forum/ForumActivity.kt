@@ -11,6 +11,7 @@ import android.widget.ImageView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
@@ -164,13 +165,11 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
     override fun initLoggedInListener() {
         super.initLoggedInListener()
 
-        Auth.isLoggedIn.observe(this, { loggedIn ->
-            createPostButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn, poiStatus)
-            createPostButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn, poiStatus))
-                View.VISIBLE
-            else
-                View.GONE
-        })
+        Auth.isLoggedIn.observe(this) { loggedIn ->
+            val isWriteEnabled = WritingPolicy.isWriteEnabled(loggedIn, poiStatus)
+            createPostButton.isEnabled = isWriteEnabled
+            createPostButton.isVisible = isWriteEnabled
+        }
     }
 
     private fun showEditPostView() {

@@ -3,6 +3,7 @@ package com.github.epfl.meili.review
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
@@ -182,11 +183,9 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
 
     private fun initLoggedInListener() {
         Auth.isLoggedIn.observe(this) { loggedIn ->
-            floatingActionButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn, poiStatus)
-            floatingActionButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn, poiStatus))
-                View.VISIBLE
-            else
-                View.GONE
+            val isWriteEnabled = WritingPolicy.isWriteEnabled(loggedIn, poiStatus)
+            floatingActionButton.isEnabled = isWriteEnabled
+            floatingActionButton.isVisible = isWriteEnabled
         }
     }
 

@@ -2,6 +2,7 @@ package com.facebook.login
 
 import com.facebook.AccessTokenCreator.createToken
 import com.facebook.login.LoginClient.Request
+import com.facebook.login.LoginClient.Result
 
 internal object LoginClientCreator {
 
