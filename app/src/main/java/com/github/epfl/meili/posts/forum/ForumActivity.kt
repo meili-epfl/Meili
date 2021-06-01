@@ -24,6 +24,7 @@ import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.posts.PostListActivity
 import com.github.epfl.meili.posts.PostListActivity.Companion.NEWEST
 import com.github.epfl.meili.posts.PostListViewModel
+import com.github.epfl.meili.util.ImageSetter
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
@@ -141,17 +142,12 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
         val title = editTitleView.text.toString()
         val text = editTextVIew.text.toString()
 
-        val post = Post(poi.uid, user.uid, title, timestamp, text)
+        val post = Post(poi.uid, user.uid, title, timestamp, text, bitmap != null)
 
         viewModel.addElement(post.postId(), post)
 
-        if (bitmap != null) {
-            executor.execute {
-                compressAndUploadToFirebase(
-                    "images/forum/${post.postId()}",
-                    bitmap!!
-                )
-            }
+        if (post.hasPhoto) {
+            executor.execute { compressAndUploadToFirebase(ImageSetter.imagePostPath(post.postId()), bitmap!!) }
         }
 
         showListPostsView()
@@ -180,6 +176,12 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
     private fun showEditPostView() {
         listPostsView.visibility = View.GONE
         editPostView.visibility = View.VISIBLE
+
+        // Clear fields and photo
+        editTitleView.text.clear()
+        editTextVIew.text.clear()
+        bitmap = null
+        displayImageView.setImageBitmap(bitmap)
     }
 
     private fun showListPostsView() {
