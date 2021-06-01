@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.facebook.*
 import com.facebook.login.LoginResult
@@ -181,10 +182,9 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
         profileEditView.visibility = View.GONE
         photoEditView.visibility = View.GONE
 
-        val editableVisibility = if (isProfileOwner) View.VISIBLE else View.GONE
-        seeFriendsButton.visibility = editableVisibility
-        signOutButton.visibility = editableVisibility
-        profileEditButton.visibility = editableVisibility
+        seeFriendsButton.isVisible = isProfileOwner
+        signOutButton.isVisible = isProfileOwner
+        profileEditButton.isVisible = isProfileOwner
     }
 
     private fun showEditMode() {
@@ -275,10 +275,8 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
             }
         }
 
-        override fun onCancel() {
-        }
+        override fun onCancel() {}
 
-        override fun onError(exception: FacebookException) {
-        }
+        override fun onError(exception: FacebookException) {}
     }
 }
