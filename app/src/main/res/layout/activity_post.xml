@@ -54,10 +54,10 @@
 
                 <Button
                     android:id="@+id/comment_button"
+                    style="@style/Theme.Meili.button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/add_comment"
-                    style="@style/Theme.Meili.button"
                     android:theme="@style/Theme.Meili.button"
                     android:visibility="visible" />
 
@@ -74,13 +74,41 @@
 
             <Button
                 android:id="@+id/add_comment"
+                style="@style/Theme.Meili.button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/post_comment"
-                style="@style/Theme.Meili.button"
                 android:theme="@style/Theme.Meili.button"
                 android:visibility="invisible" />
         </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/list_comments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/sort_by"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="@string/sort_by" />
+
+            <Spinner
+                android:id="@+id/sort_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/sort_by" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/forum_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/sort_spinner"
+                tools:layout_editor_absoluteX="12dp"
+                tools:layout_editor_absoluteY="33dp" />
+        </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/comments_recycler_view"
