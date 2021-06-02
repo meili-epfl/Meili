@@ -60,15 +60,14 @@ class FirebaseNotificationService() : FirebaseMessagingService() {
         super.onMessageReceived(message)
 
 
-        //intent to be launched when we click on the notificaiton
-
-        //val intent = Intent(this, ChatLogActivity::class.java)
-        //   .putExtra(FRIEND_KEY, otherUser)
-        //val intent = Intent(this, MapActivity::class.java)
+        //Uncomment this code to make clicking notifications open activity
+        /*//intent to be launched when we click on the notificaiton
+        val intent = Intent(this, ChatLogActivity::class.java)
+           .putExtra(FRIEND_KEY, otherUser)
         //clearing all intents (start fresh)
-        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         //intent can only be used once
-        //val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)*/
 
         //The android given notificaiton manager
         notificationManager =
