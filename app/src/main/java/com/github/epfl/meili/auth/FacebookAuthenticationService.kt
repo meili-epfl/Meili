@@ -6,9 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.facebook.AccessToken
 import com.facebook.Profile
 import com.facebook.login.LoginManager
-import com.github.epfl.meili.auth.Auth
-import com.github.epfl.meili.auth.AuthenticationService
-import com.github.epfl.meili.auth.FirebaseAuthenticationService
 import com.github.epfl.meili.models.User
 
 class FacebookAuthenticationService : AuthenticationService {

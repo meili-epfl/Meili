@@ -31,13 +31,23 @@ import io.github.ponnamkarthik.richlinkpreview.ViewListener
 
 class PoiInfoActivity : PoiActivity(R.layout.activity_poi_info, R.id.poi_info_activity) {
     companion object {
-        private val DEFAULT_SERVICE = { PlacesClientService() }
         private const val REQUEST_CODE = 1000
         private const val NO_INFO_TEXT = "No information found for this point of interest :("
         private const val GOOGLE_MAPS_URL_FOR_INTENT = "google.navigation:q="
         private const val GOOGLE_MAPS_INTENT_PACKAGE = "com.google.android.apps.maps"
         private const val CALLING_URL_FOR_INTENT = "tel:"
-        var placesClientService: () -> PlacesClientService = DEFAULT_SERVICE
+
+        // Places API query fields
+        val placeFields = listOf(
+            Place.Field.ADDRESS,
+            Place.Field.PHONE_NUMBER,
+            Place.Field.WEBSITE_URI,
+            Place.Field.UTC_OFFSET,
+            Place.Field.OPENING_HOURS,
+            Place.Field.PHOTO_METADATAS
+        )
+
+        var placesClientService: () -> PlacesClientService = { PlacesClientService() }
     }
 
     private lateinit var poi: PointOfInterest
@@ -60,16 +70,6 @@ class PoiInfoActivity : PoiActivity(R.layout.activity_poi_info, R.id.poi_info_ac
             .getPlacesClient(this, getString(R.string.google_maps_key))
 
         val placeId = poi.uid
-
-        // Places API query fields
-        val placeFields = listOf(
-            Place.Field.ADDRESS,
-            Place.Field.PHONE_NUMBER,
-            Place.Field.WEBSITE_URI,
-            Place.Field.UTC_OFFSET,
-            Place.Field.OPENING_HOURS,
-            Place.Field.PHOTO_METADATAS
-        )
 
         takeMeThereButton = findViewById(R.id.take_me_there_button)
         takeMeThereButton.visibility = View.GONE

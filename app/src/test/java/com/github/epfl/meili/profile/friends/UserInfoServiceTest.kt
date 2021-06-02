@@ -47,6 +47,6 @@ class UserInfoServiceTest {
 
         val onSuccess = { it: Map<String, User> -> assertEquals(it, expectedResult) }
 
-        UserInfoService().getUserInformation(testList, onSuccess, { assert(false) })
+        UserInfoService().getUserInformation(testList, onSuccess)
     }
 }

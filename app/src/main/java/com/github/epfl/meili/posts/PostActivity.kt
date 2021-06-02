@@ -78,9 +78,7 @@ class PostActivity : AppCompatActivity(), ClickListener, ListSorter<Comment> {
         commentButton.setOnClickListener { showEditCommentView() }
         addCommentButton.setOnClickListener { addComment() }
 
-        val singletonList = ArrayList<String>()
-        singletonList.add(post.authorUid)
-        serviceProvider().getUserInformation(singletonList, { onAuthorInfoReceived(it) }) {}
+        serviceProvider().getUserInformation(listOf(post.authorUid)) { onAuthorInfoReceived(it) }
     }
 
     private fun onAuthorInfoReceived(users: Map<String, User>) {
@@ -98,9 +96,7 @@ class PostActivity : AppCompatActivity(), ClickListener, ListSorter<Comment> {
             ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
 
         viewModel.initDatabase(FirestoreDatabase("forum/$postId/comments", Comment::class.java))
-        viewModel.getElements().observe(this, { map ->
-            sortListener(map)
-        })
+        viewModel.getElements().observe(this) { sortListener(it) }
     }
 
     private fun initRecyclerAdapter() {
@@ -111,13 +107,13 @@ class PostActivity : AppCompatActivity(), ClickListener, ListSorter<Comment> {
     }
 
     private fun initLoggedInListener() {
-        Auth.isLoggedIn.observe(this, { loggedIn ->
+        Auth.isLoggedIn.observe(this) { loggedIn ->
             val layout: LinearLayout = findViewById(R.id.new_comment_layout)
             layout.visibility = if (loggedIn)
                 View.VISIBLE
             else
                 View.INVISIBLE
-        })
+        }
     }
 
     private fun showEditCommentView() {

@@ -3,8 +3,6 @@ package com.github.epfl.meili.models
 import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.parcelize.Parcelize
-import java.util.*
-import kotlin.collections.ArrayList
 
 @Parcelize
 data class PointOfInterest(
