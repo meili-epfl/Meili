@@ -13,14 +13,14 @@ interface UserProfileLinker<T> : ClickListener {
 
     fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, T>) {
         usersMap = usersMap + HashMap(users)
-        val reviewsAndUsersMap = HashMap<String, Pair<T, User>>()
+        val itemsAndUsersMap = HashMap<String, Pair<T, User>>()
         for ((uid, user) in users) {
-            val value = map[uid]
-            if (value != null) {
-                reviewsAndUsersMap[uid] = Pair(value, user)
+            val item = map[uid]
+            if (item != null) {
+                itemsAndUsersMap[uid] = Pair(item, user)
             }
         }
-        recyclerAdapter.submitList(reviewsAndUsersMap.toList())
+        recyclerAdapter.submitList(itemsAndUsersMap.toList())
         recyclerAdapter.notifyDataSetChanged()
     }
 

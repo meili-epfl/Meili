@@ -71,41 +71,43 @@ class CameraActivity : AppCompatActivity() {
         editPhoto = intent.getBooleanExtra(EDIT_PHOTO, true)
     }
 
+    private fun getImageSavedCallback(photoFile: File): ImageCapture.OnImageSavedCallback =
+        object : ImageCapture.OnImageSavedCallback {
+            override fun onError(exc: ImageCaptureException) {
+                Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+            }
+
+            override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                if (editPhoto) {
+                    val intent =
+                        Intent(applicationContext, PhotoCropActivity::class.java)
+                    intent.flags = intent.flags or FLAG_ACTIVITY_FORWARD_RESULT
+                    intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
+                    startActivity(intent)
+                } else {
+                    val intent = Intent()
+                    intent.data = Uri.fromFile(photoFile)
+                    setResult(RESULT_OK, intent)
+                    finish()
+                }
+            }
+        }
+
     private fun initializeUiControls() {
         cameraButton.setOnClickListener {
-
             imageCapture?.let { imageCapture ->
-
                 // Create time-stamped output file to hold the image
                 val photoFile = getFile()
 
                 // Create output options object which contains file + metadata
-                val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile)
-                    .build()
+                val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
                 // Setup image capture listener which is triggered after photo has been taken
                 imageCapture.takePicture(
                     outputOptions,
                     ContextCompat.getMainExecutor(this),
-                    object : ImageCapture.OnImageSavedCallback {
-                        override fun onError(exc: ImageCaptureException) {
-                            Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                        }
-
-                        override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                            if (editPhoto) {
-                                val intent = Intent(applicationContext, PhotoCropActivity::class.java)
-                                intent.flags = intent.flags or FLAG_ACTIVITY_FORWARD_RESULT
-                                intent.putExtra(URI_KEY, Uri.fromFile(photoFile))
-                                startActivity(intent)
-                            } else {
-                                val intent = Intent()
-                                intent.data = Uri.fromFile(photoFile)
-                                setResult(RESULT_OK, intent)
-                                finish()
-                            }
-                        }
-                    })
+                    getImageSavedCallback(photoFile)
+                )
             }
         }
 
@@ -171,14 +173,8 @@ class CameraActivity : AppCompatActivity() {
         val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
 
         try {
-            camera = cameraProvider.bindToLifecycle(
-                this, cameraSelector, preview, imageCapture
-            )
-
-            preview.setSurfaceProvider(
-                previewView
-                    .surfaceProvider
-            )
+            camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
+            preview.setSurfaceProvider(previewView.surfaceProvider)
         } catch (exc: Exception) {
             Log.e(TAG, "Cannot setup camera", exc)
         }
@@ -311,5 +307,4 @@ class CameraActivity : AppCompatActivity() {
         }
         orientationEventListener.enable()
     }
-
 }

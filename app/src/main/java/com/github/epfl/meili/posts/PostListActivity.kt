@@ -66,12 +66,12 @@ interface PostListActivity : ListSorter<Post> {
     }
 
     fun initLoggedInListener() {
-        Auth.isLoggedIn.observe(getActivity(), { loggedIn ->
+        Auth.isLoggedIn.observe(getActivity()) { loggedIn ->
             if (loggedIn && Auth.getCurrentUser() != null) {
                 (recyclerAdapter as PostListRecyclerAdapter).submitUserInfo(Auth.getCurrentUser()!!.uid)
                 recyclerAdapter.notifyDataSetChanged()
             }
-        })
+        }
     }
 
     override fun orderList(list: List<Pair<String, Pair<Post, User>>>): List<Pair<String, Pair<Post, User>>> {
