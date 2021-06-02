@@ -1,8 +1,6 @@
 package com.github.epfl.meili.posts
 
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -11,31 +9,24 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
-import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.profile.UserProfileLinker
-import com.github.epfl.meili.profile.friends.UserInfoService
-import com.github.epfl.meili.util.ClickListener
-import com.github.epfl.meili.util.ImageSetter
-import com.github.epfl.meili.util.MeiliRecyclerAdapter
-import com.github.epfl.meili.util.MeiliViewModel
+import com.github.epfl.meili.util.*
+import com.github.epfl.meili.util.ListSorter.Companion.NEWEST
+import com.github.epfl.meili.util.ListSorter.Companion.OLDEST
+import com.github.epfl.meili.util.ListSorter.Companion.serviceProvider
 import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
-import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
-class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListener {
+class PostActivity : AppCompatActivity(), ClickListener, ListSorter<Comment> {
     companion object {
-        private const val TAG = "PostActivity"
         const val POST_ID = "Post_ID"
-
-        var serviceProvider: () -> UserInfoService = { UserInfoService() }
     }
 
     override lateinit var recyclerAdapter: MeiliRecyclerAdapter<Pair<Comment, User>>
-    override lateinit var usersMap: Map<String, User>
+    override var usersMap: Map<String, User> = HashMap()
 
     private lateinit var viewModel: MeiliViewModel<Comment>
 
@@ -47,6 +38,9 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
     private lateinit var postId: String
     private lateinit var post: Post
 
+    override var listMap: Map<String, Comment> = HashMap()
+    override var sortOrder = NEWEST
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post)
@@ -56,24 +50,18 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
 
         initViews(post)
 
-        FirebaseStorageService.getDownloadUrl(
-                "images/forum/$postId",
-                { uri -> getDownloadUrlCallback(uri) }
-        )
-
-        usersMap = HashMap()
+        if (post.hasPhoto) {
+            ImageSetter.setImageInto(postId, imageView, ImageSetter.imagePostPath)
+        }
 
         initViewModel()
         initRecyclerAdapter()
         initLoggedInListener()
+        initSorting(findViewById(R.id.sort_spinner), R.array.sort_array_comments)
 
         findViewById<TextView>(R.id.userName).setOnClickListener {
             openUserProfile(post.authorUid)
         }
-    }
-
-    private fun getDownloadUrlCallback(uri: Uri) {
-        Picasso.get().load(uri).into(imageView)
     }
 
     private fun initViews(post: Post) {
@@ -101,43 +89,18 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
         val imageAuthor: CircleImageView = findViewById(R.id.userImage)
 
         authorView.text = author?.username
-        ImageSetter.setImageInto(author!!.uid, imageAuthor)
+        ImageSetter.setImageInto(author!!.uid, imageAuthor, ImageSetter.imageAvatarPath)
     }
 
     private fun initViewModel() {
         @Suppress("UNCHECKED_CAST")
         viewModel =
-                ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
+            ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Comment>
 
         viewModel.initDatabase(FirestoreDatabase("forum/$postId/comments", Comment::class.java))
         viewModel.getElements().observe(this, { map ->
-            commentListener(map)
+            sortListener(map)
         })
-    }
-
-    private fun commentListener(commentsMap: Map<String, Comment>) {
-        val newUsers = ArrayList<String>()
-        for ((_, comment) in commentsMap) {
-            newUsers.add(comment.authorUid)
-        }
-
-        serviceProvider().getUserInformation(newUsers, { onUsersInfoReceived(it, commentsMap) },
-            { Log.e(TAG, "Error when fetching users information")
-        })
-    }
-
-    override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Comment>) {
-        usersMap = HashMap(usersMap) + users
-        val commentsAndUsersMap = HashMap<String, Pair<Comment, User>>()
-        for ((commentId, comment) in map) {
-            val user = usersMap[comment.authorUid]
-            if (user != null) {
-                commentsAndUsersMap[commentId] = Pair(comment, user)
-            }
-        }
-
-        recyclerAdapter.submitList(commentsAndUsersMap.toList())
-        recyclerAdapter.notifyDataSetChanged()
     }
 
     private fun initRecyclerAdapter() {
@@ -176,11 +139,30 @@ class PostActivity : AppCompatActivity(), UserProfileLinker<Comment>, ClickListe
             error("Unconnected user is trying to add comment")
         }
         val user: User = Auth.getCurrentUser()!!
-        val commentId = "${user.uid}${System.currentTimeMillis()}"
+        val timestamp = System.currentTimeMillis()
+        val commentId = "${user.uid}${timestamp}"
         val text = editText.text.toString()
 
-        viewModel.addElement(commentId, Comment(user.uid, text))
+        viewModel.addElement(commentId, Comment(user.uid, text, timestamp))
 
         hideEditCommentView()
+    }
+
+    override fun orderList(list: List<Pair<String, Pair<Comment, User>>>): List<Pair<String, Pair<Comment, User>>> {
+        return list.sortedBy { pair ->
+            when (sortOrder) {
+                NEWEST -> -pair.second.first.timestamp
+                OLDEST -> pair.second.first.timestamp
+                else -> throw IllegalArgumentException()
+            }
+        }
+    }
+
+    override fun getAuthorUid(item: Comment): String {
+        return item.authorUid
+    }
+
+    override fun getActivity(): AppCompatActivity {
+        return this
     }
 }
