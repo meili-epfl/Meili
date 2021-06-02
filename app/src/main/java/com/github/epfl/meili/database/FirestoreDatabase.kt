@@ -25,18 +25,6 @@ open class FirestoreDatabase<T : Any>(
 
     override fun addElement(key: String, element: T?) {
         collectionReference.document(key).set(element!!)
-        ref.document(key).set(element!!)
-    }
-
-    override fun updateElement(key: String, element: T?) {
-        ref.document(key).delete().addOnSuccessListener {
-            addElement(key, element)
-        }
-    }
-
-
-    override fun onDestroy() {
-        registration.remove()
     }
 
     override fun onEvent(snapshot: QuerySnapshot?, error: FirebaseFirestoreException?) {
@@ -66,4 +54,5 @@ open class FirestoreDatabase<T : Any>(
     override fun removeElement(key: String) {
         collectionReference.document(key).delete()
     }
+
 }
