@@ -20,7 +20,8 @@ import com.github.epfl.meili.util.*
 import com.github.epfl.meili.util.RecyclerViewInitializer.initRecyclerView
 import com.github.epfl.meili.util.navigation.PoiActivity
 
-class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_activity), ClickListener,
+class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_activity),
+    ClickListener,
     UserProfileLinker<Review> {
     companion object {
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
@@ -38,7 +39,8 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
     private lateinit var editReviewView: View
 
     private lateinit var floatingActionButton: ImageView
-    private lateinit var averageRatingView: RatingBar
+    private lateinit var averageRatingView: TextView
+    private lateinit var averageRatingBarView: RatingBar
 
     private lateinit var ratingBar: RatingBar
     private lateinit var editTitleView: EditText
@@ -133,6 +135,7 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
     private fun initViewModel(poiKey: String) {
         floatingActionButton = findViewById(R.id.fab_add_edit_review)
         averageRatingView = findViewById(R.id.average_rating)
+        averageRatingBarView = findViewById(R.id.average_ratingbar)
 
         @Suppress("UNCHECKED_CAST")
         viewModel =
@@ -166,7 +169,11 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
 
         serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, map) },
             { Log.d(TAG, "Error when fetching users information") })
-        averageRatingView.rating = Review.averageRating(map)
+
+        // Show average rating
+        val rating = Review.averageRating(map)
+        averageRatingView.text = getString(R.string.average_rating_format).format(rating)
+        averageRatingBarView.rating = rating
     }
 
     override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Review>) {
@@ -186,8 +193,8 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
 
     private fun initLoggedInListener() {
         Auth.isLoggedIn.observe(this, { loggedIn ->
-            floatingActionButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn , poiStatus)
-            floatingActionButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn , poiStatus))
+            floatingActionButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn, poiStatus)
+            floatingActionButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn, poiStatus))
                 View.VISIBLE
             else
                 View.GONE
