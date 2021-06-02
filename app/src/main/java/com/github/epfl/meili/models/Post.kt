@@ -11,6 +11,7 @@ data class Post(
         var title: String = "",
         val timestamp: Long = -1,
         var text: String = "",
+        val hasPhoto: Boolean = false,
         var upvoters: ArrayList<String> = arrayListOf(),
         var downvoters: ArrayList<String> = arrayListOf()
 

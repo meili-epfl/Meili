@@ -32,6 +32,7 @@ import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.posts.forum.ForumActivity
 import com.github.epfl.meili.profile.friends.UserInfoService
+import com.github.epfl.meili.util.ListSorter
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
@@ -122,7 +123,6 @@ class ForumActivityTest {
             mockUserInfoService.getUserInformation(
                 Mockito.anyList(),
                 Mockito.any(),
-                Mockito.any()
             )
         ).then {
             val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)
@@ -131,8 +131,7 @@ class ForumActivityTest {
 
             return@then null
         }
-        PostListActivity.serviceProvider = { mockUserInfoService }
-        PostActivity.serviceProvider = { mockUserInfoService }
+        ListSorter.serviceProvider = { mockUserInfoService }
     }
 
     private fun setupTransactionMocks() {

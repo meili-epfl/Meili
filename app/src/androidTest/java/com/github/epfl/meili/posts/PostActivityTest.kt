@@ -25,6 +25,7 @@ import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.friends.UserInfoService
+import com.github.epfl.meili.util.ListSorter
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
@@ -101,7 +102,7 @@ class PostActivityTest {
         testFriendMap[TEST_POST_AUTHOR_ID] = User(TEST_POST_AUTHOR_ID, TEST_POST_AUTHOR_NAME)
 
         val mockUserInfoService = Mockito.mock(UserInfoService::class.java)
-        Mockito.`when`(mockUserInfoService.getUserInformation(Mockito.anyList(), Mockito.any(), Mockito.any())).then {
+        Mockito.`when`(mockUserInfoService.getUserInformation(Mockito.anyList(), Mockito.any())).then {
             val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)
 
             onSuccess(testFriendMap)
@@ -109,7 +110,7 @@ class PostActivityTest {
             return@then null
         }
 
-        PostActivity.serviceProvider = { mockUserInfoService }
+        ListSorter.serviceProvider = { mockUserInfoService }
     }
 
     private fun setupMocks() {

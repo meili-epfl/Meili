@@ -8,10 +8,9 @@ import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.posts.PostListActivity
-
-import com.github.epfl.meili.posts.PostListActivity.Companion.NEWEST
 import com.github.epfl.meili.posts.PostListViewModel
 import com.github.epfl.meili.profile.ProfileActivity
+import com.github.epfl.meili.util.ListSorter.Companion.NEWEST
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 
 class MyPostsActivity : AppCompatActivity(), PostListActivity {
@@ -19,7 +18,7 @@ class MyPostsActivity : AppCompatActivity(), PostListActivity {
     override lateinit var viewModel: PostListViewModel
 
     override var usersMap: Map<String, User> = HashMap()
-    override var postsMap: Map<String, Post> = HashMap()
+    override var listMap: Map<String, Post> = HashMap()
     override var sortOrder = NEWEST
     override var showPOI = true
 
@@ -46,3 +45,4 @@ class MyPostsActivity : AppCompatActivity(), PostListActivity {
         startActivity(getPostActivityIntent(view.findViewById(R.id.post_id)))
     }
 }
+
