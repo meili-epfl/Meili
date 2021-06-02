@@ -70,7 +70,8 @@ class ForumActivityTest {
         private const val TEST_AUTHOR_ID = "author id"
         private const val TEST_UID = TEST_AUTHOR_ID + TEST_TIMESTAMP.toString()
         private const val TEST_POI_KEY = "lorem_ipsum2"
-        private val TEST_POST = Post(TEST_POI_KEY, TEST_AUTHOR_ID, "TITLE", "lorem_ipsum1", TEST_TIMESTAMP, "TEXT")
+        private const val TEST_POI_NAME = "POI_NAME"
+        private val TEST_POST = Post(TEST_POI_KEY, TEST_POI_NAME, TEST_AUTHOR_ID, "TITLE",  TEST_TIMESTAMP, "TEXT")
         private val TEST_POI = PointOfInterest(100.0, 100.0, "lorem_ipsum1", TEST_POI_KEY)
     }
 
