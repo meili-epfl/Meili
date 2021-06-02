@@ -75,6 +75,7 @@ class FriendsListActivityTest {
 
 
         Mockito.`when`(mockCollection.document(ArgumentMatchers.contains(TEST_FRIEND_UID))).thenReturn(mockDocument)
+        Mockito.`when`(mockCollection.document(ArgumentMatchers.contains(TEST_CURRENT_USER_UID))).thenReturn(mockDocument)
 
         Mockito.`when`(mockCollection.addSnapshotListener(ArgumentMatchers.any())).thenAnswer { invocation ->
             database = invocation.arguments[0] as FirestoreDatabase<Friend>
@@ -113,13 +114,13 @@ class FriendsListActivityTest {
         database.onEvent(mockSnapshotAfterAddition, null)
 
         Espresso.onView(textViewContainsText(TEST_FRIEND_NAME)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-//        Espresso.onView(withId(R.id.friend_chat_button)).perform(click())
-//
-//        Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
-//
-//        Espresso.onView(textViewContainsText(TEST_FRIEND_NAME)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-//
-//        Espresso.onView(buttonViewContainsText("Send")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withId(R.id.friend_chat_button)).perform(click())
+
+        Intents.intended(IntentMatchers.toPackage("com.github.epfl.meili"))
+
+        Espresso.onView(textViewContainsText(TEST_FRIEND_NAME)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+        Espresso.onView(buttonViewContainsText("Send")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     @Test
