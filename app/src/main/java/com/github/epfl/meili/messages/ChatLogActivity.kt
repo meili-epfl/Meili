@@ -202,8 +202,8 @@ class ChatItem(
             val nameView = viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other)
             if (isGroupChat) {
                 serviceProvider().getUserInformation(
-                    listOf(message.fromId),
-                    { getUsername(it, nameView, message.fromId) }) {}
+                    listOf(message.fromId)
+                ) { getUsername(it, nameView, message.fromId) }
             } else {
                 nameView.text = ""
             }

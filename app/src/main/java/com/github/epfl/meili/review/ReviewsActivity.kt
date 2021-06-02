@@ -1,9 +1,9 @@
 package com.github.epfl.meili.review
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
@@ -26,7 +26,6 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
     companion object {
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
         private const val EDIT_BUTTON_DRAWABLE = android.R.drawable.ic_menu_edit
-        private const val TAG = "ReviewsActivity"
 
         var serviceProvider: () -> UserInfoService = { UserInfoService() }
     }
@@ -145,9 +144,7 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
             it.whereEqualTo(Review.POI_KEY_FIELD, poiKey)
         })
 
-        viewModel.getElements().observe(this, { map ->
-            reviewsMapListener(map)
-        })
+        viewModel.getElements().observe(this) { reviewsMapListener(it) }
     }
 
     private fun reviewsMapListener(map: Map<String, Review>) {
@@ -162,13 +159,9 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
             }
         }
 
-        val newUsersList = ArrayList<String>()
-        for ((_, post) in map) {
-            newUsersList.add(post.authorUid)
+        serviceProvider().getUserInformation(map.values.map { it.authorUid }) {
+            onUsersInfoReceived(it, map)
         }
-
-        serviceProvider().getUserInformation(newUsersList, { onUsersInfoReceived(it, map) },
-            { Log.d(TAG, "Error when fetching users information") })
 
         // Show average rating
         val rating = Review.averageRating(map)
@@ -192,13 +185,11 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
     }
 
     private fun initLoggedInListener() {
-        Auth.isLoggedIn.observe(this, { loggedIn ->
-            floatingActionButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn, poiStatus)
-            floatingActionButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn, poiStatus))
-                View.VISIBLE
-            else
-                View.GONE
-        })
+        Auth.isLoggedIn.observe(this) { loggedIn ->
+            val isWriteEnabled = WritingPolicy.isWriteEnabled(loggedIn, poiStatus)
+            floatingActionButton.isEnabled = isWriteEnabled
+            floatingActionButton.isVisible = isWriteEnabled
+        }
     }
 
     private fun showEditReviewView() {
@@ -210,5 +201,4 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
         listReviewsView.visibility = View.VISIBLE
         editReviewView.visibility = View.GONE
     }
-
 }
