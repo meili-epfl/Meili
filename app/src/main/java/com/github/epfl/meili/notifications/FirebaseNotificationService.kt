@@ -59,7 +59,7 @@ class FirebaseNotificationService() : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-
+        Log.d("notif", "received message notification")
         //Uncomment this code to make clicking notifications open activity
         /*//intent to be launched when we click on the notificaiton
         val intent = Intent(this, ChatLogActivity::class.java)
