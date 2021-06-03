@@ -150,7 +150,9 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
 
             seeFriendsButton -> showProfileOwnersInfo(FriendsListActivity::class.java)
             signInButton -> Auth.signInIntent(this)
-            signOutButton -> Auth.signOut()
+            signOutButton -> {
+                Auth.signOut(); profileUid = null
+            }
             profileEditButton -> showEditMode()
             postsButton -> showProfileOwnersInfo(MyPostsActivity::class.java)
             favoritePoisButton -> showProfileOwnersInfo(FavoritePoisActivity::class.java)
@@ -225,10 +227,10 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
 
 
     private fun updateIsProfileOwner() {
-        if (Auth.isLoggedIn.value!!){
+        if (Auth.isLoggedIn.value!!) {
             val authUser = Auth.getCurrentUser()!!
             isProfileOwner = (authUser.uid == profileUid)
-        }else{
+        } else {
             isProfileOwner = false
         }
     }
