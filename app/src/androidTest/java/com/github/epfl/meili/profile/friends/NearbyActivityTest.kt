@@ -30,6 +30,7 @@ import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
+
 @Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class NearbyActivityTest {
@@ -104,7 +105,7 @@ class NearbyActivityTest {
         val connectionLifecycleCallback = connectionLifecycleCallbackCaptor.value
         runOnUiThread {
             connectionLifecycleCallback.onConnectionInitiated(
-                MOCK_ENDPOINT_ID, ConnectionInfo(
+                    MOCK_ENDPOINT_ID, ConnectionInfo(
                     MOCK_FRIEND_USERNAME, "", false))
         }
 

@@ -32,7 +32,7 @@ import org.mockito.Mockito
 
 
 @LargeTest
-class ChatLogActivityAndroidTest {
+class ChatActivityAndroidTest {
 
     private val mockPath = "POI/mock-poi"
     private val fakeMessage = "fake_text"
@@ -44,7 +44,7 @@ class ChatLogActivityAndroidTest {
     private fun getIntent(): Intent {
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-        val intent = Intent(targetContext, ChatLogActivity::class.java).apply {
+        val intent = Intent(targetContext, ChatActivity::class.java).apply {
             putExtra("POI_KEY", fakePoi)
         }
 
@@ -64,7 +64,7 @@ class ChatLogActivityAndroidTest {
     private val intent = getIntent()
 
     @get:Rule
-    var mActivityTestRule: ActivityScenarioRule<ChatLogActivity> = ActivityScenarioRule(intent)
+    var mActivityTestRule: ActivityScenarioRule<ChatActivity> = ActivityScenarioRule(intent)
 
 
     @Before
@@ -128,8 +128,6 @@ class ChatLogActivityAndroidTest {
                 a.verifyAndUpdateUserIsLoggedIn(true)
                 assertThat(a.supportActionBar?.title, `is`("fake_poi"))
             }
-
-
         }
     }
 

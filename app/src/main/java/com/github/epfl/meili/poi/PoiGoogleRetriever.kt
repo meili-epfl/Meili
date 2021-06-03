@@ -113,7 +113,6 @@ data class GooglePlacesResponse(
     }
 }
 
-//TODO: we could also get some photos from the GooglePlaces API if we want
 data class PlacesPointOfInterest(
     @SerializedName("geometry")
     val geometry: PoiGeometry? = null,

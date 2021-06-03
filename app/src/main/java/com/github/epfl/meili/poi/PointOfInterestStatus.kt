@@ -1,4 +1,4 @@
-package com.github.epfl.meili.map
+package com.github.epfl.meili.poi
 
 /**
  * VISITED: means that the user interacted with this POI when it was reachable

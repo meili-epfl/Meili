@@ -132,7 +132,5 @@ class FavoritePoisActivityTest {
                 IntentMatchers.hasComponent(PoiInfoActivity::class.java.name)
             )
         )
-
-
     }
 }

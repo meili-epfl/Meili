@@ -24,7 +24,7 @@ import com.github.epfl.meili.database.AtomicPostFirestoreDatabase
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.map.MapActivity
-import com.github.epfl.meili.map.PointOfInterestStatus
+import com.github.epfl.meili.poi.PointOfInterestStatus
 import com.github.epfl.meili.models.Comment
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Post
@@ -60,7 +60,6 @@ import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
-
 @Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class ForumActivityTest {
@@ -87,17 +86,17 @@ class ForumActivityTest {
 
     // transaction mocks
     private val transactionFunctionCaptor =
-        ArgumentCaptor.forClass(Transaction.Function::class.java)
+            ArgumentCaptor.forClass(Transaction.Function::class.java)
     private val mockTransaction = mock(Transaction::class.java)
 
     private lateinit var database: AtomicPostFirestoreDatabase
     private lateinit var commentsDatabase: FirestoreDatabase<Comment>
 
     private val intent = Intent(
-        InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
-        ForumActivity::class.java
+            InstrumentationRegistry.getInstrumentation().targetContext.applicationContext,
+            ForumActivity::class.java
     ).putExtra(MapActivity.POI_KEY, TEST_POI)
-        .putExtra(MapActivity.POI_STATUS_KEY, PointOfInterestStatus.VISITED)
+            .putExtra(MapActivity.POI_STATUS_KEY, PointOfInterestStatus.VISITED)
 
     @get:Rule
     var rule: ActivityScenarioRule<ForumActivity> = ActivityScenarioRule(intent)
@@ -120,10 +119,10 @@ class ForumActivityTest {
         testFriendMap[TEST_AUTHOR_ID] = User(TEST_AUTHOR_ID, TEST_USERNAME)
 
         `when`(
-            mockUserInfoService.getUserInformation(
-                Mockito.anyList(),
-                Mockito.any(),
-            )
+                mockUserInfoService.getUserInformation(
+                        Mockito.anyList(),
+                        Mockito.any()
+                )
         ).then {
             val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)
 
@@ -136,7 +135,7 @@ class ForumActivityTest {
 
     private fun setupTransactionMocks() {
         `when`(mockFirestore.runTransaction(transactionFunctionCaptor.capture()))
-            .thenReturn(mock(Task::class.java))
+                .thenReturn(mock(Task::class.java))
 
         val mockSnapshot = mock(DocumentSnapshot::class.java)
         `when`(mockTransaction.get(any())).thenReturn(mockSnapshot)
@@ -264,14 +263,14 @@ class ForumActivityTest {
         onView(withId(R.id.create_post)).perform(click())
 
         onView(withId(R.id.post_edit_title)).perform(
-            clearText(),
-            typeText(TEST_POST.title),
-            closeSoftKeyboard()
+                clearText(),
+                typeText(TEST_POST.title),
+                closeSoftKeyboard()
         )
         onView(withId(R.id.post_edit_text)).perform(
-            clearText(),
-            typeText(TEST_POST.text),
-            closeSoftKeyboard()
+                clearText(),
+                typeText(TEST_POST.text),
+                closeSoftKeyboard()
         )
 
         onView(withId(R.id.submit_post)).perform(click())
@@ -283,16 +282,16 @@ class ForumActivityTest {
         onView(withId(R.id.edit_post)).check(matches(not(isDisplayed())))
 
         onView(withId(R.id.forum_recycler_view))
-            .check(matches(isDisplayed()))
-            .perform(
-                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(
-                        withText(
-                            TEST_POST.title
+                .check(matches(isDisplayed()))
+                .perform(
+                        RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
+                                hasDescendant(
+                                        withText(
+                                                TEST_POST.title
+                                        )
+                                )
                         )
-                    )
                 )
-            )
 
         onView(textViewContainsText(TEST_POST.title)).check(matches(isDisplayed()))
         onView(textViewContainsText(TEST_USERNAME)).check(matches(isDisplayed()))
@@ -303,23 +302,23 @@ class ForumActivityTest {
         mockAuthenticationService.signOut()
         database.onEvent(mockSnapshotAfterAddition, null)
         onView(withId(R.id.forum_recycler_view))
-            .check(matches(isDisplayed()))
-            .perform(
-                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
-                    hasDescendant(
-                        withText(
-                            TEST_POST.title
+                .check(matches(isDisplayed()))
+                .perform(
+                        RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
+                                hasDescendant(
+                                        withText(
+                                                TEST_POST.title
+                                        )
+                                )
                         )
-                    )
                 )
-            )
 
         onView(withText(TEST_POST.title)).perform(click())
         Intents.intended(
-            allOf(
-                hasExtra("Post", TEST_POST),
-                hasComponent(PostActivity::class.java.name)
-            )
+                allOf(
+                        hasExtra("Post", TEST_POST),
+                        hasComponent(PostActivity::class.java.name)
+                )
         )
     }
 
@@ -348,9 +347,9 @@ class ForumActivityTest {
 
         Thread.sleep(2000)
 
-        onView(withId(R.id.upvote_button)).perform(click())
+        onView(withId(R.id.upvote_button)).check(matches(isDisplayed())).perform(click())
         transactionFunctionCaptor.value.apply(mockTransaction)
-        onView(withId(R.id.downovte_button)).perform(click())
+        onView(withId(R.id.downovte_button)).check(matches(isDisplayed())).perform(click())
         transactionFunctionCaptor.value.apply(mockTransaction)
     }
 
@@ -364,6 +363,4 @@ class ForumActivityTest {
         onView(withId(R.id.post_use_camera)).perform(click())
         Intents.intended(hasComponent(CameraActivity::class.java.name))
     }
-
-
 }
