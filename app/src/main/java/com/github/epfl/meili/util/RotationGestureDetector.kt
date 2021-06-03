@@ -5,7 +5,7 @@ import kotlin.math.atan2
 
 // Reference used : https://stackoverflow.com/questions/10682019/android-two-finger-rotation
 /** Detects two finger rotation motions */
-class RotationGestureDetector(// Object which can be rotated using two fingers
+open class RotationGestureDetector(// Object which can be rotated using two fingers
     private val listener: OnRotationGestureListener
 ) {
 
@@ -31,7 +31,7 @@ class RotationGestureDetector(// Object which can be rotated using two fingers
     }
 
     /** Computes correct indices and positions based on the touch event */
-    fun onTouchEvent(event: MotionEvent): Boolean {
+    open fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> { // First touch
                 ptrID1 = event.getPointerId(event.actionIndex) // first finger down's pointer
