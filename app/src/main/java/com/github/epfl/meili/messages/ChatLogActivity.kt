@@ -44,13 +44,15 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
     private var poi: PointOfInterest? = null
 
     private lateinit var navigationBar: BottomNavigationView
+    private lateinit var chatLogView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         navigationBar = findViewById(R.id.navigation)
 
-        findViewById<RecyclerView>(R.id.recyclerview_chat_log).adapter = adapter
+        chatLogView = findViewById(R.id.recyclerview_chat_log)
+        chatLogView.adapter = adapter
 
         // Hide navigation bar when keyboard is opened
         val chatLogView = findViewById<ConstraintLayout>(R.id.chat_log_view)
@@ -59,11 +61,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
             chatLogView.getWindowVisibleDisplayFrame(r)
             val heightDiff: Int = chatLogView.rootView
                 .height - (r.bottom - r.top)
-            if (heightDiff > KEYBOARD_THRESHOLD) {
-                navigationBar.visibility = View.GONE
-            } else {
-                navigationBar.visibility = View.VISIBLE
-            }
+            navigationBar.isVisible = heightDiff > KEYBOARD_THRESHOLD
         }
 
         Auth.isLoggedIn.observe(this) {
@@ -175,7 +173,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
             messageList.addAll(newMessages)
             //scroll down
             val lastItemPos = adapter.itemCount - 1
-            findViewById<RecyclerView>(R.id.recyclerview_chat_log).scrollToPosition(lastItemPos)
+            chatLogView.scrollToPosition(lastItemPos)
         }
 
         ChatMessageViewModel.messages.observe(this, groupMessageObserver)
