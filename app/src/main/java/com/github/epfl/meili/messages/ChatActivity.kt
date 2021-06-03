@@ -27,7 +27,7 @@ import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
 
 
-class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activity) {
+class ChatActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activity) {
 
     companion object {
         private const val TAG: String = "ChatLogActivity"

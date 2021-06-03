@@ -128,10 +128,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp">
 
+
                         <ImageButton
                             android:id="@+id/profile_posts_button"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_marginBottom="278dp"
                             android:adjustViewBounds="true"
                             android:background="@color/design_default_color_primary"
                             android:contentDescription="@string/profile_posts_button"
@@ -139,7 +142,6 @@
                             android:padding="32dp"
                             android:scaleType="fitCenter"
                             android:src="@drawable/ic_posts" />
-
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -227,15 +229,16 @@
                 android:theme="@style/Theme.Meili.button"
                 android:text="@string/profile_edit_cancel" />
         </RelativeLayout>
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/facebook_sign_in"
-            android:layout_width="286dp"
-            android:layout_height="46dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="405dp"
-            android:layout_marginEnd="56dp" />
     </RelativeLayout>
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/facebook_sign_in"
+        android:layout_width="286dp"
+        android:layout_height="46dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="405dp"
+        android:layout_marginEnd="56dp"
+        />
 
     <Button
         android:id="@+id/sign_in"

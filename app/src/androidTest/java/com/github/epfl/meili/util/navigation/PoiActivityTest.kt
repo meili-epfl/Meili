@@ -13,7 +13,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.map.PointOfInterestStatus
-import com.github.epfl.meili.messages.ChatLogActivity
+import com.github.epfl.meili.messages.ChatActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiInfoActivity
 import com.github.epfl.meili.posts.forum.ForumActivity
@@ -84,7 +84,7 @@ class PoiActivityTest {
     @Test
     fun chatActivityLaunches() {
         onView(withId(R.id.chat_activity)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(ChatLogActivity::class.qualifiedName))
+        Intents.intended(IntentMatchers.hasComponent(ChatActivity::class.qualifiedName))
     }
 
     @Test
