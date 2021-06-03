@@ -29,16 +29,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/find_my_friend"
-        style="@style/Theme.Meili.button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="128dp"
-        android:layout_marginTop="80dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:textAlignment="textEnd"
+        android:textSize="18sp"
+        android:textAllCaps="true"
+        android:backgroundTint="@color/md_red_100"
+        android:layout_marginTop="160dp"
         android:onClick="onNearbyButtonClick"
         android:text="@string/find_my_friend"
-        android:theme="@style/Theme.Meili.button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
