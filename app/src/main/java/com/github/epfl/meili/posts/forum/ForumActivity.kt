@@ -43,6 +43,7 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
     override var usersMap: Map<String, User> = HashMap()
     override var listMap: Map<String, Post> = HashMap()
     override var sortOrder = NEWEST
+    override var showPOI = false
 
     private lateinit var listPostsView: View
     private lateinit var createPostButton: ImageView
@@ -143,7 +144,11 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
         val title = editTitleView.text.toString()
         val text = editTextVIew.text.toString()
 
-        val post = Post(poi.uid, user.uid, title, timestamp, text, bitmap != null)
+
+
+
+        val post = Post(poi.uid, poi.name, user.uid, title, timestamp, text, bitmap != null)
+
 
         viewModel.addElement(post.postId(), post)
 

@@ -1,3 +1,5 @@
+
+
 package com.github.epfl.meili.posts
 
 import android.content.Intent
@@ -23,6 +25,7 @@ import com.github.epfl.meili.util.RecyclerViewInitializer
 interface PostListActivity : ListSorter<Post> {
 
     var viewModel: PostListViewModel
+    var showPOI: Boolean
 
     /**
      * Get intent to launch post activity
@@ -57,7 +60,7 @@ interface PostListActivity : ListSorter<Post> {
     }
 
     private fun initRecyclerAdapter(recyclerView: RecyclerView) {
-        recyclerAdapter = PostListRecyclerAdapter(viewModel, this)
+        recyclerAdapter = PostListRecyclerAdapter(viewModel, this, showPOI)
         RecyclerViewInitializer.initRecyclerView(
             recyclerAdapter,
             recyclerView,

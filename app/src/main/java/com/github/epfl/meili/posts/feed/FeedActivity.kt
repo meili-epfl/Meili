@@ -23,6 +23,7 @@ class FeedActivity : HomeActivity(R.layout.activity_feed, R.id.feed_activity), P
     override var sortOrder = NEWEST
 
     override var usersMap: Map<String, User> = HashMap()
+    override var showPOI = true
     override var listMap: Map<String, Post> = HashMap()
 
     override fun getActivity(): AppCompatActivity = this

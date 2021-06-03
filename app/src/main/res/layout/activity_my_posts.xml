@@ -10,8 +10,10 @@
         android:id="@+id/sort_by"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text="@string/sort_by"/>
+        android:layout_alignParentTop="false"
+        android:lineSpacingExtra="3sp"
+        android:text="@string/sort_by"
+        android:textSize="16sp" />
 
     <Spinner
         android:id="@+id/sort_spinner"
