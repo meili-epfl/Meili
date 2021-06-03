@@ -10,8 +10,17 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import com.github.epfl.meili.MainApplication
 import com.github.epfl.meili.R
+import com.github.epfl.meili.auth.Auth
+import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.models.Token
+import com.github.epfl.meili.models.User
+import com.github.epfl.meili.util.MeiliViewModel
+import com.google.firebase.database.DatabaseException
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlin.random.Random
@@ -35,6 +44,29 @@ class FirebaseNotificationService() : FirebaseMessagingService() {
             set(value) {
                 sharedPref?.edit()?.putString("token", value)?.apply()
             }
+
+        fun registerToken(viewModelStoreOwner: ViewModelStoreOwner, user: User?) {
+            val tokenViewModel =
+                ViewModelProvider(viewModelStoreOwner).get(MeiliViewModel::class.java) as MeiliViewModel<Token>
+
+            tokenViewModel.initDatabase(FirestoreDatabase("token", Token::class.java))
+
+
+            FirebaseMessaging.getInstance().token.addOnSuccessListener {
+                token = it
+                if (user != null) {
+                    try {
+                        tokenViewModel.addElement(
+                            user!!.uid,
+                            Token(it)
+                        )
+                    } catch (e: DatabaseException) {
+                        Log.e("MapActivity", "token already registered")
+                    }
+                }
+
+            }
+        }
     }
 
     override fun onNewToken(newToken: String) {
@@ -57,7 +89,8 @@ class FirebaseNotificationService() : FirebaseMessagingService() {
 
         //The android given notificaiton manager
         notificationManager =
-            MainApplication.applicationContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            MainApplication.applicationContext()
+                .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         //notification id needed to initialize notification
         val notificationID = Random.nextInt()
@@ -67,13 +100,14 @@ class FirebaseNotificationService() : FirebaseMessagingService() {
             createNotificationChannel(notificationManager)
         }
         //build notification
-        val notification = NotificationCompat.Builder(MainApplication.applicationContext(), CHANNEL_ID)
-            .setContentTitle(message.data["title"])
-            .setContentText(message.data["message"])
-            .setSmallIcon(R.mipmap.meili_launcher_foreground)
-            .setAutoCancel(true)
-            //     .setContentIntent(pendingIntent)
-            .build()
+        val notification =
+            NotificationCompat.Builder(MainApplication.applicationContext(), CHANNEL_ID)
+                .setContentTitle(message.data["title"])
+                .setContentText(message.data["message"])
+                .setSmallIcon(R.mipmap.meili_launcher_foreground)
+                .setAutoCancel(true)
+                //     .setContentIntent(pendingIntent)
+                .build()
         notificationManager.notify(notificationID, notification)
     }
 

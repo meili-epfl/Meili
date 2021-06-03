@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -40,8 +39,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.firebase.database.DatabaseException
-import com.google.firebase.messaging.FirebaseMessaging
 import com.google.maps.android.clustering.ClusterManager
 
 
@@ -87,7 +84,7 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
 
         initLensViews()
         setupLensCamera()
-        registerToken()
+        FirebaseNotificationService.registerToken(this, Auth.getCurrentUser())
 
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
         placesClient = Places.createClient(this)
@@ -96,27 +93,6 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
-    }
-
-    private fun registerToken(){
-        tokenViewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Token>
-
-        tokenViewModel.initDatabase(FirestoreDatabase("token", Token::class.java))
-
-        FirebaseNotificationService.sharedPref = getSharedPreferences("sharedPref", MODE_PRIVATE)
-
-        FirebaseMessaging.getInstance().token.addOnSuccessListener {
-            FirebaseNotificationService.token = it
-            if(Auth.getCurrentUser() != null){
-                try {
-                    tokenViewModel.addElement(Auth.getCurrentUser()!!.uid,
-                        Token(it))
-                } catch (e: DatabaseException) {
-                    Log.e("MapActivity", "token already registered")
-                }
-            }
-
-        }
     }
 
 
