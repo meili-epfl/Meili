@@ -124,7 +124,6 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
         )
     }
 
-
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(profileUid!!))
                 .get(ProfileViewModel::class.java)
