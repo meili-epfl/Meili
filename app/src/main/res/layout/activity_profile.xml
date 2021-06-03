@@ -227,6 +227,14 @@
                 android:theme="@style/Theme.Meili.button"
                 android:text="@string/profile_edit_cancel" />
         </RelativeLayout>
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/facebook_sign_in"
+            android:layout_width="286dp"
+            android:layout_height="46dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="405dp"
+            android:layout_marginEnd="56dp" />
     </RelativeLayout>
 
     <Button
@@ -240,13 +248,6 @@
         android:onClick="onProfileButtonClick"
         android:text="@string/sign_in" />
 
-
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/facebook_sign_in"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/switch_mode"
-        android:layout_marginTop="50dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"

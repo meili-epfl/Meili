@@ -46,7 +46,7 @@
 
     <string name="add_friend">Add Friend</string>
     <string name="google_sign_in_prompt">Sign In to get access to all features!</string>
-    <string name="sign_in">Sign In</string>
+    <string name="sign_in">Sign In with Google</string>
     <string name="access_no_sign_in">Meili\nLimited Functionality</string>
     <string name="launcher">Launcher</string>
     <string name="meili_lens">Meili Lens</string>
