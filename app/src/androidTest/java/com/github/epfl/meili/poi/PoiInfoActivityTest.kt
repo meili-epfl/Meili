@@ -10,8 +10,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasPackage
 import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -20,7 +19,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.map.MapActivity
-import com.github.epfl.meili.map.PointOfInterestStatus
+import com.github.epfl.meili.poi.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.TaskCompletionSource
@@ -180,8 +179,8 @@ class PoiInfoActivityTest {
     fun favoriteButtonTestSignedIn() {
         database.onEvent(mockSnapshot, null)
         onView(withId(R.id.favorite_button)).check(matches(isDisplayed()))
-        onView(withId(R.id.favorite_button)).perform(click())
-        onView(withId(R.id.favorite_button)).perform(click())
+        onView(withId(R.id.favorite_button)).check(matches(isChecked())).perform(click())
+        onView(withId(R.id.favorite_button)).check(matches(isNotChecked())).perform(click())
     }
 
     object MockitoHelper {

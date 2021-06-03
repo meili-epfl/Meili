@@ -3,11 +3,13 @@ package com.github.epfl.meili.messages
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.models.ChatMessage
+import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
@@ -29,9 +31,7 @@ class FirebaseMessageDatabaseAdapterTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun constructorThrowsWhenNullArgs() {
-
         FirebaseMessageDatabaseAdapter("")
-
     }
 
     @Test
@@ -48,28 +48,30 @@ class FirebaseMessageDatabaseAdapterTest {
         db.addMessageToDatabase(MOCK_MESSAGE)
     }
 
-    /*
-    //TODO: Uncomment this tests when learnt to create DataSnapshot instance to pass as parameter
     @Test
-    fun onChildChangedTest(){
+    fun onChildChangedTest() {
+        val mockDataSnapshot = Mockito.mock(DataSnapshot::class.java)
         // Do nothing
-        db.onChildChanged(DataSnapshot. ("path"),null)
+        db.onChildChanged(mockDataSnapshot, null)
     }
 
     @Test
-    fun onChildRemovedTest(){
+    fun onChildRemovedTest() {
+        val mockDataSnapshot = Mockito.mock(DataSnapshot::class.java)
         // Do nothing
-        db.onChildRemoved(null)
+        db.onChildRemoved(mockDataSnapshot)
     }
 
     @Test
-    fun onChildMovedTest(){
+    fun onChildMovedTest() {
+        val mockDataSnapshot = Mockito.mock(DataSnapshot::class.java)
         // Do nothing
-        db.onChildRemoved(null)
+        db.onChildRemoved(mockDataSnapshot)
     }
-   */
+
     @Test
     fun onCancelledTest() {
+        // Do nothing
         db.onCancelled(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION))
     }
 }

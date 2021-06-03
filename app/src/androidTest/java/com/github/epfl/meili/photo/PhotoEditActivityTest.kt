@@ -3,11 +3,12 @@ package com.github.epfl.meili.photo
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.rule.GrantPermissionRule
 import com.github.epfl.meili.R
+import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,46 +37,63 @@ class PhotoEditActivityTest {
 
     @Test
     fun paintButtonClick() {
-        onView(withId(R.id.paint_mode_button)).perform(click())
-        onView(withId(R.id.paint_mode_button)).perform(click())
+        onView(withId(R.id.colorSlider)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.paint_mode_button)).check(matches(isClickable())).perform(click())
+        onView(withId(R.id.colorSlider)).check(matches(isDisplayed()))
+        onView(withId(R.id.paint_mode_button)).check(matches(isClickable())).perform(click())
+        onView(withId(R.id.colorSlider)).check(matches(not(isDisplayed())))
     }
 
     @Test
     fun undoButtonClick() {
-        onView(withId(R.id.undo)).perform(click())
+        onView(withId(R.id.undo)).check(matches(isClickable())).perform(click())
     }
 
     @Test
     fun redoButtonClick() {
-        onView(withId(R.id.redo)).perform(click())
+        onView(withId(R.id.redo)).check(matches(isClickable())).perform(click())
     }
 
     @Test
     fun filtersClick() {
-        onView(withId(R.id.filters)).perform(click())
-        onView(withId(R.id.fish_eye)).perform(click())
-        onView(withId(R.id.sharpen)).perform(click())
-        onView(withId(R.id.bw)).perform(click())
-        onView(withId(R.id.sepia)).perform(click())
-        onView(withId(R.id.saturate)).perform(click())
-        onView(withId(R.id.filters)).perform(click())
+        onView(withId(R.id.fish_eye)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.sharpen)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.bw)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.sepia)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.saturate)).check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.filters)).check(matches(isClickable())).perform(click())
+
+        onView(withId(R.id.fish_eye)).check(matches(isClickable())).perform(click())
+        onView(withId(R.id.sharpen)).check(matches(isClickable())).perform(click())
+        onView(withId(R.id.bw)).check(matches(isClickable())).perform(click())
+        onView(withId(R.id.sepia)).check(matches(isClickable())).perform(click())
+        onView(withId(R.id.saturate)).check(matches(isClickable())).perform(click())
+
+        onView(withId(R.id.filters)).check(matches(isClickable())).perform(click())
+
+        onView(withId(R.id.fish_eye)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.sharpen)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.bw)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.sepia)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.saturate)).check(matches(not(isDisplayed())))
     }
 
     @Test
     fun addTextClick(){
-        onView(withId(R.id.text_button)).perform(click())
-        onView(withId(R.id.add_text)).perform(click())
-        onView(withId(R.id.text_button)).perform(click())
+        onView(withId(R.id.text_button)).check(matches(isClickable())).perform(click())
+        onView(withId(R.id.add_text)).check(matches(isClickable())).perform(click())
+        onView(withId(R.id.text_button)).check(matches(isClickable())).perform(click())
     }
 
     @Test
     fun fabClick() {
-        onView(withId(R.id.finish_edit)).perform(click())
+        onView(withId(R.id.finish_edit)).check(matches(isClickable())).perform(click())
     }
 
     @Test
     fun emojisClick() {
-        onView(withId(R.id.emojis)).perform(click())
-        onView(withText("\uD83D\uDE04")).perform(click())
+        onView(withId(R.id.emojis)).check(matches(isClickable())).perform(click())
+        onView(withText("\uD83D\uDE04")).check(matches(isClickable())).perform(click())
     }
 }

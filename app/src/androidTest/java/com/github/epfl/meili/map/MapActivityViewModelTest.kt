@@ -10,6 +10,8 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiT
 import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiService
+import com.github.epfl.meili.poi.PointOfInterestStatus
+import com.github.epfl.meili.util.PoiServiceViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.common.math.IntMath
 import com.google.firebase.firestore.*
@@ -58,13 +60,13 @@ class MapActivityViewModelTest {
     private fun setupSensorMocks() {
         val mockSensorManager = Mockito.mock(SensorManager::class.java)
         Mockito.`when`(
-            mockSensorManager.registerListener(
-                sensorListenerCaptor.capture(), ArgumentMatchers.any(), ArgumentMatchers.anyInt()
-            )
+                mockSensorManager.registerListener(
+                        sensorListenerCaptor.capture(), ArgumentMatchers.any(), ArgumentMatchers.anyInt()
+                )
         ).thenReturn(true)
 
         MapActivityViewModel.getEventValues =
-            { FloatArray(3) { IntMath.pow(-1, it) * (20 * it).toFloat() } }
+                { FloatArray(3) { IntMath.pow(-1, it) * (20 * it).toFloat() } }
         MapActivityViewModel.getSensorManager = { mockSensorManager }
     }
 
@@ -91,17 +93,17 @@ class MapActivityViewModelTest {
         Mockito.`when`(mockDatabase.elements).thenReturn(databaseMap)
 
         Mockito.`when`(
-            mockPoiService.requestPois(
-                Mockito.any(LatLng::class.java),
-                Mockito.any(),
-                Mockito.any()
-            )
+                mockPoiService.requestPois(
+                        Mockito.any(LatLng::class.java),
+                        Mockito.any(),
+                        Mockito.any()
+                )
         )
-            .then {
-                val onSuccess = it.arguments[1] as ((List<PointOfInterest>) -> Unit)
-                onSuccess(testPoiList)
-                return@then null
-            }
+                .then {
+                    val onSuccess = it.arguments[1] as ((List<PointOfInterest>) -> Unit)
+                    onSuccess(testPoiList)
+                    return@then null
+                }
 
 
         runOnUiThread {
@@ -113,14 +115,14 @@ class MapActivityViewModelTest {
 
             assertEquals(expectedPoiMap, viewModel.mPointsOfInterest.value)
             assertEquals(
-                expectedStatusMap,
-                viewModel.mPointsOfInterestStatus.value
+                    expectedStatusMap,
+                    viewModel.mPointsOfInterestStatus.value
             )
         }
     }
 
     @Test
-    fun onRepeatedErrorsDisplayErrorMessage() {
+    fun onRepeatedErrorsStopsAfterMaxNumRequests() {
         val mockPoiService = Mockito.mock(PoiService::class.java)
         val expectedPoiMap = HashMap<String, PointOfInterest>()
         val expectedStatusMap = HashMap<String, PointOfInterestStatus>()
@@ -136,18 +138,22 @@ class MapActivityViewModelTest {
         val mockDatabase = Mockito.mock(Database::class.java)
         Mockito.`when`(mockDatabase.elements).thenReturn(databaseMap)
 
+        var counter = 0
         Mockito.`when`(
-            mockPoiService.requestPois(
-                Mockito.any(LatLng::class.java),
-                Mockito.any(),
-                Mockito.any()
-            )
+                mockPoiService.requestPois(
+                        Mockito.any(LatLng::class.java),
+                        Mockito.any(),
+                        Mockito.any()
+                )
         )
-            .then {
-                val onError = it.arguments[2] as ((Error) -> Unit)
-                onError(Error("test error"))
-                return@then null
-            }
+                .then {
+                    val onError = it.arguments[2] as ((Error) -> Unit)
+                    onError(Error("test error"))
+
+                    assertEquals(counter < PoiServiceViewModel.MAX_NUM_REQUESTS, true)
+                    counter += 1
+                    return@then null
+                }
 
         runOnUiThread {
             viewModel.initPoiService(mockPoiService)
@@ -156,6 +162,8 @@ class MapActivityViewModelTest {
 
             viewModel.onLocationChanged(mockLocation)
         }
+
+        assertEquals(counter, PoiServiceViewModel.MAX_NUM_REQUESTS)
     }
 
     @Test
@@ -194,29 +202,29 @@ class MapActivityViewModelTest {
         Mockito.`when`(mockDatabase.elements).thenReturn(databaseMap)
 
         Mockito.`when`(
-            mockPoiService.requestPois(
-                Mockito.any(LatLng::class.java),
-                Mockito.any(),
-                Mockito.any()
-            )
+                mockPoiService.requestPois(
+                        Mockito.any(LatLng::class.java),
+                        Mockito.any(),
+                        Mockito.any()
+                )
         )
-            .then {
-                val onSuccess = it.arguments[1] as ((List<PointOfInterest>) -> Unit)
-                onSuccess(testPoiList)
-                return@then null
-            }
+                .then {
+                    val onSuccess = it.arguments[1] as ((List<PointOfInterest>) -> Unit)
+                    onSuccess(testPoiList)
+                    return@then null
+                }
 
         val reachablePoiList = ArrayList<PointOfInterest>()
         reachablePoiList.add(poi1)
 
         Mockito.`when`(
-            mockPoiService.getReachablePoi(
-                Mockito.any(LatLng::class.java),
-                Mockito.any(),
-                Mockito.any()
-            )
+                mockPoiService.getReachablePoi(
+                        Mockito.any(LatLng::class.java),
+                        Mockito.any(),
+                        Mockito.any()
+                )
         )
-            .thenReturn(reachablePoiList)
+                .thenReturn(reachablePoiList)
 
 
         runOnUiThread {
@@ -228,8 +236,8 @@ class MapActivityViewModelTest {
 
             assertEquals(expectedPoiMap, viewModel.mPointsOfInterest.value)
             assertEquals(
-                expectedStatusMap,
-                viewModel.mPointsOfInterestStatus.value
+                    expectedStatusMap,
+                    viewModel.mPointsOfInterestStatus.value
             )
         }
     }
@@ -246,7 +254,7 @@ class MapActivityViewModelTest {
         expectedStatusMap[poi2.uid] = PointOfInterestStatus.VISITED
 
         Mockito.`when`(mockPoiService.getReachablePoi(Mockito.any(), Mockito.any(), Mockito.any()))
-            .thenReturn(ArrayList())
+                .thenReturn(ArrayList())
         val databaseMap = HashMap<String, PointOfInterest>()
         databaseMap[poi1.uid] = poi1
         databaseMap[poi2.uid] = poi2
@@ -265,8 +273,8 @@ class MapActivityViewModelTest {
 
             assertEquals(expectedPoiMap, viewModel.mPointsOfInterest.value)
             assertEquals(
-                expectedStatusMap,
-                viewModel.mPointsOfInterestStatus.value
+                    expectedStatusMap,
+                    viewModel.mPointsOfInterestStatus.value
             )
         }
     }
@@ -289,29 +297,29 @@ class MapActivityViewModelTest {
         Mockito.`when`(mockDatabase.elements).thenReturn(databaseMap)
 
         Mockito.`when`(
-            mockPoiService.requestPois(
-                Mockito.any(LatLng::class.java),
-                Mockito.any(),
-                Mockito.any()
-            )
+                mockPoiService.requestPois(
+                        Mockito.any(LatLng::class.java),
+                        Mockito.any(),
+                        Mockito.any()
+                )
         )
-            .then {
-                val onSuccess = it.arguments[1] as ((List<PointOfInterest>) -> Unit)
-                onSuccess(testPoiList)
-                return@then null
-            }
+                .then {
+                    val onSuccess = it.arguments[1] as ((List<PointOfInterest>) -> Unit)
+                    onSuccess(testPoiList)
+                    return@then null
+                }
 
         val reachablePoiList = ArrayList<PointOfInterest>()
         reachablePoiList.add(poi1)
 
         Mockito.`when`(
-            mockPoiService.getReachablePoi(
-                Mockito.any(LatLng::class.java),
-                Mockito.any(),
-                Mockito.any()
-            )
+                mockPoiService.getReachablePoi(
+                        Mockito.any(LatLng::class.java),
+                        Mockito.any(),
+                        Mockito.any()
+                )
         )
-            .thenReturn(reachablePoiList)
+                .thenReturn(reachablePoiList)
 
         runOnUiThread {
             viewModel.initPoiService(mockPoiService)

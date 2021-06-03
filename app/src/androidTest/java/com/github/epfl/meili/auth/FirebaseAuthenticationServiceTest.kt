@@ -71,14 +71,14 @@ class FirebaseAuthenticationServiceTest {
     @Test
     fun onActivityResultWrongRequestCode() {
         testRule!!.scenario.onActivity {
-            fauth.onActivityResult(it!!, 0, 0, null) {}
+            fauth.onActivityResult(it!!, 0, 0, null) { assert(false) }
         }
     }
 
     @Test
     fun onActivityResultCorrectRequestCode() {
         testRule!!.scenario.onActivity {
-            fauth.onActivityResult(it!!, 9001, 0, null) {}
+            fauth.onActivityResult(it!!, 9001, 0, null) { assert(true) }
         }
     }
 }

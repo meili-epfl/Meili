@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -21,6 +20,7 @@ import com.github.epfl.meili.models.*
 import com.github.epfl.meili.notifications.FirebaseNotificationService
 import com.github.epfl.meili.notifications.RetrofitInstance
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
+import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.DateAuxiliary
 import com.github.epfl.meili.util.MeiliViewModel
 import com.google.firebase.database.DatabaseException
@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 
 
 
-class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activity) {
+class ChatActivity : PoiActivity(R.layout.activity_chat, R.id.chat_activity) {
 
     companion object {
         private const val TAG: String = "ChatLogActivity"
@@ -198,8 +198,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
             text,
             currentUser!!.uid,
             chatId,
-            System.currentTimeMillis() / 1000,
-            currentUser!!.username
+            System.currentTimeMillis() / 1000
         )
         //send notification if in direct message not poi chat
         if (friend != null && token != null) {
@@ -268,6 +267,11 @@ class ChatItem(
     private val isDisplayingDate: Boolean,
 ) :
     Item<GroupieViewHolder>() {
+
+    companion object {
+        var serviceProvider: () -> UserInfoService = { UserInfoService() }
+    }
+
     override fun getLayout(): Int {
         return if (isChatMessageFromCurrentUser && isDisplayingDate) {
             R.layout.chat_from_me_row_with_date
@@ -288,8 +292,18 @@ class ChatItem(
         if (isDisplayingDate) viewHolder.itemView.findViewById<TextView>(R.id.text_chat_date).text =
             DateAuxiliary.getDay(date)
         if (!isChatMessageFromCurrentUser) {
-            viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other).text =
-                if (isGroupChat) message.fromName else ""
+            val nameView = viewHolder.itemView.findViewById<TextView>(R.id.text_chat_user_other)
+            if (isGroupChat) {
+                serviceProvider().getUserInformation(
+                    listOf(message.fromId)
+                ) { getUsername(it, nameView, message.fromId) }
+            } else {
+                nameView.text = ""
+            }
         }
+    }
+
+    private fun getUsername(map: Map<String, User>, nameView: TextView, uid: String) {
+        nameView.text = map[uid]!!.username
     }
 }

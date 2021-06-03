@@ -25,6 +25,7 @@ import com.github.epfl.meili.notifications.FirebaseNotificationService
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.poi.PoiInfoActivity
 import com.github.epfl.meili.poi.PoiServiceCached
+import com.github.epfl.meili.poi.PointOfInterestStatus
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
 import com.github.epfl.meili.util.LocationService.requestLocationPermission
