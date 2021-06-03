@@ -1,6 +1,7 @@
 package com.github.epfl.meili.map
 
 import android.content.Context
+import com.github.epfl.meili.poi.PointOfInterestStatus
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory

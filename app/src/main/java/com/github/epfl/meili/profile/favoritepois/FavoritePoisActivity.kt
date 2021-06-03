@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.epfl.meili.R
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.map.MapActivity
-import com.github.epfl.meili.map.PointOfInterestStatus
+import com.github.epfl.meili.poi.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiInfoActivity
 import com.github.epfl.meili.profile.ProfileActivity.Companion.USER_KEY

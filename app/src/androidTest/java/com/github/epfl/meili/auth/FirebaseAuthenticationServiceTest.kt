@@ -6,6 +6,9 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import com.github.epfl.meili.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -41,6 +44,11 @@ class FirebaseAuthenticationServiceTest {
             Auth.email = null
             Auth.name = null
         }
+    }
+
+    @After
+    fun after() {
+        FirebaseAuthenticationService.authProvider = { Firebase.auth }
     }
 
     @Test

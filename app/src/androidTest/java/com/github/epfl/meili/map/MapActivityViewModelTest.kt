@@ -10,6 +10,7 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiT
 import com.github.epfl.meili.database.Database
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.poi.PoiService
+import com.github.epfl.meili.poi.PointOfInterestStatus
 import com.github.epfl.meili.util.PoiServiceViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.google.common.math.IntMath
