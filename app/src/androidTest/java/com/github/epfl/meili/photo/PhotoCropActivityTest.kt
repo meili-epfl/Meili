@@ -11,6 +11,7 @@ import androidx.test.rule.GrantPermissionRule
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import com.github.epfl.meili.R
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -53,12 +54,12 @@ class PhotoCropActivityTest {
 
         // Check rotates
         onView(withId(R.id.rotate_90)).perform(click())
-        assert(photoView.rotation == 90f)
+        assertEquals(90f, photoView.rotation)
         onView(withId(R.id.rotate_90)).perform(click())
-        assert(photoView.rotation == 180f)
+        assertEquals(180f, photoView.rotation)
 
         // Check the image hasn't changed
-        assert(photoView.drawable == drawable)
+        assertEquals(drawable, photoView.drawable)
     }
 
     @Test
@@ -80,7 +81,7 @@ class PhotoCropActivityTest {
         onView(withId(R.id.crop_mode_button)).perform(click())
 
         // Check the image hasn't changed
-        assert(photoView.drawable == drawable)
+        assertEquals(drawable, photoView.drawable)
     }
 
     @Test
@@ -102,8 +103,8 @@ class PhotoCropActivityTest {
         onView(withId(R.id.crop)).perform(click())
 
         // Check the image has changed
-        assert(photoView.drawable != drawable)
-        assert(photoView.drawable.intrinsicWidth < drawable.intrinsicWidth
+        assertNotEquals(drawable, photoView.drawable)
+        assertTrue(photoView.drawable.intrinsicWidth < drawable.intrinsicWidth
                 || photoView.drawable.intrinsicHeight < drawable.intrinsicHeight)
     }
 
