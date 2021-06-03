@@ -18,7 +18,6 @@ import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.models.Token
 import com.github.epfl.meili.notifications.FirebaseNotificationService

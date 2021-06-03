@@ -11,16 +11,13 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.auth.AuthenticationService
-import com.github.epfl.meili.messages.ChatLogActivity
+import com.github.epfl.meili.messages.ChatActivity
 import com.github.epfl.meili.messages.ChatMessageViewModel
 import com.github.epfl.meili.messages.MockMessageDatabase
 import com.github.epfl.meili.models.PointOfInterest
 
 import com.github.epfl.meili.models.User
-import com.github.epfl.meili.photo.CameraActivity
 import com.google.firebase.messaging.RemoteMessage
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
 import org.junit.After
 
 import org.junit.Before
@@ -50,7 +47,7 @@ class FirebaseNotificationServiceTest {
     private fun getIntent(): Intent {
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-        val intent = Intent(targetContext, ChatLogActivity::class.java).apply {
+        val intent = Intent(targetContext, ChatActivity::class.java).apply {
             putExtra("POI_KEY", fakePoi)
         }
 
@@ -70,7 +67,7 @@ class FirebaseNotificationServiceTest {
     private val intent = getIntent()
 
     @get:Rule
-    var mActivityTestRule: ActivityScenarioRule<ChatLogActivity> = ActivityScenarioRule(intent)
+    var mActivityTestRule: ActivityScenarioRule<ChatActivity> = ActivityScenarioRule(intent)
 
 
     @Before
@@ -82,7 +79,7 @@ class FirebaseNotificationServiceTest {
     fun init() {
         UiThreadStatement.runOnUiThread {
             ChatMessageViewModel.setMessageDatabase(MockMessageDatabase(mockPath))
-            ChatMessageViewModel.addMessage(fakeMessage, fakeId, fakeId, 10, fakeName)
+            ChatMessageViewModel.addMessage(fakeMessage, fakeId, fakeId, 10)
         }
     }
 
