@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
@@ -66,18 +67,11 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
             poiName.text = post.poiName
             title.text = post.title
 
-            if (showPOI) {
-                poiName.visibility = View.VISIBLE
-            } else {
-                poiName.visibility = View.GONE
-            }
+            poiName.isVisible = showPOI
 
             //show or hide up/downvote depending on user status
-            val visibility = if (userId == null) { View.GONE }
-                            else { View.VISIBLE }
-
-            upvoteButton.visibility = visibility
-            downvoteButton.visibility = visibility
+            upvoteButton.isVisible = userId != null
+            downvoteButton.isVisible = userId != null
             if (userId != null) {
                 setupButtons(post.upvoters, post.downvoters, userId, post.postId())
             }
