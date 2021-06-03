@@ -37,7 +37,6 @@ class ChatLogActivityAndroidTest {
     private val mockPath = "POI/mock-poi"
     private val fakeMessage = "fake_text"
     private val fakeId = "fake_id"
-    private val fakeName = "fake_name_sender"
     private val fakePoi: PointOfInterest =
         PointOfInterest(10.0, 10.0, "fake_poi", "fake_poi")
 
@@ -72,7 +71,7 @@ class ChatLogActivityAndroidTest {
     fun init() {
         UiThreadStatement.runOnUiThread {
             ChatMessageViewModel.setMessageDatabase(MockMessageDatabase(mockPath))
-            ChatMessageViewModel.addMessage(fakeMessage, fakeId, fakeId, 10, fakeName)
+            ChatMessageViewModel.addMessage(fakeMessage, fakeId, fakeId, 10)
         }
     }
 
