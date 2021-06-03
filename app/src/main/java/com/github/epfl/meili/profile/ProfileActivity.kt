@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.facebook.*
 import com.facebook.login.LoginResult
@@ -19,10 +20,10 @@ import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.auth.FacebookAuthenticationService
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
-import com.github.epfl.meili.util.navigation.HomeActivity
 import com.github.epfl.meili.profile.myposts.MyPostsActivity
 import com.github.epfl.meili.util.UIUtility
 import com.github.epfl.meili.util.UserPreferences
+import com.github.epfl.meili.util.navigation.HomeActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -181,10 +182,9 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
         profileEditView.visibility = View.GONE
         photoEditView.visibility = View.GONE
 
-        val editableVisibility = if (isProfileOwner) View.VISIBLE else View.GONE
-        seeFriendsButton.visibility = editableVisibility
-        signOutButton.visibility = editableVisibility
-        profileEditButton.visibility = editableVisibility
+        seeFriendsButton.isVisible = isProfileOwner
+        signOutButton.isVisible = isProfileOwner
+        profileEditButton.isVisible = isProfileOwner
     }
 
     private fun showEditMode() {
@@ -275,10 +275,8 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
             }
         }
 
-        override fun onCancel() {
-        }
+        override fun onCancel() {}
 
-        override fun onError(exception: FacebookException) {
-        }
+        override fun onError(exception: FacebookException) {}
     }
 }

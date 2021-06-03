@@ -1,11 +1,14 @@
 package com.github.epfl.meili.messages
 
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -33,11 +36,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
+
 class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activity) {
 
     companion object {
         private const val TAG: String = "ChatLogActivity"
-        private const val MY_TOPIC: String = "/topics/myTopic"
+        private const val KEYBOARD_THRESHOLD = 244
     }
 
     private val adapter = GroupAdapter<GroupieViewHolder>()
@@ -53,13 +57,25 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
 
     private lateinit var navigationBar: BottomNavigationView
     private var friend: User? = null
+    private lateinit var chatLogView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         navigationBar = findViewById(R.id.navigation)
 
-        findViewById<RecyclerView>(R.id.recyclerview_chat_log).adapter = adapter
+        chatLogView = findViewById(R.id.recyclerview_chat_log)
+        chatLogView.adapter = adapter
+
+        // Hide navigation bar when keyboard is opened
+        val chatLogView = findViewById<ConstraintLayout>(R.id.chat_log_view)
+        chatLogView.viewTreeObserver.addOnGlobalLayoutListener {
+            val r = Rect()
+            chatLogView.getWindowVisibleDisplayFrame(r)
+            val heightDiff: Int = chatLogView.rootView
+                .height - (r.bottom - r.top)
+            navigationBar.isVisible = heightDiff > KEYBOARD_THRESHOLD
+        }
 
         Auth.isLoggedIn.observe(this) {
             verifyAndUpdateUserIsLoggedIn(it)
@@ -67,6 +83,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
 
         verifyAndUpdateUserIsLoggedIn(Auth.isLoggedIn.value!!)
     }
+
 
     /**
      * Start the chat if the user is logged in
@@ -202,16 +219,20 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
             var prevMessage: ChatMessage? = if (messageList.isEmpty()) null else messageList.last()
             newMessages.filter { message -> message.toId == chatID }.forEach { message ->
                 val isDisplayingDate: Boolean = if (prevMessage != null) {
-                    !DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(message.timestamp))
-                        .equals(DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(prevMessage!!.timestamp)))
+                    DateAuxiliary.getDay(DateAuxiliary.getDateFromTimestamp(message.timestamp)) != DateAuxiliary.getDay(
+                        DateAuxiliary.getDateFromTimestamp(prevMessage!!.timestamp)
+                    )
                 } else {
                     true
                 }
-                adapter.add(ChatItem(message,
-                    message.fromId == currentUser!!.uid,
-                    isGroupChat,
-                    isDisplayingDate
-                ))
+                adapter.add(
+                    ChatItem(
+                        message,
+                        message.fromId == currentUser!!.uid,
+                        isGroupChat,
+                        isDisplayingDate
+                    )
+                )
 
                 prevMessage = message
             }
@@ -219,7 +240,7 @@ class ChatLogActivity : PoiActivity(R.layout.activity_chat_log, R.id.chat_activi
             messageList.addAll(newMessages)
             //scroll down
             val lastItemPos = adapter.itemCount - 1
-            findViewById<RecyclerView>(R.id.recyclerview_chat_log).scrollToPosition(lastItemPos)
+            chatLogView.scrollToPosition(lastItemPos)
         }
 
         ChatMessageViewModel.messages.observe(this, groupMessageObserver)

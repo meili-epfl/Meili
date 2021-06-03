@@ -1,6 +1,5 @@
 package com.github.epfl.meili.util
 
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -34,16 +33,9 @@ interface ListSorter<T> : AdapterView.OnItemSelectedListener, UserProfileLinker<
 
     /** Listens to changes in comments */
     fun sortListener(map: Map<String, T>) {
-        val newUsers = ArrayList<String>()
-        for ((_, item) in map) {
-            newUsers.add(getAuthorUid(item))
+        serviceProvider().getUserInformation(map.values.map { getAuthorUid(it) }) {
+            onUsersInfoReceived(it, map)
         }
-
-        serviceProvider()
-            .getUserInformation(newUsers, { onUsersInfoReceived(it, map) },
-                {
-                    Log.e(TAG, "Error when fetching users information")
-                })
     }
 
     /** Initializes the sorting activity */

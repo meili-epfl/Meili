@@ -77,7 +77,7 @@
         <activity
             android:name=".messages.ChatLogActivity"
             android:parentActivityName=".map.MapActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".posts.forum.ForumActivity"
             android:parentActivityName=".map.MapActivity"

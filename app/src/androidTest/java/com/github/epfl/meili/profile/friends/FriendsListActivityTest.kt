@@ -101,7 +101,7 @@ class FriendsListActivityTest {
         testFriendMap[TEST_FRIEND_UID] = User(TEST_FRIEND_UID, TEST_FRIEND_NAME)
 
         val mockUserInfoService = Mockito.mock(UserInfoService::class.java)
-        Mockito.`when`(mockUserInfoService.getUserInformation(Mockito.anyList(), Mockito.any(), Mockito.any())).then {
+        Mockito.`when`(mockUserInfoService.getUserInformation(Mockito.anyList(), Mockito.any())).then {
             val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)
 
             onSuccess(testFriendMap)
