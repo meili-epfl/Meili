@@ -99,11 +99,6 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
 
         registerFacebookCallBack()
 
-        Auth.isLoggedIn.observe(this) {
-            verifyAndUpdateUserIsLoggedIn()
-        }
-
-
         profileView = findViewById(R.id.profile_container)
         profileEditView = findViewById(R.id.profile_edit_container)
     }
@@ -125,15 +120,14 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
         callbackManager = CallbackManager.Factory.create()
 
         facebookSignInButton.registerCallback(
-            callbackManager, facebookCallback
+                callbackManager, facebookCallback
         )
     }
 
 
     private fun setupViewModel() {
-
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(profileUid!!))
-            .get(ProfileViewModel::class.java)
+                .get(ProfileViewModel::class.java)
         viewModel.getUser().removeObservers(this)
         viewModel.getUser().observe(this) { user ->
             nameView.text = user.username
@@ -214,6 +208,11 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
             signInButton.visibility = View.GONE
             facebookSignInButton.visibility = View.GONE
 
+            if (profileUid == null) {
+                profileUid = Auth.getCurrentUser()!!.uid
+            }
+
+
             setupViewModel()
             updateIsProfileOwner()
             showProfile()
@@ -235,7 +234,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
 
     private fun showProfileOwnersInfo(activityClass: Class<out AppCompatActivity>) {
         val intent = Intent(this, activityClass)
-            .putExtra(USER_KEY, profileUid)
+                .putExtra(USER_KEY, profileUid)
         startActivity(intent)
     }
 
@@ -263,8 +262,8 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
             if (Profile.getCurrentProfile() == null) {
                 profileTracker = object : ProfileTracker() {
                     override fun onCurrentProfileChanged(
-                        oldProfile: Profile?,
-                        currentProfile: Profile
+                            oldProfile: Profile?,
+                            currentProfile: Profile
                     ) {
                         Auth.setAuthenticationService(FacebookAuthenticationService())
                         profileTracker.stopTracking()
