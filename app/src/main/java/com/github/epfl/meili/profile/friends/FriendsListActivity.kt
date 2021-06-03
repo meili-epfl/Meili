@@ -2,7 +2,6 @@ package com.github.epfl.meili.profile.friends
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +12,6 @@ import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.messages.ChatLogActivity
 import com.github.epfl.meili.models.Friend
-
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.UserProfileLinker
 import com.github.epfl.meili.util.ClickListener
@@ -48,9 +46,9 @@ class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinke
         recyclerAdapter = FriendsListRecyclerAdapter(this)
 
         initRecyclerView(
-                recyclerAdapter,
-                findViewById(R.id.friends_list_recycler_view),
-                this
+            recyclerAdapter,
+            findViewById(R.id.friends_list_recycler_view),
+            this
         )
 
         supportActionBar?.title = TITLE
@@ -83,11 +81,9 @@ class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinke
 
     private fun onFriendsUpdateReceived(map: Map<String, Friend>) {
         addDefaultFriend(map)
-
-        val newFriendsList = map.keys.toList().minus(usersMap.keys.toList())
-
-        serviceProvider().getUserInformation(newFriendsList, { onUsersInfoReceived(it, map) },
-                { Log.d(TAG, "Error when fetching friends information") })
+        serviceProvider().getUserInformation(
+            map.keys.toList().minus(usersMap.keys.toList())
+        ) { onUsersInfoReceived(it, map) }
     }
 
     fun onFriendsListButtonClicked(view: View) {

@@ -11,6 +11,7 @@ import android.widget.ImageView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
@@ -22,10 +23,11 @@ import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.posts.PostListActivity
-import com.github.epfl.meili.posts.PostListActivity.Companion.NEWEST
 import com.github.epfl.meili.posts.PostListViewModel
+import com.github.epfl.meili.util.ImageSetter
 import com.github.epfl.meili.util.ImageUtility.compressAndUploadToFirebase
 import com.github.epfl.meili.util.ImageUtility.getBitmapFromFilePath
+import com.github.epfl.meili.util.ListSorter.Companion.NEWEST
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.UIUtility
 import com.github.epfl.meili.util.WritingPolicy
@@ -39,7 +41,7 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
     override lateinit var viewModel: PostListViewModel
 
     override var usersMap: Map<String, User> = HashMap()
-    override var postsMap: Map<String, Post> = HashMap()
+    override var listMap: Map<String, Post> = HashMap()
     override var sortOrder = NEWEST
 
     private lateinit var listPostsView: View
@@ -141,14 +143,14 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
         val title = editTitleView.text.toString()
         val text = editTextVIew.text.toString()
 
-        val post = Post(poi.uid, user.uid, title, timestamp, text)
+        val post = Post(poi.uid, user.uid, title, timestamp, text, bitmap != null)
 
         viewModel.addElement(post.postId(), post)
 
-        if (bitmap != null) {
+        if (post.hasPhoto) {
             executor.execute {
                 compressAndUploadToFirebase(
-                    "images/forum/${post.postId()}",
+                    ImageSetter.imagePostPath(post.postId()),
                     bitmap!!
                 )
             }
@@ -168,18 +170,22 @@ class ForumActivity : PoiActivity(R.layout.activity_forum, R.id.forum_activity),
     override fun initLoggedInListener() {
         super.initLoggedInListener()
 
-        Auth.isLoggedIn.observe(this, { loggedIn ->
-            createPostButton.isEnabled = WritingPolicy.isWriteEnabled(loggedIn, poiStatus)
-            createPostButton.visibility = if (WritingPolicy.isWriteEnabled(loggedIn, poiStatus))
-                View.VISIBLE
-            else
-                View.GONE
-        })
+        Auth.isLoggedIn.observe(this) { loggedIn ->
+            val isWriteEnabled = WritingPolicy.isWriteEnabled(loggedIn, poiStatus)
+            createPostButton.isEnabled = isWriteEnabled
+            createPostButton.isVisible = isWriteEnabled
+        }
     }
 
     private fun showEditPostView() {
         listPostsView.visibility = View.GONE
         editPostView.visibility = View.VISIBLE
+
+        // Clear fields and photo
+        editTitleView.text.clear()
+        editTextVIew.text.clear()
+        bitmap = null
+        displayImageView.setImageBitmap(bitmap)
     }
 
     private fun showListPostsView() {
