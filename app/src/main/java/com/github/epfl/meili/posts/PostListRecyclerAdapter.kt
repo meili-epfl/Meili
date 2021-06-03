@@ -73,11 +73,9 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
             }
 
             //show or hide up/downvote depending on user status
-            val visibility = if (userId == null) {
-                View.GONE
-            } else {
-                View.VISIBLE
-            }
+            val visibility = if (userId == null) { View.GONE }
+                            else { View.VISIBLE }
+
             upvoteButton.visibility = visibility
             downvoteButton.visibility = visibility
             if (userId != null) {
