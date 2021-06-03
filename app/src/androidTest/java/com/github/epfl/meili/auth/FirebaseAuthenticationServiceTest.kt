@@ -60,7 +60,6 @@ class FirebaseAuthenticationServiceTest {
         assertEquals(fauth.getCurrentUser(), user)
     }
 
-    //TODO: no assertion here
     @Test
     fun onActivityResultWrongRequestCode() {
         testRule!!.scenario.onActivity {
@@ -71,7 +70,7 @@ class FirebaseAuthenticationServiceTest {
     @Test
     fun onActivityResultCorrectRequestCode() {
         testRule!!.scenario.onActivity {
-            fauth.onActivityResult(it!!, 9001, 0, null) {}
+            fauth.onActivityResult(it!!, 9001, 0, null) { assert(true) }
         }
     }
 }

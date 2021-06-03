@@ -78,7 +78,6 @@ class CameraActivityTest {
                 .pressKeyCode(KeyEvent.KEYCODE_VOLUME_DOWN)
     }
 
-    //TODO: no assertion here
     @Test
     fun touchTest() {
         val touches = object : ViewAction {
