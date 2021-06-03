@@ -19,7 +19,6 @@ class RotationGestureDetectorTest {
         gestureDetector = RotationGestureDetector(mockListener)
     }
 
-    //TODO: no assertions here, is it possible to add some?
     @Test
     fun performActionDown() {
         val event = obtain(
