@@ -6,7 +6,7 @@ import kotlin.math.atan2
 // Reference used : https://stackoverflow.com/questions/10682019/android-two-finger-rotation
 /** Detects two finger rotation motions */
 class RotationGestureDetector(// Object which can be rotated using two fingers
-    private val listener: OnRotationGestureListener
+        private val listener: OnRotationGestureListener
 ) {
 
     companion object {

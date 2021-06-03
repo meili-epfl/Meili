@@ -32,12 +32,11 @@ import org.mockito.Mockito
 
 
 @LargeTest
-class ChatLogActivityAndroidTest {
+class ChatActivityAndroidTest {
 
     private val mockPath = "POI/mock-poi"
     private val fakeMessage = "fake_text"
     private val fakeId = "fake_id"
-    private val fakeName = "fake_name_sender"
     private val fakePoi: PointOfInterest =
         PointOfInterest(10.0, 10.0, "fake_poi", "fake_poi")
 
@@ -45,7 +44,7 @@ class ChatLogActivityAndroidTest {
     private fun getIntent(): Intent {
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-        val intent = Intent(targetContext, ChatLogActivity::class.java).apply {
+        val intent = Intent(targetContext, ChatActivity::class.java).apply {
             putExtra("POI_KEY", fakePoi)
         }
 
@@ -65,14 +64,14 @@ class ChatLogActivityAndroidTest {
     private val intent = getIntent()
 
     @get:Rule
-    var mActivityTestRule: ActivityScenarioRule<ChatLogActivity> = ActivityScenarioRule(intent)
+    var mActivityTestRule: ActivityScenarioRule<ChatActivity> = ActivityScenarioRule(intent)
 
 
     @Before
     fun init() {
         UiThreadStatement.runOnUiThread {
             ChatMessageViewModel.setMessageDatabase(MockMessageDatabase(mockPath))
-            ChatMessageViewModel.addMessage(fakeMessage, fakeId, fakeId, 10, fakeName)
+            ChatMessageViewModel.addMessage(fakeMessage, fakeId, fakeId, 10)
         }
     }
 
@@ -129,8 +128,6 @@ class ChatLogActivityAndroidTest {
                 a.verifyAndUpdateUserIsLoggedIn(true)
                 assertThat(a.supportActionBar?.title, `is`("fake_poi"))
             }
-
-
         }
     }
 

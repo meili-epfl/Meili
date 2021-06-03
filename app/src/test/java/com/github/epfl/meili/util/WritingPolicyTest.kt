@@ -1,6 +1,6 @@
 package com.github.epfl.meili.util
 
-import com.github.epfl.meili.map.PointOfInterestStatus
+import com.github.epfl.meili.poi.PointOfInterestStatus
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

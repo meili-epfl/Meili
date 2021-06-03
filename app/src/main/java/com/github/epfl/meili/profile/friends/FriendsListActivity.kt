@@ -10,7 +10,7 @@ import com.github.epfl.meili.BuildConfig
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
-import com.github.epfl.meili.messages.ChatLogActivity
+import com.github.epfl.meili.messages.ChatActivity
 import com.github.epfl.meili.models.Friend
 import com.github.epfl.meili.models.User
 import com.github.epfl.meili.profile.UserProfileLinker
@@ -105,7 +105,7 @@ class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinke
 
     private fun openFriendChat(friendUid: String) {
         val intent =
-            Intent(this, ChatLogActivity::class.java).putExtra(FRIEND_KEY, usersMap[friendUid])
+            Intent(this, ChatActivity::class.java).putExtra(FRIEND_KEY, usersMap[friendUid])
         startActivity(intent)
     }
 

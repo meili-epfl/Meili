@@ -26,13 +26,12 @@ object ChatMessageViewModel : ViewModel(),
     /**
      * Adds a message to the database
      */
-    fun addMessage(text: String, fromId: String, toId: String, timeStamp: Long, fromName: String) {
+    fun addMessage(text: String, fromId: String, toId: String, timeStamp: Long) {
         val message = ChatMessage(
             text,
             fromId,
             toId,
-            timeStamp,
-            fromName
+            timeStamp
         )
 
         database.addMessageToDatabase(message)
