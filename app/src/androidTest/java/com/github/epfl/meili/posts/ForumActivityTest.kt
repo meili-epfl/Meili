@@ -60,7 +60,6 @@ import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
-
 @Suppress("UNCHECKED_CAST")
 @RunWith(AndroidJUnit4::class)
 class ForumActivityTest {
@@ -122,7 +121,6 @@ class ForumActivityTest {
         `when`(
                 mockUserInfoService.getUserInformation(
                         Mockito.anyList(),
-                        Mockito.any(),
                         Mockito.any()
                 )
         ).then {

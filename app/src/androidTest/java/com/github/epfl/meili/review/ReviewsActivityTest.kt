@@ -79,7 +79,7 @@ class ReviewsActivityTest {
     private val mockSnapshotAfterEdition: QuerySnapshot = mock(QuerySnapshot::class.java)
 
     private val mockAuthenticationService = MockAuthenticationService()
-    private val mockUserInfoService = Mockito.mock(UserInfoService::class.java)
+    private val mockUserInfoService = mock(UserInfoService::class.java)
     private lateinit var database: FirestoreDatabase<Review>
 
     private var testAverageRatingBeforeAddition: Float = 0f
@@ -100,14 +100,13 @@ class ReviewsActivityTest {
                 mockUserInfoService.getUserInformation(
                         Mockito.anyList(),
                         Mockito.any(),
-                        Mockito.any()
                 )
         ).then {
             val onSuccess = it.arguments[1] as ((Map<String, User>) -> Unit)
 
             onSuccess(testFriendMap)
 
-            return@then null
+            null
         }
         ReviewsActivity.serviceProvider = { mockUserInfoService }
     }
