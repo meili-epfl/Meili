@@ -39,6 +39,7 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
 
     private lateinit var floatingActionButton: ImageView
     private lateinit var averageRatingView: TextView
+    private lateinit var averageRatingBarView: RatingBar
 
     private lateinit var ratingBar: RatingBar
     private lateinit var editTitleView: EditText
@@ -133,6 +134,7 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
     private fun initViewModel(poiKey: String) {
         floatingActionButton = findViewById(R.id.fab_add_edit_review)
         averageRatingView = findViewById(R.id.average_rating)
+        averageRatingBarView = findViewById(R.id.average_ratingbar)
 
         @Suppress("UNCHECKED_CAST")
         viewModel =
@@ -160,8 +162,11 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
         serviceProvider().getUserInformation(map.values.map { it.authorUid }) {
             onUsersInfoReceived(it, map)
         }
-        averageRatingView.text =
-            getString(R.string.average_rating_format).format(Review.averageRating(map))
+
+        // Show average rating
+        val rating = Review.averageRating(map)
+        averageRatingView.text = getString(R.string.average_rating_format).format(rating)
+        averageRatingBarView.rating = rating
     }
 
     override fun onUsersInfoReceived(users: Map<String, User>, map: Map<String, Review>) {

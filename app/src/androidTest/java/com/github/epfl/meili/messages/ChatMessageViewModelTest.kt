@@ -25,14 +25,13 @@ class ChatMessageViewModelTest {
     @Test
     fun addMessageTest() {
         UiThreadStatement.runOnUiThread {
-            val mockMessage2 = ChatMessage("hi", "me", "you", 1234, "MyName")
+            val mockMessage2 = ChatMessage("hi", "me", "you", 1234)
 
             ChatMessageViewModel.addMessage(
                     mockMessage2.text,
                     mockMessage2.fromId,
                     mockMessage2.toId,
-                    mockMessage2.timestamp,
-                    mockMessage2.fromName
+                    mockMessage2.timestamp
             )
 
             val expectedMessageList = ArrayList<ChatMessage>()

@@ -8,6 +8,5 @@ data class ChatMessage(
     val text: String = "",
     var fromId: String = "",
     val toId: String = "",
-    val timestamp: Long = -1,
-    val fromName: String = ""
+    val timestamp: Long = -1
 ) : Parcelable
