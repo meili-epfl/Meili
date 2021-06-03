@@ -48,7 +48,6 @@ class FeedActivityTest {
     @Test
     fun feedRecyclerViewDisplayed() {
         onView(withId(R.id.feed_recycler_view)).check(matches(isDisplayed()))
-        onView(withText("POI")).check(matches(isDisplayed()))
 
         rule.scenario.onActivity {
             val viewModel = it.viewModel as FeedViewModel
