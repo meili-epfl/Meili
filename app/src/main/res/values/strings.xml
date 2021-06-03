@@ -51,7 +51,9 @@
     <string name="launcher">Launcher</string>
     <string name="meili_lens">Meili Lens</string>
     <string name="point_of_interest_detected">Point Of Interest Detected!</string>
-    <string name="find_my_friend">Find My Friend</string>
+    <string name="lens_camera">Lens camera</string>
+    <string name="dismiss_lens">Dismiss lens</string>
+
     <string name="image">image</string>
     <string name="crop_photo">crop photo</string>
     <string name="effects">Effects</string>
@@ -88,13 +90,15 @@
     <string name="create_post">Create post</string>
     <string name="cancel">Cancel</string>
     <string name="sort_by">Sort by:</string>
-
     <string name="dark_light_mode_button">Dark / light mode button</string>
     <string name="missing_name">Missing Name</string>
     <string name="no_info">No Info</string>
     <string name="take_me_there">Take Me There</string>
     <string name="user_image">user image</string>
     <string name="call">call</string>
+    <string name="find_my_friend"> Find My Friend!</string>
+    <string name="bluetooth">bluetooth</string>
+    <string name="nearby_text">Meili Nearby lets you add another user as a friend if your devices are close.</string>
     <string name="upvote_default_count">0</string>
     <string name="favorite_pois">Favorite POIs</string>
     <string name="poi_info_activity">Info</string>
