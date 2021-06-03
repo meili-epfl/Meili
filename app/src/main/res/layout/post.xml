@@ -76,7 +76,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@mipmap/upvote_empty_foreground" />
+                    app:srcCompat="@mipmap/upvote_empty" />
 
                 <ImageButton
                     android:id="@+id/downovte_button"
@@ -90,7 +90,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/upvote_count"
                     app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@mipmap/downvote_empty_foreground" />
+                    app:srcCompat="@mipmap/downvote_empty" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 

@@ -4,7 +4,8 @@ import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -13,7 +14,10 @@ import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.models.Post
 import com.github.epfl.meili.profile.ProfileActivity
 import com.github.epfl.meili.util.MockAuthenticationService
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
