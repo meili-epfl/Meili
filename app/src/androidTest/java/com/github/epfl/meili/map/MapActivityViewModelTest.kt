@@ -150,7 +150,7 @@ class MapActivityViewModelTest {
                     onError(Error("test error"))
 
                     assertEquals(counter < PoiServiceViewModel.MAX_NUM_REQUESTS, true)
-                    counter+=1
+                    counter += 1
                     return@then null
                 }
 
@@ -278,7 +278,6 @@ class MapActivityViewModelTest {
         }
     }
 
-    //TODO: no assertion here
     @Test
     fun sensorsTest() {
         val mockPoiService = Mockito.mock(PoiService::class.java)
