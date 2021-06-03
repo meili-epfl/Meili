@@ -4,7 +4,6 @@ import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +19,8 @@ import com.github.epfl.meili.util.LocationService.requestLocation
 import com.github.epfl.meili.util.LocationService.requestLocationPermission
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.*
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class NearbyActivity : AppCompatActivity() {
     companion object {
@@ -31,7 +32,7 @@ class NearbyActivity : AppCompatActivity() {
             { a -> Nearby.getConnectionsClient(a) }
     }
 
-    private lateinit var findMyFriendButton: Button
+    private lateinit var findMyFriendButton: ExtendedFloatingActionButton
     private lateinit var database: FirestoreDatabase<Friend>
     private lateinit var localUser: User
     private lateinit var connectionsClient: ConnectionsClient
@@ -191,6 +192,7 @@ class NearbyActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(
                     applicationContext,
+
                     getString(R.string.error_find_friend),
                     Toast.LENGTH_SHORT
                 ).show()
@@ -201,6 +203,7 @@ class NearbyActivity : AppCompatActivity() {
         val discoveryOptions = DiscoveryOptions.Builder().setStrategy(STRATEGY).build()
         connectionsClient.startDiscovery(packageName, endpointDiscoveryCallback, discoveryOptions)
             .addOnFailureListener {
+
                 Toast.makeText(
                     applicationContext,
                     getString(R.string.error_find_friend),

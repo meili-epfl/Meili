@@ -21,6 +21,7 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.schibsted.spain.barista.interaction.PermissionGranter
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -94,6 +95,7 @@ class NearbyActivityTest {
 
     @Test
     fun testNearbyConnection() {
+        PermissionGranter.allowPermissionsIfNeeded("android.permissions.ACCESS_FINE_LOCATION")
         onView(withId(R.id.find_my_friend)).perform(click())
         onView(withId(R.id.find_my_friend)).check(matches(isNotEnabled()))
 
