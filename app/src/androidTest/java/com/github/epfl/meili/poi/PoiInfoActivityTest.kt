@@ -19,7 +19,7 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.map.MapActivity
-import com.github.epfl.meili.map.PointOfInterestStatus
+import com.github.epfl.meili.poi.PointOfInterestStatus
 import com.github.epfl.meili.models.PointOfInterest
 import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.android.gms.tasks.TaskCompletionSource
