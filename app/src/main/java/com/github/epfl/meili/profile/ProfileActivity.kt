@@ -144,7 +144,6 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
     /** Buttons callback function */
     fun onProfileButtonClick(view: View) {
         when (view) {
-
             photoEditView -> launchGallery.launch(STORAGE_IMAGES_PATH)
             saveButton -> saveProfile()
             cancelButton -> showProfile()
@@ -201,7 +200,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
     }
 
     private fun verifyAndUpdateUserIsLoggedIn() {
-        if (Auth.isLoggedIn.value!!) {
+        if (Auth.isLoggedIn.value!! || profileUid != null) {
             supportActionBar?.title = SUPPORT_ACTIONBAR_SIGNED_IN
             signedInView.visibility = View.VISIBLE
             signInButton.visibility = View.GONE
@@ -210,7 +209,6 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
             if (profileUid == null) {
                 profileUid = Auth.getCurrentUser()!!.uid
             }
-
 
             setupViewModel()
             updateIsProfileOwner()
@@ -227,8 +225,12 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
 
 
     private fun updateIsProfileOwner() {
-        val authUser = Auth.getCurrentUser()!!
-        isProfileOwner = (authUser.uid == profileUid)
+        if (Auth.isLoggedIn.value!!){
+            val authUser = Auth.getCurrentUser()!!
+            isProfileOwner = (authUser.uid == profileUid)
+        }else{
+            isProfileOwner = false
+        }
     }
 
     private fun showProfileOwnersInfo(activityClass: Class<out AppCompatActivity>) {
