@@ -6,18 +6,17 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.facebook.AccessToken
 import com.github.epfl.meili.R
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.util.UserPreferences
 
-class SignInActivity : AppCompatActivity() {
+class GoogleSignInActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_google_sign_in)
 
-        Auth.setAuthenticationService()
+        Auth.setAuthenticationService(FirebaseAuthenticationService())
 
         Auth.isLoggedIn.observe(this, {
             updateUI()

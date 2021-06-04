@@ -23,8 +23,8 @@ class FirebaseAuthenticationServiceTest {
     private var mockAuth: FirebaseAuth = mock(FirebaseAuth::class.java)
 
     @get:Rule
-    var testRule: ActivityScenarioRule<SignInActivity?>? = ActivityScenarioRule(
-            SignInActivity::class.java
+    var testRule: ActivityScenarioRule<GoogleSignInActivity?>? = ActivityScenarioRule(
+            GoogleSignInActivity::class.java
     )
 
     init {

@@ -30,7 +30,7 @@ import org.mockito.Mockito
 
 
 @RunWith(AndroidJUnit4::class)
-class SignInActivityTest {
+class GoogleSignInActivityTest {
     private lateinit var mockService: MockAuthenticationService
 
     companion object {
@@ -55,8 +55,8 @@ class SignInActivityTest {
     }
 
     @get:Rule
-    var testRule: ActivityScenarioRule<SignInActivity> = ActivityScenarioRule(
-        SignInActivity::class.java
+    var testRule: ActivityScenarioRule<GoogleSignInActivity> = ActivityScenarioRule(
+        GoogleSignInActivity::class.java
     )
 
     @Before

@@ -62,7 +62,7 @@
             android:parentActivityName=".profile.friends.FriendsListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".auth.SignInActivity"
+            android:name=".auth.GoogleSignInActivity"
             android:label="Meili"
             android:screenOrientation="portrait">
         </activity>

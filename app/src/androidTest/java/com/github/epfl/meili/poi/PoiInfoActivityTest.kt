@@ -156,8 +156,8 @@ class PoiInfoActivityTest {
 
     @Test
     fun poiActivityTest() {
-        onView(withId(R.id.poi_name)).check(matches(ViewMatchers.withText(fakePoi.name)))
-        onView(withId(R.id.openStatusTextView)).check(matches(ViewMatchers.withText("CLOSED")))
+        onView(withId(R.id.poi_name)).check(matches(withText(fakePoi.name)))
+        onView(withId(R.id.openStatusTextView)).check(matches(withText("CLOSED")))
         onView(withId(R.id.call_poi_button)).check(matches(isDisplayed()))
         onView(withId(R.id.take_me_there_button)).check(matches(isDisplayed()))
     }

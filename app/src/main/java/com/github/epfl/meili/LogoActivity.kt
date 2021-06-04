@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
-import com.facebook.AccessToken
 import com.github.epfl.meili.auth.*
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.util.UserPreferences
@@ -29,7 +28,7 @@ class LogoActivity : AppCompatActivity() {
         preferences.applyMode()
 
         val firstActivityClass: Class<out AppCompatActivity> = if (preferences.firstTime) {
-            SignInActivity::class.java
+            GoogleSignInActivity::class.java
         } else {
             MapActivity::class.java
         }
