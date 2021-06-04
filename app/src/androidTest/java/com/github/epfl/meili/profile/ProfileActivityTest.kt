@@ -78,7 +78,8 @@ class ProfileActivityTest {
     @After
     fun releaseIntents() {
         Intents.release()
-
+        ProfileActivity.authenticationService = {FirebaseAuthenticationService()}
+        Auth.authService = FirebaseAuthenticationService()
     }
 
     private fun setupMocks() {
