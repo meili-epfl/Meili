@@ -11,9 +11,6 @@ Clone the main branch and add the files `keys.xml` in `app/src/main/res/values/`
 
 Interact with people while visiting new places! See what others think about an attraction, get their recommendations for the best cafés, and maybe even learn about the place’s history from experts! Fancy more interaction and wanna share a pizza? Hop on to the live chat with people around you!
 
-Meili creates feeds based on points of interest (POIs). Each POI has multiple tabs letting you create and see posts (text, pictures) in addition to giving you access to a live chat with people in the area. After leaving the area, you can still post for a little while (live chat will be restricted to people who are physically in the area), but after having left for too long, you will only be able to read.
-
-
 ## App Requirements
 
 ### Overview of main features:
