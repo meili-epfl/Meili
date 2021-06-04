@@ -16,52 +16,38 @@ Meili creates feeds based on points of interest (POIs). Each POI has multiple ta
 
 ## App Requirements
 
-### Split app model: 
+### Split app model:
 
-- Google Places (Search, Details, Photos): to get information about the POIs
-- Google Firebase: Authentication and Database
-- Google Maps: to show a live map of the user and the different POIs available around them. (similar to Pokemon Go with gyms)
-
+- Firebase's Realtime Database (for chat messages) and Firestore (for everything else) are used as our backend.
 
 ### Sensor usage:
 
 - Geolocation to determine location on the map
-- Gyroscope to determine orientation on the map
-- Compass
-- Camera to take photos which can then be shared (maybe filters, cropping)
-
+- Accelerometer and magnetic field sensors to determine orientation for Meili Lens (poi detection)
+- Camera for Meili Lens (landmark detection)
+- Camera for taking photos which can be edited(filters, text, cropping, emojis) and shared
 
 ### User support:
 
-- You can sign in using Google (or Facebook TODO check wether this is fixed) and this will give further capabilities to the users. 
-- When a user is signed in, he/she will be able to customize his/her profile, chat with people around them, and make posts and review their favourite points of interest
-
-The user will be able to:
-
-- The user will be able to access and make posts associated with the points of interest he/she visited but only if he/she visited this place.
-- The user will be able to chat with other people who are at that moment close to the same point of interest.
+- A user can choose to stay anonymous or sign in using Google (or Facebook TODO) and this will give further capabilities to the users. 
+- When a user is signed in, they will be able to customize their profile, chat with people around them, make posts, and review points of interest.
 
 Advantages to being logged in:
 
 - Add friends
-- View history of visited POIs, posts, etc.
-- User profile (username, profile picture, etc.)
-- Access live chat (in addition only people close to the POI can access the chat)
-- Be able to post
-- Be able to interact with posts: vote (thank) and comment
+- Favorite POIs and history of posts
+- Customizable profile (username, profile picture, and bio)
+- Chat
+- Make posts and interact with them (upvote/downvote and comment)
+- Add reviews
 
-
-Personalization:
-
-- Limiting users to only interact with visited points of interest.
-- User profiles can showcase the places they have visited (if they choose to do so)
-- Favorite/Save a POI or a post
+Without logging in, the user can only benefit from the app in read-only mode.
 
 ### Local cache:
 
-- We have implemented our own local cache that will fetch the Google Places API response with the points of interest around the user. We implemented a 2 level cache. The first level is that we store the data in the object, and the second level is that we store the data on the mobile storage. The way we handle the data is the following. We implemented a write-through cache so when a response is received from the API, we will write it both in storage and in the object. The process of fetching data is more comples. If the data in the cache is not valid or not present and we have internet connection, we will fetch the information from the API. If we don't have internet connection and we have some data, even if not valid we will return it. If data is valid then we will return the data in the highest level of the cache (the data is the same but the higher the level, the faster it will be. Finally, in order to determing the validity of the cache we use two metrics, time  (we consider that data is valid during 1 hour) and distance, if the cached request was further away than 1km we will consider the data invalid.
+- We have implemented our own local cache that will fetch the Google Places API response with the points of interest around the user. We implemented a 2 level cache. The first level is that we store the data in the object, and the second level is that we store the data on the mobile storage. The way we handle the data is the following. We implemented a write-through cache so when a response is received from the API, we will write it both in storage and in the object. The process of fetching data is more comples. If the data in the cache is not valid or not present and we have internet connection, we will fetch the information from the API. If we don't have internet connection and we have some data, even if not valid we will return it. If data is valid then we will return the data in the highest level of the cache (the data is the same but the higher the level, the faster it will be. Finally, in order to determing the validity of the cache we use two metrics, time  (we consider that data is valid during 1 hour) and distance, if the cached request was further away than 1km we will consider the data invalid. The cache service we implemented 
 
-- Firebase cache TODO: explain
+- For other things such as posts, reviews, chat, etc. we relied on Firebase's automatic caching since there would be no point in reinventing the wheel.
 
 
 ### Offline mode:
