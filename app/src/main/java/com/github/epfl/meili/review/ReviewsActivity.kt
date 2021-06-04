@@ -27,6 +27,8 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
         private const val ADD_BUTTON_DRAWABLE = android.R.drawable.ic_input_add
         private const val EDIT_BUTTON_DRAWABLE = android.R.drawable.ic_menu_edit
 
+        private fun reviewId(userId: String, poi: PointOfInterest) = userId + poi.uid
+
         var serviceProvider: () -> UserInfoService = { UserInfoService() }
     }
 
@@ -108,10 +110,9 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
         val rating = ratingBar.rating
         val title = editTitleView.text.toString()
         val summary = editSummaryView.text.toString()
+        val userId = Auth.getCurrentUser()!!.uid
 
-        val currentUserUid = Auth.getCurrentUser()!!.uid
-        val key = currentUserUid + poi.uid
-        viewModel.addElement(key, Review(currentUserUid, poi.uid, rating, title, summary))
+        viewModel.addElement(reviewId(userId, poi), Review(userId, poi.uid, rating, title, summary))
     }
 
     private fun editReviewButtonListener() {
@@ -150,7 +151,7 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
     private fun reviewsMapListener(map: Map<String, Review>) {
         if (Auth.getCurrentUser() != null) {
             val uid = Auth.getCurrentUser()!!.uid
-            if (map.containsKey(uid)) {
+            if (map.containsKey(reviewId(uid, poi))) {
                 currentUserReview = map[uid]
                 floatingActionButton.setImageResource(EDIT_BUTTON_DRAWABLE)
             } else {
