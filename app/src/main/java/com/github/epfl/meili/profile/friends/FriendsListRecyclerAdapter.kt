@@ -12,6 +12,7 @@ import com.github.epfl.meili.models.User
 import com.github.epfl.meili.util.ClickListener
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
+import de.hdodenhof.circleimageview.CircleImageView
 
 class FriendsListRecyclerAdapter(private val clickListener: ClickListener) : MeiliRecyclerAdapter<Pair<Friend, User>>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -29,6 +30,7 @@ class FriendsListRecyclerAdapter(private val clickListener: ClickListener) : Mei
         init {
             itemView.findViewById<Button>(R.id.friend_chat_button).setOnClickListener(this)
             itemView.findViewById<TextView>(R.id.userName).setOnClickListener(this)
+            itemView.findViewById<CircleImageView>(R.id.userImage).setOnClickListener(this)
         }
     }
 }

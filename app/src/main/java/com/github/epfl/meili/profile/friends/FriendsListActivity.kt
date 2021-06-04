@@ -113,6 +113,7 @@ class FriendsListActivity : AppCompatActivity(), ClickListener, UserProfileLinke
         when (buttonId) {
             R.id.friend_chat_button -> openFriendChat(info)
             R.id.userName -> openUserProfile(info)
+            R.id.userImage -> openUserProfile(info)
         }
     }
 }

@@ -74,7 +74,7 @@ class ChatActivity : PoiActivity(R.layout.activity_chat, R.id.chat_activity) {
             chatLogView.getWindowVisibleDisplayFrame(r)
             val heightDiff: Int = chatLogView.rootView
                 .height - (r.bottom - r.top)
-            navigationBar.isVisible = heightDiff > KEYBOARD_THRESHOLD
+            navigationBar.isVisible = heightDiff <= KEYBOARD_THRESHOLD
         }
 
         Auth.isLoggedIn.observe(this) {
