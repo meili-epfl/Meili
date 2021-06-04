@@ -17,6 +17,7 @@ import com.facebook.login.LoginResult
 import com.facebook.login.widget.LoginButton
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
+import com.github.epfl.meili.auth.AuthenticationService
 import com.github.epfl.meili.auth.FacebookAuthenticationService
 import com.github.epfl.meili.profile.favoritepois.FavoritePoisActivity
 import com.github.epfl.meili.profile.friends.FriendsListActivity
@@ -66,10 +67,13 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
         private const val SUPPORT_ACTIONBAR_NOT_SIGNED_IN = "Not Signed In"
         private const val STORAGE_IMAGES_PATH = "image/*"
         const val USER_KEY = "USER_KEY"
+        var authenticationService: () -> AuthenticationService =
+            { Auth.getCorrectAuthenticationService() }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Auth.setAuthenticationService(authenticationService())
 
         Auth.isLoggedIn.observe(this) {
             verifyAndUpdateUserIsLoggedIn()
@@ -271,6 +275,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
                     ) {
                         Auth.setAuthenticationService(FacebookAuthenticationService())
                         profileTracker.stopTracking()
+                        viewModel.updateProfile(Auth.getCurrentUser()!!)
                     }
                 }
             } else {

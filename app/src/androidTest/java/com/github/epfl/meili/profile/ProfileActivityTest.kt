@@ -13,6 +13,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
 import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
+import com.github.epfl.meili.auth.FirebaseAuthenticationService
 import com.github.epfl.meili.database.FirebaseStorageService
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.database.FirestoreDocumentService
@@ -77,6 +78,8 @@ class ProfileActivityTest {
     @After
     fun releaseIntents() {
         Intents.release()
+        ProfileActivity.authenticationService = {FirebaseAuthenticationService()}
+        Auth.authService = FirebaseAuthenticationService()
     }
 
     private fun setupMocks() {
@@ -103,6 +106,7 @@ class ProfileActivityTest {
 
         FirestoreDocumentService.databaseProvider = { mockFirestore }
         Auth.authService = mockAuthenticationService
+        ProfileActivity.authenticationService = {mockAuthenticationService}
         mockAuthenticationService.signInIntent(null)
     }
 
