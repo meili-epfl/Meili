@@ -70,12 +70,6 @@ class PoiActivityTest {
     }
 
     @Test
-    fun poiInfoActivityLaunches() {
-        onView(withId(R.id.poi_info_activity)).perform(click())
-        Intents.intended(IntentMatchers.hasComponent(PoiInfoActivity::class.qualifiedName))
-    }
-
-    @Test
     fun forumActivityLaunches() {
         onView(withId(R.id.forum_activity)).perform(click())
         Intents.intended(IntentMatchers.hasComponent(ForumActivity::class.qualifiedName))
