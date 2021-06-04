@@ -152,6 +152,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
             signInButton -> Auth.signInIntent(this)
             signOutButton -> {
                 Auth.signOut(); profileUid = null
+                verifyAndUpdateUserIsLoggedIn()
             }
             profileEditButton -> showEditMode()
             postsButton -> showProfileOwnersInfo(MyPostsActivity::class.java)
