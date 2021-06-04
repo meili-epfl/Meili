@@ -17,7 +17,6 @@ object Auth : ViewModel(), AuthenticationService {
 
     var authService: AuthenticationService = FirebaseAuthenticationService()
 
-
     /**
      * Sets the auth service
      */
@@ -28,12 +27,13 @@ object Auth : ViewModel(), AuthenticationService {
     }
 
     fun setAuthenticationService() {
-        if (AccessToken.getCurrentAccessToken() != null) {
-            setAuthenticationService(FacebookAuthenticationService())
-        } else
-            setAuthenticationService(FirebaseAuthenticationService())
-
-        updateUserData()
+        setAuthenticationService(
+            if (AccessToken.getCurrentAccessToken() != null) {
+                FacebookAuthenticationService()
+            } else {
+                FirebaseAuthenticationService()
+            }
+        )
     }
 
     override fun getCurrentUser(): User? {
