@@ -58,6 +58,9 @@ class PostActivity : AppCompatActivity(), ClickListener, ListSorter<Comment> {
         initRecyclerAdapter()
         initLoggedInListener()
         initSorting(findViewById(R.id.sort_spinner), R.array.sort_array_comments)
+
+        findViewById<TextView>(R.id.userName).setOnClickListener { openUserProfile(post.authorUid) }
+        findViewById<TextView>(R.id.userImage).setOnClickListener { openUserProfile(post.authorUid) }
     }
 
     private fun initViews(post: Post) {
