@@ -102,7 +102,7 @@ class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private 
                 R.mipmap.upvote_empty
             }
 
-            val downRes = if (up) {
+            val downRes = if (down) {
                 R.mipmap.downvote_filled
             } else {
                 R.mipmap.downvote_empty

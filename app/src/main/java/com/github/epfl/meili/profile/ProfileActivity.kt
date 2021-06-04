@@ -120,13 +120,13 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
         callbackManager = CallbackManager.Factory.create()
 
         facebookSignInButton.registerCallback(
-                callbackManager, facebookCallback
+            callbackManager, facebookCallback
         )
     }
 
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this, ProfileViewModelFactory(profileUid!!))
-                .get(ProfileViewModel::class.java)
+            .get(ProfileViewModel::class.java)
         viewModel.getUser().removeObservers(this)
         viewModel.getUser().observe(this) { user ->
             nameView.text = user.username
@@ -151,7 +151,9 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
             seeFriendsButton -> showProfileOwnersInfo(FriendsListActivity::class.java)
             signInButton -> Auth.signInIntent(this)
             signOutButton -> {
-                Auth.signOut(); profileUid = null
+                Auth.signOut()
+                profileUid = null
+                verifyAndUpdateUserIsLoggedIn()
             }
             profileEditButton -> showEditMode()
             postsButton -> showProfileOwnersInfo(MyPostsActivity::class.java)
@@ -216,7 +218,6 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
             updateIsProfileOwner()
             showProfile()
         } else {
-
             supportActionBar?.title = SUPPORT_ACTIONBAR_NOT_SIGNED_IN
             signedInView.visibility = View.GONE
             signInButton.visibility = View.VISIBLE
@@ -237,7 +238,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
 
     private fun showProfileOwnersInfo(activityClass: Class<out AppCompatActivity>) {
         val intent = Intent(this, activityClass)
-                .putExtra(USER_KEY, profileUid)
+            .putExtra(USER_KEY, profileUid)
         startActivity(intent)
     }
 
@@ -265,8 +266,8 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
             if (Profile.getCurrentProfile() == null) {
                 profileTracker = object : ProfileTracker() {
                     override fun onCurrentProfileChanged(
-                            oldProfile: Profile?,
-                            currentProfile: Profile
+                        oldProfile: Profile?,
+                        currentProfile: Profile
                     ) {
                         Auth.setAuthenticationService(FacebookAuthenticationService())
                         profileTracker.stopTracking()
