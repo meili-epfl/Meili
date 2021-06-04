@@ -18,6 +18,8 @@ import com.github.epfl.meili.R
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.models.PointOfInterest
+import com.github.epfl.meili.models.Token
+import com.github.epfl.meili.notifications.FirebaseNotificationService
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.poi.PoiInfoActivity
 import com.github.epfl.meili.poi.PoiServiceCached
@@ -25,6 +27,7 @@ import com.github.epfl.meili.poi.PointOfInterestStatus
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.LocationService.isLocationPermissionGranted
 import com.github.epfl.meili.util.LocationService.requestLocationPermission
+import com.github.epfl.meili.util.MeiliViewModel
 import com.github.epfl.meili.util.navigation.HomeActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -69,6 +72,7 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
 
 
     private lateinit var viewModel: MapActivityViewModel
+    private lateinit var tokenViewModel: MeiliViewModel<Token>
 
     private val markerItems: HashMap<String, MarkerItem> = HashMap()
 
@@ -80,6 +84,7 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
 
         initLensViews()
         setupLensCamera()
+        FirebaseNotificationService.registerToken(this, Auth.getCurrentUser())
 
         Places.initialize(applicationContext, getString(R.string.google_maps_key))
         placesClient = Places.createClient(this)
@@ -89,6 +94,7 @@ class MapActivity : HomeActivity(R.layout.activity_map, R.id.map_activity), OnMa
             supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
     }
+
 
     private fun initLensViews() {
         lensPoiNameText = findViewById(R.id.lens_poi_name)
