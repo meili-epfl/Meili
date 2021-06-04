@@ -334,11 +334,7 @@ class ReviewsActivityTest {
         mockAuthenticationService.signInIntent(null)
         database.onEvent(mockSnapshotAfterAddition, null) // mock user has existing review
 
-        Thread.sleep(5000)
-
         onView(withId(R.id.fab_add_edit_review)).perform(click())
-
-        Thread.sleep(2000)
 
         // old review is displayed
         onView(withId(R.id.review_edit_title)).check(matches(editTextContainsText(TEST_ADDED_TITLE)))
