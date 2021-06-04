@@ -26,16 +26,6 @@ object Auth : ViewModel(), AuthenticationService {
         updateUserData()
     }
 
-    fun setAuthenticationService() {
-        setAuthenticationService(
-            if (AccessToken.getCurrentAccessToken() != null) {
-                FacebookAuthenticationService()
-            } else {
-                FirebaseAuthenticationService()
-            }
-        )
-    }
-
     fun getCorrectAuthenticationService(): AuthenticationService {
         return if (AccessToken.getCurrentAccessToken() != null) {
             FacebookAuthenticationService()
