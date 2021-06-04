@@ -10,21 +10,31 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
+import com.github.epfl.meili.database.FirestoreDatabase
 import com.github.epfl.meili.auth.Auth
 import com.github.epfl.meili.map.MapActivity
-import com.github.epfl.meili.models.ChatMessage
-import com.github.epfl.meili.models.PointOfInterest
-import com.github.epfl.meili.models.User
+import com.github.epfl.meili.models.*
+import com.github.epfl.meili.notifications.FirebaseNotificationService
+import com.github.epfl.meili.notifications.RetrofitInstance
 import com.github.epfl.meili.profile.friends.FriendsListActivity.Companion.FRIEND_KEY
 import com.github.epfl.meili.profile.friends.UserInfoService
 import com.github.epfl.meili.util.DateAuxiliary
+import com.github.epfl.meili.util.MeiliViewModel
+import com.google.firebase.database.DatabaseException
+import com.google.firebase.messaging.FirebaseMessaging
 import com.github.epfl.meili.util.navigation.PoiActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.ktx.Firebase
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import com.xwray.groupie.Item
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 
 class ChatActivity : PoiActivity(R.layout.activity_chat, R.id.chat_activity) {
@@ -37,6 +47,8 @@ class ChatActivity : PoiActivity(R.layout.activity_chat, R.id.chat_activity) {
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
     private var currentUser: User? = null
+    private lateinit var viewModel: MeiliViewModel<Token>
+    private var token: Token? = null
     private lateinit var chatId: String
     private var messageList: ArrayList<ChatMessage> = ArrayList()
 
@@ -44,6 +56,7 @@ class ChatActivity : PoiActivity(R.layout.activity_chat, R.id.chat_activity) {
     private var poi: PointOfInterest? = null
 
     private lateinit var navigationBar: BottomNavigationView
+    private var friend: User? = null
     private lateinit var chatLogView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,7 +93,7 @@ class ChatActivity : PoiActivity(R.layout.activity_chat, R.id.chat_activity) {
             currentUser = Auth.getCurrentUser()
 
             val poi = intent.getParcelableExtra<PointOfInterest>(MapActivity.POI_KEY)
-            val friend = intent.getParcelableExtra<User>(FRIEND_KEY)
+            friend = intent.getParcelableExtra<User>(FRIEND_KEY)
             val databasePath: String
 
             if (poi != null) {
@@ -98,6 +111,7 @@ class ChatActivity : PoiActivity(R.layout.activity_chat, R.id.chat_activity) {
                 supportActionBar?.title = friend?.username
                 val friendUid: String = friend?.uid!!
                 val currentUid: String = currentUser!!.uid
+                initViewModel(friendUid)
 
                 // The friend chat document in the database is saved under the key with value
                 // of the two user ids concatenated in sorted order
@@ -106,7 +120,7 @@ class ChatActivity : PoiActivity(R.layout.activity_chat, R.id.chat_activity) {
 
                 setGroupChat(false)
 
-                Log.d(TAG, "Starting friend chat with ${friend.uid}")
+                Log.d(TAG, "Starting friend chat with ${friend!!.uid}")
 
                 databasePath = "FriendChat/${chatId}"
             }
@@ -125,6 +139,32 @@ class ChatActivity : PoiActivity(R.layout.activity_chat, R.id.chat_activity) {
         }
     }
 
+    private fun initViewModel(friendKey: String) {
+        @Suppress("UNCHECKED_CAST")
+        viewModel = ViewModelProvider(this).get(MeiliViewModel::class.java) as MeiliViewModel<Token>
+
+        viewModel.initDatabase(FirestoreDatabase("token", Token::class.java))
+
+        FirebaseNotificationService.sharedPref = getSharedPreferences("sharedPref", MODE_PRIVATE)
+
+        FirebaseMessaging.getInstance().token.addOnSuccessListener {
+            FirebaseNotificationService.token = it
+            if(Auth.getCurrentUser() != null){
+                try {
+                    viewModel.addElement(Auth.getCurrentUser()!!.uid,
+                        Token(it))
+                } catch (e: DatabaseException) {
+                    Log.e(TAG, "token already registered")
+                }
+            }
+
+        }
+
+        viewModel.getElements().observe(this, { map ->
+            token = map[friendKey]
+        })
+    }
+
     private fun setGroupChat(isGroupChat: Boolean) {
         this.isGroupChat = isGroupChat
         if (!isGroupChat) {
@@ -132,8 +172,26 @@ class ChatActivity : PoiActivity(R.layout.activity_chat, R.id.chat_activity) {
         }
     }
 
+
+    private fun sendNotification(notification: PushNotification) =
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RetrofitInstance.api.postNotification(notification)
+                if (response.isSuccessful) {
+                    Log.d(TAG, "successful response")
+                } else {
+                    Log.e(TAG, response.errorBody().toString())
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, e.toString())
+            }
+        }
+
     private fun performSendMessage() {
         val text = findViewById<EditText>(R.id.edit_text_chat_log).text.toString()
+        if (text.isEmpty()) {
+            return
+        }
         findViewById<EditText>(R.id.edit_text_chat_log).text.clear()
 
         ChatMessageViewModel.addMessage(
@@ -142,6 +200,15 @@ class ChatActivity : PoiActivity(R.layout.activity_chat, R.id.chat_activity) {
             chatId,
             System.currentTimeMillis() / 1000
         )
+        //send notification if in direct message not poi chat
+        if (friend != null && token != null) {
+            PushNotification(
+                NotificationData("Message from ${Auth.getCurrentUser()!!.username}", text, Auth.getCurrentUser()!!.uid),
+                token!!.value
+            ).also {
+                sendNotification(it)
+            }
+        }
     }
 
     private fun listenForMessages(chatID: String) {
@@ -182,6 +249,13 @@ class ChatActivity : PoiActivity(R.layout.activity_chat, R.id.chat_activity) {
         super.onActivityResult(requestCode, resultCode, data)
 
         Auth.onActivityResult(this, requestCode, resultCode, data) {}
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (this::viewModel.isInitialized) {
+            viewModel.onDestroy()
+        }
     }
 }
 
