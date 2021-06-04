@@ -17,7 +17,6 @@ object Auth : ViewModel(), AuthenticationService {
 
     var authService: AuthenticationService = FirebaseAuthenticationService()
 
-
     /**
      * Sets the auth service
      */
