@@ -17,6 +17,7 @@ abstract class MeiliWithUserRecyclerViewHolder<T>(
 
     init {
         itemView.findViewById<TextView>(R.id.userName).setOnClickListener(this)
+        itemView.findViewById<CircleImageView>(R.id.userImage).setOnClickListener(this)
     }
 
     open fun bind(user: User, other: T) {

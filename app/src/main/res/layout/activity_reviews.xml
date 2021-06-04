@@ -136,8 +136,7 @@
                 android:contentDescription="@string/fab_review_content_description"
                 android:focusable="true"
                 android:foregroundGravity="center"
-                android:onClick="onReviewButtonClick"
-                app:srcCompat="@android:drawable/ic_input_add" />
+                android:onClick="onReviewButtonClick" />
 
         </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

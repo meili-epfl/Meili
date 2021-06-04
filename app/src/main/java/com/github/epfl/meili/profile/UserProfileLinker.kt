@@ -37,6 +37,7 @@ interface UserProfileLinker<T> : ClickListener {
     override fun onClicked(buttonId: Int, info: String) {
         when (buttonId) {
             R.id.userName -> openUserProfile(info)
+            R.id.userImage -> openUserProfile(info)
         }
     }
 }
