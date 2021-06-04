@@ -54,13 +54,13 @@ class FirebaseNotificationService() : FirebaseMessagingService() {
 
             FirebaseMessaging.getInstance().token.addOnSuccessListener {
                 token = it
-                if (user != null) {
+                if (user != null && it != null) {
                     try {
                         tokenViewModel.addElement(
                             user!!.uid,
                             Token(it)
                         )
-                    } catch (e: DatabaseException) {
+                    } catch (e: Exception) {
                         Log.e("MapActivity", "token already registered")
                     }
                 }
