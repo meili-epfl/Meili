@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.github.epfl.meili.R
 import com.github.epfl.meili.models.Post
@@ -15,11 +16,11 @@ import com.github.epfl.meili.util.ImageSetter
 import com.github.epfl.meili.util.MeiliRecyclerAdapter
 import com.github.epfl.meili.util.MeiliWithUserRecyclerViewHolder
 
-class PostListRecyclerAdapter(
-    private val viewModel: PostListViewModel,
-    private val listener: ClickListener
-) :
-    MeiliRecyclerAdapter<Pair<Post, User>>() {
+
+class PostListRecyclerAdapter(private val viewModel: PostListViewModel, private val listener: ClickListener,
+                              private val showPOI: Boolean) :
+        MeiliRecyclerAdapter<Pair<Post, User>>() {
+
     private var userId: String? = null
 
     companion object {
@@ -50,6 +51,7 @@ class PostListRecyclerAdapter(
         MeiliWithUserRecyclerViewHolder<Post>(itemView, listener) {
         private val title: TextView = itemView.findViewById(R.id.post_title)
         private val postId: TextView = itemView.findViewById(R.id.post_id)
+        private val poiName: TextView = itemView.findViewById(R.id.post_poi_name)
         private val upvoteButton: ImageButton = itemView.findViewById(R.id.upvote_button)
         private val downvoteButton: ImageButton = itemView.findViewById(R.id.downovte_button)
         private val upvoteCount: TextView = itemView.findViewById(R.id.upvote_count)
@@ -62,16 +64,14 @@ class PostListRecyclerAdapter(
             super.bind(user, post)
 
             postId.text = post.postId()
+            poiName.text = post.poiName
             title.text = post.title
 
+            poiName.isVisible = showPOI
+
             //show or hide up/downvote depending on user status
-            val visibility = if (userId == null) {
-                View.GONE
-            } else {
-                View.VISIBLE
-            }
-            upvoteButton.visibility = visibility
-            downvoteButton.visibility = visibility
+            upvoteButton.isVisible = userId != null
+            downvoteButton.isVisible = userId != null
             if (userId != null) {
                 setupButtons(post.upvoters, post.downvoters, userId, post.postId())
             }

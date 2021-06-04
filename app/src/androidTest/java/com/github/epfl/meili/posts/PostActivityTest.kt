@@ -56,8 +56,9 @@ class PostActivityTest {
         private const val TEST_POI_KEY = "POI_KEY"
         private const val TEST_POST_ID = "ID"
         private const val TEST_POST_AUTHOR_ID = "AUTHOR POST ID"
+        private const val TEST_POI_NAME = "POI_NAME"
         private const val TEST_POST_AUTHOR_NAME = "AUTHOR NAME POST"
-        private val TEST_POST = Post(TEST_POI_KEY, TEST_POST_AUTHOR_ID, "TITLE", -1, "TEXT")
+        private val TEST_POST = Post(TEST_POI_KEY, TEST_POI_NAME, TEST_POST_AUTHOR_ID, "TITLE", -1, "TEXT")
         private const val TEST_AUTHOR_NAME = "Author Name"
         private const val TEST_AUTHOR_ID = "Auhtor id"
         private val TEST_COMMENT = Comment(TEST_AUTHOR_ID, "TEXT_COMMENT")

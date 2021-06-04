@@ -1,109 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clickable="true"
-    android:focusable="true"
-    android:onClick="onClick"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="10dp"
-    app:cardPreventCornerOverlap="false">
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:clickable="true"
+android:focusable="true"
+android:onClick="onClick"
+app:cardCornerRadius="2dp"
+app:cardElevation="10dp"
+app:cardPreventCornerOverlap="false">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/post_horizontal_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        android:baselineAligned="false">
 
         <LinearLayout
-            android:id="@+id/post_horizontal_layout"
-            android:layout_width="match_parent"
+            android:id="@+id/post_linear_layout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent"
-            android:baselineAligned="false">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-            <LinearLayout
-                android:id="@+id/post_linear_layout"
-                android:layout_width="0dp"
+            <include layout="@layout/user" />
+
+            <TextView
+                android:id="@+id/post_poi_name"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:padding="10dp">
+                android:textAlignment="textEnd"
+                android:textSize="20sp" />
 
-                <include layout="@layout/user" />
-
-                <TextView
-                    android:id="@+id/post_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp" />
+            <TextView
+                android:id="@+id/post_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp" />
 
 
-                <TextView
-                    android:id="@+id/post_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="invisible" />
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/upvote_ConstraintLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="140dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/upvote_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/upvote_default_count"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageButton
-                    android:id="@+id/upvote_button"
-                    android:layout_width="50dp"
-                    android:layout_height="70dp"
-                    android:background="@android:drawable/screen_background_light_transparent"
-                    android:contentDescription="@string/upvote"
-                    android:scaleX="0.5"
-                    android:scaleY="0.5"
-                    app:layout_constraintBottom_toTopOf="@+id/upvote_count"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@mipmap/upvote_empty" />
-
-                <ImageButton
-                    android:id="@+id/downovte_button"
-                    android:layout_width="50dp"
-                    android:layout_height="70dp"
-                    android:background="@android:drawable/screen_background_light_transparent"
-                    android:contentDescription="@string/downvote"
-                    android:scaleX="0.5"
-                    android:scaleY="0.5"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/upvote_count"
-                    app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@mipmap/downvote_empty" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/post_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="invisible" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/forum_post_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/post_horizontal_layout"
-            tools:srcCompat="@tools:sample/backgrounds/scenic"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/post_preview_image" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/upvote_ConstraintLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="140dp"
+            android:orientation="vertical">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/upvote_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/upvote_default_count"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/upvote_button"
+                android:layout_width="50dp"
+                android:layout_height="70dp"
+                android:background="@android:drawable/screen_background_light_transparent"
+                android:contentDescription="@string/upvote"
+                android:scaleX="0.5"
+                android:scaleY="0.5"
+                app:layout_constraintBottom_toTopOf="@+id/upvote_count"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                app:srcCompat="@mipmap/upvote_empty" />
+
+            <ImageButton
+                android:id="@+id/downovte_button"
+                android:layout_width="50dp"
+                android:layout_height="70dp"
+                android:background="@android:drawable/screen_background_light_transparent"
+                android:contentDescription="@string/downvote"
+                android:scaleX="0.5"
+                android:scaleY="0.5"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/upvote_count"
+                app:layout_constraintVertical_bias="0.0"
+                app:srcCompat="@mipmap/downvote_empty" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/forum_post_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/post_horizontal_layout"
+        tools:srcCompat="@tools:sample/backgrounds/scenic"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/post_preview_image" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
