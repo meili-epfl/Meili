@@ -50,7 +50,6 @@ class ReviewsActivityTest {
     companion object {
         private const val TEST_AUTHOR_USERNAME = "MrPerfect"
         private const val TEST_OTHER_AUTHOR_USERNAME = "MrPerfect2"
-        private const val TEST_REVIEW_ID = "test uid"
 
         private const val TEST_POI_KEY = "lorem_ipsum2"
         private val TEST_POI = PointOfInterest(100.0, 100.0, "lorem_ipsum1", TEST_POI_KEY)
@@ -58,6 +57,7 @@ class ReviewsActivityTest {
         private const val TEST_SUMMARY = "Water too wet"
         private const val TEST_AUTHOR_ID = "author id"
         private const val TEST_OTHER_AUTHOR_ID = "author id2"
+        private const val TEST_REVIEW_ID = TEST_OTHER_AUTHOR_ID + TEST_POI_KEY
 
         private const val AVERAGE_FORMAT = "%.2f"
 
@@ -139,7 +139,7 @@ class ReviewsActivityTest {
         mockDocumentListAfterEdition.add(editedReviewDocumentSnapshot())
         `when`(mockSnapshotAfterEdition.documents).thenReturn(mockDocumentListAfterEdition)
 
-        mockAuthenticationService.setMockUid(TEST_REVIEW_ID)
+        mockAuthenticationService.setMockUid(TEST_OTHER_AUTHOR_ID)
 
         // Inject dependencies
         FirestoreDatabase.databaseProvider = { mockFirestore }
