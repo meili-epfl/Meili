@@ -4,9 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
+import com.facebook.AccessToken
 import com.github.epfl.meili.auth.Auth
+import com.github.epfl.meili.auth.FacebookAuthenticationService
 import com.github.epfl.meili.auth.FirebaseAuthenticationService
-import com.github.epfl.meili.auth.GoogleSignInActivity
+import com.github.epfl.meili.auth.SignInActivity
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.util.UserPreferences
 
@@ -21,13 +23,16 @@ class LogoActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
-        Auth.setAuthenticationService(FirebaseAuthenticationService())
+        if (AccessToken.getCurrentAccessToken() != null) {
+            Auth.setAuthenticationService(FacebookAuthenticationService())
+        } else
+            Auth.setAuthenticationService(FirebaseAuthenticationService())
 
         val preferences = UserPreferences(this)
         preferences.applyMode()
 
         val firstActivityClass: Class<out AppCompatActivity> = if (preferences.firstTime) {
-            GoogleSignInActivity::class.java
+            SignInActivity::class.java
         } else {
             MapActivity::class.java
         }
