@@ -55,7 +55,6 @@ class PoiInfoActivityTest {
 
     }
 
-
     private val fakePoi: PointOfInterest =
         PointOfInterest(10.0, 10.0, "art_brut", "ChIJAAAAAAAAAAARg4pb6XR5bo0")
 
