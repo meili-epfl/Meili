@@ -69,10 +69,7 @@ class SignInActivityTest {
     @Before
     fun initIntents() {
         Intents.init()
-    }
 
-    @Before
-    fun removePopUps() {
         testRule.scenario.onActivity {
             it.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         }
