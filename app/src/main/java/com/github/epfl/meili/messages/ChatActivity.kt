@@ -202,7 +202,6 @@ class ChatActivity : PoiActivity(R.layout.activity_chat, R.id.chat_activity) {
         )
         //send notification if in direct message not poi chat
         if (friend != null && token != null) {
-            Log.d(TAG, "token is ${token!!.value}")
             PushNotification(
                 NotificationData("Message from ${Auth.getCurrentUser()!!.username}", text, Auth.getCurrentUser()!!.uid),
                 token!!.value
