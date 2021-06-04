@@ -17,6 +17,8 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_google_sign_in)
 
+        Auth.setAuthenticationService()
+
         Auth.isLoggedIn.observe(this, {
             updateUI()
         })
