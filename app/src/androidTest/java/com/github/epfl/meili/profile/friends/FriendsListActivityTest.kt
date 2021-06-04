@@ -75,6 +75,7 @@ class FriendsListActivityTest {
 
 
         Mockito.`when`(mockCollection.document(ArgumentMatchers.contains(TEST_FRIEND_UID))).thenReturn(mockDocument)
+        Mockito.`when`(mockCollection.document(ArgumentMatchers.contains(TEST_CURRENT_USER_UID))).thenReturn(mockDocument)
 
         Mockito.`when`(mockCollection.addSnapshotListener(ArgumentMatchers.any())).thenAnswer { invocation ->
             database = invocation.arguments[0] as FirestoreDatabase<Friend>
