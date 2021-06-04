@@ -16,6 +16,30 @@ Meili creates feeds based on points of interest (POIs). Each POI has multiple ta
 
 ## App Requirements
 
+### Overview of main features:
+- Google and Facebook sign in
+- Customizable profile (picture, name, bio)
+- Review (rating, title and summary) points of interest: add new or edit existing (unique review per user per point of interest) 
+- Post (picture, title, text) on points of interest
+  - Sort posts by newest, oldest, or most popular
+  - Upvote/Downvote
+  - Comments (which can be sorted by newest or oldest)
+- In-app camera with editing: cropping, rotating, filters, emojis, text
+- Click on someones name or picture to visit their profile
+- Dark/Light/System modes
+- Save your favourite points of interest which will be displayed in your profile
+- Detailed information about each point of interest
+  - Take me there capabiltiy (will open google maps and give you directions to the point of interest)
+  - Possibility to call the point of interest
+  - Snippet of and link to the point of interest website
+- Feed with posts from points of interest close to you
+- Add friends nearby (using bluetooth technology)
+- Private chat with friends with notifications
+- Public chat for each point of interest
+- Meili Lens
+  - Orient phone in direction of a building/point of interest to find out its name. It will also be colored differently (in purple) on the map, allowing the user to click on it directly without having to look for it. This works with all points of interest in Meili.
+  - Take a photo of a landmark and find out what it is (uses Google's Landmark Detection API). This works only with well-known landmarks (Eiffel tower, Rockefeller Center, etc...)
+
 ### Split app model:
 
 - Firebase's Realtime Database (for chat messages) and Firestore (for everything else) are used as our backend.
@@ -45,35 +69,14 @@ Without logging in, the user can only benefit from the app in read-only mode.
 
 ### Local cache:
 
-- We have implemented our own local cache that will fetch the Google Places API response with the points of interest around the user. We implemented a 2 level cache. The first level is that we store the data in the object, and the second level is that we store the data on the mobile storage. The way we handle the data is the following. We implemented a write-through cache so when a response is received from the API, we will write it both in storage and in the object. The process of fetching data is more comples. If the data in the cache is not valid or not present and we have internet connection, we will fetch the information from the API. If we don't have internet connection and we have some data, even if not valid we will return it. If data is valid then we will return the data in the highest level of the cache (the data is the same but the higher the level, the faster it will be. Finally, in order to determing the validity of the cache we use two metrics, time  (we consider that data is valid during 1 hour) and distance, if the cached request was further away than 1km we will consider the data invalid. The cache service we implemented 
+- We have implemented our own local cache that will fetch the Google Places API response with the points of interest around the user. We implemented a 2 level cache. The first level is that we store the data in the object, and the second level is that we store the data on the mobile storage. The way we handle the data is the following. We implemented a write-through cache so when a response is received from the API, we will write it both in storage and in the object. The process of fetching data is more comples. If the data in the cache is not valid or not present and we have internet connection, we will fetch the information from the API. If we don't have internet connection and we have some data, even if not valid we will return it. If data is valid then we will return the data in the highest level of the cache (the data is the same but the higher the level, the faster it will be. Finally, in order to determing the validity of the cache we use two metrics, time  (we consider that data is valid during 1 hour) and distance, if the cached request was further away than 1km we will consider the data invalid. The cache service we implemented is general meaning that one can easily use it to cache various things in the future.
 
 - For other things such as posts, reviews, chat, etc. we relied on Firebase's automatic caching since there would be no point in reinventing the wheel.
 
-
 ### Offline mode:
 
-- Users will be able to have access to all of the points of interest visited in the UI Map.
-- Users will be able to read all of the Post/messages/pictures of the visited POIs that were retrieved since last internet connection
-
-### Overview of main features:
-- Google Sign-in (TODO: facebook sign in?)
-- Pesonalizable profile (the user can change its picture, name and status)
-- Review points of interest and give a rating
-- Post on points of interest and add pictures
-- On-app camera and editable pictures
-- Click on someones name or picture to visit their profile
-- Dark/Light mode availabe
-- Save your favourite points of interest which will be displayed in your profile
-- Detailed information about each point of interest
-  - Take me there capabiltiy (will open google maps and give you indications to the point of interest)
-  - Possibility to call the point of interest
-  - Direct link to the point of interest website
-- Feed with posts of points of interest close to you
-- Add friends nearby (using bluetooth technology)
-- Chat with friends
-- Chat with people around a point of interest
-- TODO: notifications for friend chat??
-- TODO: explain Meili Lens
-- TODO: what else?
-
-
+Users will be able to:
+- customize their profile
+- use Nearby Friend to become friends with people near them
+- have access to the posts and reviews of their favorite points of interest
+- have access to the posts and reviews of the points of interest around them (if they haven't moved much since the time they were online)
