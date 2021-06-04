@@ -65,7 +65,7 @@ Advantages to being logged in:
 - Make posts and interact with them (upvote/downvote and comment)
 - Add reviews
 
-Without logging in, the user can only benefit from the app in read-only mode.
+Without logging in, the user can benefit from the app in read-only mode.
 
 ### Local cache:
 
@@ -79,4 +79,4 @@ Users will be able to:
 - customize their profile
 - use Nearby Friend to become friends with people near them
 - have access to the posts and reviews of their favorite points of interest
-- have access to the posts and reviews of the points of interest around them (if they haven't moved much since the time they were online)
+- have access to the posts and reviews of the points of interest which were around them when they went offline
