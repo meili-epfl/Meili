@@ -5,6 +5,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.epfl.meili.database.FirestoreDatabase
+import com.github.epfl.meili.util.MockAuthenticationService
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -30,6 +31,7 @@ class LogoActivityTest {
             .thenAnswer { Mockito.mock(ListenerRegistration::class.java) }
 
         FirestoreDatabase.databaseProvider = { mockFirestore }
+        LogoActivity.authenticationService = { MockAuthenticationService() }
     }
 
     @Before

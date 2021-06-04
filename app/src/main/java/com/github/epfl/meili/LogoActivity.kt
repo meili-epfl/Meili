@@ -5,16 +5,16 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import com.facebook.AccessToken
-import com.github.epfl.meili.auth.Auth
-import com.github.epfl.meili.auth.FacebookAuthenticationService
-import com.github.epfl.meili.auth.FirebaseAuthenticationService
-import com.github.epfl.meili.auth.SignInActivity
+import com.github.epfl.meili.auth.*
 import com.github.epfl.meili.map.MapActivity
 import com.github.epfl.meili.util.UserPreferences
 
 class LogoActivity : AppCompatActivity() {
     companion object {
         private const val LOGO_DISPLAY_TIME = 1000L // milliseconds
+
+        var authenticationService: () -> AuthenticationService =
+            { Auth.getCorrectAuthenticationService() }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +23,7 @@ class LogoActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
-        Auth.setAuthenticationService()
+        Auth.setAuthenticationService(authenticationService())
 
         val preferences = UserPreferences(this)
         preferences.applyMode()
