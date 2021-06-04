@@ -270,6 +270,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
                     ) {
                         Auth.setAuthenticationService(FacebookAuthenticationService())
                         profileTracker.stopTracking()
+                        viewModel.updateProfile(Auth.getCurrentUser()!!)
                     }
                 }
             } else {
