@@ -54,4 +54,5 @@ open class FirestoreDatabase<T : Any>(
     override fun removeElement(key: String) {
         collectionReference.document(key).delete()
     }
+
 }

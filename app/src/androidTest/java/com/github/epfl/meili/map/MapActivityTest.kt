@@ -25,6 +25,7 @@ import com.github.epfl.meili.database.FirestoreDocumentService
 import com.github.epfl.meili.photo.CameraActivity
 import com.github.epfl.meili.posts.feed.FeedActivity
 import com.github.epfl.meili.profile.ProfileActivity
+import com.github.epfl.meili.profile.friends.FriendsListActivityTest
 import com.github.epfl.meili.util.LandmarkDetectionService
 import com.github.epfl.meili.util.LocationService
 import com.github.epfl.meili.util.MockAuthenticationService
@@ -50,7 +51,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
@@ -102,9 +105,11 @@ class MapActivityTest {
         `when`(mockFirestore.collection(any())).thenReturn(mockCollection)
         `when`(mockCollection.addSnapshotListener(any())).thenAnswer { mock(ListenerRegistration::class.java) }
 
+
         val mockDocument = mock(DocumentReference::class.java)
         `when`(mockFirestore.document(any())).thenReturn(mockDocument)
         `when`(mockDocument.get()).thenReturn(mock(Task::class.java) as Task<DocumentSnapshot>)
+        `when`(mockCollection.document(any())).thenReturn(mockDocument)
 
         val mockAuthenticationService = MockAuthenticationService()
         mockAuthenticationService.signInIntent(null)
