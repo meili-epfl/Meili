@@ -77,6 +77,7 @@ class FirebaseNotificationService() : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
+        //To be implemented in the future
         //Uncomment this code to make clicking notifications open activity
         //Need to get entire user object from uid
         //Need to add tests and pass the contexts to the tests so it doesn't crash
