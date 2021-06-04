@@ -95,6 +95,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:launchMode="singleTop"
             android:name=".profile.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
