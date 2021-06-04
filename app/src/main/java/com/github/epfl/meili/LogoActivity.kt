@@ -23,10 +23,7 @@ class LogoActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
-        if (AccessToken.getCurrentAccessToken() != null) {
-            Auth.setAuthenticationService(FacebookAuthenticationService())
-        } else
-            Auth.setAuthenticationService(FirebaseAuthenticationService())
+        Auth.setAuthenticationService()
 
         val preferences = UserPreferences(this)
         preferences.applyMode()

@@ -70,9 +70,7 @@ class ProfileActivity : HomeActivity(R.layout.activity_profile, R.id.profile_act
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (AccessToken.getCurrentAccessToken() != null) {
-            Auth.setAuthenticationService(FacebookAuthenticationService())
-        }
+        Auth.setAuthenticationService()
 
         Auth.isLoggedIn.observe(this) {
             verifyAndUpdateUserIsLoggedIn()

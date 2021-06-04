@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.facebook.AccessToken
 import com.github.epfl.meili.models.User
 
 
@@ -22,6 +23,15 @@ object Auth : ViewModel(), AuthenticationService {
      */
     fun setAuthenticationService(authService: AuthenticationService) {
         this.authService = authService
+
+        updateUserData()
+    }
+
+    fun setAuthenticationService() {
+        if (AccessToken.getCurrentAccessToken() != null) {
+            setAuthenticationService(FacebookAuthenticationService())
+        } else
+            setAuthenticationService(FirebaseAuthenticationService())
 
         updateUserData()
     }

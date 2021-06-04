@@ -16,10 +16,7 @@ class SignInActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_google_sign_in)
-        if (AccessToken.getCurrentAccessToken() != null) {
-            Auth.setAuthenticationService(FacebookAuthenticationService())
-        } else
-            Auth.setAuthenticationService(FirebaseAuthenticationService())
+        Auth.setAuthenticationService()
 
         Auth.isLoggedIn.observe(this, {
             updateUI()
