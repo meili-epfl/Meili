@@ -65,9 +65,11 @@ Personalization:
 
 - Firebase cache TODO: explain
 
+
 ### Offline mode:
-- When the user is offline the app will still be working with limited functionalities. Mainly, the user will still be able to see the points of interest that were fetched recently (since these were cached by the app). 
-- TODO: what else can we do with limited functionalities??
+
+- Users will be able to have access to all of the points of interest visited in the UI Map.
+- Users will be able to read all of the Post/messages/pictures of the visited POIs that were retrieved since last internet connection
 
 ### Overview of main features:
 - Google Sign-in (TODO: facebook sign in?)
@@ -90,9 +92,4 @@ Personalization:
 - TODO: explain Meili Lens
 - TODO: what else?
 
-
-### Offline mode:
-
-- Users will be able to have access to all of the points of interest visited in the UI Map.
-- Users will be able to read all of the Post/messages/pictures of the visited POIs that were retrieved since last internet connection
 
