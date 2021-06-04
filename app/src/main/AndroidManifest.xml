@@ -65,6 +65,7 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
+            android:launchMode="singleTop"
             android:name=".map.MapActivity"
             android:label="@string/title_activity_map"
             android:screenOrientation="portrait" />
@@ -95,6 +96,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:launchMode="singleTop"
             android:name=".profile.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
