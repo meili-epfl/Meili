@@ -5,7 +5,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/a145f81ea17c85e8ef30/test_coverage)](https://codeclimate.com/github/meili-epfl/Meili/test_coverage)
 
 ## Test the app
-Clone the main branch and add the files `keys.xml` in `app/src/main/res/values/` folder and `google-service.json` in `app` folder given by the Meili team.
+Clone the main branch and add the files `keys.xml` in `app/src/main/res/values/` folder and `google-service.json` in `app/` folder given by the Meili team.
 
 ## Description:
 
