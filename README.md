@@ -39,6 +39,7 @@ Meili creates feeds based on points of interest (POIs). Each POI has multiple ta
 - Meili Lens
   - Orient phone in direction of a building/point of interest to find out its name. It will also be colored differently (in purple) on the map, allowing the user to click on it directly without having to look for it. This works with all points of interest in Meili.
   - Take a photo of a landmark and find out what it is (uses Google's Landmark Detection API). This works only with well-known landmarks (Eiffel tower, Rockefeller Center, etc...)
+- Nearby Friend lets users add nearby users as friends using bluetooth. This feature works in offline mode as well.
 
 ### Split app model:
 
