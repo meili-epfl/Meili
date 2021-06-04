@@ -1,6 +1,7 @@
 package com.github.epfl.meili.review
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.view.isVisible
@@ -150,9 +151,9 @@ class ReviewsActivity : PoiActivity(R.layout.activity_reviews, R.id.reviews_acti
 
     private fun reviewsMapListener(map: Map<String, Review>) {
         if (Auth.getCurrentUser() != null) {
-            val uid = Auth.getCurrentUser()!!.uid
-            if (map.containsKey(reviewId(uid, poi))) {
-                currentUserReview = map[uid]
+            val reviewId = reviewId(Auth.getCurrentUser()!!.uid, poi)
+            if (map.containsKey(reviewId)) {
+                currentUserReview = map[reviewId]
                 floatingActionButton.setImageResource(EDIT_BUTTON_DRAWABLE)
             } else {
                 currentUserReview = null
