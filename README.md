@@ -65,6 +65,31 @@ Personalization:
 
 - Firebase cache TODO: explain
 
+### Offline mode:
+- When the user is offline the app will still be working with limited functionalities. Mainly, the user will still be able to see the points of interest that were fetched recently (since these were cached by the app). 
+- TODO: what else can we do with limited functionalities??
+
+### Overview of main features:
+- Google Sign-in (TODO: facebook sign in?)
+- Pesonalizable profile (the user can change its picture, name and status)
+- Review points of interest and give a rating
+- Post on points of interest and add pictures
+- On-app camera and editable pictures
+- Click on someones name or picture to visit their profile
+- Dark/Light mode availabe
+- Save your favourite points of interest which will be displayed in your profile
+- Detailed information about each point of interest
+  - Take me there capabiltiy (will open google maps and give you indications to the point of interest)
+  - Possibility to call the point of interest
+  - Direct link to the point of interest website
+- Feed with posts of points of interest close to you
+- Add friends nearby (using bluetooth technology)
+- Chat with friends
+- Chat with people around a point of interest
+- TODO: notifications for friend chat??
+- TODO: explain Meili Lens
+- TODO: what else?
+
 
 ### Offline mode:
 
