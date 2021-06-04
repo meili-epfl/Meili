@@ -23,6 +23,9 @@ abstract class NavigableActivity(
             overridePendingTransition(0, 0)
             true
         }
+        
+        // empty listener to avoid restarting activity if it is reselected
+        navigation.setOnNavigationItemReselectedListener {  }
     }
 
     abstract fun getNavigationIntent(id: Int): Intent
