@@ -62,6 +62,9 @@ class PostActivity : AppCompatActivity(), ClickListener, ListSorter<Comment> {
         findViewById<TextView>(R.id.userName).setOnClickListener {
             openUserProfile(post.authorUid)
         }
+        findViewById<CircleImageView>(R.id.userImage).setOnClickListener {
+            openUserProfile(post.authorUid)
+        }
     }
 
     private fun initViews(post: Post) {
